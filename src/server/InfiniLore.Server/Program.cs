@@ -22,6 +22,8 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
+        
+        // TODO Add Swagger services
 
         // -------------------------------------------------------------------------------------------------------------
         // App
