@@ -2,7 +2,7 @@ name: "Run TODO to Issue"
 on:
   push:
     branches:
-      - core-production
+      - core-development
 env:
   PROJECT: "organization/InfiniLore/InfiniLore"
   PROJECTS_SECRET: "${{ secrets.PROJECTS_SECRET }}"
