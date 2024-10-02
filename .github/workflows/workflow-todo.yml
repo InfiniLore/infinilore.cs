@@ -21,13 +21,11 @@ jobs:
             **Details:**  
             {{ body }}
 
+            **Code Snippet:**
+            {{ snippet }}
+
             **File:**  
             {{ url }}
-
-            **Code Snippet:**
-            ```  
-            {{ snippet }}
-            ```
 
           IDENTIFIERS: '[{"name": "TODO", "labels": ["todo"]}]'
           CLOSE_ISSUES: "true"

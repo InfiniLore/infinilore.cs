@@ -16,6 +16,9 @@ public static class Program {
         
         // TODO Overwrite and use SeriLog for logging
 
+        // TODO: Add Kestrel SLL
+        //  This will take some tweaking to get working
+        
         // TODO Add Database
         
         // Add services to the container.
