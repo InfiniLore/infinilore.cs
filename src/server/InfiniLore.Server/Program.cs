@@ -50,7 +50,8 @@ public static class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            // TODO add an IAssemblyEntry into the Client and use here
+            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly); 
 
         app.Run();
     }

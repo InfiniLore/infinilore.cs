@@ -30,3 +30,4 @@ jobs:
             ```
 
           IDENTIFIERS: '[{"name": "TODO", "labels": ["todo"]}]'
+          CLOSE_ISSUES: "true"
