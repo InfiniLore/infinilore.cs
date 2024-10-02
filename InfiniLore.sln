@@ -6,13 +6,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7304F551-466
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{56F59020-E2A2-4187-A847-5CF479A5BFD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server", "BlazorApp1\InfiniLore.Server\InfiniLore.Server.csproj", "{F0B28254-2412-4C87-8263-88EF9435C2B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server", "src\server\InfiniLore.Server\InfiniLore.Server.csproj", "{F0B28254-2412-4C87-8263-88EF9435C2B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Client", "BlazorApp1\InfiniLore.Client\InfiniLore.Client.csproj", "{51DCDAEC-2D16-4C16-A229-1250708EB3D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Client", "src\client\InfiniLore.Client\InfiniLore.Client.csproj", "{51DCDAEC-2D16-4C16-A229-1250708EB3D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{EB00BE10-6020-4E39-A00F-C202A0165920}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{774835FD-5D7B-41CB-8A2E-48E5F20F377C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tailwind", "tailwind", "{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4}"
+	ProjectSection(SolutionItems) = preProject
+		package.json = package.json
+		tailwind.config.js = tailwind.config.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,5 +40,6 @@ Global
 		{774835FD-5D7B-41CB-8A2E-48E5F20F377C} = {7304F551-466C-4016-A729-CDA819CE9983}
 		{F0B28254-2412-4C87-8263-88EF9435C2B9} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 		{51DCDAEC-2D16-4C16-A229-1250708EB3D8} = {774835FD-5D7B-41CB-8A2E-48E5F20F377C}
+		{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 	EndGlobalSection
 EndGlobal
