@@ -26,6 +26,8 @@ public static class Program {
         // TODO Add Swagger services
         
         // TODO Add API Endpoints
+        
+        // TODO Add google oauth login
 
         // -------------------------------------------------------------------------------------------------------------
         // App
