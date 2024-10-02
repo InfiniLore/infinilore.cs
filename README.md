@@ -27,3 +27,5 @@ For questions or feedback, feel free to reach out. We're excited to hear from po
 ---
 
 Thank you for your interest in InfiniLore!
+
+[//]: # (Interesting, I did not know this happend here as well. Who knows, maybe it can turn into what it once was here as well)
