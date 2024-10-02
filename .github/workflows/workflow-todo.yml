@@ -13,3 +13,20 @@ jobs:
         with:
           PROJECT: "organization/InfiniLore/InfiniLore"
           PROJECTS_SECRET: "${{ secrets.PROJECTS_SECRET }}"
+          ISSUE_TEMPLATE: |
+            ### 📝 Todo Task
+            **Description:**  
+            {{ title }}
+
+            **Details:**  
+            {{ body }}
+
+            **File:**  
+            {{ url }}
+
+            **Code Snippet:**
+            ```  
+            {{ snippet }}
+            ```
+
+          IDENTIFIERS: '[{"name": "TODO", "labels": ["todo"]}]'
