@@ -14,9 +14,9 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         
-        // Todo Overwrite and use SeriLog for logging
+        // TODO Overwrite and use SeriLog for logging
 
-        // Todo Add Database
+        // TODO Add Database
         
         // Add services to the container.
         builder.Services.AddRazorComponents()
@@ -24,6 +24,8 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
         
         // TODO Add Swagger services
+        
+        // TODO Add API Endpoints
 
         // -------------------------------------------------------------------------------------------------------------
         // App
