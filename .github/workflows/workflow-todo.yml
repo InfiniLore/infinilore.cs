@@ -14,11 +14,8 @@ jobs:
           PROJECT: "organization/InfiniLore/InfiniLore"
           PROJECTS_SECRET: "${{ secrets.PROJECTS_SECRET }}"
           ISSUE_TEMPLATE: |
-            ### 📝 Todo Task
+            ### 📝 Todo : ** {{ title }} **
             **Description:**  
-            {{ title }}
-
-            **Details:**  
             {{ body }}
 
             **Code Snippet:**

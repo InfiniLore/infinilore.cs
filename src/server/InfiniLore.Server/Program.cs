@@ -31,6 +31,8 @@ public static class Program {
         // TODO Add API Endpoints
         
         // TODO Add google oauth login
+        
+        // TODO Create rules to for where stuff has to go
 
         // -------------------------------------------------------------------------------------------------------------
         // App
