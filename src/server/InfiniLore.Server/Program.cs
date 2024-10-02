@@ -16,6 +16,8 @@ public static class Program {
         
         // Todo Overwrite and use SeriLog for logging
 
+        // Todo Add Database
+        
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
