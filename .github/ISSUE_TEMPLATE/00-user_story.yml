@@ -14,6 +14,17 @@ body:
       value: >+
         ### InfiniLore : User Story
         
+        During development of InfiniLore we don't adhere to true Scrum
+        practices, becasue as a solo dev, that isn't really feasible / sane for
+        me. 
+
+        What we do keep however, is the user stories. They are a clear way to
+        communicate what we should be doing, and what the limited scope of this
+        is.
+
+        Don't fret too much on getting it all right, just follow the example and
+        you'll be fine
+        
         ---
 
   - type: textarea
