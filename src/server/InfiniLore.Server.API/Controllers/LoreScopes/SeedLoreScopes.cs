@@ -22,11 +22,11 @@ public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFact
         await using InfiniLoreDbContext dbContext = await dbContextFactory.CreateDbContextAsync(ct);
         
         if ( await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == "testuser", cancellationToken: ct) is not {} user) return;
-        dbContext.LoreScopes.Add(new LoreScopeModel {User = user});
-        dbContext.LoreScopes.Add(new LoreScopeModel {User = user});
-        dbContext.LoreScopes.Add(new LoreScopeModel {User = user});
-        dbContext.LoreScopes.Add(new LoreScopeModel {User = user});
-        dbContext.LoreScopes.Add(new LoreScopeModel {User = user});
+        dbContext.LoreScopes.Add(new LoreScopeModel {User = user, Name="A"});
+        dbContext.LoreScopes.Add(new LoreScopeModel {User = user, Name="B"});
+        dbContext.LoreScopes.Add(new LoreScopeModel {User = user, Name="C"});
+        dbContext.LoreScopes.Add(new LoreScopeModel {User = user, Name="D"});
+        dbContext.LoreScopes.Add(new LoreScopeModel {User = user, Name="E"});
         
         await dbContext.SaveChangesAsync(ct);
     }

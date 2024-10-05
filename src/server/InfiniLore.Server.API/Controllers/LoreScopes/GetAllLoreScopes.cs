@@ -27,6 +27,5 @@ public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFa
             data,
             cancellation: ct
         );
-        
     }
 }

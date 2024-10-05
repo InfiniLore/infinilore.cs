@@ -3,11 +3,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Database.Models.Account;
 
-namespace InfiniLore.Server.Database.Models;
-
+namespace InfiniLore.Server.Database.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserContent : Content {
-    public required InfiniLoreUser User { get; init; }
+    public required InfiniLoreUser User { get; set; }
+    public string UserId { get; set; }
 }

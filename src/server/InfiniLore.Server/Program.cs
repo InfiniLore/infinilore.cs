@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AspNetCore.Swagger.Themes;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using InfiniLore.Server.Components;
@@ -81,7 +82,7 @@ public static class Program {
             .AddAdditionalAssemblies(typeof(Client._Imports).Assembly); 
         
         app.UseSwagger();
-        app.UseSwaggerUI(ctx => {
+        app.UseSwaggerUI(ModernStyle.Dark, ctx => {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");
             ctx.RoutePrefix = "swagger";
         });

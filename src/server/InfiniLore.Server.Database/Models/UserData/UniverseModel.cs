@@ -1,16 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.UserData;
-using Microsoft.AspNetCore.Identity;
-
-namespace InfiniLore.Server.Database.Models.Account;
+namespace InfiniLore.Server.Database.Models.UserData;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUser : IdentityUser {
-    public ICollection<LoreScopeModel> LoreScopes { get; init; } = [];
-    public ICollection<MultiverseModel> Multiverses { get; init; } = [];
-    public ICollection<UniverseModel> Universes { get; init; } = [];
+public class UniverseModel : UserContent {
+    public required MultiverseModel Multiverse { get; set; }
+    public Guid MultiverseId { get; set; }
+    
+    [MaxLength(64)] public required string Name { get; set; }
+    [MaxLength(512)] public required string Description { get; set; } = string.Empty;
 }

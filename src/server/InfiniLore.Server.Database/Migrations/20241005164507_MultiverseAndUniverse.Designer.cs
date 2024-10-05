@@ -3,6 +3,7 @@ using System;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Database.Migrations
 {
     [DbContext(typeof(InfiniLoreDbContext))]
-    partial class InfiniLoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005164507_MultiverseAndUniverse")]
+    partial class MultiverseAndUniverse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -85,13 +88,13 @@ namespace InfiniLore.Server.Database.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8459c3d9-2ff7-42f1-990c-419e9e40b0bc",
+                            ConcurrencyStamp = "0ff67fda-a9fc-44b8-be33-5c69415ac22a",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAENWUc+okxlfDE54O7664a2QokK31ny3Fs60/0TX3gisPA/EYkKCPWN/VRHiXQ+qyBA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDI6i5q8eb2a1gxnJZAp4/sHnuHrKfSDGxbhu694LpM85D0K/azW3KenvIhpBYM4mQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                             TwoFactorEnabled = false,
@@ -119,14 +122,13 @@ namespace InfiniLore.Server.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Name", "UserId")
+                    b.HasIndex("Id", "Name")
                         .IsUnique();
 
                     b.ToTable("LoreScopes");
@@ -155,7 +157,6 @@ namespace InfiniLore.Server.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -164,7 +165,7 @@ namespace InfiniLore.Server.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Name", "LoreScopeId")
+                    b.HasIndex("Name", "Id")
                         .IsUnique();
 
                     b.ToTable("Multiverses");
@@ -181,7 +182,7 @@ namespace InfiniLore.Server.Database.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("MultiverseId")
+                    b.Property<Guid>("MultiverseModelId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -193,16 +194,15 @@ namespace InfiniLore.Server.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MultiverseId");
+                    b.HasIndex("MultiverseModelId");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Name", "MultiverseId")
+                    b.HasIndex("Name", "Id")
                         .IsUnique();
 
                     b.ToTable("Universes");
@@ -236,13 +236,13 @@ namespace InfiniLore.Server.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "72f392fc-7dae-4c9f-a5a8-9a411c4ec5df",
+                            Id = "06e709ed-b734-4144-aad5-675fc161d8e8",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0b2ca9c9-b6c0-4e74-bc3f-e0a97750690e",
+                            Id = "fff5d2e4-3ae1-4cea-aa02-1874aa44eb07",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -353,10 +353,8 @@ namespace InfiniLore.Server.Database.Migrations
             modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData.LoreScopeModel", b =>
                 {
                     b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "User")
-                        .WithMany("LoreScopes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -364,16 +362,14 @@ namespace InfiniLore.Server.Database.Migrations
             modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData.MultiverseModel", b =>
                 {
                     b.HasOne("InfiniLore.Server.Database.Models.UserData.LoreScopeModel", "LoreScope")
-                        .WithMany("Multiverses")
+                        .WithMany()
                         .HasForeignKey("LoreScopeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "User")
-                        .WithMany("Multiverses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("LoreScope");
 
@@ -382,19 +378,17 @@ namespace InfiniLore.Server.Database.Migrations
 
             modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData.UniverseModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Database.Models.UserData.MultiverseModel", "Multiverse")
-                        .WithMany("Universes")
-                        .HasForeignKey("MultiverseId")
+                    b.HasOne("InfiniLore.Server.Database.Models.UserData.MultiverseModel", "MultiverseModel")
+                        .WithMany()
+                        .HasForeignKey("MultiverseModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "User")
-                        .WithMany("Universes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Multiverse");
+                    b.Navigation("MultiverseModel");
 
                     b.Navigation("User");
                 });
@@ -448,25 +442,6 @@ namespace InfiniLore.Server.Database.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", b =>
-                {
-                    b.Navigation("LoreScopes");
-
-                    b.Navigation("Multiverses");
-
-                    b.Navigation("Universes");
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData.LoreScopeModel", b =>
-                {
-                    b.Navigation("Multiverses");
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData.MultiverseModel", b =>
-                {
-                    b.Navigation("Universes");
                 });
 #pragma warning restore 612, 618
         }

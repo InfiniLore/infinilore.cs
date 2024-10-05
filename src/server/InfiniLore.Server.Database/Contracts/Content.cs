@@ -1,11 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Contracts;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Database.Contracts;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

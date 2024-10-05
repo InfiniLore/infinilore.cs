@@ -3,6 +3,7 @@ using System;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Database.Migrations
 {
     [DbContext(typeof(InfiniLoreDbContext))]
-    partial class InfiniLoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005174035_FluentApiUsage")]
+    partial class FluentApiUsage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -85,13 +88,13 @@ namespace InfiniLore.Server.Database.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8459c3d9-2ff7-42f1-990c-419e9e40b0bc",
+                            ConcurrencyStamp = "dbd15b09-4e94-48be-9f2a-b7aa57bd4ed8",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAENWUc+okxlfDE54O7664a2QokK31ny3Fs60/0TX3gisPA/EYkKCPWN/VRHiXQ+qyBA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMZMdceEAC7TPHz6InwcGbOrNc8OBAMcRhxgg4Vf2vyKaKKtz+pBh1v5mlcUCmmZFA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                             TwoFactorEnabled = false,
@@ -125,9 +128,6 @@ namespace InfiniLore.Server.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("Name", "UserId")
-                        .IsUnique();
 
                     b.ToTable("LoreScopes");
                 });
@@ -164,9 +164,6 @@ namespace InfiniLore.Server.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Name", "LoreScopeId")
-                        .IsUnique();
-
                     b.ToTable("Multiverses");
                 });
 
@@ -202,9 +199,6 @@ namespace InfiniLore.Server.Database.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Name", "MultiverseId")
-                        .IsUnique();
-
                     b.ToTable("Universes");
                 });
 
@@ -236,13 +230,13 @@ namespace InfiniLore.Server.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "72f392fc-7dae-4c9f-a5a8-9a411c4ec5df",
+                            Id = "e19fffc1-29b6-450e-8d28-5e874b7095b3",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0b2ca9c9-b6c0-4e74-bc3f-e0a97750690e",
+                            Id = "9e9b5e0f-82a1-43a5-ab9b-a53b7d432d7f",
                             Name = "user",
                             NormalizedName = "USER"
                         });
