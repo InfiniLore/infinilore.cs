@@ -89,7 +89,9 @@ public static class Program {
         app.UseFastEndpoints();
 
         // TODO Check if applying the migrations is actually correct here
-        app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext().Database.Migrate();
+        using InfiniLoreDbContext db = app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext();
+        db.Database.Migrate();
+        db.SaveChanges();
         
         app.Run();
     }

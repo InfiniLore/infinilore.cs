@@ -15,7 +15,8 @@ namespace InfiniLore.Server.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class InfiniLoreDbContext : IdentityDbContext<InfiniLoreUser, IdentityRole, string> {
-    public DbSet<LoreScopeModel> LoreScopes { get; set; }
+    public DbSet<LoreScopeModel> LoreScopes { get; init; }
+    public IQueryable<LoreScopeModel> LoreScopesWithUsers => LoreScopes.Include(x => x.User); 
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -35,23 +36,22 @@ public class InfiniLoreDbContext : IdentityDbContext<InfiniLoreUser, IdentityRol
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
         
-        Assembly currentAssembly = typeof(IAssemblyEntry).Assembly;
-        IEnumerable<Type> softDeletableTypes = currentAssembly.GetTypes().Where(t => t.IsSubclassOf(typeof(ISoftDeletable)));
-        foreach (Type softDeletableType in softDeletableTypes) {
-            builder.Entity(softDeletableType).HasQueryFilter((ISoftDeletable x) => x.SoftDeleteDate == null);
-        }
+        builder.Entity<LoreScopeModel>().HasQueryFilter(model => model.SoftDeleteDate == null);
 
         builder.Entity<IdentityRole>().HasData(
-            new IdentityRole("admin"),
-            new IdentityRole("user")
+            new IdentityRole("admin") {NormalizedName = "ADMIN"},
+            new IdentityRole("user") {NormalizedName = "USER"}
         );
 
         #region Test User
         var testUser = new InfiniLoreUser {
+            Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
             UserName = "testuser",
+            NormalizedUserName = "TESTUSER",
             Email = "testuser@example.com",
+            NormalizedEmail = "TESTUSER@EXAMPLE.COM",
             EmailConfirmed = true,
-            SecurityStamp = Guid.NewGuid().ToString()
+            SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b"
         };
 
         var hasher = new PasswordHasher<InfiniLoreUser>();

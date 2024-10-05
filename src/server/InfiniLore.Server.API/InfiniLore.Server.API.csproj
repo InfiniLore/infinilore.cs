@@ -20,8 +20,4 @@
       <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\LoreScopes\" />
-    </ItemGroup>
-
 </Project>

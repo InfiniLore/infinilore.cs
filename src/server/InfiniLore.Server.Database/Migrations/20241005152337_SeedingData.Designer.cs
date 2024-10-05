@@ -3,6 +3,7 @@ using System;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Database.Migrations
 {
     [DbContext(typeof(InfiniLoreDbContext))]
-    partial class InfiniLoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005152337_SeedingData")]
+    partial class SeedingData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -85,15 +88,15 @@ namespace InfiniLore.Server.Database.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b3e2fb83-8582-4350-8f72-849673b4afa6",
+                            ConcurrencyStamp = "f116f26c-96a3-434c-854b-62c824143893",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI5cirrqxpFxPfMkxeFjsg6HTskbF+WHKukr8hOn14YvwgRpf5G0zjSEtty0VIMsyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBwGiiEQrgmEaKIToxca9YMrNvKSQH3gem2M9Wq0mVtNNXAbipgFm/ZjPoIk5Lf+hQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
+                            SecurityStamp = "869eef5d-11e5-4518-b331-bbbcd9e6ed4e",
                             TwoFactorEnabled = false,
                             UserName = "testuser"
                         });
@@ -146,15 +149,13 @@ namespace InfiniLore.Server.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "49a781f9-0ddf-4350-bd41-40e99db94c8b",
-                            Name = "admin",
-                            NormalizedName = "ADMIN"
+                            Id = "6cc18578-e0f6-4ac8-8fc2-e2ce750b4059",
+                            Name = "admin"
                         },
                         new
                         {
-                            Id = "d1f5c111-0880-4d79-9f5b-824ab14113eb",
-                            Name = "user",
-                            NormalizedName = "USER"
+                            Id = "6f194527-77ed-4480-b446-637042bd0126",
+                            Name = "user"
                         });
                 });
 

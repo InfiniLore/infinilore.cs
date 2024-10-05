@@ -1,13 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.UserData;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.API.Models;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContent : Content {
-    public required InfiniLoreUser User { get; init; }
+public record LoreScopeDto(
+    Guid LoreScopeId,
+    string UserId
+) {
+    public static LoreScopeDto FromModel(LoreScopeModel scope) => new(
+        scope.Id,
+        scope.User.Id
+    );
 }

@@ -774,3 +774,6 @@ dist
 
 
 assets/app.db
+src/server/InfiniLore.Server/app.db
+src/server/InfiniLore.Server/app.db-shm
+src/server/InfiniLore.Server/app.db-wal
