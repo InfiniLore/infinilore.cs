@@ -34,6 +34,7 @@ public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFa
     public async override Task HandleAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
         await using InfiniLoreDbContext dbContext = await dbContextFactory.CreateDbContextAsync(ct);
 
+        // TODO Rework how AsyncResults deliver Result objects for notifying the end-user
         AsyncResult<InfiniLoreUser> result = await resolveUserIdService.ResolveUserIdAsync(dbContext, req, ct);
         if (result is not { Value: {} user }) {
             await SendResultAsync(result.FailedIResult!);
