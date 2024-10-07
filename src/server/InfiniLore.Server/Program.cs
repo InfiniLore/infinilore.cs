@@ -51,7 +51,7 @@ public static class Program {
                     settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
                 };
             })
-            ;
+        ;
         #endregion
 
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();
