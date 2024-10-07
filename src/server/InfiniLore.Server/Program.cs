@@ -4,12 +4,15 @@
 using AspNetCore.Swagger.Themes;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
+using FastEndpoints.Swagger;
+using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -26,36 +29,36 @@ public static class Program {
         // TODO: Add Kestrel SLL
         //  This will take some tweaking to get working
          
-        // Db stuff
+        #region Databasee
         builder.Services.AddDbContextFactory<InfiniLoreDbContext>();
         builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<InfiniLoreDbContext>();
+        #endregion
             
-        // Add services to the container.
+        #region Razor Components
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-        
-        builder.Services.AddFastEndpoints(options => {
-            options.Assemblies = [typeof(API.IAssemblyEntry).Assembly]; // Add InfiniLore API
-        });
-        
-        // - Swagger -
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(options => {
-            options.SwaggerDoc("v1", new OpenApiInfo {
-                Version = "v1",
-                Title = "InfiniLore API v1",
-                Description = "An ASP.NET Core Web API for managing InfiniLore",
-            });
-            options.EnableAnnotations();
-        });
-        
-        // TODO Add API Endpoints
+        #endregion
+
+        #region FastEndpoints & Swagger
+        builder.Services
+            .AddFastEndpoints(options => {
+                options.Assemblies = [typeof(IAssemblyEntry).Assembly]; // Add InfiniLore API
+            })
+            .SwaggerDocument(options => {
+                options.DocumentSettings = settings => {
+                    settings.Version = "v1";
+                    settings.Title = "InfiniLore API v1";
+                    settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
+                };
+            })
+            ;
+        #endregion
+
+        builder.Services.RegisterServicesFromInfiniLoreServerAPI();
         
         // TODO Add google oauth login
-        
-        // TODO Create rules to for where stuff has to go
 
         // -------------------------------------------------------------------------------------------------------------
         // App
@@ -79,16 +82,15 @@ public static class Program {
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             // TODO add an IAssemblyEntry into the Client and use here
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly); 
-        
-        app.UseSwagger();
+            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+
+        app.UseFastEndpoints();
+        app.UseOpenApi();
         app.UseSwaggerUI(ModernStyle.Dark, ctx => {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");
             ctx.RoutePrefix = "swagger";
         });
-
-        app.UseFastEndpoints();
-
+        
         // TODO Check if applying the migrations is actually correct here
         using InfiniLoreDbContext db = app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext();
         db.Database.Migrate();

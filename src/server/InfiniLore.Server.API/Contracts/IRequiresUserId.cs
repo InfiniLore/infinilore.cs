@@ -1,19 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.UserData;
-
-namespace InfiniLore.Server.API.Models;
-
+namespace InfiniLore.Server.API.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeDto(
-    Guid LoreScopeId,
-    string UserId
-) {
-    public static LoreScopeDto FromModel(LoreScopeModel scope) => new(
-        scope.Id,
-        scope.User.Id
-    );
+public interface IRequiresUserId {
+    public Guid UserId { get; set; }
 }
