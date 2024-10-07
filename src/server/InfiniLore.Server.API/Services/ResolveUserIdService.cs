@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.API.Contracts;
-using InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Account;
 using Microsoft.AspNetCore.Http;

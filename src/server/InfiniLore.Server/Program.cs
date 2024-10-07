@@ -11,8 +11,6 @@ using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -34,17 +32,17 @@ public static class Program {
         builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<InfiniLoreDbContext>();
         #endregion
-            
         #region Razor Components
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
         #endregion
-
         #region FastEndpoints & Swagger
         builder.Services
             .AddFastEndpoints(options => {
-                options.Assemblies = [typeof(IAssemblyEntry).Assembly]; // Add InfiniLore API
+                options.Assemblies = [
+                    typeof(API.IAssemblyEntry).Assembly
+                ];
             })
             .SwaggerDocument(options => {
                 options.DocumentSettings = settings => {
@@ -81,8 +79,7 @@ public static class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            // TODO add an IAssemblyEntry into the Client and use here
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(WasmClient.IAssemblyEntry).Assembly);
 
         app.UseFastEndpoints();
         app.UseOpenApi();
