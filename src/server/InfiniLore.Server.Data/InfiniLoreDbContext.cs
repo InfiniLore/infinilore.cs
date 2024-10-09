@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Data;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.Base;
 using InfiniLore.Server.Data.Models.UserData;

@@ -1,53 +1,49 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Azure.Core.Diagnostics;
-using InfiniLore.Server.API.Services;
+using InfiniLore.Server.Contracts.Repositories;
 using InfiniLore.Server.Contracts.Services;
-using InfiniLore.Server.Data;
-using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.UserData;
+using InfiniLoreLib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory, IResolveUserIdService resolveUserIdService) : 
+public class GetAllLoreScopes(ILoreScopesRepository loreScopesRepository, IResolveUserIdService resolveUserIdService) :
     Endpoint<
-        GetAllLoreScopesRequest, 
+        GetAllLoreScopesRequest,
         Results<
-            Ok<IEnumerable<LoreScopeResponse>>, 
+            Ok<IEnumerable<LoreScopeResponse>>,
             NotFound,
             ProblemDetails
-        >, 
+        >,
         LoreScopeResponseMapper
-    > 
-{
-    
+    > {
+
     public override void Configure() {
         Get("/api/{UserId:guid}/lore-scopes/");
         AllowAnonymous();
     }
 
-    public async override Task HandleAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
-        await using InfiniLoreDbContext dbContext = await dbContextFactory.CreateDbContextAsync(ct);
+    public async override Task<Results<Ok<IEnumerable<LoreScopeResponse>>, NotFound, ProblemDetails>> ExecuteAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
+        if (await resolveUserIdService.ResolveUserIdAsync(req, ct) is not {} user) return TypedResults.NotFound();
 
-        // TODO Rework how AsyncResults deliver Result objects for notifying the end-user
-        if (await resolveUserIdService.ResolveUserIdAsync(req, ct) is not {} user ) {
-            await SendResultAsync(TypedResults.NotFound());
-            return;
+        Result<IEnumerable<LoreScopeModel>> result = await loreScopesRepository.GetAllAsync(
+            lorescopes => lorescopes.Where(ls => ls.UserId == user.Id),
+            ct
+        );
+
+        if (result.IsFailure) {
+            AddError(result.ErrorMessage ?? "Unresolved Error");
+            return new ProblemDetails(ValidationFailures);
         }
-        
-        IEnumerable<LoreScopeModel> loreScopeModels = await dbContext.LoreScopes
-            .AsNoTracking()
-            .Include(ls => ls.Multiverses)
-            .Where(ls => ls.User == user)
-            .ToListAsync(ct);
-            
-        await SendResultAsync(TypedResults.Ok(await Map.FromEntityAsync(loreScopeModels, ct)));
+
+        if (result.Value is null) return TypedResults.NotFound();
+        if (!result.Value.Any()) return TypedResults.NotFound();
+
+        return TypedResults.Ok(await Map.FromEntityAsync(result.Value!, ct));
     }
 }
