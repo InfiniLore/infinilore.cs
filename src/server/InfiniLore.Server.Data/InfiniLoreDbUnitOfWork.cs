@@ -43,24 +43,38 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     /// Begins a new database transaction asynchronously.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task BeginTransactionAsync() {
-        _transaction = await Db.Database.BeginTransactionAsync();
+    public async Task BeginTransactionAsync(CancellationToken ct = default) {
+        _transaction = await Db.Database.BeginTransactionAsync(ct);
     }
-
+    
+    /// <summary>
+    /// Asynchronously commits all changes made in the current transaction.
+    /// Silently fails if no transactions has been started yet.
+    /// </summary>
+    /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
+    public Task CommitTransactionAsync(CancellationToken ct = default) => TryCommitTransactionAsync(ct);
+    
     /// <summary>
     /// Attempts to commit the current database transaction asynchronously.
     /// </summary>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result is a boolean indicating whether the transaction was successfully committed.
     /// </returns>
-    public async Task<bool> TryCommitTransactionAsync() {
+    public async Task<bool> TryCommitTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
 
-        await _transaction.CommitAsync();
+        await _transaction.CommitAsync(ct);
         await _transaction.DisposeAsync();
         _transaction = null;
         return true;
     }
+
+    /// <summary>
+    /// Asynchronously rolls back all changes made in the current transaction.
+    /// Silently fails if no transactions has been started yet.
+    /// </summary>
+    /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
+    public Task RollbackTransactionAsync(CancellationToken ct = default) => TryRollbackTransactionAsync(ct);
 
     /// <summary>
     /// Attempts to rollback the current database transaction. If no transaction is active, returns false.
@@ -69,10 +83,10 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     /// Returns a boolean indicating whether the rollback was successful.
     /// Returns true if the rollback occurred, otherwise returns false.
     /// </returns>
-    public async Task<bool> TryRollbackTransactionAsync() {
+    public async Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
         
-        await _transaction.RollbackAsync();
+        await _transaction.RollbackAsync(ct);
         await _transaction.DisposeAsync();
         _transaction = null;
         return true;

@@ -15,8 +15,13 @@ public interface IDbUnitOfWork<out T> where T : DbContext {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     Task<int> SaveChangesAsync(CancellationToken ct = default);
-    Task BeginTransactionAsync();
-    Task<bool> TryCommitTransactionAsync();
-    Task<bool> TryRollbackTransactionAsync();
+    Task BeginTransactionAsync(CancellationToken ct = default);
+    
+    Task CommitTransactionAsync(CancellationToken ct = default);
+    Task<bool> TryCommitTransactionAsync(CancellationToken ct = default);
+    
+    Task RollbackTransactionAsync(CancellationToken ct = default);
+    Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default);
+    
     T GetDbContext();
 }

@@ -7,7 +7,7 @@ $OutputFolder = "./src/client/InfiniLore.KiotaApiClient/"
 $ClassName = "InfiniLoreApiClient"
 $OpenApiFile = "https://localhost:7059/swagger/v1/swagger.json"
 
-$CsprojPath = "./src/lib/InfiniLore.KiotaApiClient/InfiniLore.KiotaApiClient.csproj"
+$CsprojPath = "./src/client/InfiniLore.KiotaApiClient/InfiniLore.KiotaApiClient.csproj"
 $TempCsprojPath = "./.temp/InfiniLore.KiotaApiClient.csproj"
 
 # -----------------------------------------------------------------------------------------------------------------

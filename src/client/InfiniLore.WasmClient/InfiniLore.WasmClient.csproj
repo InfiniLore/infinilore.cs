@@ -14,4 +14,8 @@
         <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj" />
+    </ItemGroup>
+
 </Project>
