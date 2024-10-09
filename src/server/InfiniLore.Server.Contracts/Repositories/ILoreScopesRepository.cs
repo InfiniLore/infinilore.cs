@@ -1,16 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.API.Dto;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Mvc;
+using InfiniLore.Server.Data.Models.UserData;
+using InfiniLoreLib;
 
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
+namespace InfiniLore.Server.Contracts.Repositories;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
-    [FromRoute] public Guid UserId { get; set; }
+public interface ILoreScopesRepository {
+    Task<Result<IEnumerable<LoreScopeModel>>> GetAllAsync(CancellationToken ct);
 }

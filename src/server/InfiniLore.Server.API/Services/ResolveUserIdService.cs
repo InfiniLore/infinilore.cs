@@ -1,9 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.API.Contracts;
-using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Contracts.API.Dto;
+using InfiniLore.Server.Contracts.Data;
+using InfiniLore.Server.Contracts.Services;
+using InfiniLore.Server.Data;
+using InfiniLore.Server.Data.Models.Account;
+using InfiniLore.Server.Data.Models.Base;
 using Microsoft.AspNetCore.Http;
 
 namespace InfiniLore.Server.API.Services;
@@ -11,27 +14,12 @@ namespace InfiniLore.Server.API.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[RegisterService<ResolveUserIdService>(LifeTime.Scoped)]
-public class ResolveUserIdService(HttpContext httpContext) {
+[RegisterService<IResolveUserIdService>(LifeTime.Scoped)]
+public class ResolveUserIdService(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, HttpContext httpContext) : IResolveUserIdService {
+    private readonly InfiniLoreDbContext _dbContext = unitOfWork.GetDbContext();
     
-    public async Task<AsyncResult<InfiniLoreUser>> ResolveUserIdAsync<T>(InfiniLoreDbContext dbContext, T hasUserId, CancellationToken ct) where T : IRequiresUserId {
-        if (hasUserId.UserId == Guid.Empty) {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development") {
-                return AsyncResult<InfiniLoreUser>.Failure(new ProblemDetails {
-                    Status = StatusCodes.Status404NotFound,
-                    Detail = "The userid was not provided.",
-                    Instance = httpContext.Request.Path.ToString(),
-                });
-            }
-            
-        }
-        if (await dbContext.Users.FindAsync([hasUserId.UserId.ToString()], ct) is not {} user) 
-            return AsyncResult<InfiniLoreUser>.Failure(new ProblemDetails {
-                Status = StatusCodes.Status404NotFound,
-                Detail = "The user with the given id was not found.",
-                Instance = httpContext.Request.Path.ToString()
-            });
-        return user;
+    public async Task<InfiniLoreUser?> ResolveUserIdAsync<T>(T hasUserId, CancellationToken ct) where T : IRequiresUserId {
+        return await _dbContext.Users.FindAsync([hasUserId.UserId], ct);
     }
 }
 

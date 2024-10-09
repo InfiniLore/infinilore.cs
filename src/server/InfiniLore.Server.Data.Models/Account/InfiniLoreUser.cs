@@ -1,16 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.API.Dto;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Mvc;
+using InfiniLore.Server.Data.Models.UserData;
+using Microsoft.AspNetCore.Identity;
 
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
+namespace InfiniLore.Server.Data.Models.Account;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
-    [FromRoute] public Guid UserId { get; set; }
+public class InfiniLoreUser : IdentityUser {
+    public ICollection<LoreScopeModel> LoreScopes { get; init; } = [];
+    public ICollection<MultiverseModel> Multiverses { get; init; } = [];
+    public ICollection<UniverseModel> Universes { get; init; } = [];
 }

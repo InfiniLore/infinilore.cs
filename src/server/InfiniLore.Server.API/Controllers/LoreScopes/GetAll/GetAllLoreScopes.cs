@@ -1,10 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Azure.Core.Diagnostics;
 using InfiniLore.Server.API.Services;
-using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models.Account;
-using InfiniLore.Server.Database.Models.UserData;
+using InfiniLore.Server.Contracts.Services;
+using InfiniLore.Server.Data;
+using InfiniLore.Server.Data.Models.Account;
+using InfiniLore.Server.Data.Models.UserData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +16,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory, ResolveUserIdService resolveUserIdService) : 
+public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory, IResolveUserIdService resolveUserIdService) : 
     Endpoint<
         GetAllLoreScopesRequest, 
         Results<
@@ -35,9 +37,8 @@ public class GetAllLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFa
         await using InfiniLoreDbContext dbContext = await dbContextFactory.CreateDbContextAsync(ct);
 
         // TODO Rework how AsyncResults deliver Result objects for notifying the end-user
-        AsyncResult<InfiniLoreUser> result = await resolveUserIdService.ResolveUserIdAsync(dbContext, req, ct);
-        if (result is not { Value: {} user }) {
-            await SendResultAsync(result.FailedIResult!);
+        if (await resolveUserIdService.ResolveUserIdAsync(req, ct) is not {} user ) {
+            await SendResultAsync(TypedResults.NotFound());
             return;
         }
         

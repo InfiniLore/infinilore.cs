@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models.Account;
-using InfiniLore.Server.Database.Models.UserData;
+using InfiniLore.Server.Data;
+using InfiniLore.Server.Data.Models.Account;
+using InfiniLore.Server.Data.Models.UserData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

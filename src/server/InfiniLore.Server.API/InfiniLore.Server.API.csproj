@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
+      <ProjectReference Include="..\InfiniLore.Server.Data\InfiniLore.Server.Data.csproj" />
     </ItemGroup>
 
 </Project>

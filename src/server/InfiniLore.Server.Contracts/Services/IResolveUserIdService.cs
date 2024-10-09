@@ -2,15 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.API.Dto;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Mvc;
+using InfiniLore.Server.Data.Models.Account;
 
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
+namespace InfiniLore.Server.Contracts.Services;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
-    [FromRoute] public Guid UserId { get; set; }
+public interface IResolveUserIdService {
+    public Task<InfiniLoreUser?> ResolveUserIdAsync<T>(T hasUserId, CancellationToken ct) where T : IRequiresUserId;
 }

@@ -7,8 +7,8 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
-using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Data;
+using InfiniLore.Server.Data.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,6 +54,7 @@ public static class Program {
         ;
         #endregion
 
+        builder.Services.RegisterServicesFromInfiniLoreServerData();
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();
         
         // TODO Add google oauth login

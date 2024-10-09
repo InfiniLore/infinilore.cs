@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.UserData;
+using InfiniLore.Server.Data.Models.UserData;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Server.API.Models;

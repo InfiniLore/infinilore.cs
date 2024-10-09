@@ -1,16 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.API.Dto;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Mvc;
+using InfiniLore.Server.Data.Models.Account;
 
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
-
+namespace InfiniLore.Server.Data.Models.Base;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
-    [FromRoute] public Guid UserId { get; set; }
+public abstract class UserContent<T> : BaseContent<T> where T : BaseContent<T> {
+    public required InfiniLoreUser User { get; set; }
+    public string UserId { get; set; }
 }
