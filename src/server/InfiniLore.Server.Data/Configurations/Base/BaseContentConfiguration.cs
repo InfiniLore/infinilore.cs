@@ -17,9 +17,10 @@ public abstract class BaseContentConfiguration<T> : IEntityTypeConfiguration<T> 
     }
 
     protected void HasAuditLogs(EntityTypeBuilder<T> builder) {
-        builder.HasMany<AuditLog<T>>(user => user.AuditLogs)
-            .WithOne(scope => scope.Content)
-            .HasForeignKey(x => x.ContentId);
+        builder.HasMany<AuditLog<T>>(t => t.AuditLogs)
+            .WithOne(a => a.Content)
+            .HasForeignKey(a => a.ContentId)
+            .IsRequired(false);  // Make the relationship optional
     }
 
     protected void HasUniqueIdAsKey(EntityTypeBuilder<T> builder) {

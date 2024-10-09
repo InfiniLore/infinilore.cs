@@ -33,15 +33,15 @@ function main {
     echo "Generating OpenApi client with Kiota..."
     cd $OutputFolder
     kiota generate `
-    --openapi $OpenApiFile `
-    --language $Language `
-    --namespace-name $NameSpace `
-    --backing-store false `
-    --class-name $ClassName `
-    --output ./ `
-    --exclude-backward-compatible `
-    --clean-output `
-    --clear-cache
+        --openapi $OpenApiFile `
+        --language $Language `
+        --namespace-name $NameSpace `
+        --backing-store false `
+        --class-name $ClassName `
+        --output ./ `
+        --exclude-backward-compatible `
+        --clean-output `
+        --clear-cache
 
     echo "Restoring .csproj file if it no longer exists..."
     Restore-Csproj

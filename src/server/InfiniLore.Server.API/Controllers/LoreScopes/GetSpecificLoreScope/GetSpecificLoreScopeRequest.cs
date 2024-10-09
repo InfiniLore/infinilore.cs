@@ -1,11 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.API.Controllers.LoreScopes;
+using InfiniLore.Server.Contracts.API.Dto;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InfiniLore.Server.API.Controllers.LoreScopes.GetSpecificLoreScope;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// public class CreateLoreScope : Endpoint<CreateLoreScopeRequest, CreateLoreScopeResponse> {
-    
-// }
+[UsedImplicitly]
+public class GetSpecificLoreScopeRequest : IRequiresUserId {
+    [FromRoute] public Guid UserId { get; set; }
+    [FromRoute] public Guid LoreScopeId { get; set; }
+}

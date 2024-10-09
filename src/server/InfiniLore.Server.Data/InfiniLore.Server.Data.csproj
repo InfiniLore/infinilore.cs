@@ -5,10 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Repositories\Account\" />
-    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="FastEndpoints.Attributes" Version="5.30.0" />

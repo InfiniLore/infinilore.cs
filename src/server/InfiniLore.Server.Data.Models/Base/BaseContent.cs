@@ -15,8 +15,8 @@ public abstract class BaseContent<T> where T : BaseContent<T> {
     #region Tracking 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedDate { get; set; }
-    
-    public ICollection<AuditLog<T>> AuditLogs { get; set; }
+
+    public ICollection<AuditLog<T>> AuditLogs { get; set; } = []; 
     #endregion
     
     #region SoftDelete

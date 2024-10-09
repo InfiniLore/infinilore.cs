@@ -3,6 +3,7 @@ using System;
 using InfiniLore.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Data.Migrations
 {
     [DbContext(typeof(InfiniLoreDbContext))]
-    partial class InfiniLoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241009145955_FixToUserContent")]
+    partial class FixToUserContent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -85,13 +88,13 @@ namespace InfiniLore.Server.Data.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e5e4e92-b254-4cd5-9bff-32db083aad93",
+                            ConcurrencyStamp = "16413e5e-aa9a-488e-b73d-c820b5fcfb99",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE0wBRX3R8P/lSotNOSTzD6AXu3eitUUY8d6L3GJvpJrZn00jwliCJxyDibRCq918w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBxk4nZ7xfXNkuAbJ+z2J9e5nkSNPeQLhgmjoSAKRkT8Rgd/13oOUDPRBdVfLWALbg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                             TwoFactorEnabled = false,
@@ -353,13 +356,13 @@ namespace InfiniLore.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa3b7b95-05eb-4f9f-b205-168724dab6c4",
+                            Id = "8b6779f2-a11b-44d1-910e-379744812c68",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9f39ee7b-17d9-4453-bbb0-ab4b48f9dbea",
+                            Id = "0210e8ea-c838-4ba8-88eb-3629e109b0c3",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -471,7 +474,9 @@ namespace InfiniLore.Server.Data.Migrations
                 {
                     b.HasOne("InfiniLore.Server.Data.Models.UserData.LoreScopeModel", "Content")
                         .WithMany("AuditLogs")
-                        .HasForeignKey("ContentId");
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Content");
                 });
@@ -480,7 +485,9 @@ namespace InfiniLore.Server.Data.Migrations
                 {
                     b.HasOne("InfiniLore.Server.Data.Models.UserData.MultiverseModel", "Content")
                         .WithMany("AuditLogs")
-                        .HasForeignKey("ContentId");
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Content");
                 });
@@ -489,7 +496,9 @@ namespace InfiniLore.Server.Data.Migrations
                 {
                     b.HasOne("InfiniLore.Server.Data.Models.UserData.UniverseModel", "Content")
                         .WithMany("AuditLogs")
-                        .HasForeignKey("ContentId");
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Content");
                 });

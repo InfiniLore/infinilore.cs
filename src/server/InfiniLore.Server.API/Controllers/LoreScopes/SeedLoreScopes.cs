@@ -12,7 +12,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory, UserManager<InfiniLoreUser> userManager) : EndpointWithoutRequest {
+public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : EndpointWithoutRequest {
     public override void Configure() {
         Get("/api/lore-scopes/seed");
         AllowAnonymous();

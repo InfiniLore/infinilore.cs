@@ -1,13 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Account;
-
-namespace InfiniLore.Server.Data.Models.Base;
+namespace InfiniLoreLib;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContent<T> : BaseContent<T> where T : BaseContent<T> {
-    public required InfiniLoreUser User { get; set; }
-    public string UserId { get; set; } = null!;
+public record ResultMany<T> (
+    bool IsSuccess,
+    IEnumerable<T>? Values = default,
+    string? ErrorMessage = null
+) {
+    public bool IsFailure => !IsSuccess;
+    
+    public static ResultMany<T> Success(IEnumerable<T> value) => new(true, value);
+    public static ResultMany<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
+    
+    public static implicit operator bool(ResultMany<T> result) => result.IsSuccess;
 }
