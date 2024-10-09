@@ -9,15 +9,11 @@ namespace InfiniLore.Server.Data;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-/// <summary>
-/// Implementation of the unit of work pattern specific to InfiniLore database context.
-/// </summary>
+
+/// <inheritdoc cref="InfiniLore.Server.Contracts.Data.IDbUnitOfWork{T}" />
 [RegisterService<IDbUnitOfWork<InfiniLoreDbContext>>(LifeTime.Scoped)]
-public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : IDbUnitOfWork<InfiniLoreDbContext>, IDisposable {
-    /// <summary>
-    /// Provides access to the underlying database context in the InfiniLore system.
-    /// This context is primarily used to interact with database models such as LoreScopes, Multiverses, and Universes.
-    /// </summary>
+public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : IDbUnitOfWork<InfiniLoreDbContext> {
+    /// <inheritdoc/>
     public InfiniLoreDbContext Db { get; } = dbContextFactory.CreateDbContext();
 
     /// <summary>
@@ -30,36 +26,20 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    /// <summary>
-    /// Asynchronously saves all changes made in this context to the database.
-    /// </summary>
-    /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
-    /// <returns>A task that represents the asynchronous save operation. The task result contains the number of state entries written to the database.</returns>
+    /// <inheritdoc/>
     public async Task<int> SaveChangesAsync(CancellationToken ct = default) {
         return await Db.SaveChangesAsync(ct);
     }
-
-    /// <summary>
-    /// Begins a new database transaction asynchronously.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    
+    /// <inheritdoc/>
     public async Task BeginTransactionAsync(CancellationToken ct = default) {
         _transaction = await Db.Database.BeginTransactionAsync(ct);
     }
     
-    /// <summary>
-    /// Asynchronously commits all changes made in the current transaction.
-    /// Silently fails if no transactions has been started yet.
-    /// </summary>
-    /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
+    /// <inheritdoc/>
     public Task CommitTransactionAsync(CancellationToken ct = default) => TryCommitTransactionAsync(ct);
-    
-    /// <summary>
-    /// Attempts to commit the current database transaction asynchronously.
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result is a boolean indicating whether the transaction was successfully committed.
-    /// </returns>
+
+    /// <inheritdoc/>
     public async Task<bool> TryCommitTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
 
@@ -68,21 +48,11 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
         _transaction = null;
         return true;
     }
-
-    /// <summary>
-    /// Asynchronously rolls back all changes made in the current transaction.
-    /// Silently fails if no transactions has been started yet.
-    /// </summary>
-    /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
+    
+    /// <inheritdoc/>
     public Task RollbackTransactionAsync(CancellationToken ct = default) => TryRollbackTransactionAsync(ct);
 
-    /// <summary>
-    /// Attempts to rollback the current database transaction. If no transaction is active, returns false.
-    /// </summary>
-    /// <returns>
-    /// Returns a boolean indicating whether the rollback was successful.
-    /// Returns true if the rollback occurred, otherwise returns false.
-    /// </returns>
+    /// <inheritdoc/>
     public async Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
         
@@ -91,11 +61,8 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
         _transaction = null;
         return true;
     }
-
-    /// <summary>
-    /// Retrieves the current InfiniLoreDbContext instance.
-    /// </summary>
-    /// <returns>The InfiniLoreDbContext instance.</returns>
+    
+    /// <inheritdoc/>
     public InfiniLoreDbContext GetDbContext() => Db;
     
     /// <summary>
