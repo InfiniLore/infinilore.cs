@@ -40,24 +40,9 @@ public static class Program {
         builder.Services.AddAuthenticationJwtBearer(options => {
             options.SigningKey = builder.Configuration["JWT:Key"];
         });
-        // string jwtKey = builder.Configuration["JWT:Key"]!;
-        // byte[] key = Encoding.ASCII.GetBytes(jwtKey);
-        // builder.Services.AddAuthentication(options => {
-        //         // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //         // options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //     })
-        //     .AddJwtBearer(options => {
-        //         options.TokenValidationParameters = new TokenValidationParameters {
-        //             ValidateIssuer = true,
-        //             ValidateAudience = true,
-        //             ValidateIssuerSigningKey = true,
-        //             ValidIssuer = builder.Configuration["JWT:Issuer"],
-        //             ValidAudience = builder.Configuration["JWT:Audience"],
-        //             IssuerSigningKey = new SymmetricSecurityKey(key)
-        //         };
-        //     });
-        // TODO Add google oauth login
         
+        // TODO Add google oauth login
+
         // Register Identity
         builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => 
                 options.SignIn.RequireConfirmedAccount = true
@@ -65,7 +50,7 @@ public static class Program {
             .AddEntityFrameworkStores<InfiniLoreDbContext>()
             .AddSignInManager();
 
-        //override the behavior or cookie auth scheme so that 401/403 will be returned.
+        // Override cookie auth scheme to return 401/403 instead of redirecting
         builder.Services.ConfigureApplicationCookie(
             c => {
                 c.Events.OnRedirectToLogin = ctx => {
@@ -85,7 +70,6 @@ public static class Program {
         #endregion
 
         #region Authorization
-        // Ensure the default scheme for authentication is JwtBearer
         builder.Services.AddAuthorization();
         #endregion
 
@@ -108,8 +92,7 @@ public static class Program {
                     settings.Title = "InfiniLore API v1";
                     settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
                 };
-            })
-            ;
+            });
         #endregion
 
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();
