@@ -43,13 +43,14 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
                 logger.Warning("Refresh token already exists for user {UserId}", user.Id);
                 return false;
             }
-
-            dbContext.JwtRefreshTokens.Add(new JwtRefreshToken {
+            
+            user.JwtRefreshTokens.Add(new JwtRefreshToken {
                 User = user,
                 TokenHash = hashedToken,
                 ExpiresAt = expiresAt
             });
-
+            dbContext.Users.Update(user);
+            
             await dbContext.SaveChangesAsync(ct);
             return true;
         }

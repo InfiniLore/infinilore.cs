@@ -39,7 +39,15 @@ public static class Program {
         // Register JWT Authentication
         builder.Services.AddAuthenticationJwtBearer(options => {
             options.SigningKey = builder.Configuration["JWT:Key"];
-        });
+        }
+        , bearerOptions => {
+            
+            bearerOptions.TokenValidationParameters.RoleClaimType = "role";
+            
+            bearerOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:Issuer"];
+            bearerOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:Audience"];
+        } 
+        );
         
         // TODO Add google oauth login
 
@@ -60,7 +68,7 @@ public static class Program {
                     }
                     return Task.CompletedTask;
                 };
-
+        
                 c.Events.OnRedirectToAccessDenied = ctx => {
                     if (ctx is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
                         ctx.Response.StatusCode = 403;

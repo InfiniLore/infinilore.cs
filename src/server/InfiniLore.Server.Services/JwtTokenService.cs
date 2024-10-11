@@ -3,11 +3,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using FastEndpoints.Security;
+using InfiniLore.Server.Contracts.Data;
 using InfiniLore.Server.Contracts.Repositories;
 using InfiniLore.Server.Contracts.Services;
+using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLoreLib.Results;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace InfiniLore.Server.Services;
 
@@ -15,20 +20,25 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [RegisterService<IJwtTokenService>(LifeTime.Scoped)]
-public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepository jwtRefreshTokenRepository) : IJwtTokenService {
+public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepository jwtRefreshTokenRepository, ILogger logger, IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : IJwtTokenService {
 
     public async Task<JwtResult> GenerateTokensAsync(InfiniLoreUser user, string[] roles, string[] permissions, CancellationToken ct = default) {
         try {
             string? key = configuration["Jwt:Key"];
-            // TODO only do this in dev env, else send a basic "failed" result
-            if (key == null) return JwtResult.Failure("Jwt:Key not found in configuration");
+            if (key == null) {
+                logger.Error("Jwt:Key not found in configuration");
+                return JwtResult.Failure("Jwt:Key not found in configuration");
+            }
 
             DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!));
             DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(int.Parse(configuration["Jwt:RefreshExpiresInDays"]!));
             
-            string accessToken = GenerateAccessToken(user, roles, permissions,accessTokenExpiryUtc );
+            // InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
+            // await dbContext.Roles.FindAsync(roles, ct);
+            
+            string accessToken = GenerateAccessToken(user, roles, permissions, accessTokenExpiryUtc);
             Guid refreshToken = await GenerateRefreshTokenAsync(user, refreshTokenExpiryUtc, ct);
-        
+
             return JwtResult.Success(
                 accessToken: accessToken,
                 accessTokenExpiryUtc: accessTokenExpiryUtc,
@@ -38,6 +48,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
             
         } catch (Exception ex) {
             // TODO only send the direct message in dev environment
+            logger.Error(ex, "Error generating tokens");
             return JwtResult.Failure(ex.Message);
         }
     }
@@ -51,7 +62,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
                 o.User.Roles.Add(roles);
                 o.User.Permissions.Add(permissions);
                 
-                o.User["UserId"] = user.Id;
+                o.User["sub"] = user.Id;
             });
         
         return jwtToken;
@@ -59,7 +70,15 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
 
     private async Task<Guid> GenerateRefreshTokenAsync(InfiniLoreUser user, DateTime expiresAt, CancellationToken ct = default) {
         var token = Guid.NewGuid();
-        await jwtRefreshTokenRepository.AddAsync(user, token, expiresAt, ct);
+        try {
+            await jwtRefreshTokenRepository.AddAsync(user, token, expiresAt, ct);
+        } catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: 19 }) {
+            logger.Error(ex, "Unique constraint violation while adding refresh token for user {UserId}", user.Id);
+            throw;
+        } catch (Exception ex) {
+            logger.Error(ex, "Error adding refresh token for user {UserId}", user.Id);
+            throw;
+        }
         return token;
     }
 }
