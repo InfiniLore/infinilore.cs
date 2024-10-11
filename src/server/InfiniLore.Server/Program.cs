@@ -4,8 +4,8 @@
 using AspNetCore.Swagger.Themes;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
+using FastEndpoints.Security;
 using FastEndpoints.Swagger;
-using FastEndpoints.Security; 
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Contracts.Repositories;
@@ -30,18 +30,71 @@ public static class Program {
 
         // TODO: Add Kestrel SLL
         //  This will take some tweaking to get working
-         
-        #region Databasee
+
+        #region Database
         builder.Services.AddDbContextFactory<InfiniLoreDbContext>();
-        builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<InfiniLoreDbContext>()
-            .AddDefaultTokenProviders();
         #endregion
+
+        #region Authentication
+        // Register JWT Authentication
+        builder.Services.AddAuthenticationJwtBearer(options => {
+            options.SigningKey = builder.Configuration["JWT:Key"];
+        });
+        // string jwtKey = builder.Configuration["JWT:Key"]!;
+        // byte[] key = Encoding.ASCII.GetBytes(jwtKey);
+        // builder.Services.AddAuthentication(options => {
+        //         // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //         // options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //     })
+        //     .AddJwtBearer(options => {
+        //         options.TokenValidationParameters = new TokenValidationParameters {
+        //             ValidateIssuer = true,
+        //             ValidateAudience = true,
+        //             ValidateIssuerSigningKey = true,
+        //             ValidIssuer = builder.Configuration["JWT:Issuer"],
+        //             ValidAudience = builder.Configuration["JWT:Audience"],
+        //             IssuerSigningKey = new SymmetricSecurityKey(key)
+        //         };
+        //     });
+        // TODO Add google oauth login
+        
+        // Register Identity
+        builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => 
+                options.SignIn.RequireConfirmedAccount = true
+            )
+            .AddEntityFrameworkStores<InfiniLoreDbContext>()
+            .AddSignInManager();
+
+        //override the behavior or cookie auth scheme so that 401/403 will be returned.
+        builder.Services.ConfigureApplicationCookie(
+            c => {
+                c.Events.OnRedirectToLogin = ctx => {
+                    if (ctx is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
+                        ctx.Response.StatusCode = 401;
+                    }
+                    return Task.CompletedTask;
+                };
+
+                c.Events.OnRedirectToAccessDenied = ctx => {
+                    if (ctx is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
+                        ctx.Response.StatusCode = 403;
+                    }
+                    return Task.CompletedTask;
+                };
+            });
+        #endregion
+
+        #region Authorization
+        // Ensure the default scheme for authentication is JwtBearer
+        builder.Services.AddAuthorization();
+        #endregion
+
         #region Razor Components
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
         #endregion
+
         #region FastEndpoints & Swagger
         builder.Services
             .AddFastEndpoints(options => {
@@ -56,19 +109,15 @@ public static class Program {
                     settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
                 };
             })
-        ;
+            ;
         #endregion
 
-        builder.Services.RegisterServicesFromInfiniLoreServerData();
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();
+        builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
+
+        builder.Services.RegisterServicesFromInfiniLoreServerData();
         builder.Services.AddScoped(typeof(IAuditLogRepository<>), typeof(AuditLogRepository<>));
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
-        
-        // TODO Add google oauth login
-
-        builder.Services.AddAuthenticationJwtBearer(options => {
-            options.SigningKey = builder.Configuration["JwtSigningKey"];
-        });
 
         // -------------------------------------------------------------------------------------------------------------
         // App
@@ -96,18 +145,21 @@ public static class Program {
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(WasmClient.IAssemblyEntry).Assembly);
 
-        app.UseFastEndpoints();
+        app.UseFastEndpoints(ctx => {
+            ctx.Endpoints.RoutePrefix = "api";
+        });
         app.UseOpenApi();
-        app.UseSwaggerUI(ModernStyle.Dark, ctx => {
+        app.UseSwaggerUI(ModernStyle.Dark, setupAction: ctx => {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");
             ctx.RoutePrefix = "swagger";
         });
-        
+
         // TODO Check if applying the migrations is actually correct here
-        using InfiniLoreDbContext db = app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext();
-        db.Database.Migrate();
-        db.SaveChanges();
-        
+        using (InfiniLoreDbContext db = app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext()) {
+            db.Database.Migrate();
+            db.SaveChanges();
+        }
+
         app.Run();
     }
 }
