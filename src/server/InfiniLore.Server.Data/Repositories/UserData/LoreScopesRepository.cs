@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
 using InfiniLore.Server.Data.Models.UserData;
-using InfiniLoreLib;
+using InfiniLoreLib.Results;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace InfiniLore.Server.Data.Repositories.UserData;

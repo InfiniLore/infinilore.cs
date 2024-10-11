@@ -16,6 +16,7 @@ public class InfiniLoreDbContext : IdentityDbContext<InfiniLoreUser, IdentityRol
     public DbSet<LoreScopeModel> LoreScopes { get; init; }
     public DbSet<MultiverseModel> Multiverses { get; init; }
     public DbSet<UniverseModel> Universes { get; init; }
+    public DbSet<JwtRefreshToken> JwtRefreshTokens { get; init; }
 
     #region AuditLogs
     public DbSet<AuditLog<LoreScopeModel>> LoreScopeAuditLogs { get; init; }

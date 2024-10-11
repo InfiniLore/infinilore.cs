@@ -2,9 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data;
-using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.UserData;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.API.Controllers.LoreScopes;
@@ -15,7 +13,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes;
 public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : EndpointWithoutRequest {
     public override void Configure() {
         Get("/api/lore-scopes/seed");
-        AllowAnonymous();
+        Roles("Admin");
     }
 
     public async override Task HandleAsync(CancellationToken ct) {

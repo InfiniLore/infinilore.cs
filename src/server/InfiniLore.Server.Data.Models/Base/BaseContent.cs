@@ -16,6 +16,7 @@ public abstract class BaseContent<T> where T : BaseContent<T> {
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedDate { get; set; }
 
+    // ReSharper disable once CollectionNeverUpdated.Global
     public ICollection<AuditLog<T>> AuditLogs { get; set; } = []; 
     #endregion
     

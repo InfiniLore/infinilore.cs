@@ -23,5 +23,9 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
         builder.HasMany(user => user.Universes)
             .WithOne(universe => universe.User)
             .HasForeignKey(x => x.UserId);
+        
+        builder.HasMany(user => user.JwtRefreshTokens)
+            .WithOne(token => token.User)
+            .HasForeignKey(token => token.UserId);
     }
 }

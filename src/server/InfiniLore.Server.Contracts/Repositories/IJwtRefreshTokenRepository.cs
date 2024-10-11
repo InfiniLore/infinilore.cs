@@ -1,14 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Base;
-using InfiniLoreLib.Results;
+using InfiniLore.Server.Data.Models.Account;
 
 namespace InfiniLore.Server.Contracts.Repositories;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuditLogRepository<T> where T : BaseContent<T> {
-    Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default);
+public interface IJwtRefreshTokenRepository {
+    public Task<bool> AddAsync(string userId, Guid token, DateTime expiresAt, CancellationToken ct = default);
+    public Task<bool> AddAsync(InfiniLoreUser user, Guid token, DateTime expiresAt, CancellationToken ct = default);
+    public Task<bool> CheckAndRemoveAsync(string userId, Guid token, CancellationToken ct = default);
+    public Task<bool> CheckAndRemoveAsync(InfiniLoreUser user, Guid token, CancellationToken ct = default);
 }

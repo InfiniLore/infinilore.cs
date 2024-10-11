@@ -4,11 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>b66030d9-dd4d-418e-9b45-ed964bbc8e4e</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.SwaggerUI.Themes" Version="1.0.0" />
         <PackageReference Include="FastEndpoints" Version="5.30.0" />
+        <PackageReference Include="FastEndpoints.Security" Version="5.30.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.30.0" />
         <PackageReference Include="Serilog" Version="4.0.2" />
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.1.3" />
@@ -20,6 +22,7 @@
         <ProjectReference Include="..\..\client\InfiniLore.WasmClient\InfiniLore.WasmClient.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.API\InfiniLore.Server.API.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Data\InfiniLore.Server.Data.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
     </ItemGroup>
 
 </Project>

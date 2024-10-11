@@ -2,35 +2,37 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Repositories;
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Data.Models.UserData;
-using InfiniLoreLib;
+using InfiniLoreLib.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
+namespace InfiniLore.Server.API.Controllers.LoreScopes.GetSpecificLoreScope;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetAllLoreScopes(IInfiniLoreUserRepository userRepository) :
+public class GetSpecificLoreScopeEndpoint(IInfiniLoreUserRepository userRepository) :
     Endpoint<
-        GetAllLoreScopesRequest,
+        GetSpecificLoreScopeRequest,
         Results<
-            Ok<IEnumerable<LoreScopeResponse>>,
+            Ok<LoreScopeResponse>,
             NotFound
         >,
         LoreScopeResponseMapper
     > {
 
     public override void Configure() {
-        Get("/api/{UserId:guid}/lore-scopes/");
+        Get("/api/{UserId:guid}/lore-scopes/{LoreScopeId:guid}");
         AllowAnonymous();
     }
 
-    public async override Task<Results<Ok<IEnumerable<LoreScopeResponse>>, NotFound>> ExecuteAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
+    public async override Task<Results<Ok<LoreScopeResponse>, NotFound>> ExecuteAsync(GetSpecificLoreScopeRequest req, CancellationToken ct) {
         ResultMany<LoreScopeModel> result = await userRepository.GetLoreScopesAsync(req.UserId, ct);
         if (result.IsFailure || result.Values is null)  return TypedResults.NotFound();
         
-        return TypedResults.Ok(result.Values.Select(ls => Map.FromEntity(ls)));
+        LoreScopeModel? scope = result.Values.FirstOrDefault(x => x.Id == req.LoreScopeId);
+        if (scope is null) return TypedResults.NotFound();
+        
+        return TypedResults.Ok(Map.FromEntity(scope));
     }
 }

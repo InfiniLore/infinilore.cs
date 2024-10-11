@@ -6,7 +6,7 @@ using InfiniLore.Server.Contracts.Repositories;
 using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.Base;
 using InfiniLore.Server.Data.Models.UserData;
-using InfiniLoreLib;
+using InfiniLoreLib.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -14,7 +14,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes.DeleteSpecificLoreScope;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DeleteSpecificLoreScope(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserRepository userRepository, ILoreScopesRepository loreScopeRepository, IAuditLogRepository<LoreScopeModel> auditLogRepository) :
+public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserRepository userRepository, ILoreScopesRepository loreScopeRepository, IAuditLogRepository<LoreScopeModel> auditLogRepository) :
     Endpoint<
         DeleteSpecificLoreScopeRequest,
         Results<

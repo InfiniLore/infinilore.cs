@@ -1,20 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLoreLib;
-
+namespace InfiniLoreLib.Results;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record Result<T> (
+public record ResultMany<T> (
     bool IsSuccess,
-    T? Value = default,
+    IEnumerable<T>? Values = default,
     string? ErrorMessage = null
 ) {
     public bool IsFailure => !IsSuccess;
     
-    public static Result<T> Success(T value) => new(true, value);
-    public static Result<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
+    public static ResultMany<T> Success(IEnumerable<T> value) => new(true, value);
+    public static ResultMany<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
     
-    public static implicit operator bool(Result<T> result) => result.IsSuccess;
+    public static implicit operator bool(ResultMany<T> result) => result.IsSuccess;
 }

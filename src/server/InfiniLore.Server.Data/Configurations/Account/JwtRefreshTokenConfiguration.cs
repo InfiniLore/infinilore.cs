@@ -1,14 +1,18 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Base;
-using InfiniLoreLib.Results;
+using InfiniLore.Server.Data.Models.Account;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Server.Contracts.Repositories;
+namespace InfiniLore.Server.Data.Configurations.Account;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuditLogRepository<T> where T : BaseContent<T> {
-    Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default);
+public class JwtRefreshTokenConfiguration : IEntityTypeConfiguration<JwtRefreshToken> {
+
+    public void Configure(EntityTypeBuilder<JwtRefreshToken> builder) {
+        builder.HasIndex(token => token.TokenHash)
+            .IsUnique();
+    }
 }

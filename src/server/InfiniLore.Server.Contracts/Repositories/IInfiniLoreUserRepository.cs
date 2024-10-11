@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.UserData;
-using InfiniLoreLib;
+using InfiniLoreLib.Results;
 
 namespace InfiniLore.Server.Contracts.Repositories;
 

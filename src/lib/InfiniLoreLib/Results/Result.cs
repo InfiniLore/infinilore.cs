@@ -1,14 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Base;
-using InfiniLoreLib.Results;
-
-namespace InfiniLore.Server.Contracts.Repositories;
+namespace InfiniLoreLib.Results;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuditLogRepository<T> where T : BaseContent<T> {
-    Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default);
+public record Result<T> (
+    bool IsSuccess,
+    T? Value = default,
+    string? ErrorMessage = null
+) {
+    public bool IsFailure => !IsSuccess;
+    
+    public static Result<T> Success(T value) => new(true, value);
+    public static Result<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
+    
+    public static implicit operator bool(Result<T> result) => result.IsSuccess;
 }

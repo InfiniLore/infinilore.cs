@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.KiotaApiClient;
-using InfiniLore.KiotaApiClient.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
