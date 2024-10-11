@@ -20,9 +20,9 @@ public class GetSpecificLoreScopeEndpoint(IInfiniLoreUserRepository userReposito
         >,
         LoreScopeResponseMapper
     > {
-
+ 
     public override void Configure() {
-        Get("/api/{UserId:guid}/lore-scopes/{LoreScopeId:guid}");
+        Get("/{UserId:guid}/lore-scopes/{LoreScopeId:guid}");
         AllowAnonymous();
     }
 

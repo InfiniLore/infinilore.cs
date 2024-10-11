@@ -23,8 +23,9 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
             // TODO only do this in dev env, else send a basic "failed" result
             if (key == null) return JwtResult.Failure("Jwt:Key not found in configuration");
 
-            DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddDays(1);
-            DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(30);
+            DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!));
+            DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(int.Parse(configuration["Jwt:RefreshExpiresInDays"]!));
+            
             string accessToken = GenerateAccessToken(user, roles, permissions,accessTokenExpiryUtc );
             Guid refreshToken = await GenerateRefreshTokenAsync(user, refreshTokenExpiryUtc, ct);
         

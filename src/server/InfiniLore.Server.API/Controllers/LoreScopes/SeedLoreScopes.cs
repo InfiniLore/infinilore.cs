@@ -12,7 +12,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : EndpointWithoutRequest {
     public override void Configure() {
-        Get("/api/lore-scopes/seed");
+        Get("/lore-scopes/seed");
         Roles("Admin");
     }
 

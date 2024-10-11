@@ -1,14 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Account;
-using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Data.Models.Base;
+namespace InfiniLore.Server.API.Controllers.Account.Identity;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContent<T> : BaseContent<T> where T : BaseContent<T> {
-    public required InfiniLoreUser User { get; set; }
-    [MaxLength(48)] public string UserId { get; set; } 
+[UsedImplicitly]
+public class IdentityCreateUserRequest {
+    public required string Username { get; [UsedImplicitly] init; }
+    public required string Password { get; [UsedImplicitly] init; }
+    public required string Email { get; [UsedImplicitly] init; }
 }

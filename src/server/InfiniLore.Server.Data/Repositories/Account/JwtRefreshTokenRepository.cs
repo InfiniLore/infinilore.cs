@@ -3,12 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
 using InfiniLore.Server.Data.Models.Account;
+using Microsoft.Data.Sqlite;
 using Serilog;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace InfiniLore.Server.Data.Repositories.Account;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,26 +22,40 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     }
 
     #region AddAsync
-    public async Task<bool> AddAsync(string userId, Guid token,DateTime expiresAt, CancellationToken ct = default) {
-        return await unitOfWork.GetDbContext().Users.FindAsync([userId], cancellationToken: ct) is {} user
-            && await AddAsync(user, token, expiresAt, ct);
+    public async Task<bool> AddAsync(string userId, Guid token, DateTime expiresAt, CancellationToken ct = default) {
+        InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
+        InfiniLoreUser? user = await dbContext.Users.FindAsync([userId], ct);
+
+        if (user != null) return await AddAsync(user, token, expiresAt, ct);
+
+        logger.Warning("User with ID {UserId} not found", userId);
+        return false;
+
     }
-    
+
     public async Task<bool> AddAsync(InfiniLoreUser user, Guid token, DateTime expiresAt, CancellationToken ct = default) {
         try {
             InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
             string hashedToken = HashToken(token);
-        
-            if (await dbContext.JwtRefreshTokens.AnyAsync(t => t.TokenHash == hashedToken, ct)) return false;
-        
+
+            bool tokenExists = await dbContext.JwtRefreshTokens.AnyAsync(predicate: t => t.TokenHash == hashedToken, ct);
+            if (tokenExists) {
+                logger.Warning("Refresh token already exists for user {UserId}", user.Id);
+                return false;
+            }
+
             dbContext.JwtRefreshTokens.Add(new JwtRefreshToken {
                 User = user,
                 TokenHash = hashedToken,
                 ExpiresAt = expiresAt
             });
-        
+
             await dbContext.SaveChangesAsync(ct);
             return true;
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: 19 } sqliteEx) {
+            logger.Warning(ex, "Unique constraint violation: {Message}", sqliteEx.Message);
+            return false;
         }
         catch (Exception ex) {
             logger.Warning(ex, "Error adding refresh token to database");
@@ -51,30 +65,39 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     #endregion
 
     #region CheckAndRemoveAsync
-    public async Task<bool> CheckAndRemoveAsync(string userId, Guid token, CancellationToken ct = default) => 
-        await unitOfWork.GetDbContext().Users.FindAsync([userId], cancellationToken:ct) is {} user 
-        && await CheckAndRemoveAsync(user, token, ct);
-    
+    public async Task<bool> CheckAndRemoveAsync(string userId, Guid token, CancellationToken ct = default) {
+        InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
+        InfiniLoreUser? user = await dbContext.Users.FindAsync(new object[] { userId }, ct);
+
+        if (user != null) return await CheckAndRemoveAsync(user, token, ct);
+
+        logger.Warning("User with ID {UserId} not found", userId);
+        return false;
+
+    }
+
     public async Task<bool> CheckAndRemoveAsync(InfiniLoreUser user, Guid token, CancellationToken ct = default) {
         try {
             InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
             string hashedToken = HashToken(token);
 
             JwtRefreshToken? entry = await dbContext.JwtRefreshTokens
-                .Include(jwtRefreshToken => jwtRefreshToken.User)
+                .Include(t => t.User)
                 .FirstOrDefaultAsync(
-                    t => t.TokenHash == hashedToken
+                    predicate: t => t.TokenHash == hashedToken
                         && t.User == user
-                        && t.ExpiresAt > DateTime.UtcNow, ct
-                );
+                        && t.ExpiresAt > DateTime.UtcNow, ct);
 
-            if (entry is null) return false;
+            if (entry == null) {
+                logger.Warning("No valid refresh token found for user {UserId}", user.Id);
+                return false;
+            }
 
             dbContext.JwtRefreshTokens.Remove(entry);
             await dbContext.SaveChangesAsync(ct);
 
             return true;
-        } 
+        }
         catch (Exception ex) {
             logger.Warning(ex, "Error removing refresh token from database");
             return false;

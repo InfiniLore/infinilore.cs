@@ -14,5 +14,9 @@ public class JwtRefreshTokenConfiguration : IEntityTypeConfiguration<JwtRefreshT
     public void Configure(EntityTypeBuilder<JwtRefreshToken> builder) {
         builder.HasIndex(token => token.TokenHash)
             .IsUnique();
+        
+        builder.HasOne(token => token.User)
+            .WithMany(user => user.JwtRefreshTokens)
+            .HasForeignKey(token => token.UserId);
     }
 }

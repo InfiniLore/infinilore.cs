@@ -25,7 +25,7 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
     > {
 
     public override void Configure() {
-        Delete("/api/{UserId:guid}/lore-scopes/{LoreScopeId:guid}");
+        Delete("/{UserId:guid}/lore-scopes/{LoreScopeId:guid}");
         AllowAnonymous();
     }
 

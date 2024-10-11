@@ -44,9 +44,10 @@ public static class Program {
         // TODO Add google oauth login
 
         // Register Identity
-        builder.Services.AddIdentity<InfiniLoreUser, IdentityRole>(options => 
-                options.SignIn.RequireConfirmedAccount = true
-            )
+        builder.Services.AddIdentityCore<InfiniLoreUser>(options =>  
+                options.SignIn.RequireConfirmedAccount = false
+            ) 
+            .AddRoles<IdentityRole>() // Resolves an issue, thanks to : https://stackoverflow.com/a/68603582/9133374
             .AddEntityFrameworkStores<InfiniLoreDbContext>()
             .AddSignInManager();
 
@@ -79,7 +80,7 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
         #endregion
 
-        #region FastEndpoints & Swagger
+        #region API
         builder.Services
             .AddFastEndpoints(options => {
                 options.Assemblies = [
@@ -93,6 +94,7 @@ public static class Program {
                     settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
                 };
             });
+        
         #endregion
 
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();

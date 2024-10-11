@@ -22,7 +22,7 @@ public class GetAllLoreScopesEndpoint(IInfiniLoreUserRepository userRepository) 
     > {
 
     public override void Configure() {
-        Get("/api/{UserId:guid}/lore-scopes/");
+        Get("/{UserId:guid}/lore-scopes/");
         AllowAnonymous();
     }
 
