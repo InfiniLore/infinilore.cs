@@ -13,6 +13,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System.Security.Claims;
 
 namespace InfiniLore.Server.Services;
 
@@ -58,11 +59,12 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
             o => {
                 o.SigningKey = configuration["Jwt:Key"]!;
                 o.ExpireAt = expiresAt;
+                o.Audience = configuration["JWT:Audience"];
+                o.Issuer = configuration["JWT:Issuer"];
                 
                 o.User.Roles.Add(roles);
                 o.User.Permissions.Add(permissions);
-                
-                o.User["sub"] = user.Id;
+                o.User[ClaimTypes.Name] = user.Id;
             });
         
         return jwtToken;

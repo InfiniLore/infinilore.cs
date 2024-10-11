@@ -13,8 +13,10 @@ using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Repositories.UserData;
 using InfiniLore.Server.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -41,12 +43,18 @@ public static class Program {
             options.SigningKey = builder.Configuration["JWT:Key"];
         }
         , bearerOptions => {
-            
-            bearerOptions.TokenValidationParameters.RoleClaimType = "role";
+            bearerOptions.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
+            bearerOptions.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
             
             bearerOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:Issuer"];
             bearerOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:Audience"];
-        } 
+            
+            bearerOptions.MapInboundClaims = true;
+        });
+        builder.Services.AddAuthentication(o => {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }
         );
         
         // TODO Add google oauth login

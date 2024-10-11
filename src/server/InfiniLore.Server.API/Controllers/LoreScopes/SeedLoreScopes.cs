@@ -17,7 +17,6 @@ public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFact
     public override void Configure() {
         Get("/lore-scopes/seed");
         Roles("Admin");
-        AllowAnonymous();
     }
 
     public async override Task HandleAsync(CancellationToken ct) {
