@@ -20,12 +20,14 @@ public class JwtRevokeAllTokensEndpoint(IJwtTokenService jwtTokenService, ILogge
             Ok
         >
     > {
+    
     public override void Configure() {
         Post("/account/jwt/tokens-revoke/all");
         PermissionsAll("account.jwt.tokens_revoke");
     }
+    
     public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(CancellationToken ct) {
-        string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         if ( await userManager.FindByIdAsync(userId!) is not {} user) {
             return TypedResults.BadRequest(new ProblemDetails { Detail = "User not found." });
         }

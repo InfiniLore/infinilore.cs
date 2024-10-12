@@ -88,37 +88,20 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     
     public async Task<bool> RemoveAsync(JwtRefreshToken token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
+        
         dbContext.JwtRefreshTokens.Remove(token);
         await dbContext.SaveChangesAsync(ct);
         
         return true;
     }
-    // #region CheckAndRemoveAsync
-    // public async Task<JwtRefreshToken?> CheckAndRemoveAsync(Guid token, CancellationToken ct = default) {
-    //     try {
-    //         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-    //         string hashedToken = HashToken(token);
-    //
-    //         JwtRefreshToken? entry = await dbContext.JwtRefreshTokens
-    //             .Include(t => t.User)
-    //             .FirstOrDefaultAsync(
-    //                 predicate: t => t.TokenHash == hashedToken
-    //                     && t.ExpiresAt > DateTime.UtcNow, ct);
-    //
-    //         if (entry == null) {
-    //             logger.Warning("No valid refresh token found on {oldRefreshToken}", token);
-    //             return null;
-    //         }
-    //
-    //         dbContext.JwtRefreshTokens.Remove(entry);
-    //         await dbContext.SaveChangesAsync(ct);
-    //
-    //         return entry;
-    //     }
-    //     catch (Exception ex) {
-    //         logger.Warning(ex, "Error removing refresh token from database");
-    //         return null;
-    //     }
-    // }
-    // #endregion
+    
+    public async Task<bool> RemoveAllAsync(string userId, CancellationToken ct = default) {
+        InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
+        
+        int recordAffected = await dbContext.JwtRefreshTokens
+            .Where(t => t.User.Id == userId)
+            .ExecuteDeleteAsync(cancellationToken: ct);
+
+        return recordAffected > 0;
+    }
 }

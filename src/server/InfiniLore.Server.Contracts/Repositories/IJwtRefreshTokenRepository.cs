@@ -14,4 +14,6 @@ public interface IJwtRefreshTokenRepository {
     public Task<JwtRefreshToken?> GetAsync(Guid token, CancellationToken ct = default);
     public Task<bool> RemoveAsync(Guid token, CancellationToken ct = default);
     public Task<bool> RemoveAsync(JwtRefreshToken token, CancellationToken ct = default);
+    
+    public Task<bool> RemoveAllAsync(string userId, CancellationToken ct = default);
 }

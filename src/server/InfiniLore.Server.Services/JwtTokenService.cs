@@ -115,9 +115,8 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
     }
 
     public async Task<BoolResult> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
-        foreach (JwtRefreshToken userJwtRefreshToken in user.JwtRefreshTokens) {
-            await jwtRefreshTokenRepository.RemoveAsync(userJwtRefreshToken, ct);
-        }
-        return BoolResult.Success();
+        return await jwtRefreshTokenRepository.RemoveAllAsync(user.Id, ct)
+            ? BoolResult.Success()
+            : BoolResult.Failure("Error revoking all tokens from user");
     }
 }
