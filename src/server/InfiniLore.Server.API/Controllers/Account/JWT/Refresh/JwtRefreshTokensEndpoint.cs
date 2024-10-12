@@ -20,7 +20,7 @@ public class JwtRefreshTokensEndpoint(IJwtTokenService jwtTokenService, ILogger 
         >
     > {
     public override void Configure() {
-        Post("/account/jwt/tokens-refresh");
+        Post("/account/jwt/token/refresh");
         AllowAnonymous();
     }
     public async override Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtRefreshTokensRequest req, CancellationToken ct) {

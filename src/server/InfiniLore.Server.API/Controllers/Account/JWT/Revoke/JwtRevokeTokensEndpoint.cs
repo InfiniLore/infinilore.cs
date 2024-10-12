@@ -24,7 +24,7 @@ public class JwtRevokeTokensEndpoint(IJwtTokenService jwtTokenService, ILogger l
         >
     > {
     public override void Configure() {
-        Post("/account/jwt/tokens-revoke");
+        Delete("/account/jwt/token/refresh");
         PermissionsAll("account.jwt.tokens_revoke");
     }
     public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(JwtRevokeTokensRequest req, CancellationToken ct) {

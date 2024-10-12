@@ -23,7 +23,7 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
         >
     > {
     public override void Configure() {
-        Post("/account/jwt/tokens-create");
+        Post("/account/jwt/token/create");
         AllowAnonymous();
     }
 

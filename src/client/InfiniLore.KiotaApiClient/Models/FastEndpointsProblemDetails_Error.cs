@@ -7,36 +7,21 @@ using System.IO;
 using System;
 namespace InfiniLore.KiotaApiClient.Models
 {
+    /// <summary>
+    /// the error details object
+    /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    #pragma warning disable CS1591
-    public partial class InfiniLoreServerAPIModelsLoreScopeResponse : IParsable
-    #pragma warning restore CS1591
+    public partial class FastEndpointsProblemDetails_Error : IParsable
     {
-        /// <summary>The description property</summary>
+        /// <summary>the code of the error</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? Description { get; set; }
+        public string? Code { get; set; }
 #nullable restore
 #else
-        public string Description { get; set; }
+        public string Code { get; set; }
 #endif
-        /// <summary>The id property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public string? Id { get; set; }
-#nullable restore
-#else
-        public string Id { get; set; }
-#endif
-        /// <summary>The multiverseIds property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public List<string>? MultiverseIds { get; set; }
-#nullable restore
-#else
-        public List<string> MultiverseIds { get; set; }
-#endif
-        /// <summary>The name property</summary>
+        /// <summary>the name of the error or property of the dto that caused the error</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
         public string? Name { get; set; }
@@ -44,23 +29,39 @@ namespace InfiniLore.KiotaApiClient.Models
 #else
         public string Name { get; set; }
 #endif
-        /// <summary>The userId property</summary>
+        /// <summary>the reason for the error</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public string? UserId { get; set; }
+        public string? Reason { get; set; }
 #nullable restore
 #else
-        public string UserId { get; set; }
+        public string Reason { get; set; }
 #endif
+        /// <summary>the severity of the error</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Severity { get; set; }
+#nullable restore
+#else
+        public string Severity { get; set; }
+#endif
+        /// <summary>
+        /// Instantiates a new <see cref="global::InfiniLore.KiotaApiClient.Models.FastEndpointsProblemDetails_Error"/> and sets the default values.
+        /// </summary>
+        public FastEndpointsProblemDetails_Error()
+        {
+            Name = "Error or field name";
+            Reason = "Error reason";
+        }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsLoreScopeResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.KiotaApiClient.Models.FastEndpointsProblemDetails_Error"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsLoreScopeResponse CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::InfiniLore.KiotaApiClient.Models.FastEndpointsProblemDetails_Error CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsLoreScopeResponse();
+            return new global::InfiniLore.KiotaApiClient.Models.FastEndpointsProblemDetails_Error();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -70,11 +71,10 @@ namespace InfiniLore.KiotaApiClient.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
-                { "description", n => { Description = n.GetStringValue(); } },
-                { "id", n => { Id = n.GetStringValue(); } },
-                { "multiverseIds", n => { MultiverseIds = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
+                { "code", n => { Code = n.GetStringValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
-                { "userId", n => { UserId = n.GetStringValue(); } },
+                { "reason", n => { Reason = n.GetStringValue(); } },
+                { "severity", n => { Severity = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -84,11 +84,10 @@ namespace InfiniLore.KiotaApiClient.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
-            writer.WriteStringValue("description", Description);
-            writer.WriteStringValue("id", Id);
-            writer.WriteCollectionOfPrimitiveValues<string>("multiverseIds", MultiverseIds);
+            writer.WriteStringValue("code", Code);
             writer.WriteStringValue("name", Name);
-            writer.WriteStringValue("userId", UserId);
+            writer.WriteStringValue("reason", Reason);
+            writer.WriteStringValue("severity", Severity);
         }
     }
 }

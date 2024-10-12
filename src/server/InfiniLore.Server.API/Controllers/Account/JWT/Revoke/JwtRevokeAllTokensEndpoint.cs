@@ -22,7 +22,7 @@ public class JwtRevokeAllTokensEndpoint(IJwtTokenService jwtTokenService, ILogge
     > {
     
     public override void Configure() {
-        Post("/account/jwt/tokens-revoke/all");
+        Delete("/account/jwt/token/refresh/all");
         PermissionsAll("account.jwt.tokens_revoke");
     }
     
