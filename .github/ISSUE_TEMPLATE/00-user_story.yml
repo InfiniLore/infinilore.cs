@@ -18,11 +18,9 @@ body:
         practices, becasue as a solo dev, that isn't really feasible / sane for
         me. 
 
-
         What we do keep however, is the user stories. They are a clear way to
         communicate what we should be doing, and what the limited scope of this
-        is.
-        
+        is.      
 
         Don't fret too much on getting it all right, just follow the example and
         you'll be fine
@@ -39,7 +37,7 @@ body:
         the feature or functionality needed? (e.g., I want to have a framework
         for ...) Why is this feature important? What value does it add? (e.g.,
         So that I can structure my worldbuilding assets efficiently)
-      placeholder: '**As a** ...  **I want to** ... **So that** ...'
+      placeholder: 'As a ...  I want to ... So that ...'
       value: |-
         **As a** ... 
         **I want to** ...
