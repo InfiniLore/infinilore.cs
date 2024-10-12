@@ -44,7 +44,7 @@ public static class Program {
             }
             , bearerOptions: bearerOptions => {
                 bearerOptions.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
-                bearerOptions.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
+                bearerOptions.TokenValidationParameters.NameClaimType = ClaimTypes.NameIdentifier;
 
                 bearerOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:Issuer"];
                 bearerOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:Audience"];

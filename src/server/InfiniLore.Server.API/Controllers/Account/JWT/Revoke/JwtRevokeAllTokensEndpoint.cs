@@ -27,8 +27,7 @@ public class JwtRevokeAllTokensEndpoint(IJwtTokenService jwtTokenService, ILogge
     }
     
     public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(CancellationToken ct) {
-        string? userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-        if ( await userManager.FindByIdAsync(userId!) is not {} user) {
+        if ( await userManager.GetUserAsync(User) is not {} user) {
             return TypedResults.BadRequest(new ProblemDetails { Detail = "User not found." });
         }
 

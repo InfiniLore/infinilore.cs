@@ -67,7 +67,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
 
                 o.User.Roles.Add(roles);
                 o.User.Permissions.Add(permissions);
-                o.User[ClaimTypes.Name] = user.Id;
+                o.User[ClaimTypes.NameIdentifier] = user.Id;
             });
 
         return jwtToken;
