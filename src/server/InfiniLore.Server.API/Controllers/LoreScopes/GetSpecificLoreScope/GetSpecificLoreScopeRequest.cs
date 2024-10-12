@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.API.Dto;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InfiniLore.Server.API.Controllers.LoreScopes.GetSpecificLoreScope;

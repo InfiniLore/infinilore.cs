@@ -3,9 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.UserData;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.API.Controllers.LoreScopes;

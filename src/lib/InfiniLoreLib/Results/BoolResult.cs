@@ -1,14 +1,18 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.API.Dto;
-using Microsoft.AspNetCore.Mvc;
-
-namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
+namespace InfiniLoreLib.Results;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
-    [FromRoute] public Guid UserId { get; set; }
+public record BoolResult(
+    bool IsSuccess,
+    string? ErrorMessage = null
+) : Result<bool>(
+    IsSuccess,
+    IsSuccess,
+    ErrorMessage
+) {
+    public static BoolResult Success() => new(true);
+    public new static BoolResult Failure(string? errorMessage = null) => new(false, ErrorMessage: errorMessage);
 }

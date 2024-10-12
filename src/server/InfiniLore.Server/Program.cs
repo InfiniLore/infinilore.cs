@@ -23,7 +23,7 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
-    public static void Main(string[] args) {
+    public static async Task Main(string[] args) {
         // -------------------------------------------------------------------------------------------------------------
         // Builder
         // -------------------------------------------------------------------------------------------------------------
@@ -159,11 +159,24 @@ public static class Program {
         });
 
         // TODO Check if applying the migrations is actually correct here
-        using (InfiniLoreDbContext db = app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContext()) {
-            db.Database.Migrate();
-            db.SaveChanges();
+        await using (InfiniLoreDbContext db = await app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContextAsync()) {
+            await db.Database.MigrateAsync();
+            await db.SaveChangesAsync();
         }
+        
+        // using (IServiceScope scope = app.Services.CreateScope()) {
+        //     IServiceProvider services = scope.ServiceProvider;
+        //     
+        //     using var userManager = services.GetRequiredService<UserManager<InfiniLoreUser>>();
+        //     using var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        //
+        //     InfiniLoreUser? user = await userManager.FindByIdAsync("9d6bda72-43d3-40cd-a101-e535dcb4104a");
+        //     if (user is null) return;
+        //
+        //     IdentityResult result = await userManager.AddToRoleAsync(user, "admin");
+        //     if (!result.Succeeded) return;
+        // }
 
-        app.Run();
+        await app.RunAsync();
     }
 }

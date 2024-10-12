@@ -1,12 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Data.Models.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Serilog;
 
 namespace InfiniLore.Server.API.Controllers.Account.Identity;
 // ---------------------------------------------------------------------------------------------------------------------

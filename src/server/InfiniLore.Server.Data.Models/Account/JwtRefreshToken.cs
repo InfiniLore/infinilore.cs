@@ -16,5 +16,7 @@ public class JwtRefreshToken {
 
     public required InfiniLoreUser User { get; set; }
     [MaxLength(48)] public string UserId { get; set; } = null!;
-
+    public string[] Roles { get; init; } = [];
+    public string[] Permissions { get; init; } = [];
+    public int? ExpiresInDays { get; init; } = null;
 }

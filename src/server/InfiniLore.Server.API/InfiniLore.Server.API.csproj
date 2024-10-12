@@ -25,4 +25,8 @@
         <ProjectReference Include="..\InfiniLore.Server.Data\InfiniLore.Server.Data.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\Admin\" />
+    </ItemGroup>
+
 </Project>

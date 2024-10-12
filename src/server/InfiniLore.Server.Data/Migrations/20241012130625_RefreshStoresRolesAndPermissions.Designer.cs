@@ -3,6 +3,7 @@ using System;
 using InfiniLore.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Data.Migrations
 {
     [DbContext(typeof(InfiniLoreDbContext))]
-    partial class InfiniLoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012130625_RefreshStoresRolesAndPermissions")]
+    partial class RefreshStoresRolesAndPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -85,13 +88,13 @@ namespace InfiniLore.Server.Data.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "920180d9-5360-495b-abb7-fb8365605ab5",
+                            ConcurrencyStamp = "08ba467d-3590-4993-b3e8-0e060040e663",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAJItp0RegzW1PITs52O0VCpDT1DEMMTRzQ4C3Q2RCnLOmmbFwxrKIaDDknLHn23og==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECz8Du87cqvJ8mnl4CdAA3swmsanBHKChF5Z+iX9sr4f0P/oUyaSacfe2KckQvHRAQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                             TwoFactorEnabled = false,
@@ -107,9 +110,6 @@ namespace InfiniLore.Server.Data.Migrations
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("ExpiresInDays")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Permissions")
                         .IsRequired()
@@ -396,13 +396,13 @@ namespace InfiniLore.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "61d818d3-3df3-4b3d-ab22-7cb4f6c8b549",
+                            Id = "fd373b00-064c-4291-9362-c1a8ce9d31dc",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "61c88947-ff70-4882-b509-91cc8992c61a",
+                            Id = "31306476-2b32-4abe-9876-3a1851a07937",
                             Name = "user",
                             NormalizedName = "USER"
                         });
