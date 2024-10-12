@@ -2,11 +2,10 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace InfiniLore.Server.API.Controllers.Account.JWT.Refresh;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class JwtRefreshTokensRequest {
-    public Guid RefreshToken { get; set; } 
+    public Guid RefreshToken { get; set; }
 }

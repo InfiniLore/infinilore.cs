@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data.Models.Account;
 using Microsoft.Data.Sqlite;
 using Serilog;
@@ -69,39 +70,45 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     }
     #endregion
     
-    
+    #region GetAsync
     public async Task<JwtRefreshToken?> GetAsync(Guid token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
         string hashedToken = HashToken(token);
 
         JwtRefreshToken? tokenData = await dbContext.JwtRefreshTokens
             .Include(t => t.User)
-            .FirstOrDefaultAsync(predicate: t => t.TokenHash == hashedToken, cancellationToken: ct);
-        
+            .FirstOrDefaultAsync(predicate: t => t.TokenHash == hashedToken, ct);
+
         return tokenData;
     }
+    #endregion
     
+    #region RemoveAsync
     public async Task<bool> RemoveAsync(Guid token, CancellationToken ct = default) {
         if (await GetAsync(token, ct) is not {} tokenData) return false;
+
         return await RemoveAsync(tokenData, ct);
     }
-    
+
     public async Task<bool> RemoveAsync(JwtRefreshToken token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-        
+
         dbContext.JwtRefreshTokens.Remove(token);
         await dbContext.SaveChangesAsync(ct);
-        
+
         return true;
     }
+    #endregion
     
+    #region RemoveAllAsync
     public async Task<bool> RemoveAllAsync(string userId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-        
+
         int recordAffected = await dbContext.JwtRefreshTokens
             .Where(t => t.User.Id == userId)
             .ExecuteDeleteAsync(cancellationToken: ct);
 
         return recordAffected > 0;
     }
+    #endregion
 }

@@ -6,13 +6,14 @@ using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
-using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
-using InfiniLore.Server.Contracts.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Repositories.UserData;
 using InfiniLore.Server.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
-    public static async Task Main(string[] args) {
+    public async static Task Main(string[] args) {
         // -------------------------------------------------------------------------------------------------------------
         // Builder
         // -------------------------------------------------------------------------------------------------------------
@@ -72,18 +73,12 @@ public static class Program {
         builder.Services.ConfigureApplicationCookie(
             cookieOptions => {
                 cookieOptions.Events.OnRedirectToLogin = context => {
-                    if (context is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
-                        context.Response.StatusCode = 401;
-                    }
-
+                    if (IsApiRequest(context)) context.Response.StatusCode = 401;
                     return Task.CompletedTask;
                 };
 
                 cookieOptions.Events.OnRedirectToAccessDenied = context => {
-                    if (context is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
-                        context.Response.StatusCode = 403;
-                    }
-
+                    if (IsApiRequest(context)) context.Response.StatusCode = 403;
                     return Task.CompletedTask;
                 };
             });
@@ -117,7 +112,6 @@ public static class Program {
         builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
         #endregion
 
-        builder.Services.RegisterServicesFromInfiniLoreServerAPI();
         builder.Services.RegisterServicesFromInfiniLoreServerData();
         builder.Services.AddScoped(typeof(IAuditLogRepository<>), typeof(AuditLogRepository<>));
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
@@ -157,26 +151,20 @@ public static class Program {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");
             ctx.RoutePrefix = "swagger";
         });
-
-        // TODO Check if applying the migrations is actually correct here
-        await using (InfiniLoreDbContext db = await app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContextAsync()) {
-            await db.Database.MigrateAsync();
-            await db.SaveChangesAsync();
-        }
         
-        // using (IServiceScope scope = app.Services.CreateScope()) {
-        //     IServiceProvider services = scope.ServiceProvider;
-        //     
-        //     using var userManager = services.GetRequiredService<UserManager<InfiniLoreUser>>();
-        //     using var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        //
-        //     InfiniLoreUser? user = await userManager.FindByIdAsync("9d6bda72-43d3-40cd-a101-e535dcb4104a");
-        //     if (user is null) return;
-        //
-        //     IdentityResult result = await userManager.AddToRoleAsync(user, "admin");
-        //     if (!result.Succeeded) return;
-        // }
+        await Task.WhenAll(
+            MigrateDatabaseAsync(app), // Db Migrations on startup
+            app.RunAsync()
+        );
+    }
+    
+    private async static Task MigrateDatabaseAsync(WebApplication app) {
+        await using InfiniLoreDbContext db = await app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContextAsync();
+        await db.Database.MigrateAsync();
+        await db.SaveChangesAsync();
+    }
 
-        await app.RunAsync();
+    private static bool IsApiRequest(RedirectContext<CookieAuthenticationOptions> context) {
+        return context is { Request.Path.Value: "/api", Response.StatusCode: 200 };
     }
 }

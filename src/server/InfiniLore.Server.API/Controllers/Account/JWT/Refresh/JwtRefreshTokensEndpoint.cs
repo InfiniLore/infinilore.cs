@@ -7,11 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InfiniLore.Server.API.Controllers.Account.JWT.Refresh;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class JwtRefreshTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger) 
+public class JwtRefreshTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger)
     : Endpoint<
         JwtRefreshTokensRequest,
         Results<

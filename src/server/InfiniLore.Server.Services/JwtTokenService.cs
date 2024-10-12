@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using FastEndpoints.Security;
-using InfiniLore.Server.Contracts.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLoreLib.Results;
@@ -35,7 +35,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
                 logger.Warning("User {UserId} does not have all specified roles", user.Id);
                 return JwtResult.Failure("User does not have the required roles");
             }
-            
+
             DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!));
             DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(expiresInDays ?? int.Parse(configuration["Jwt:RefreshExpiresInDays"]!));
 
@@ -93,30 +93,29 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
     public async Task<JwtResult> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
         if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return JwtResult.Failure("Invalid refresh token");
         if (oldToken.ExpiresAt < DateTime.UtcNow) return JwtResult.Failure("Refresh token has expired");
-        
+
         await jwtRefreshTokenRepository.RemoveAsync(oldToken, ct);
 
         return await GenerateTokensAsync(
             oldToken.User,
             oldToken.Roles,
-            oldToken.Permissions, 
+            oldToken.Permissions,
             oldToken.ExpiresInDays ?? int.Parse(configuration["Jwt:RefreshExpiresInDays"]!),
             ct
         );
     }
-    
+
     public async Task<BoolResult> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
         if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return BoolResult.Failure("Invalid refresh token");
         if (oldToken.User.Id != user.Id) return BoolResult.Failure("Refresh token does not belong to user");
-       
+
         await jwtRefreshTokenRepository.RemoveAsync(oldToken, ct);
-       
+
         return BoolResult.Success();
     }
 
-    public async Task<BoolResult> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
-        return await jwtRefreshTokenRepository.RemoveAllAsync(user.Id, ct)
+    public async Task<BoolResult> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) =>
+        await jwtRefreshTokenRepository.RemoveAllAsync(user.Id, ct)
             ? BoolResult.Success()
             : BoolResult.Failure("Error revoking all tokens from user");
-    }
 }

@@ -1,10 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Contracts.API.Dto;
+using InfiniLore.Server.Data.Models.Base;
+using InfiniLoreLib.Results;
+
+namespace InfiniLore.Server.Contracts.Data.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IRequiresUserId {
-    public Guid UserId { get; set; }
+public interface IAuditLogRepository<T> where T : BaseContent<T> {
+    Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default);
 }

@@ -5,7 +5,7 @@ using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Contracts.Repositories;
+namespace InfiniLore.Server.Contracts.Data.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

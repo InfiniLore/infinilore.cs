@@ -7,27 +7,26 @@ using InfiniLoreLib.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace InfiniLore.Server.API.Controllers.Account.JWT.Revoke;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class JwtRevokeAllTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger, UserManager<InfiniLoreUser> userManager) 
+public class JwtRevokeAllTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger, UserManager<InfiniLoreUser> userManager)
     : EndpointWithoutRequest<
         Results<
             BadRequest<ProblemDetails>,
             Ok
         >
     > {
-    
+
     public override void Configure() {
         Delete("/account/jwt/token/refresh/all");
         PermissionsAll("account.jwt.tokens_revoke");
     }
-    
+
     public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(CancellationToken ct) {
-        if ( await userManager.GetUserAsync(User) is not {} user) {
+        if (await userManager.GetUserAsync(User) is not {} user) {
             return TypedResults.BadRequest(new ProblemDetails { Detail = "User not found." });
         }
 

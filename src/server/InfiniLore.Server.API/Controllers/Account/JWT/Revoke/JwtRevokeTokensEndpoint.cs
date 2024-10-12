@@ -11,11 +11,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.API.Controllers.Account.JWT.Revoke;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class JwtRevokeTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger, UserManager<InfiniLoreUser> userManager) 
+public class JwtRevokeTokensEndpoint(IJwtTokenService jwtTokenService, ILogger logger, UserManager<InfiniLoreUser> userManager)
     : Endpoint<
         JwtRevokeTokensRequest,
         Results<
@@ -28,7 +27,7 @@ public class JwtRevokeTokensEndpoint(IJwtTokenService jwtTokenService, ILogger l
         PermissionsAll("account.jwt.tokens_revoke");
     }
     public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(JwtRevokeTokensRequest req, CancellationToken ct) {
-        if ( await userManager.FindByIdAsync(User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value) is not {} user) {
+        if (await userManager.FindByIdAsync(User.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value) is not {} user) {
             return TypedResults.BadRequest(new ProblemDetails { Detail = "User not found." });
         }
 
@@ -39,12 +38,14 @@ public class JwtRevokeTokensEndpoint(IJwtTokenService jwtTokenService, ILogger l
 
             logger.Warning("Unable to revoke tokens for refreshToken {@Token}. Result: {@BoolResult}", refreshToken, boolResult.ErrorMessage);
             errors.Add(new ProblemDetails.Error {
-                Name = "Unable to revoke tokens.",
-                Reason = boolResult.ErrorMessage ?? string.Empty}
+                    Name = "Unable to revoke tokens.",
+                    Reason = boolResult.ErrorMessage ?? string.Empty
+                }
             );
         }
-        
+
         if (errors.IsNullOrEmpty()) return TypedResults.Ok();
+
         return TypedResults.BadRequest(new ProblemDetails { Detail = "Unable to revoke tokens.", Errors = errors });
     }
 }

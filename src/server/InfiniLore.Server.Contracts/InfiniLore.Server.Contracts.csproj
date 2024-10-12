@@ -16,4 +16,8 @@
         <ProjectReference Include="..\InfiniLore.Server.Data.Models\InfiniLore.Server.Data.Models.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="API\"/>
+    </ItemGroup>
+
 </Project>

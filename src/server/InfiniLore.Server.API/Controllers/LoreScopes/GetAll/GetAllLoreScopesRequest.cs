@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.API.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
@@ -9,6 +8,6 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes.GetAll;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class GetAllLoreScopesRequest : IRequiresUserId {
+public class GetAllLoreScopesRequest {
     [FromRoute] public Guid UserId { get; set; }
 }

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
-using InfiniLore.Server.Contracts.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.Base;
 using InfiniLore.Server.Data.Models.UserData;

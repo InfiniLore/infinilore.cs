@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data.Models.Base;
 using InfiniLoreLib.Results;
 
@@ -11,6 +12,7 @@ namespace InfiniLore.Server.Data.Repositories.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
 // Manually add this to the DI container.
 public class AuditLogRepository<T>(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : IAuditLogRepository<T> where T : BaseContent<T> {
+    #region AddAsync
     public async Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
 
@@ -19,4 +21,5 @@ public class AuditLogRepository<T>(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork
 
         return Result<bool>.Success(true);
     }
+    #endregion
 }

@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 using Microsoft.AspNetCore.Http;

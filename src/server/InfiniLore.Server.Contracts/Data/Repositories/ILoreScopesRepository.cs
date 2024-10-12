@@ -1,13 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Models.Base;
+using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Contracts.Repositories;
+namespace InfiniLore.Server.Contracts.Data.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuditLogRepository<T> where T : BaseContent<T> {
-    Task<Result<bool>> AddAsync(AuditLog<T> entity, CancellationToken ct = default);
+public interface ILoreScopesRepository {
+    Task<Result<bool>> DeleteAsync(Guid loreScopeId, CancellationToken ct = default);
+    Task<Result<bool>> DeleteAsync(LoreScopeModel model, CancellationToken ct = default);
 }

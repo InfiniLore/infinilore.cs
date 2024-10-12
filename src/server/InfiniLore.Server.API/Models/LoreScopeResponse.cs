@@ -6,9 +6,9 @@ namespace InfiniLore.Server.API.Models;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record LoreScopeResponse(
-    Guid Id,
-    string UserId,
-    string Name,
-    string Description,
-    ICollection<Guid> MultiverseIds
+    [UsedImplicitly] Guid Id,
+    [UsedImplicitly] string UserId,
+    [UsedImplicitly] string Name,
+    [UsedImplicitly] string Description,
+    [UsedImplicitly] ICollection<Guid> MultiverseIds
 );

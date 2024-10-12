@@ -30,7 +30,7 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
     public async override Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtCreateTokensRequest req, CancellationToken ct) {
         logger.Information("Processing JWT token creation for user {@Username}", req.Username);
 
-        if (await signInManager.UserManager.FindByNameAsync(req.Username) is not {} user ) {
+        if (await signInManager.UserManager.FindByNameAsync(req.Username) is not {} user) {
             logger.Warning("User {@Username} not found", req.Username);
             return TypedResults.BadRequest(new ProblemDetails { Detail = "Invalid username" });
         }
@@ -47,7 +47,7 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
         }
 
         logger.Information("Generating tokens for user {@Username}", req.Username);
-        JwtResult jwtResult = await jwtTokenService.GenerateTokensAsync(user, req.Roles, req.Permissions, req.RefreshExpiresInDays,  ct);
+        JwtResult jwtResult = await jwtTokenService.GenerateTokensAsync(user, req.Roles, req.Permissions, req.RefreshExpiresInDays, ct);
 
         if (!jwtResult.IsFailure) {
             logger.Information("Tokens generated successfully for user {@Username}", req.Username);

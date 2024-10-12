@@ -6,8 +6,8 @@ namespace InfiniLore.Server.API.Models;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record JwtResponse(
-    string AccessToken,
-    DateTime AccessTokenExpiryUtc,
-    Guid RefreshToken,
-    DateTime RefreshTokenExpiryUtc
+    [UsedImplicitly] string AccessToken,
+    [UsedImplicitly] DateTime AccessTokenExpiryUtc,
+    [UsedImplicitly] Guid RefreshToken,
+    [UsedImplicitly] DateTime RefreshTokenExpiryUtc
 );

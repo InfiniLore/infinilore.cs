@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
+using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace InfiniLore.Server.Data.Repositories.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -12,40 +12,7 @@ namespace InfiniLore.Server.Data.Repositories.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
 [RegisterService<ILoreScopesRepository>(LifeTime.Scoped)]
 public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : ILoreScopesRepository {
-    public async Task<Result<IEnumerable<LoreScopeModel>>> GetAllAsync(CancellationToken ct) {
-        try {
-            return Result<IEnumerable<LoreScopeModel>>.Success(await unitOfWork.Db.LoreScopes
-                .Include(ls => ls.Multiverses)
-                .ToListAsync(ct));
-        }
-        catch (Exception e) {
-            #if DEBUG
-            return Result<IEnumerable<LoreScopeModel>>.Failure(e.Message);
-            #else
-            return Result<IEnumerable<LoreScopeModel>>.Failure();
-            #endif
-        }
-    }
-    public async Task<Result<IEnumerable<LoreScopeModel>>> GetAllAsync(Func<IQueryable<LoreScopeModel>, IQueryable<LoreScopeModel>> predicate, CancellationToken ct) {
-        try {
-            IIncludableQueryable<LoreScopeModel, ICollection<MultiverseModel>> query = unitOfWork.Db.LoreScopes
-                .Include(ls => ls.Multiverses);
-
-            predicate(query);
-
-            List<LoreScopeModel> data = await query.ToListAsync(ct);
-
-            return Result<IEnumerable<LoreScopeModel>>.Success(data);
-        }
-        catch (Exception e) {
-            #if DEBUG
-            return Result<IEnumerable<LoreScopeModel>>.Failure(e.Message);
-            #else
-            return Result<IEnumerable<LoreScopeModel>>.Failure();
-            #endif
-        }
-    }
-
+    #region DeleteAsync
     public async Task<Result<bool>> DeleteAsync(Guid loreScopeId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
 
@@ -63,4 +30,5 @@ public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork)
 
         return Result<bool>.Success(true);
     }
+    #endregion
 }
