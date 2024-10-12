@@ -14,16 +14,20 @@ body:
       value: >+
         ### InfiniLore : Developer Story
 
+
         During the development of InfiniLore, we don't adhere to true Scrum
         practices, because as a solo dev, it isn't always feasible or
         practical.
 
+
         However, we do use developer stories to clearly communicate what tasks
         need to be done and the limited scope of each one.
+
         
         This template is designed to help document development requirements
         and implementation goals.
 
+        
         ---
 
   - type: textarea
