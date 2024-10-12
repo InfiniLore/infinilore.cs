@@ -5,21 +5,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfiniLore.Server.Data.Models.Base;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseContent<T> where T : BaseContent<T> {
     [Key] public Guid Id { get; set; }
-    
-    #region Tracking 
+
+    #region Tracking
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedDate { get; set; }
 
     // ReSharper disable once CollectionNeverUpdated.Global
-    public ICollection<AuditLog<T>> AuditLogs { get; set; } = []; 
+    public ICollection<AuditLog<T>> AuditLogs { get; set; } = [];
     #endregion
-    
+
     #region SoftDelete
     [NotMapped] public bool IsSoftDeleted => SoftDeleteDate != null;
     public DateTime? SoftDeleteDate { get; private set; }

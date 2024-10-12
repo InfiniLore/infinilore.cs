@@ -16,8 +16,8 @@ module.exports = {
             boxShadow: {
                 'inner-lg': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.1)',
             },
-            aspectRatio : {
-                poster : '2/3'
+            aspectRatio: {
+                poster: '2/3'
             }
         },
     },
@@ -37,15 +37,15 @@ module.exports = {
                 "font-style": `normal`,
             };
 
-          addUtilities(newUtilities, ['responsive', 'hover']);
-            
+            addUtilities(newUtilities, ['responsive', 'hover']);
+
         },
-        
+
         // - Debug Colors ----------------------------------------------------------------------------------------------
-        function({ addUtilities, theme, e}) {
+        function ({addUtilities, theme, e}) {
             const colors = theme('colors');
             const newUtilities = {};
-      
+
             Object.keys(colors).forEach(color => {
                 if (typeof colors[color] === 'string') {
                     newUtilities[`.DEBUG-${e(color)}`] = {
@@ -63,7 +63,7 @@ module.exports = {
                     });
                 }
             });
-      
+
             addUtilities(newUtilities, ['responsive', 'hover']);
         }
     ],

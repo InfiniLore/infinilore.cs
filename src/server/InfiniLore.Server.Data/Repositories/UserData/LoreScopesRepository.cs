@@ -7,7 +7,6 @@ using InfiniLoreLib.Results;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace InfiniLore.Server.Data.Repositories.UserData;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,7 +19,7 @@ public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork)
                 .ToListAsync(ct));
         }
         catch (Exception e) {
-            #if DEBUG 
+            #if DEBUG
             return Result<IEnumerable<LoreScopeModel>>.Failure(e.Message);
             #else
             return Result<IEnumerable<LoreScopeModel>>.Failure();
@@ -31,15 +30,15 @@ public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork)
         try {
             IIncludableQueryable<LoreScopeModel, ICollection<MultiverseModel>> query = unitOfWork.Db.LoreScopes
                 .Include(ls => ls.Multiverses);
-            
+
             predicate(query);
-            
+
             List<LoreScopeModel> data = await query.ToListAsync(ct);
 
             return Result<IEnumerable<LoreScopeModel>>.Success(data);
         }
         catch (Exception e) {
-            #if DEBUG 
+            #if DEBUG
             return Result<IEnumerable<LoreScopeModel>>.Failure(e.Message);
             #else
             return Result<IEnumerable<LoreScopeModel>>.Failure();
@@ -49,19 +48,19 @@ public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork)
 
     public async Task<Result<bool>> DeleteAsync(Guid loreScopeId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-        
-        LoreScopeModel? loreScope = await dbContext.LoreScopes.FindAsync([loreScopeId], cancellationToken: ct);
+
+        LoreScopeModel? loreScope = await dbContext.LoreScopes.FindAsync([loreScopeId], ct);
         if (loreScope is null) return Result<bool>.Failure($"LoreScope with id {loreScopeId} not found");
-        
+
         return await DeleteAsync(loreScope, ct);
     }
-    
+
     public async Task<Result<bool>> DeleteAsync(LoreScopeModel model, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-        
+
         model.SoftDelete();
         await dbContext.SaveChangesAsync(ct);
-        
+
         return Result<bool>.Success(true);
     }
 }

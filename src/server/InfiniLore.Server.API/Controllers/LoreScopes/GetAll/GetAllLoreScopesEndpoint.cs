@@ -28,8 +28,8 @@ public class GetAllLoreScopesEndpoint(IInfiniLoreUserRepository userRepository) 
 
     public async override Task<Results<Ok<IEnumerable<LoreScopeResponse>>, NotFound>> ExecuteAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
         ResultMany<LoreScopeModel> result = await userRepository.GetLoreScopesAsync(req.UserId, ct);
-        if (result.IsFailure || result.Values is null)  return TypedResults.NotFound();
-        
+        if (result.IsFailure || result.Values is null) return TypedResults.NotFound();
+
         return TypedResults.Ok(result.Values.Select(ls => Map.FromEntity(ls)));
     }
 }

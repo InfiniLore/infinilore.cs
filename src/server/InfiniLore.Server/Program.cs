@@ -39,48 +39,51 @@ public static class Program {
 
         #region Authentication
         // Register JWT Authentication
-        builder.Services.AddAuthenticationJwtBearer(options => {
-            options.SigningKey = builder.Configuration["JWT:Key"];
-        }
-        , bearerOptions => {
-            bearerOptions.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
-            bearerOptions.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
-            
-            bearerOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:Issuer"];
-            bearerOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:Audience"];
-            
-            bearerOptions.MapInboundClaims = true;
-        });
+        builder.Services.AddAuthenticationJwtBearer(signingOptions: options => {
+                options.SigningKey = builder.Configuration["JWT:Key"];
+            }
+            , bearerOptions: bearerOptions => {
+                bearerOptions.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
+                bearerOptions.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
+
+                bearerOptions.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:Issuer"];
+                bearerOptions.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:Audience"];
+
+                bearerOptions.MapInboundClaims = true;
+            });
+
         builder.Services.AddAuthentication(o => {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }
         );
-        
+
         // TODO Add google oauth login
 
         // Register Identity
-        builder.Services.AddIdentityCore<InfiniLoreUser>(options =>  
-                options.SignIn.RequireConfirmedAccount = false
-            ) 
-            .AddRoles<IdentityRole>() // Resolves an issue, thanks to : https://stackoverflow.com/a/68603582/9133374
+        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddRoles<IdentityRole>()// Resolves an issue, thanks to : https://stackoverflow.com/a/68603582/9133374
             .AddEntityFrameworkStores<InfiniLoreDbContext>()
             .AddSignInManager();
 
-        // Override cookie auth scheme to return 401/403 instead of redirecting
+        // Override cookie auth scheme to return 401/403 instead of redirecting on API calls
         builder.Services.ConfigureApplicationCookie(
-            c => {
-                c.Events.OnRedirectToLogin = ctx => {
-                    if (ctx is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
-                        ctx.Response.StatusCode = 401;
+            cookieOptions => {
+                cookieOptions.Events.OnRedirectToLogin = context => {
+                    if (context is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
+                        context.Response.StatusCode = 401;
                     }
+
                     return Task.CompletedTask;
                 };
-        
-                c.Events.OnRedirectToAccessDenied = ctx => {
-                    if (ctx is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
-                        ctx.Response.StatusCode = 403;
+
+                cookieOptions.Events.OnRedirectToAccessDenied = context => {
+                    if (context is { Request.Path.Value: "/api", Response.StatusCode: 200 }) {
+                        context.Response.StatusCode = 403;
                     }
+
                     return Task.CompletedTask;
                 };
             });
@@ -110,12 +113,11 @@ public static class Program {
                     settings.Description = "An ASP.NET Core Web API for managing InfiniLore";
                 };
             });
-        
+
+        builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
         #endregion
 
         builder.Services.RegisterServicesFromInfiniLoreServerAPI();
-        builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
-
         builder.Services.RegisterServicesFromInfiniLoreServerData();
         builder.Services.AddScoped(typeof(IAuditLogRepository<>), typeof(AuditLogRepository<>));
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
@@ -149,6 +151,7 @@ public static class Program {
         app.UseFastEndpoints(ctx => {
             ctx.Endpoints.RoutePrefix = "api";
         });
+
         app.UseOpenApi();
         app.UseSwaggerUI(ModernStyle.Dark, setupAction: ctx => {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");

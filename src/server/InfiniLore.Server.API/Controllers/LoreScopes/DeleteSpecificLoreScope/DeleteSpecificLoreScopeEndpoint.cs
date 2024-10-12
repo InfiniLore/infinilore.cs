@@ -32,23 +32,23 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
     public async override Task<Results<Ok, NotFound>> ExecuteAsync(DeleteSpecificLoreScopeRequest req, CancellationToken ct) {
         // TODO Move to a service
         await unitOfWork.BeginTransactionAsync(ct);
-        
+
         ResultMany<LoreScopeModel> resultLoreScopes = await userRepository.GetLoreScopesAsync(req.UserId, ct);
         if (resultLoreScopes.IsFailure || resultLoreScopes.Values is null) {
-            return TypedResults.NotFound(); // Nothing to rollback
+            return TypedResults.NotFound();// Nothing to rollback
         }
-        
+
         LoreScopeModel? scope = resultLoreScopes.Values.FirstOrDefault(x => x.Id == req.LoreScopeId);
         if (scope is null) {
-            return TypedResults.NotFound(); // Nothing to rollback
+            return TypedResults.NotFound();// Nothing to rollback
         }
-        
+
         Result<bool> resultDelete = await loreScopeRepository.DeleteAsync(scope, ct);
         if (resultDelete.IsFailure) {
             await unitOfWork.RollbackTransactionAsync(ct);
             return TypedResults.NotFound();
         }
-        
+
         await auditLogRepository.AddAsync(new AuditLog<LoreScopeModel> {
             Content = scope,
             UserId = req.UserId

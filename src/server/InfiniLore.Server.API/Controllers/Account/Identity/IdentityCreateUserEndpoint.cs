@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace InfiniLore.Server.API.Controllers.Account.Identity;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,7 +20,7 @@ public class IdentityCreateUserEndpoint(SignInManager<InfiniLoreUser> signInMana
             Ok
         >
     > {
-    
+
     public override void Configure() {
         Post("/account/identity/create");
         AllowAnonymous();
@@ -41,19 +40,22 @@ public class IdentityCreateUserEndpoint(SignInManager<InfiniLoreUser> signInMana
                     Detail = "User Creation Failed" + string.Join("; ", result.Errors.Select(e => e.Description)),
                     Status = StatusCodes.Status400BadRequest
                 };
+
                 return TypedResults.BadRequest(problemDetails);
             }
 
             await signInManager.SignInAsync(user, false);
             return TypedResults.Ok();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.Error(ex, "Error creating user");
             var problemDetails = new ProblemDetails {
                 Detail = "An unexpected error occurred while creating the user.",
                 Status = StatusCodes.Status400BadRequest
             };
+
             return TypedResults.BadRequest(problemDetails);
         }
     }
-    
+
 }

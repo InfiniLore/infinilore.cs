@@ -6,7 +6,6 @@ using InfiniLore.Server.Data.Models.UserData;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Contracts.Data;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

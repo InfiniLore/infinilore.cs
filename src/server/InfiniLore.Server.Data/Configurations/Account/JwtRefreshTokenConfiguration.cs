@@ -5,7 +5,6 @@ using InfiniLore.Server.Data.Models.Account;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Data.Configurations.Account;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

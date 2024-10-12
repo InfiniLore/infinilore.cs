@@ -13,20 +13,25 @@ $TempCsprojPath = "./.temp/InfiniLore.KiotaApiClient.csproj"
 # -----------------------------------------------------------------------------------------------------------------
 # Code
 # -----------------------------------------------------------------------------------------------------------------
-function Copy-Csproj {
-    if (Test-Path -Path $CsprojPath) {
+function Copy-Csproj
+{
+    if (Test-Path -Path $CsprojPath)
+    {
         Copy-Item -Path $CsprojPath -Destination $TempCsprojPath
     }
 }
 
-function Restore-Csproj {
+function Restore-Csproj
+{
     cd "../../../"
-    if (-not (Test-Path -Path $CsprojPath) -and (Test-Path -Path $TempCsprojPath)) {
+    if (-not (Test-Path -Path $CsprojPath) -and (Test-Path -Path $TempCsprojPath))
+    {
         Move-Item -Path $TempCsprojPath -Destination $CsprojPath
     }
 }
 
-function main {
+function main
+{
     echo "Copying .csproj file to temporary location..."
     Copy-Csproj
 

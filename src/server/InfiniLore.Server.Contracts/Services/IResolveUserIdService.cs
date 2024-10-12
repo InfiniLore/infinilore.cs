@@ -5,7 +5,6 @@ using InfiniLore.Server.Contracts.API.Dto;
 using InfiniLore.Server.Data.Models.Account;
 
 namespace InfiniLore.Server.Contracts.Services;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

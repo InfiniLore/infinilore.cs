@@ -21,8 +21,8 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
         Results<
             BadRequest<ProblemDetails>,
             Ok<JwtResponse>
-    >
-> {
+        >
+    > {
     public override void Configure() {
         Post("/account/jwt/tokens-create");
         AllowAnonymous();
@@ -34,18 +34,18 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
         InfiniLoreUser? user = await signInManager.UserManager.FindByNameAsync(req.Username);
         if (user == null) {
             logger.Warning("User {@Username} not found", req.Username);
-            return TypedResults.BadRequest(new ProblemDetails {Detail = "Invalid username"});
+            return TypedResults.BadRequest(new ProblemDetails { Detail = "Invalid username" });
         }
 
         if (!await signInManager.CanSignInAsync(user)) {
             logger.Warning("User {@Username} cannot sign in", req.Username);
-            return TypedResults.BadRequest(new ProblemDetails {Detail = "Unable to sign in."});
+            return TypedResults.BadRequest(new ProblemDetails { Detail = "Unable to sign in." });
         }
 
         SignInResult signInResult = await signInManager.CheckPasswordSignInAsync(user, req.Password, false);
         if (!signInResult.Succeeded) {
             logger.Warning("Invalid password for user {@Username}", req.Username);
-            return TypedResults.BadRequest(new ProblemDetails {Detail = "Invalid username or password."});
+            return TypedResults.BadRequest(new ProblemDetails { Detail = "Invalid username or password." });
         }
 
         logger.Information("Generating tokens for user {@Username}", req.Username);
@@ -54,15 +54,15 @@ public class JwtCreateTokensEndpoint(SignInManager<InfiniLoreUser> signInManager
         if (!jwtResult.IsFailure) {
             logger.Information("Tokens generated successfully for user {@Username}", req.Username);
             return TypedResults.Ok(new JwtResponse(
-                AccessToken: jwtResult.AccessToken!,
-                AccessTokenExpiryUtc: (DateTime)jwtResult.AccessTokenExpiryUtc!,
-                RefreshToken: (Guid)jwtResult.RefreshToken!,
-                RefreshTokenExpiryUtc: (DateTime)jwtResult.RefreshTokenExpiryUtc!
+                jwtResult.AccessToken!,
+                (DateTime)jwtResult.AccessTokenExpiryUtc!,
+                (Guid)jwtResult.RefreshToken!,
+                (DateTime)jwtResult.RefreshTokenExpiryUtc!
             ));
         }
 
         logger.Warning("Unable to generate tokens for user {@Username}. Result: {@JwtResult}", req.Username, jwtResult);
-        return TypedResults.BadRequest(new ProblemDetails {Detail = "Unable to generate tokens."});
+        return TypedResults.BadRequest(new ProblemDetails { Detail = "Unable to generate tokens." });
 
     }
 }

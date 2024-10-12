@@ -6,7 +6,6 @@ using InfiniLore.Server.Data.Models.UserData;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Data.Configurations.UserData;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -16,15 +15,14 @@ public class MultiverseModelConfiguration : BaseContentConfiguration<MultiverseM
         HasSoftDeleteAsQueryFilter(builder);
         HasUniqueIdAsKey(builder);
         HasAuditLogs(builder);
-        
+
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
-        
-        builder.HasIndex(model => new { model.Name, model.LoreScopeId }).
-            IsUnique();
-        
+
+        builder.HasIndex(model => new { model.Name, model.LoreScopeId }).IsUnique();
+
         builder.HasMany(model => model.Universes)
             .WithOne(universe => universe.Multiverse)
             .HasForeignKey(x => x.MultiverseId);
-        
+
     }
 }

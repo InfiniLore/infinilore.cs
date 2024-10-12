@@ -16,7 +16,6 @@ using Serilog;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.Services;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -33,21 +32,22 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
 
             DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!));
             DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(int.Parse(configuration["Jwt:RefreshExpiresInDays"]!));
-            
+
             // InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
             // await dbContext.Roles.FindAsync(roles, ct);
-            
+
             string accessToken = GenerateAccessToken(user, roles, permissions, accessTokenExpiryUtc);
             Guid refreshToken = await GenerateRefreshTokenAsync(user, refreshTokenExpiryUtc, ct);
 
             return JwtResult.Success(
-                accessToken: accessToken,
+                accessToken,
                 accessTokenExpiryUtc: accessTokenExpiryUtc,
                 refreshToken: refreshToken,
                 refreshTokenExpiryUtc: refreshTokenExpiryUtc
             );
-            
-        } catch (Exception ex) {
+
+        }
+        catch (Exception ex) {
             // TODO only send the direct message in dev environment
             logger.Error(ex, "Error generating tokens");
             return JwtResult.Failure(ex.Message);
@@ -61,12 +61,12 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
                 o.ExpireAt = expiresAt;
                 o.Audience = configuration["JWT:Audience"];
                 o.Issuer = configuration["JWT:Issuer"];
-                
+
                 o.User.Roles.Add(roles);
                 o.User.Permissions.Add(permissions);
                 o.User[ClaimTypes.Name] = user.Id;
             });
-        
+
         return jwtToken;
     }
 
@@ -74,13 +74,16 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
         var token = Guid.NewGuid();
         try {
             await jwtRefreshTokenRepository.AddAsync(user, token, expiresAt, ct);
-        } catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: 19 }) {
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: 19 }) {
             logger.Error(ex, "Unique constraint violation while adding refresh token for user {UserId}", user.Id);
             throw;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.Error(ex, "Error adding refresh token for user {UserId}", user.Id);
             throw;
         }
+
         return token;
     }
 }

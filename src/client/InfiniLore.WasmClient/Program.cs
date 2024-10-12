@@ -17,7 +17,7 @@ public static class Program {
         var authProvider = new AnonymousAuthenticationProvider();
         var adapter = new HttpClientRequestAdapter(authProvider);
         var client = new InfiniLoreApiClient(adapter);
-        
+
         await builder.Build().RunAsync();
     }
 }
