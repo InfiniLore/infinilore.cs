@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FastEndpoints" Version="5.30.0"/>
+        <PackageReference Include="FastEndpoints.Generator" Version="5.30.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FastEndpoints.Security" Version="5.30.0"/>
+        <PackageReference Include="Serilog" Version="4.0.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Properties\launchSettings.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Data\InfiniLore.Server.Data.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Admin\" />
+    </ItemGroup>
+
+</Project>
