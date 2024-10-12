@@ -1,15 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.API.Models;
+namespace InfiniLore.Server.API.Controllers.Account.JWT.Revoke;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeResponse(
-    Guid Id,
-    string UserId,
-    string Name,
-    string Description,
-    ICollection<Guid> MultiverseIds
-);
+[UsedImplicitly]
+public class JwtRevokeTokensRequest {
+    public required Guid[] RefreshTokens { get; [UsedImplicitly] init; } = [];
+}

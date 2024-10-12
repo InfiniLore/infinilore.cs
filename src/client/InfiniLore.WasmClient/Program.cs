@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.KiotaApiClient;
-using InfiniLore.KiotaApiClient.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
@@ -18,7 +17,7 @@ public static class Program {
         var authProvider = new AnonymousAuthenticationProvider();
         var adapter = new HttpClientRequestAdapter(authProvider);
         var client = new InfiniLoreApiClient(adapter);
-        
+
         await builder.Build().RunAsync();
     }
 }

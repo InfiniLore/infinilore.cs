@@ -2,10 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data.Models.UserData;
-using JetBrains.Annotations;
 
 namespace InfiniLore.Server.API.Models;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,4 +17,3 @@ public class LoreScopeResponseMapper : ResponseMapper<LoreScopeResponse, LoreSco
         ls.Multiverses.Select(m => m.Id).ToArray()
     );
 }
-

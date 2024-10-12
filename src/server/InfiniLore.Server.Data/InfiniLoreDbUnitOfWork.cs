@@ -5,7 +5,6 @@ using InfiniLore.Server.Contracts.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace InfiniLore.Server.Data;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,15 +26,13 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     /// <inheritdoc/>
-    public async Task<int> SaveChangesAsync(CancellationToken ct = default) {
-        return await Db.SaveChangesAsync(ct);
-    }
-    
+    public async Task<int> SaveChangesAsync(CancellationToken ct = default) => await Db.SaveChangesAsync(ct);
+
     /// <inheritdoc/>
     public async Task BeginTransactionAsync(CancellationToken ct = default) {
         _transaction = await Db.Database.BeginTransactionAsync(ct);
     }
-    
+
     /// <inheritdoc/>
     public Task CommitTransactionAsync(CancellationToken ct = default) => TryCommitTransactionAsync(ct);
 
@@ -48,23 +45,23 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
         _transaction = null;
         return true;
     }
-    
+
     /// <inheritdoc/>
     public Task RollbackTransactionAsync(CancellationToken ct = default) => TryRollbackTransactionAsync(ct);
 
     /// <inheritdoc/>
     public async Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
-        
+
         await _transaction.RollbackAsync(ct);
         await _transaction.DisposeAsync();
         _transaction = null;
         return true;
     }
-    
+
     /// <inheritdoc/>
     public InfiniLoreDbContext GetDbContext() => Db;
-    
+
     /// <summary>
     /// Disposes the resources used by the <see cref="InfiniLoreDbUnitOfWork"/>.
     /// </summary>
@@ -76,7 +73,7 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     public void Dispose() {
         Db.Dispose();
         _transaction?.Dispose();
-        
+
         GC.SuppressFinalize(this);
     }
 }

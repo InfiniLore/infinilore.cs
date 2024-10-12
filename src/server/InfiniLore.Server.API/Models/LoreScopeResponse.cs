@@ -1,19 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLoreLib;
+namespace InfiniLore.Server.API.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record ResultMany<T> (
-    bool IsSuccess,
-    IEnumerable<T>? Values = default,
-    string? ErrorMessage = null
-) {
-    public bool IsFailure => !IsSuccess;
-    
-    public static ResultMany<T> Success(IEnumerable<T> value) => new(true, value);
-    public static ResultMany<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
-    
-    public static implicit operator bool(ResultMany<T> result) => result.IsSuccess;
-}
+public record LoreScopeResponse(
+    Guid Id,
+    string UserId,
+    string Name,
+    string Description,
+    ICollection<Guid> MultiverseIds
+);

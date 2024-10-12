@@ -10,12 +10,12 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8"/>
-        <PackageReference Include="Serilog" Version="4.0.2" />
-        <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
+        <PackageReference Include="Serilog" Version="4.0.2"/>
+        <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj" />
+        <ProjectReference Include="..\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj"/>
     </ItemGroup>
 
 </Project>

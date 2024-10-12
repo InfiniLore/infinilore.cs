@@ -85,18 +85,58 @@ namespace InfiniLore.Server.Data.Migrations
                         {
                             Id = "d957c0f8-e90e-4068-a968-4f4b49fc165c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e5e4e92-b254-4cd5-9bff-32db083aad93",
+                            ConcurrencyStamp = "920180d9-5360-495b-abb7-fb8365605ab5",
                             Email = "testuser@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                             NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE0wBRX3R8P/lSotNOSTzD6AXu3eitUUY8d6L3GJvpJrZn00jwliCJxyDibRCq918w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAJItp0RegzW1PITs52O0VCpDT1DEMMTRzQ4C3Q2RCnLOmmbFwxrKIaDDknLHn23og==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                             TwoFactorEnabled = false,
                             UserName = "testuser"
                         });
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Data.Models.Account.JwtRefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ExpiresInDays")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Permissions")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("JwtRefreshTokens");
                 });
 
             modelBuilder.Entity("InfiniLore.Server.Data.Models.Base.AuditLog<InfiniLore.Server.Data.Models.UserData.LoreScopeModel>", b =>
@@ -216,6 +256,7 @@ namespace InfiniLore.Server.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasMaxLength(48)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -261,6 +302,7 @@ namespace InfiniLore.Server.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasMaxLength(48)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -308,6 +350,7 @@ namespace InfiniLore.Server.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasMaxLength(48)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -353,13 +396,13 @@ namespace InfiniLore.Server.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa3b7b95-05eb-4f9f-b205-168724dab6c4",
+                            Id = "61d818d3-3df3-4b3d-ab22-7cb4f6c8b549",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9f39ee7b-17d9-4453-bbb0-ab4b48f9dbea",
+                            Id = "61c88947-ff70-4882-b509-91cc8992c61a",
                             Name = "user",
                             NormalizedName = "USER"
                         });
@@ -465,6 +508,17 @@ namespace InfiniLore.Server.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Data.Models.Account.JwtRefreshToken", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Data.Models.Account.InfiniLoreUser", "User")
+                        .WithMany("JwtRefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("InfiniLore.Server.Data.Models.Base.AuditLog<InfiniLore.Server.Data.Models.UserData.LoreScopeModel>", b =>
@@ -596,6 +650,8 @@ namespace InfiniLore.Server.Data.Migrations
 
             modelBuilder.Entity("InfiniLore.Server.Data.Models.Account.InfiniLoreUser", b =>
                 {
+                    b.Navigation("JwtRefreshTokens");
+
                     b.Navigation("LoreScopes");
 
                     b.Navigation("Multiverses");

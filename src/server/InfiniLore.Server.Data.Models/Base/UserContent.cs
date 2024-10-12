@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data.Models.Account;
+using System.ComponentModel.DataAnnotations;
 
 namespace InfiniLore.Server.Data.Models.Base;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -9,5 +10,5 @@ namespace InfiniLore.Server.Data.Models.Base;
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserContent<T> : BaseContent<T> where T : BaseContent<T> {
     public required InfiniLoreUser User { get; set; }
-    public string UserId { get; set; } = null!;
+    [MaxLength(48)] public string UserId { get; set; } = null!;
 }
