@@ -10,9 +10,9 @@ namespace InfiniLoreLib.Results;
 /// </summary>
 /// <typeparam name="T">The type of the values contained in the result.</typeparam>
 public class ResultMany<T>(
-    bool IsSuccess,
-    IEnumerable<T>? Values = default,
-    string? ErrorMessage = null
+    bool isSuccess,
+    IEnumerable<T>? values = default,
+    string? errorMessage = null
 ) {
     /// <summary>
     /// Indicates whether the operation resulted in failure.
@@ -21,9 +21,9 @@ public class ResultMany<T>(
     /// Returns <c>true</c> if the operation was not successful; otherwise, <c>false</c>.
     /// </value>
     public bool IsFailure => !IsSuccess;
-    public bool IsSuccess { get; init; } = IsSuccess;
-    public IEnumerable<T>? Values { get; init; } = Values;
-    public string? ErrorMessage { get; init; } = ErrorMessage;
+    public bool IsSuccess { get; } = isSuccess;
+    public IEnumerable<T>? Values { get; } = values;
+    public string? ErrorMessage { get; init; } = errorMessage;
 
     /// <summary>
     /// Returns a successful <see cref="ResultMany{T}"/> with the provided values.
