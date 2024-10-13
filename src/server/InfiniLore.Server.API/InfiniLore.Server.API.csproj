@@ -14,7 +14,7 @@
         </PackageReference>
         <PackageReference Include="FastEndpoints.Security" Version="5.30.0"/>
         <PackageReference Include="Serilog" Version="4.0.2"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1"/>
     </ItemGroup>
 
     <ItemGroup>

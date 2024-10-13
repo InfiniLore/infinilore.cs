@@ -151,20 +151,18 @@ public static class Program {
             ctx.SwaggerEndpoint("/swagger/v1/swagger.json", "InfiniLore API v1");
             ctx.RoutePrefix = "swagger";
         });
-        
+
         await Task.WhenAll(
-            MigrateDatabaseAsync(app), // Db Migrations on startup
+            MigrateDatabaseAsync(app),// Db Migrations on startup
             app.RunAsync()
         );
     }
-    
+
     private async static Task MigrateDatabaseAsync(WebApplication app) {
         await using InfiniLoreDbContext db = await app.Services.GetRequiredService<IDbContextFactory<InfiniLoreDbContext>>().CreateDbContextAsync();
         await db.Database.MigrateAsync();
         await db.SaveChangesAsync();
     }
 
-    private static bool IsApiRequest(RedirectContext<CookieAuthenticationOptions> context) {
-        return context is { Request.Path.Value: "/api", Response.StatusCode: 200 };
-    }
+    private static bool IsApiRequest(RedirectContext<CookieAuthenticationOptions> context) => context is { Request.Path.Value: "/api", Response.StatusCode: 200 };
 }

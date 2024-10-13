@@ -69,7 +69,7 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
         }
     }
     #endregion
-    
+
     #region GetAsync
     public async Task<JwtRefreshToken?> GetAsync(Guid token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
@@ -82,7 +82,7 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
         return tokenData;
     }
     #endregion
-    
+
     #region RemoveAsync
     public async Task<bool> RemoveAsync(Guid token, CancellationToken ct = default) {
         if (await GetAsync(token, ct) is not {} tokenData) return false;
@@ -99,7 +99,7 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
         return true;
     }
     #endregion
-    
+
     #region RemoveAllAsync
     public async Task<bool> RemoveAllAsync(string userId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();

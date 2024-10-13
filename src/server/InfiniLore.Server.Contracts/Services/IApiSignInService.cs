@@ -1,18 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components;
-using System.Diagnostics;
+using InfiniLore.Server.Data.Models.Account;
+using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Components.Pages;
+namespace InfiniLore.Server.Contracts.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public partial class Error {
-    [CascadingParameter] private HttpContext? HttpContext { get; set; }
-
-    private string? RequestId { get; set; }
-    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    protected override void OnInitialized() =>
-        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+public interface IApiSignInService {
+    Task<IdentityUserResult<InfiniLoreUser>> SignInAsync(string username, string password, CancellationToken ct = default);
 }

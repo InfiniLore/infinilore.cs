@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.10"/>
+    </ItemGroup>
+
 </Project>

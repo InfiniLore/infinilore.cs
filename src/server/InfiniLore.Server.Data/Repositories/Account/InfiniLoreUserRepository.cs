@@ -31,7 +31,7 @@ public class InfiniLoreUserRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfW
             : ResultMany<LoreScopeModel>.Success(user.LoreScopes);
     }
     #endregion
-    
+
     #region GetMultiversesAsync
     public Task<ResultMany<MultiverseModel>> GetMultiversesAsync(InfiniLoreUser user, CancellationToken ct = default)
         => GetMultiversesAsync(user.Id, ct);
@@ -50,7 +50,7 @@ public class InfiniLoreUserRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfW
             : ResultMany<MultiverseModel>.Success(user.Multiverses);
     }
     #endregion
-    
+
     #region GetUniversesAsync
     public Task<ResultMany<UniverseModel>> GetUniversesAsync(InfiniLoreUser user, CancellationToken ct = default)
         => GetUniversesAsync(user.Id, ct);

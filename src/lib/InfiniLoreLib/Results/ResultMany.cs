@@ -9,7 +9,7 @@ namespace InfiniLoreLib.Results;
 /// Represents a result that can contain multiple values and additional metadata indicating success or failure.
 /// </summary>
 /// <typeparam name="T">The type of the values contained in the result.</typeparam>
-public record ResultMany<T>(
+public class ResultMany<T>(
     bool IsSuccess,
     IEnumerable<T>? Values = default,
     string? ErrorMessage = null
@@ -21,6 +21,9 @@ public record ResultMany<T>(
     /// Returns <c>true</c> if the operation was not successful; otherwise, <c>false</c>.
     /// </value>
     public bool IsFailure => !IsSuccess;
+    public bool IsSuccess { get; init; } = IsSuccess;
+    public IEnumerable<T>? Values { get; init; } = Values;
+    public string? ErrorMessage { get; init; } = ErrorMessage;
 
     /// <summary>
     /// Returns a successful <see cref="ResultMany{T}"/> with the provided values.
@@ -34,10 +37,4 @@ public record ResultMany<T>(
     /// <param name="errorMessage">The error message describing the failure. If no message is provided, null is used.</param>
     /// <returns>A ResultMany object representing a failure.</returns>
     public static ResultMany<T> Failure(string? errorMessage = null) => new(false, default, errorMessage);
-
-    /// <summary>
-    /// Represents a result that can either be successful with multiple values or a failure with an error message.
-    /// </summary>
-    /// <typeparam name="T">The type of the values returned in the result.</typeparam>
-    public static implicit operator bool(ResultMany<T> result) => result.IsSuccess;
 }

@@ -11,23 +11,24 @@ namespace InfiniLoreLib.Results;
 /// Represents the result of a JWT (JSON Web Token) operation, encapsulating the success status,
 /// access token, refresh token, their expiry times, and any potential error message.
 /// </summary>
-public record JwtResult(
-    bool IsSuccess,
-    string? AccessToken = default,
-    DateTime? AccessTokenExpiryUtc = default,
-    Guid? RefreshToken = default,
-    DateTime? RefreshTokenExpiryUtc = default,
-    string? ErrorMessage = null
+public class JwtResult(
+    bool isSuccess,
+    string? accessToken = default,
+    DateTime? accessTokenExpiryUtc = default,
+    Guid? refreshToken = default,
+    DateTime? refreshTokenExpiryUtc = default,
+    string? errorMessage = null
 ) : Result<(string? AccessToken, Guid? RefreshToken, DateTime? AccessTokenExpiryUTC, DateTime? RefreshTokenExpiryUTC)>(
-    IsSuccess,
-    (AccessToken, RefreshToken, AccessTokenExpiryUtc, RefreshTokenExpiryUtc),
-    ErrorMessage
+    isSuccess,
+    (accessToken, refreshToken, accessTokenExpiryUtc, refreshTokenExpiryUtc),
+    errorMessage
 ) {
-
-    /// <summary>
-    /// Indicates the success status of the JWT operation.
-    /// </summary>
-    private new bool IsSuccess => base.IsSuccess;
+    #region Fix for MemberNotNullWhen
+    /// <inheritdoc cref="Result{T}.IsFailure"/>
+    public override bool IsFailure => !IsSuccess;
+    /// <inheritdoc cref="Result{T}.IsSuccess"/>
+    public override bool IsSuccess { get; } = isSuccess;
+    #endregion
 
     /// <summary>
     /// Gets the access token that is used for authenticating user requests.
@@ -36,7 +37,7 @@ public record JwtResult(
     /// </summary>
     [MemberNotNullWhen(true, nameof(IsSuccess))]
     public string? AccessToken => Value.AccessToken;
-    
+
     /// <summary>
     /// Gets the UTC expiry date and time of the access token.
     /// </summary>
@@ -44,8 +45,9 @@ public record JwtResult(
     /// This property indicates when the access token will expire in Coordinated Universal Time (UTC).
     /// </remarks>
     [MemberNotNullWhen(true, nameof(IsSuccess))]
+    [MemberNotNullWhen(false, nameof(IsFailure))]
     public DateTime? AccessTokenExpiryUtc => Value.AccessTokenExpiryUTC;
-    
+
     /// <summary>
     /// Gets the refresh token associated with the JWT result.
     /// </summary>
@@ -53,8 +55,9 @@ public record JwtResult(
     /// The refresh token can be used to obtain a new access token when the current access token expires.
     /// </remarks>
     [MemberNotNullWhen(true, nameof(IsSuccess))]
+    [MemberNotNullWhen(false, nameof(IsFailure))]
     public Guid? RefreshToken => Value.RefreshToken;
-    
+
     /// <summary>
     /// Gets the UTC expiration date and time of the refresh token.
     /// </summary>
@@ -62,6 +65,7 @@ public record JwtResult(
     /// The expiration date and time of the refresh token in UTC.
     /// </value>
     [MemberNotNullWhen(true, nameof(IsSuccess))]
+    [MemberNotNullWhen(false, nameof(IsFailure))]
     public DateTime? RefreshTokenExpiryUtc => Value.RefreshTokenExpiryUTC;
 
     /// <summary>
@@ -74,11 +78,11 @@ public record JwtResult(
     /// <returns>A successful JwtResult containing the provided tokens and expiry times.</returns>
     public static JwtResult Success(string accessToken, Guid refreshToken, DateTime accessTokenExpiryUtc, DateTime refreshTokenExpiryUtc) =>
         new(true, accessToken, accessTokenExpiryUtc, refreshToken, refreshTokenExpiryUtc);
-    
+
     /// <summary>
     /// Creates a new <see cref="JwtResult"/> indicating failure.
     /// </summary>
     /// <param name="errorMessage">The error message detailing the reason for failure. Default is null.</param>
     /// <returns>A <see cref="JwtResult"/> instance where <see cref="JwtResult.IsSuccess"/> is false and <paramref name="errorMessage"/> is set.</returns>
-    public new static JwtResult Failure(string? errorMessage = null) => new(false, ErrorMessage: errorMessage);
+    public new static JwtResult Failure(string? errorMessage = null) => new(false, errorMessage: errorMessage);
 }

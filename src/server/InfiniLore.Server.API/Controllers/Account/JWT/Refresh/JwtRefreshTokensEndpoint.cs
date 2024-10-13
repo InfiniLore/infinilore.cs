@@ -24,15 +24,21 @@ public class JwtRefreshTokensEndpoint(IJwtTokenService jwtTokenService, ILogger 
     }
     public async override Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtRefreshTokensRequest req, CancellationToken ct) {
         logger.Information("Generating tokens for refreshToken {@Token}", req.RefreshToken);
+        
         JwtResult jwtResult = await jwtTokenService.RefreshTokensAsync(req.RefreshToken, ct);
-
-        if (!jwtResult.IsFailure) {
+        if (jwtResult is {
+                IsSuccess: true,
+                AccessTokenExpiryUtc: {} accessTokenExpiryUtc,
+                RefreshToken: {} refreshToken,
+                RefreshTokenExpiryUtc: {} refreshTokenExpiryUtc,
+                AccessToken: {} accessToken
+            }) {
             logger.Information("Tokens generated successfully for refreshToken {@Token}", req.RefreshToken);
             return TypedResults.Ok(new JwtResponse(
-                jwtResult.AccessToken!,
-                (DateTime)jwtResult.AccessTokenExpiryUtc!,
-                (Guid)jwtResult.RefreshToken!,
-                (DateTime)jwtResult.RefreshTokenExpiryUtc!
+                accessToken, 
+                accessTokenExpiryUtc, 
+                refreshToken,
+                refreshTokenExpiryUtc
             ));
         }
 

@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Data.Configurations.UserData;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class LoreScopeModelConfiguration : BaseContentConfiguration<LoreScopeModel> {
-    
+
     public override void Configure(EntityTypeBuilder<LoreScopeModel> builder) {
         HasSoftDeleteAsQueryFilter(builder);
         HasUniqueIdAsKey(builder);
