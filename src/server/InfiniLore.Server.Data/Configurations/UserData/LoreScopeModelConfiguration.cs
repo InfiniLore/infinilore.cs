@@ -14,7 +14,6 @@ public class LoreScopeModelConfiguration : BaseContentConfiguration<LoreScopeMod
     public override void Configure(EntityTypeBuilder<LoreScopeModel> builder) {
         HasSoftDeleteAsQueryFilter(builder);
         HasUniqueIdAsKey(builder);
-        HasAuditLogs(builder);
 
         builder.HasIndex(model => new { model.Name, model.UserId })
             .IsUnique();

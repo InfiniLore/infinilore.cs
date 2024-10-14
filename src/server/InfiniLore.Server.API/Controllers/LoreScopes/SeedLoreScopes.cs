@@ -16,7 +16,7 @@ public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFact
         Roles("Admin");
     }
 
-    public async override Task HandleAsync(CancellationToken ct) {
+    public override async Task HandleAsync(CancellationToken ct) {
         logger.Information("User is authenticated: {IsAuthenticated}", User.Identity is { IsAuthenticated: true });
         logger.Information("User roles: {Roles}", string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
 

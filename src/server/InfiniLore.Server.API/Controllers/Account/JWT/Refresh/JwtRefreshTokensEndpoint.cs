@@ -22,7 +22,7 @@ public class JwtRefreshTokensEndpoint(IJwtTokenService jwtTokenService, ILogger 
         Post("/account/jwt/token/refresh");
         AllowAnonymous();
     }
-    public async override Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtRefreshTokensRequest req, CancellationToken ct) {
+    public override async Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtRefreshTokensRequest req, CancellationToken ct) {
         logger.Information("Generating tokens for refreshToken {@Token}", req.RefreshToken);
         
         JwtResult jwtResult = await jwtTokenService.RefreshTokensAsync(req.RefreshToken, ct);

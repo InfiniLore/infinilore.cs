@@ -113,7 +113,6 @@ public static class Program {
         #endregion
 
         builder.Services.RegisterServicesFromInfiniLoreServerData();
-        builder.Services.AddScoped(typeof(IAuditLogRepository<>), typeof(AuditLogRepository<>));
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
 
         // -------------------------------------------------------------------------------------------------------------

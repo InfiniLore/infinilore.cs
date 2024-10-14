@@ -26,7 +26,7 @@ public class GetAllLoreScopesEndpoint(IInfiniLoreUserRepository userRepository) 
         AllowAnonymous();
     }
 
-    public async override Task<Results<Ok<IEnumerable<LoreScopeResponse>>, NotFound>> ExecuteAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
+    public override async Task<Results<Ok<IEnumerable<LoreScopeResponse>>, NotFound>> ExecuteAsync(GetAllLoreScopesRequest req, CancellationToken ct) {
         ResultMany<LoreScopeModel> result = await userRepository.GetLoreScopesAsync(req.UserId, ct);
         if (result.IsFailure || result.Values is null) return TypedResults.NotFound();
 

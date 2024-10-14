@@ -25,17 +25,13 @@ public class JwtCreateTokensEndpoint(IApiSignInService apiSignInService, IJwtTok
         AllowAnonymous();
     }
 
-    public async override Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtCreateTokensRequest req, CancellationToken ct) {
+    public override async Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtCreateTokensRequest req, CancellationToken ct) {
         try {
-            logger.Information("Starting JWT token creation process for user {Username}", req.Username);
-
             IdentityUserResult<InfiniLoreUser> signInResult = await apiSignInService.SignInAsync(req.Username, req.Password, ct).ConfigureAwait(false);
             if (signInResult is not { IsSuccess: true, User: {} user }) {
                 logger.Warning("Sign-in failed for user {Username}. Error: {ErrorMessage}", req.Username, signInResult.ErrorMessage);
                 return TypedResults.BadRequest(new ProblemDetails { Detail = signInResult.ErrorMessage });
             }
-
-            logger.Information("User {Username} signed in successfully. Generating JWT tokens...", req.Username);
 
             JwtResult jwtResult = await jwtTokenService.GenerateTokensAsync(user, req.Roles, req.Permissions, req.RefreshExpiresInDays, ct).ConfigureAwait(false);
             if (jwtResult is {

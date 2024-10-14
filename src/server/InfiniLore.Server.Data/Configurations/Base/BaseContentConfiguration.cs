@@ -15,13 +15,6 @@ public abstract class BaseContentConfiguration<T> : IEntityTypeConfiguration<T> 
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
     }
 
-    protected void HasAuditLogs(EntityTypeBuilder<T> builder) {
-        builder.HasMany<AuditLog<T>>(t => t.AuditLogs)
-            .WithOne(a => a.Content)
-            .HasForeignKey(a => a.ContentId)
-            .IsRequired(false);// Make the relationship optional
-    }
-
     protected void HasUniqueIdAsKey(EntityTypeBuilder<T> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Id).IsUnique();

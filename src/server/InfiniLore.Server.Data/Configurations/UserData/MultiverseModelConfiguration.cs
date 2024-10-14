@@ -14,7 +14,6 @@ public class MultiverseModelConfiguration : BaseContentConfiguration<MultiverseM
     public override void Configure(EntityTypeBuilder<MultiverseModel> builder) {
         HasSoftDeleteAsQueryFilter(builder);
         HasUniqueIdAsKey(builder);
-        HasAuditLogs(builder);
 
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
 

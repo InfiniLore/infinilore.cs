@@ -84,13 +84,13 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     #endregion
 
     #region RemoveAsync
-    public async Task<bool> RemoveAsync(Guid token, CancellationToken ct = default) {
+    public async Task<bool> DeleteAsync(Guid token, CancellationToken ct = default) {
         if (await GetAsync(token, ct) is not {} tokenData) return false;
 
-        return await RemoveAsync(tokenData, ct);
+        return await DeleteAsync(tokenData, ct);
     }
 
-    public async Task<bool> RemoveAsync(JwtRefreshToken token, CancellationToken ct = default) {
+    public async Task<bool> DeleteAsync(JwtRefreshToken token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
 
         dbContext.JwtRefreshTokens.Remove(token);
@@ -101,7 +101,7 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     #endregion
 
     #region RemoveAllAsync
-    public async Task<bool> RemoveAllAsync(string userId, CancellationToken ct = default) {
+    public async Task<bool> DeleteAllAsync(string userId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
 
         int recordAffected = await dbContext.JwtRefreshTokens

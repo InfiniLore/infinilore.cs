@@ -4,7 +4,6 @@
 using InfiniLore.Server.Contracts.Data;
 using InfiniLore.Server.Contracts.Data.Repositories;
 using InfiniLore.Server.Data;
-using InfiniLore.Server.Data.Models.Base;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes.DeleteSpecificLoreScope;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserRepository userRepository, ILoreScopesRepository loreScopeRepository, IAuditLogRepository<LoreScopeModel> auditLogRepository) :
+public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserRepository userRepository, ILoreScopesRepository loreScopeRepository) :
     Endpoint<
         DeleteSpecificLoreScopeRequest,
         Results<
@@ -29,7 +28,7 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
         AllowAnonymous();
     }
 
-    public async override Task<Results<Ok, NotFound>> ExecuteAsync(DeleteSpecificLoreScopeRequest req, CancellationToken ct) {
+    public override async Task<Results<Ok, NotFound>> ExecuteAsync(DeleteSpecificLoreScopeRequest req, CancellationToken ct) {
         // TODO Move to a service
         await unitOfWork.BeginTransactionAsync(ct);
 
@@ -48,11 +47,6 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
             await unitOfWork.RollbackTransactionAsync(ct);
             return TypedResults.NotFound();
         }
-
-        await auditLogRepository.AddAsync(new AuditLog<LoreScopeModel> {
-            Content = scope,
-            UserId = req.UserId
-        }, ct);
 
         if (await unitOfWork.TryCommitTransactionAsync(ct)) return TypedResults.Ok();
 

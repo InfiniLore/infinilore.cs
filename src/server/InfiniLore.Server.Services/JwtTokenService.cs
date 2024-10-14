@@ -94,7 +94,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
         if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return JwtResult.Failure("Invalid refresh token");
         if (oldToken.ExpiresAt < DateTime.UtcNow) return JwtResult.Failure("Refresh token has expired");
 
-        await jwtRefreshTokenRepository.RemoveAsync(oldToken, ct);
+        await jwtRefreshTokenRepository.DeleteAsync(oldToken, ct);
 
         return await GenerateTokensAsync(
             oldToken.User,
@@ -109,13 +109,13 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
         if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return BoolResult.Failure("Invalid refresh token");
         if (oldToken.User.Id != user.Id) return BoolResult.Failure("Refresh token does not belong to user");
 
-        await jwtRefreshTokenRepository.RemoveAsync(oldToken, ct);
+        await jwtRefreshTokenRepository.DeleteAsync(oldToken, ct);
 
         return BoolResult.Success();
     }
 
     public async Task<BoolResult> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) =>
-        await jwtRefreshTokenRepository.RemoveAllAsync(user.Id, ct)
+        await jwtRefreshTokenRepository.DeleteAllAsync(user.Id, ct)
             ? BoolResult.Success()
             : BoolResult.Failure("Error revoking all tokens from user");
 }

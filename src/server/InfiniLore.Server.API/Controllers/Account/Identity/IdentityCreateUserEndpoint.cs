@@ -24,7 +24,7 @@ public class IdentityCreateUserEndpoint(SignInManager<InfiniLoreUser> signInMana
         AllowAnonymous();
     }
 
-    public async override Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(IdentityCreateUserRequest req, CancellationToken ct) {
+    public override async Task<Results<BadRequest<ProblemDetails>, Ok>> ExecuteAsync(IdentityCreateUserRequest req, CancellationToken ct) {
         try {
             var user = new InfiniLoreUser {
                 UserName = req.Username,

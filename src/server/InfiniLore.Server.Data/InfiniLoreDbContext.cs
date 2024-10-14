@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Data.Models.Account;
-using InfiniLore.Server.Data.Models.Base;
 using InfiniLore.Server.Data.Models.UserData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -16,12 +15,6 @@ public class InfiniLoreDbContext : IdentityDbContext<InfiniLoreUser, IdentityRol
     public DbSet<MultiverseModel> Multiverses { get; init; }
     public DbSet<UniverseModel> Universes { get; init; }
     public DbSet<JwtRefreshToken> JwtRefreshTokens { get; init; }
-
-    #region AuditLogs
-    public DbSet<AuditLog<LoreScopeModel>> LoreScopeAuditLogs { get; init; }
-    public DbSet<AuditLog<MultiverseModel>> MultiverseAuditLogs { get; init; }
-    public DbSet<AuditLog<UniverseModel>> UniverseAuditLogs { get; init; }
-    #endregion
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

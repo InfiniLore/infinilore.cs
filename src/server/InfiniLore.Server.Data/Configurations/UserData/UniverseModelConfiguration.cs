@@ -14,7 +14,6 @@ public class UniverseModelConfiguration : BaseContentConfiguration<UniverseModel
     public override void Configure(EntityTypeBuilder<UniverseModel> builder) {
         HasSoftDeleteAsQueryFilter(builder);
         HasUniqueIdAsKey(builder);
-        HasAuditLogs(builder);
 
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
 
