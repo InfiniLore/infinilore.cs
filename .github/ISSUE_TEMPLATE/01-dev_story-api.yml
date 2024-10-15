@@ -1,0 +1,80 @@
+name: Developer Story : API functonality
+description: Template for creating Developer stories, specifically for API endpoints, added functionality, etc...
+title: 'DevStory | API |'
+assignees:
+  - AndreasSas
+labels:
+  - dev story
+  - enhancement
+  - api
+projects:
+  - InfiniLore/1
+body:
+  - type: markdown
+    attributes:
+      value: >+
+        ### InfiniLore : Developer Story - API
+
+        Developer stories help define tasks and their scope, ensuring clarity during the development process.
+
+        This template is specifically related to the processes of API endpoints and their functionality.
+
+        ---
+
+  - type: textarea
+    id: who-what-why
+    attributes:
+      label: The Who - What - Why
+      description: >-
+        Who is this for? What functionality is needed? Why is it important?
+      placeholder: '**As the** Developer of InfiniLore, **I want to** ... **So that** ...'
+      value: |-
+        **As a** consumer of the InfiniLore API
+        **I want to** ...
+        **So that** ...
+        
+        The following endpoints are to be created
+        - [ ] api/... GET : do something
+        
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: >-
+        Additional info or links (Optional)
+      placeholder: ex. Screenshots, diagrams, or other references
+  - type: markdown
+    attributes:
+      value: |-
+        ---
+        # Acceptance Criteria
+
+         Define the criteria for the developer to consider this story complete.
+  - type: textarea
+    id: acceptance-criteria-dev
+    attributes:
+      label: Dev-Side Criteria
+      description: >-
+        Developer-specific requirements (if applicable)
+  - type: markdown
+    attributes:
+      value: |-
+        <br>
+
+        ---
+        <br>
+  - type: checkboxes
+    id: ducky
+    attributes:
+      label: Ducky Acknowledgment
+      description: Acknowledge that the developer may delay or reprioritize this issue.
+      options:
+        - label: >-
+            I accept that this issue might be delayed or reprioritized.
+          required: true
+  - type: markdown
+    attributes:
+      value: >-
+        This template was generated with [Issue Forms Creator](https://issue-forms-creator.netlify.app)
