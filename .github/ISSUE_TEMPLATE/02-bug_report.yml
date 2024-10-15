@@ -1,25 +1,94 @@
-name: Bug report
-description: Template for bug reports
+name: Bug Report
+description: Template for reporting bugs
 title: 'Bug | '
 labels:
   - bug
 body:
   - type: textarea
+    id: description
     attributes:
       label: Description
-      description: A clear and concise description of the problem
+      description: >-
+        Provide a clear and concise description of the bug. Include what you
+        expected to happen and what actually occurred.
+      placeholder: Describe the issue in detail, including expected vs. actual behavior
     validations:
       required: true
   - type: textarea
+    id: minimal-reproduction
     attributes:
-      label: Minimal Reproduction
-      description: provide steps to reproduce the problem
+      label: Steps to Reproduce
+      description: >-
+        List the steps needed to reproduce the bug. Provide as much detail as
+        possible, including any required environment setup or data.
+      placeholder: 1. Go to '...'\n2. Click on '...'\n3. See the error
+    validations:
+      required: true
   - type: textarea
+    id: expected-behavior
     attributes:
-      label: Exception or Error
-      description: provide error logs
+      label: Expected Behavior
+      description: >-
+        Describe what you expected to happen if the bug didn’t occur. This will
+        help clarify the problem.
+      placeholder: e.g., "The form should submit without errors and redirect to the dashboard."
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: >-
+        Describe what actually happened, including any differences from the
+        expected behavior.
+      placeholder: e.g., "An error message appears saying 'Invalid token'."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: >-
+        Provide information about the environment where the bug occurred.
+        Include the software version, browser or operating system, and any
+        relevant configuration details.
+      placeholder: e.g., "Version 1.0.1, Windows 10, Chrome 90.0"
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs / Stack Trace
+      description: >-
+        If applicable, provide any error logs or stack traces related to the
+        bug.
+      placeholder: Paste error or exception logs here
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Videos (Optional)
+      description: >-
+        Attach any screenshots or videos that might help illustrate the problem.
+      placeholder: Upload any images or video links here
+  - type: markdown
+    attributes:
+      value: |-
+        ---
+        # Debugging Notes
+
+        Any insights you can provide to help the developer reproduce or understand the issue more clearly will be helpful.
+
+  - type: textarea
+    id: developer-notes
+    attributes:
+      label: Additional Developer Notes (Optional)
+      description: >-
+        Provide any extra context that might help the developer resolve the issue faster.
+      placeholder: Add any relevant details, hypotheses, or potential causes.
+  - type: checkboxes
+    id: priority
+    attributes:
+      label: Bug Severity
+      description: Rate the severity of the bug based on its impact.
+      options:
+        - label: Critical - Affects major functionality, needs immediate fix
+        - label: Major - Affects important functionality but has a workaround
+        - label: Minor - Cosmetic or small issue, low priority
   - type: markdown
     attributes:
       value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)
+        This template was generated with [Issue Forms Creator](https://issue-forms-creator.netlify.app)
