@@ -1,5 +1,5 @@
 name: User Story
-description: Template for creating basic user stories
+description: Template for creating user stories
 title: 'UserStory | '
 assignees:
   - AndreasSas
@@ -13,35 +13,18 @@ body:
     attributes:
       value: >+
         ### InfiniLore : User Story
-        
-        During development of InfiniLore we don't adhere to true Scrum
-        practices, becasue as a solo dev, that isn't really feasible / sane for
-        me. 
 
-        What we do keep however, is the user stories. They are a clear way to
-        communicate what we should be doing, and what the limited scope of this
-        is.      
+        User stories provide a clear, simple way to describe the features we're working on and their scope. Just follow the example and you'll be fine.
 
-        Don't fret too much on getting it all right, just follow the example and
-        you'll be fine
-
-        
         ---
 
   - type: textarea
     id: who-what-why
     attributes:
-      label: The Who - What - Why of it all
+      label: The Who - What - Why
       description: >-
-        Who is this feature for? (e.g., As a Wriet, WorldBuilder, LoreMaster, ...) What is
-        the feature or functionality needed? (e.g., I want to have a framework
-        for ...) Why is this feature important? What value does it add? (e.g.,
-        So that I can structure my worldbuilding assets efficiently)
+        Who is this feature for? What is the feature? Why is it important?
       placeholder: 'As a ...  I want to ... So that ...'
-      value: |-
-        **As a** ... 
-        **I want to** ...
-        **So that** ...
     validations:
       required: true
   - type: textarea
@@ -49,8 +32,7 @@ body:
     attributes:
       label: Additional Context
       description: >-
-        Provide any other context, links, or details about the feature.
-        (Optional)
+        Any other info or links about this feature (Optional)
       placeholder: ex. Screenshots, diagrams, or other references
   - type: markdown
     attributes:
@@ -58,24 +40,21 @@ body:
         ---
         # Acceptance Criteria
 
-         Please define the acceptance criteria from both the user and developer perspectives.
+         Define what should be true for the feature to be considered complete.
   - type: textarea
     id: acceptance-criteria-user
     attributes:
       label: User-Side Criteria
       description: >-
-        Define the requirements that this story should meet when it is
-        delivered. (Optional but recommended)
+        What should the user be able to do once this feature is implemented? (Optional)
       placeholder: >-
-        ex. Given that I am on the worldbuilding dashboard, When I create a new asset, Then
-        I should be able to link it with existing elements
+        ex. When I create a new asset, I should be able to link it with existing elements
   - type: textarea
     id: acceptance-criteria-dev
     attributes:
       label: Dev-Side Criteria
       description: >-
-        Define the requirements that the dev should keep to. (Only fill this out
-        if you are the dev)
+        Specific technical requirements for developers (if applicable)
   - type: markdown
     attributes:
       value: |-
@@ -86,19 +65,13 @@ body:
   - type: checkboxes
     id: ducky
     attributes:
-      label: Ducky awareness
-      description: We all know we forget to do this, but it has to be done.
+      label: Ducky Acknowledgment
+      description: Acknowledge that the developer may decide to delay or re-prioritize this issue.
       options:
         - label: >-
-            I hereby accept that this issue form might be thrown into the void
-            by the developer. This isn't out of maliciousness or anything like
-            that. Most likely they just forgot that this was a thing, and
-            already implemented it, or have decided they are going to push it
-            down the sprint cycles, untill the great ducky in the sky forces
-            them to work on this issue.
+            I accept that this issue might be delayed or deprioritized.
           required: true
   - type: markdown
     attributes:
       value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)
+        This template was generated with [Issue Forms Creator](https://issue-forms-creator.netlify.app)
