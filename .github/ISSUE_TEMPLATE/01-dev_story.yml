@@ -14,31 +14,17 @@ body:
       value: >+
         ### InfiniLore : Developer Story
 
-
-        During the development of InfiniLore, we don't adhere to true Scrum
-        practices, because as a solo dev, it isn't always feasible or
-        practical.
+        Developer stories help define tasks and their scope, ensuring clarity during the development process.
 
 
-        However, we do use developer stories to clearly communicate what tasks
-        need to be done and the limited scope of each one.
-
-        
-        This template is designed to help document development requirements
-        and implementation goals.
-
-        
         ---
 
   - type: textarea
     id: who-what-why
     attributes:
-      label: The Who - What - Why of it all
+      label: The Who - What - Why
       description: >-
-        Who is this feature for? (e.g., As a WorldBuilder, As a LoreMaster) What is
-        the feature or functionality needed? (e.g., I want to add a new system for
-        ...) Why is this feature important? What value does it add? (e.g.,
-        So that I can structure my worldbuilding assets more efficiently)
+        Who is this for? What functionality is needed? Why is it important?
       placeholder: '**As the** Developer of InfiniLore, **I want to** ... **So that** ...'
       value: |-
         **As the** Developer of InfiniLore 
@@ -51,8 +37,7 @@ body:
     attributes:
       label: Additional Context
       description: >-
-        Provide any other context, links, or details about the feature.
-        (Optional)
+        Additional info or links (Optional)
       placeholder: ex. Screenshots, diagrams, or other references
   - type: markdown
     attributes:
@@ -60,14 +45,13 @@ body:
         ---
         # Acceptance Criteria
 
-         Please define the acceptance criteria from the developer's perspective.
+         Define the criteria for the developer to consider this story complete.
   - type: textarea
     id: acceptance-criteria-dev
     attributes:
       label: Dev-Side Criteria
       description: >-
-        Define the requirements that the dev should keep to. (Only fill this out
-        if you are the dev)
+        Developer-specific requirements (if applicable)
   - type: markdown
     attributes:
       value: |-
@@ -78,19 +62,13 @@ body:
   - type: checkboxes
     id: ducky
     attributes:
-      label: Ducky awareness
-      description: We all know we forget to do this, but it has to be done.
+      label: Ducky Acknowledgment
+      description: Acknowledge that the developer may delay or reprioritize this issue.
       options:
         - label: >-
-            I hereby accept that this issue form might be thrown into the void
-            by the developer. This isn't out of maliciousness or anything like
-            that. Most likely they just forgot that this was a thing, and
-            already implemented it, or have decided they are going to push it
-            down the sprint cycles, until the great ducky in the sky forces
-            them to work on this issue.
+            I accept that this issue might be delayed or reprioritized.
           required: true
   - type: markdown
     attributes:
       value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)
+        This template was generated with [Issue Forms Creator](https://issue-forms-creator.netlify.app)
