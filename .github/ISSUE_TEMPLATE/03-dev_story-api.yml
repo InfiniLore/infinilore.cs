@@ -29,11 +29,7 @@ body:
       description: >-
         Who is this for? What functionality is needed? Why is it important?
       placeholder: '**As the** Developer of InfiniLore, **I want to** ... **So that** ...'
-      value: |-
-        **As a** consumer of the InfiniLore API
-        **I want to** ...
-        **So that** ...
-        
+      value: |-       
         The following endpoints are to be created
         - [ ] api/... GET : do something
         
