@@ -2,17 +2,17 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
-using InfiniLore.Server.Contracts.Data.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories.Commands;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Data.Repositories.Account;
+namespace InfiniLore.Server.Data.Repositories.Command.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[RegisterService<IInfiniLoreUserRepository>(LifeTime.Scoped)]
-public class InfiniLoreUserRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : IInfiniLoreUserRepository {
+[RegisterService<IInfiniLoreUserCommands>(LifeTime.Scoped)]
+public class InfiniLoreUserRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : IInfiniLoreUserCommands {
     #region GetLoreScopesAsync
     public Task<ResultMany<LoreScopeModel>> GetLoreScopesAsync(InfiniLoreUser user, CancellationToken ct = default)
         => GetLoreScopesAsync(user.Id, ct);

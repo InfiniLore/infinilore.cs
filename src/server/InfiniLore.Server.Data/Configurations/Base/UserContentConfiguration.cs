@@ -5,21 +5,18 @@ using InfiniLore.Server.Data.Models.Base;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Data.Configurations.Base;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseContentConfiguration<T> : IEntityTypeConfiguration<T> where T : BaseContent<T> {
-    public virtual void Configure(EntityTypeBuilder<T> builder) {
-        HasSoftDeleteAsQueryFilter(builder);
-        HasUniqueIdAsKey(builder);
-    }
+public abstract class UserContentConfiguration<T> : BaseContentConfiguration<T> where T : UserContent<T> {
+    public override void Configure(EntityTypeBuilder<T> builder) {
+        base.Configure(builder); // Call BaseContentConfiguration
+        
+        builder.HasMany(model => model.UserAccess)
+            .WithOne();
 
-    protected static void HasSoftDeleteAsQueryFilter(EntityTypeBuilder<T> builder) {
-        builder.HasQueryFilter(model => model.SoftDeleteDate == null);
-    }
-
-    protected static void HasUniqueIdAsKey(EntityTypeBuilder<T> builder) {
-        builder.HasKey(x => x.Id);
-        builder.HasIndex(x => x.Id).IsUnique();
+        // Index on IsPublic and OwnerId to allow for fast filtering of public content by user
+        builder.HasIndex(x => new { x.Id, x.OwnerId, x.IsPublic });
     }
 }

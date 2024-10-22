@@ -27,6 +27,7 @@ public class JwtCreateTokensEndpoint(IApiSignInService apiSignInService, IJwtTok
 
     public override async Task<Results<BadRequest<ProblemDetails>, Ok<JwtResponse>>> ExecuteAsync(JwtCreateTokensRequest req, CancellationToken ct) {
         try {
+            
             IdentityUserResult<InfiniLoreUser> signInResult = await apiSignInService.SignInAsync(req.Username, req.Password, ct).ConfigureAwait(false);
             if (signInResult is not { IsSuccess: true, User: {} user }) {
                 logger.Warning("Sign-in failed for user {Username}. Error: {ErrorMessage}", req.Username, signInResult.ErrorMessage);

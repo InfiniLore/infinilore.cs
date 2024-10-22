@@ -2,26 +2,26 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
-using InfiniLore.Server.Contracts.Data.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories.Commands;
+using InfiniLore.Server.Contracts.Data.Repositories.Queries;
 using InfiniLore.Server.Data.Models.Account;
 using Microsoft.Data.Sqlite;
 using Serilog;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace InfiniLore.Server.Data.Repositories.Account;
+namespace InfiniLore.Server.Data.Repositories.Command.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[RegisterService<IJwtRefreshTokenRepository>(LifeTime.Scoped)]
-public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, ILogger logger) : IJwtRefreshTokenRepository {
-
+[RegisterService<IJwtRefreshTokenCommands>(LifeTime.Scoped)]
+public class JwtRefreshTokenCommands(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, ILogger logger, IJwtRefreshTokenQueries queries) : IJwtRefreshTokenCommands {
     private static string HashToken(Guid token) {
         byte[] tokenBytes = Encoding.UTF8.GetBytes(token.ToString());
         byte[] hashBytes = SHA256.HashData(tokenBytes);
         return Convert.ToBase64String(hashBytes);
     }
-
+    
     #region AddAsync
     public async Task<bool> AddAsync(string userId, Guid token, DateTime expiresAt, string[] roles, string[] permissions, int? expiresInDays, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
@@ -70,33 +70,18 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOf
     }
     #endregion
 
-    #region GetAsync
-    public async Task<JwtRefreshToken?> GetAsync(Guid token, CancellationToken ct = default) {
-        InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
-        string hashedToken = HashToken(token);
-
-        JwtRefreshToken? tokenData = await dbContext.JwtRefreshTokens
-            .Include(t => t.User)
-            .FirstOrDefaultAsync(predicate: t => t.TokenHash == hashedToken, ct);
-
-        return tokenData;
-    }
-    #endregion
-
     #region RemoveAsync
     public async Task<bool> DeleteAsync(Guid token, CancellationToken ct = default) {
-        if (await GetAsync(token, ct) is not {} tokenData) return false;
+        if (await queries.GetAsync(token, ct) is not {} tokenData) return false;
 
         return await DeleteAsync(tokenData, ct);
     }
 
-    public async Task<bool> DeleteAsync(JwtRefreshToken token, CancellationToken ct = default) {
+    public Task<bool> DeleteAsync(JwtRefreshToken token, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();
 
         dbContext.JwtRefreshTokens.Remove(token);
-        await dbContext.SaveChangesAsync(ct);
-
-        return true;
+        return Task.FromResult(true);
     }
     #endregion
 

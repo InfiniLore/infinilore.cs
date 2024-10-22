@@ -9,13 +9,12 @@ namespace InfiniLore.Server.Data.Configurations.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeModelConfiguration : BaseContentConfiguration<LoreScopeModel> {
+public class LoreScopeModelConfiguration : UserContentConfiguration<LoreScopeModel> {
 
     public override void Configure(EntityTypeBuilder<LoreScopeModel> builder) {
-        HasSoftDeleteAsQueryFilter(builder);
-        HasUniqueIdAsKey(builder);
+        base.Configure(builder);
 
-        builder.HasIndex(model => new { model.Name, model.UserId })
+        builder.HasIndex(model => new { model.Name, model.OwnerId })
             .IsUnique();
 
         builder.HasMany(model => model.Multiverses)

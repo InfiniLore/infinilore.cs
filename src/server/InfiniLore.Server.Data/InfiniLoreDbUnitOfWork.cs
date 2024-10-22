@@ -20,7 +20,7 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     /// <inheritdoc/>
-    public async Task Commit(CancellationToken ct = default) {
+    public async Task CommitAsync(CancellationToken ct = default) {
         if (_transaction == null) {
             await _db.SaveChangesAsync(ct);
             return;
@@ -30,7 +30,7 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     }
 
     /// <inheritdoc/>
-    public async Task<bool> TryCommit(CancellationToken ct = default) {
+    public async Task<bool> TryCommitAsync(CancellationToken ct = default) {
         try {
             if (_transaction == null) {
                 await _db.SaveChangesAsync(ct);
@@ -52,10 +52,10 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     }
 
     /// <inheritdoc/>
-    public Task RollbackTransactionAsync(CancellationToken ct = default) => TryRollbackTransactionAsync(ct);
+    public Task RollbackAsync(CancellationToken ct = default) => TryRollbackAsync(ct);
 
     /// <inheritdoc/>
-    public async Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
+    public async Task<bool> TryRollbackAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
         await _transaction.RollbackAsync(ct);
         return true;

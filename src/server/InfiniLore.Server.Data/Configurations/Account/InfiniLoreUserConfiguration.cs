@@ -12,16 +12,16 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
 
     public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
         builder.HasMany(user => user.LoreScopes)
-            .WithOne(scope => scope.User)
-            .HasForeignKey(x => x.UserId);
+            .WithOne(scope => scope.Owner)
+            .HasForeignKey(x => x.OwnerId);
 
         builder.HasMany(user => user.Multiverses)
-            .WithOne(multiverse => multiverse.User)
-            .HasForeignKey(x => x.UserId);
+            .WithOne(multiverse => multiverse.Owner)
+            .HasForeignKey(x => x.OwnerId);
 
         builder.HasMany(user => user.Universes)
-            .WithOne(universe => universe.User)
-            .HasForeignKey(x => x.UserId);
+            .WithOne(universe => universe.Owner)
+            .HasForeignKey(x => x.OwnerId);
 
         builder.HasMany(user => user.JwtRefreshTokens)
             .WithOne(token => token.User)

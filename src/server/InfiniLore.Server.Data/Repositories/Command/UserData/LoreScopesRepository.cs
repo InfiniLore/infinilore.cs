@@ -2,16 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
-using InfiniLore.Server.Contracts.Data.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories.Commands;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Data.Repositories.UserData;
+namespace InfiniLore.Server.Data.Repositories.Command.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[RegisterService<ILoreScopesRepository>(LifeTime.Scoped)]
-public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : ILoreScopesRepository {
+[RegisterService<ILoreScopesCommands>(LifeTime.Scoped)]
+public class LoreScopesRepository(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork) : ILoreScopesCommands {
     #region DeleteAsync
     public async Task<Result<bool>> DeleteAsync(Guid loreScopeId, CancellationToken ct = default) {
         InfiniLoreDbContext dbContext = unitOfWork.GetDbContext();

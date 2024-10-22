@@ -24,11 +24,11 @@ public class SeedLoreScopes(IDbContextFactory<InfiniLoreDbContext> dbContextFact
 
         if (await dbContext.Users.FirstOrDefaultAsync(predicate: u => u.UserName == "testuser", ct) is not {} user) return;
 
-        dbContext.LoreScopes.Add(new LoreScopeModel { User = user, Name = "A" });
-        dbContext.LoreScopes.Add(new LoreScopeModel { User = user, Name = "B" });
-        dbContext.LoreScopes.Add(new LoreScopeModel { User = user, Name = "C" });
-        dbContext.LoreScopes.Add(new LoreScopeModel { User = user, Name = "D" });
-        dbContext.LoreScopes.Add(new LoreScopeModel { User = user, Name = "E" });
+        dbContext.LoreScopes.Add(new LoreScopeModel { Owner = user, Name = "A" });
+        dbContext.LoreScopes.Add(new LoreScopeModel { Owner = user, Name = "B" });
+        dbContext.LoreScopes.Add(new LoreScopeModel { Owner = user, Name = "C" });
+        dbContext.LoreScopes.Add(new LoreScopeModel { Owner = user, Name = "D" });
+        dbContext.LoreScopes.Add(new LoreScopeModel { Owner = user, Name = "E" });
 
         await dbContext.SaveChangesAsync(ct);
     }

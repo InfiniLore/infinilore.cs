@@ -11,7 +11,7 @@ namespace InfiniLore.Server.API.Models;
 public class LoreScopeResponseMapper : ResponseMapper<LoreScopeResponse, LoreScopeModel> {
     public override LoreScopeResponse FromEntity(LoreScopeModel ls) => new(
         ls.Id,
-        ls.UserId,
+        ls.OwnerId,
         ls.Name,
         ls.Description,
         ls.Multiverses.Select(m => m.Id).ToArray()

@@ -24,4 +24,10 @@
         <ProjectReference Include="..\InfiniLore.Server.Data.Models\InfiniLore.Server.Data.Models.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repositories\Command\" />
+      <Folder Include="Repositories\Query\Base\" />
+      <Folder Include="Repositories\Query\UserData\" />
+    </ItemGroup>
+
 </Project>

@@ -3,7 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using FastEndpoints.Security;
-using InfiniLore.Server.Contracts.Data.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories.Commands;
+using InfiniLore.Server.Contracts.Data.Repositories.Queries;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Data.Models.Account;
 using InfiniLoreLib.Results;
@@ -19,7 +20,7 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [RegisterService<IJwtTokenService>(LifeTime.Scoped)]
-public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepository jwtRefreshTokenRepository, ILogger logger, UserManager<InfiniLoreUser> userManager) : IJwtTokenService {
+public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenCommands commands, IJwtRefreshTokenQueries queries, ILogger logger, UserManager<InfiniLoreUser> userManager) : IJwtTokenService {
 
     public async Task<JwtResult> GenerateTokensAsync(InfiniLoreUser user, string[] roles, string[] permissions, int? expiresInDays, CancellationToken ct = default) {
         try {
@@ -76,7 +77,7 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
     private async Task<Guid> GenerateRefreshTokenAsync(InfiniLoreUser user, string[] roles, string[] permissions, DateTime expiresAt, int? expiresInDays, CancellationToken ct = default) {
         var token = Guid.NewGuid();
         try {
-            await jwtRefreshTokenRepository.AddAsync(user, token, expiresAt, roles, permissions, expiresInDays, ct);
+            await commands.AddAsync(user, token, expiresAt, roles, permissions, expiresInDays, ct);
         }
         catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: 19 }) {
             logger.Error(ex, "Unique constraint violation while adding refresh token for user {UserId}", user.Id);
@@ -91,10 +92,10 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
     }
 
     public async Task<JwtResult> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
-        if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return JwtResult.Failure("Invalid refresh token");
+        if (await queries.GetAsync(refreshToken, ct) is not {} oldToken) return JwtResult.Failure("Invalid refresh token");
         if (oldToken.ExpiresAt < DateTime.UtcNow) return JwtResult.Failure("Refresh token has expired");
 
-        await jwtRefreshTokenRepository.DeleteAsync(oldToken, ct);
+        await commands.DeleteAsync(oldToken, ct);
 
         return await GenerateTokensAsync(
             oldToken.User,
@@ -106,16 +107,16 @@ public class JwtTokenService(IConfiguration configuration, IJwtRefreshTokenRepos
     }
 
     public async Task<BoolResult> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
-        if (await jwtRefreshTokenRepository.GetAsync(refreshToken, ct) is not {} oldToken) return BoolResult.Failure("Invalid refresh token");
+        if (await queries.GetAsync(refreshToken, ct) is not {} oldToken) return BoolResult.Failure("Invalid refresh token");
         if (oldToken.User.Id != user.Id) return BoolResult.Failure("Refresh token does not belong to user");
 
-        await jwtRefreshTokenRepository.DeleteAsync(oldToken, ct);
+        await commands.DeleteAsync(oldToken, ct);
 
         return BoolResult.Success();
     }
 
     public async Task<BoolResult> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) =>
-        await jwtRefreshTokenRepository.DeleteAllAsync(user.Id, ct)
+        await commands.DeleteAllAsync(user.Id, ct)
             ? BoolResult.Success()
             : BoolResult.Failure("Error revoking all tokens from user");
 }

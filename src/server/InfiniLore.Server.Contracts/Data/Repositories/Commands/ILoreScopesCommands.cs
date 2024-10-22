@@ -1,22 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Data.Configurations.Base;
 using InfiniLore.Server.Data.Models.UserData;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using InfiniLoreLib.Results;
 
-namespace InfiniLore.Server.Data.Configurations.UserData;
+namespace InfiniLore.Server.Contracts.Data.Repositories.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UniverseModelConfiguration : UserContentConfiguration<UniverseModel> {
-
-    public override void Configure(EntityTypeBuilder<UniverseModel> builder) {
-        base.Configure(builder);
-
-        builder.HasQueryFilter(model => model.SoftDeleteDate == null);
-
-        builder.HasIndex(model => new { model.Name, model.MultiverseId })
-            .IsUnique();
-    }
+public interface ILoreScopesCommands {
+    Task<Result<bool>> DeleteAsync(Guid loreScopeId, CancellationToken ct = default);
+    Task<Result<bool>> DeleteAsync(LoreScopeModel model, CancellationToken ct = default);
 }

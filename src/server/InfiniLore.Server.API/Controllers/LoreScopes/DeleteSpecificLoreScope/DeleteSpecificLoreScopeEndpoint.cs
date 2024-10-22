@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
-using InfiniLore.Server.Contracts.Data.Repositories;
+using InfiniLore.Server.Contracts.Data.Repositories.Commands;
 using InfiniLore.Server.Data;
 using InfiniLore.Server.Data.Models.UserData;
 using InfiniLoreLib.Results;
@@ -13,7 +13,7 @@ namespace InfiniLore.Server.API.Controllers.LoreScopes.DeleteSpecificLoreScope;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserRepository userRepository, ILoreScopesRepository loreScopeRepository) :
+public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> unitOfWork, IInfiniLoreUserCommands userRepository, ILoreScopesCommands loreScopeRepository) :
     Endpoint<
         DeleteSpecificLoreScopeRequest,
         Results<
@@ -44,13 +44,13 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
 
         Result<bool> resultDelete = await loreScopeRepository.DeleteAsync(scope, ct);
         if (resultDelete.IsFailure) {
-            await unitOfWork.RollbackTransactionAsync(ct);
+            await unitOfWork.RollbackAsync(ct);
             return TypedResults.NotFound();
         }
 
-        if (await unitOfWork.TryCommit(ct)) return TypedResults.Ok();
+        if (await unitOfWork.TryCommitAsync(ct)) return TypedResults.Ok();
 
-        await unitOfWork.RollbackTransactionAsync(ct);
+        await unitOfWork.RollbackAsync(ct);
         return TypedResults.NotFound();
 
     }
