@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Data;
 using Microsoft.EntityFrameworkCore.Storage;
+using Serilog;
 
 namespace InfiniLore.Server.Data;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -11,39 +12,43 @@ namespace InfiniLore.Server.Data;
 
 /// <inheritdoc cref="InfiniLore.Server.Contracts.Data.IDbUnitOfWork{T}" />
 [RegisterService<IDbUnitOfWork<InfiniLoreDbContext>>(LifeTime.Scoped)]
-public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbContextFactory) : IDbUnitOfWork<InfiniLoreDbContext> {
-    /// <inheritdoc/>
-    public InfiniLoreDbContext Db { get; } = dbContextFactory.CreateDbContext();
-
-    /// <summary>
-    /// Represents the current database transaction for the DbContext.
-    /// This variable is used to manage transactions including beginning, committing, and rolling back as needed.
-    /// It is nullable and will be null when there is no active transaction.
-    /// </summary>
+public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbContextFactory, ILogger logger) : IDbUnitOfWork<InfiniLoreDbContext> { 
+    private readonly InfiniLoreDbContext _db = dbContextFactory.CreateDbContext();
     private IDbContextTransaction? _transaction;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     /// <inheritdoc/>
-    public async Task<int> SaveChangesAsync(CancellationToken ct = default) => await Db.SaveChangesAsync(ct);
+    public async Task Commit(CancellationToken ct = default) {
+        if (_transaction == null) {
+            await _db.SaveChangesAsync(ct);
+            return;
+        }
 
-    /// <inheritdoc/>
-    public async Task BeginTransactionAsync(CancellationToken ct = default) {
-        _transaction = await Db.Database.BeginTransactionAsync(ct);
+        await _transaction.CommitAsync(ct);
     }
 
     /// <inheritdoc/>
-    public Task CommitTransactionAsync(CancellationToken ct = default) => TryCommitTransactionAsync(ct);
+    public async Task<bool> TryCommit(CancellationToken ct = default) {
+        try {
+            if (_transaction == null) {
+                await _db.SaveChangesAsync(ct);
+                return true;
+            }
+
+            await _transaction.CommitAsync(ct);
+            return true;
+            
+        } catch (Exception ex) {
+            logger.Error(ex, "Error while committing transaction");
+            return false;
+        }
+    }
 
     /// <inheritdoc/>
-    public async Task<bool> TryCommitTransactionAsync(CancellationToken ct = default) {
-        if (_transaction == null) return false;
-
-        await _transaction.CommitAsync(ct);
-        await _transaction.DisposeAsync();
-        _transaction = null;
-        return true;
+    public async Task BeginTransactionAsync(CancellationToken ct = default) {
+        _transaction = await _db.Database.BeginTransactionAsync(ct);
     }
 
     /// <inheritdoc/>
@@ -52,15 +57,12 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     /// <inheritdoc/>
     public async Task<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
-
         await _transaction.RollbackAsync(ct);
-        await _transaction.DisposeAsync();
-        _transaction = null;
         return true;
     }
 
     /// <inheritdoc/>
-    public InfiniLoreDbContext GetDbContext() => Db;
+    public InfiniLoreDbContext GetDbContext() => _db;
 
     /// <summary>
     /// Disposes the resources used by the <see cref="InfiniLoreDbUnitOfWork"/>.
@@ -71,7 +73,7 @@ public class InfiniLoreDbUnitOfWork(IDbContextFactory<InfiniLoreDbContext> dbCon
     /// by calling <see cref="GC.SuppressFinalize(object)"/>.
     /// </remarks>
     public void Dispose() {
-        Db.Dispose();
+        _db.Dispose();
         _transaction?.Dispose();
 
         GC.SuppressFinalize(this);

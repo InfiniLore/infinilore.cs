@@ -48,7 +48,7 @@ public class DeleteSpecificLoreScopeEndpoint(IDbUnitOfWork<InfiniLoreDbContext> 
             return TypedResults.NotFound();
         }
 
-        if (await unitOfWork.TryCommitTransactionAsync(ct)) return TypedResults.Ok();
+        if (await unitOfWork.TryCommit(ct)) return TypedResults.Ok();
 
         await unitOfWork.RollbackTransactionAsync(ct);
         return TypedResults.NotFound();
