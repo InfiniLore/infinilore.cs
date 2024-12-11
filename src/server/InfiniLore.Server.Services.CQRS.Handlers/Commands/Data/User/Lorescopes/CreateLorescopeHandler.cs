@@ -41,7 +41,7 @@ public class CreateLorescopeHandler(
             // Because we already checked for IsFailure above, we know that the result is a Success
             return resultAddition.AsSuccess;
         }
-        catch (Exception ex) {
+        catch {
             return "An unknown error occurred";
         }
     }

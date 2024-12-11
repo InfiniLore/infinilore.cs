@@ -1,27 +1,29 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using Microsoft.Extensions.DependencyInjection;
-using Tests.InfiniLore.Database.Repositories.Fixtures;
+using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 
 namespace Tests.InfiniLore.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LorescopeCommandRepositoryTest(DatabaseFixture fixture) : IClassFixture<DatabaseFixture> {
-    private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = fixture.Provider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>();
+[ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
+public class LoreScopeCommandRepositoryTest(DatabaseInfrastructure infrastructure) {
+    private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = infrastructure.ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>();
 
-    [Fact]
+    [Test]
     public async Task TestCanConnect() {
         // Arrange: get dbContext
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync();
+        var dbContext = await _unitOfWork.GetDbContextAsync();
 
         // Act: check the connection
-        bool canConnect = await dbContext.Database.CanConnectAsync();
+        var canConnect = await dbContext.Database.CanConnectAsync();
 
         // Assert: verify connection success
-        Assert.True(canConnect);
+        await Assert.That(canConnect).IsTrue();
     }
 }

@@ -1,41 +1,41 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories;
-using JetBrains.Annotations;
+using InfiniLore.Server.Contracts.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog.Core;
 using Testcontainers.MsSql;
+using TUnit.Core.Interfaces;
 
-namespace Tests.InfiniLore.Database.Repositories.Fixtures;
+namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class DatabaseFixture : IAsyncLifetime {
-    private MsSqlContainer MsSqlContainer { get; set; } = default!;
-    public ServiceProvider Provider { get; private set; } = default!;
+public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
+    private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
+        .Build();
 
+    public MsSqlDbContext DbContext { get; }
+    public IServiceProvider ServiceProvider { get; }
+    
     // -----------------------------------------------------------------------------------------------------------------
-    // Methods
+    // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task InitializeAsync() {
+    public DatabaseInfrastructure() {
         var services = new ServiceCollection();
 
-        // Use a TestContainer for the database.
-        MsSqlContainer = new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04") // Use the same image as the real thing.
-            .Build();
-        await MsSqlContainer.StartAsync();
+        _msSqlContainer.StartAsync().Wait();
 
-        // Repositories use a lot of services, so we'll register them all here.
         services.AddSingleton(Logger.None);
         services.AddDbContextFactory<MsSqlDbContext>(
-            options => options.UseSqlServer(MsSqlContainer.GetConnectionString())
+            options => options.UseSqlServer(_msSqlContainer.GetConnectionString())
         );
 
         services.AddIdentityCore<InfiniLoreUser>(options => {
@@ -49,20 +49,24 @@ public class DatabaseFixture : IAsyncLifetime {
         services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();
         services.RegisterServicesFromInfiniLoreDatabaseRepositories();
 
-        Provider = services.BuildServiceProvider();
-        
-        // Ensure the database structure is created, else our tests will fail anyway.
-        //  Uses a fresh to limit the impact of the tests.
-        using IServiceScope currentScope = Provider.CreateScope();
-        var db = currentScope.ServiceProvider.GetRequiredService<MsSqlDbContext>();
-        await db.Database.EnsureCreatedAsync();
-        await db.SaveChangesAsync();
+        ServiceProvider = services.BuildServiceProvider().CreateScope().ServiceProvider;
+
+        MsSqlDbContext db = ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>()
+            .GetDbContextAsync().GetAwaiter().GetResult();
+
+        DbContext = db;
     }
 
-    public async Task DisposeAsync() {
-        // Don't forget to dispose!
-        // Else we will run into a couple of issues like the container not being disposed.
-        await MsSqlContainer.DisposeAsync();
-        await Provider.DisposeAsync();
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public async Task InitializeAsync() {
+        await DbContext.Database.EnsureCreatedAsync();
+        await DbContext.SaveChangesAsync();
+    }
+
+    public async ValueTask DisposeAsync() {
+        await _msSqlContainer.DisposeAsync();
+        await DbContext.DisposeAsync();
     }
 }
