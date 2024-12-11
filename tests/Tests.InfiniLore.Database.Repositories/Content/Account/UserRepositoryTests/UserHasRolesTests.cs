@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 
-namespace Tests.InfiniLore.Database.Repositories.Content.Account;
+namespace Tests.InfiniLore.Database.Repositories.Content.Account.UserRepositoryTests;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

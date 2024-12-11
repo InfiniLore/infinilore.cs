@@ -16,36 +16,51 @@ namespace InfiniLore.Database.Repositories.Content;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
+    private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = unitOfWork;
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     protected virtual Expression<Func<T, bool>> UniqueModelPredicate(T originalModel) {
         return dbModel => dbModel.Id == originalModel.Id;
     }
-    
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Repository Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async virtual ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         await dbSet.AddAsync(model, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+        
         return new Success();
     }
 
     public async virtual ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         EntityEntry<T> result = await dbSet.AddAsync(model, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+        
         return result;
     }
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
-        // All is done in one call to the db
         model.UpdateLastModifiedDate();
-        dbSet.Update(model);
+        dbContext.Entry(existing).CurrentValues.SetValues(model);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return new Success();
     }
@@ -53,81 +68,96 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     /// <inheritdoc />
     public async ValueTask<RepoResult<T>> TryUpdateWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
-        // All is done in one call to the db
         model.UpdateLastModifiedDate();
-        EntityEntry<T> result = dbSet.Update(model);
+        dbContext.Entry(existing).CurrentValues.SetValues(model);
+        await _unitOfWork.SaveChangesAsync(ct); 
 
-        return result;
+        return existing;
     }
 
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryUpdateAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
         T[] modelArray = models as T[] ?? models.ToArray();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
         HashSet<Guid> idsToUpdate = modelArray.Select(m => m.Id).ToHashSet();
-        if (!await dbSet.AllAsync(predicate: model => idsToUpdate.Contains(model.Id), ct)) return "One or more Models do not exist";
 
-        foreach (T model in modelArray) {
-            model.UpdateLastModifiedDate();
+        // Fetch existing entities from the database
+        List<T> existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToListAsync(ct);
+
+        if (existingEntities.Count != modelArray.Length) {
+            return "One or more Models do not exist"; // Some entities are missing
         }
 
-        dbSet.UpdateRange(modelArray);
+        // Update existing entities with new values
+        foreach (T existingEntity in existingEntities) {
+            T updatedModel = modelArray.First(m => m.Id == existingEntity.Id);
+            existingEntity.UpdateLastModifiedDate(); // Update individual properties
+            dbContext.Entry(existingEntity).CurrentValues.SetValues(updatedModel); // Map the changes
+        }
 
-        // // Update the last modified date for all models that were updated
-        // // Do this through property calls for performance reasons
-        // await dbSet
-        //     .Where(model => idsToUpdate.Contains(model.Id))
-        //     .ExecuteUpdateAsync(setPropertyCalls: s => BaseContent.UpdateLastModifiedDateWithPropertyCalls(s), ct);
-
+        await _unitOfWork.SaveChangesAsync(ct);
         return new Success();
     }
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
-        if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// model wasn't assigned an id yet, so can always be added (normally)
+        if (model.Id == Guid.Empty) return await TryAddAsync(model, ct); // If no ID, always add
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        if (await dbSet.FindAsync([model.Id], ct) is null) {
-            await dbSet.AddAsync(model, ct);
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+
+        // Find the existing model in the database
+        T? existingModel = await dbSet.FindAsync([model.Id], ct);
+
+        if (existingModel is null) {
+            await dbSet.AddAsync(model, ct); // If it doesn't exist, add it
+            await _unitOfWork.SaveChangesAsync(ct);
             return new Success();
         }
 
-        model.UpdateLastModifiedDate();
-        dbSet.Update(model);
+        // Update the tracked entity with new values
+        existingModel.UpdateLastModifiedDate(); // Update necessary fields
+        dbContext.Entry(existingModel).CurrentValues.SetValues(model); // Map incoming values to tracked entity
 
+        await _unitOfWork.SaveChangesAsync(ct);
         return new Success();
     }
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+    
         T[] userContents = models as T[] ?? models.ToArray();
-        HashSet<Guid> modelIds = userContents
-            .Select(c => c.Id)
-            .ToHashSet();
+        HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
 
-        T[] existingModels = await dbSet
-            .Where(m => modelIds.Contains(m.Id))
-            .ToArrayAsync(ct);
+        // Fetch all existing models from the database
+        List<T> existingModels = await dbSet.Where(m => modelIds.Contains(m.Id)).ToListAsync(ct);
+        HashSet<Guid> existingModelIds = existingModels.Select(m => m.Id).ToHashSet();
 
-        HashSet<Guid> existingModelIds = existingModels
-            .Select(m => m.Id)
-            .ToHashSet();
+        // Separate models into new and updateable ones
+        IEnumerable<T> modelsToUpdate = userContents.Where(m => existingModelIds.Contains(m.Id));
+        IEnumerable<T> modelsToAdd = userContents.Where(m => !existingModelIds.Contains(m.Id));
 
-        IEnumerable<T> modelsNotInDb = userContents
-            .Where(model => !existingModelIds.Contains(model.Id));
-
-        foreach (T existingModel in existingModels) {
-            existingModel.UpdateLastModifiedDate();
+        // Handle tracked updates for existing models
+        foreach (T modelToUpdate in modelsToUpdate) {
+            T existingModel = existingModels.First(em => em.Id == modelToUpdate.Id);
+            existingModel.UpdateLastModifiedDate(); // Update required fields
+            dbContext.Entry(existingModel).CurrentValues.SetValues(modelToUpdate); // Map incoming changes to tracked entity
         }
 
-        await dbSet.AddRangeAsync(modelsNotInDb, ct);
-        dbSet.UpdateRange(existingModels);
+        // Add new models
+        await dbSet.AddRangeAsync(modelsToAdd, ct);
 
+        // Save all changes
+        await _unitOfWork.SaveChangesAsync(ct);
+    
         return new Success();
     }
 
@@ -138,12 +168,13 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         if (existing == null) return "Model does not exist";
 
         existing.SoftDelete();
-        return new Success();
+        return await TryUpdateAsync(existing, ct);
     }
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
         IEnumerable<T> userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
 
@@ -154,28 +185,33 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
             return "One or more Models already exist";
 
         await dbSet.AddRangeAsync(userContents, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
         return new Success();
     }
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
         HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
 
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteUpdateAsync(setPropertyCalls: s => BaseContent.SoftDeleteWithPropertyCalls(s), ct);
-
+        
         return new Success();
     }
 
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
         dbSet.Remove(existing);
+        await _unitOfWork.SaveChangesAsync(ct);
+        
         return new Success();
     }
 
