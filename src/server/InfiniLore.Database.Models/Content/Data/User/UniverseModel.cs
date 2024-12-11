@@ -1,13 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.Models.Content.Data.User;
-using UserIdUnion=InfiniLore.Server.Contracts.Types.UserIdUnion;
+using System.ComponentModel.DataAnnotations;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
+namespace InfiniLore.Database.Models.Content.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILorescopeRepository : IUserContentRepository<LorescopeModel> {
-    ValueTask<RepoResult> IsValidNewNameAsync(UserIdUnion userId, string name, CancellationToken ct = default);
+public class UniverseModel : UserContent {
+    public required MultiverseModel Multiverse { get; set; }
+    public Guid MultiverseId { get; set; }
+
+    [MaxLength(64)] public required string Name { get; set; }
+    [MaxLength(512)] public required string Description { get; set; } = string.Empty;
 }

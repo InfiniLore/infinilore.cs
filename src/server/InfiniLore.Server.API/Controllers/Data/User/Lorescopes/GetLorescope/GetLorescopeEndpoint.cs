@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Server.Services.CQRS.Requests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Database.Models.Content.Data.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace InfiniLore.Database.Models.Content.Account;
@@ -15,6 +16,7 @@ public class InfiniLoreUser : IdentityUser<Guid> {
     public ICollection<JwtRefreshTokenModel> JwtRefreshTokens { get; init; } = [];
 
     public ICollection<UserContentAccessModel> ContentAccesses { get; init; } = [];
+    public ICollection<InfinilorePermission> Permissions { get; init; } = [];
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

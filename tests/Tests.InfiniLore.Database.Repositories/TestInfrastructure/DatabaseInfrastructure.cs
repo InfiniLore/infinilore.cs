@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories;

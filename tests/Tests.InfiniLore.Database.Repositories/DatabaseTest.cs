@@ -18,10 +18,10 @@ public class LoreScopeCommandRepositoryTest(DatabaseInfrastructure infrastructur
     [Test]
     public async Task TestCanConnect() {
         // Arrange: get dbContext
-        var dbContext = await _unitOfWork.GetDbContextAsync();
+        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync();
 
         // Act: check the connection
-        var canConnect = await dbContext.Database.CanConnectAsync();
+        bool canConnect = await dbContext.Database.CanConnectAsync();
 
         // Assert: verify connection success
         await Assert.That(canConnect).IsTrue();

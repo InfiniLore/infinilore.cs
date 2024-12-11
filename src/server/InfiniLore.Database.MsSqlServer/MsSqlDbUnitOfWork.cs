@@ -3,106 +3,80 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
 using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace InfiniLore.Database.MsSqlServer;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
-// ---------------------------------------------------------------------------------------------------------------------
-
-/// <inheritdoc cref="IDbUnitOfWork{T}" />
+// ---------------------------------------------------------------------------------------------------------------------/// <inheritdoc cref="IDbUnitOfWork{T}" />
 [InjectableService<IDbUnitOfWork<MsSqlDbContext>>(ServiceLifetime.Scoped)]
-public class MsSqlDbUnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ILogger logger) : IDbUnitOfWork<MsSqlDbContext> {
-    private MsSqlDbContext? _msSqlDb;
+public class MsSqlDbUnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory) : IDbUnitOfWork<MsSqlDbContext> {
+    private readonly AsyncLazy<MsSqlDbContext> _msSqlDb = new(async () => await dbContextFactory.CreateDbContextAsync());
     private IDbContextTransaction? _transaction;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    /// <inheritdoc />
-    public async Task CommitAsync(CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await GetDbContextAsync(ct);
-        if (_transaction == null) {
-            await dbContext.SaveChangesAsync(ct);
-            return;
-        }
-
+    public async ValueTask SaveChangesAsync(CancellationToken ct = default) {
+        MsSqlDbContext dbContext = await _msSqlDb.GetValueAsync();
+        await dbContext.SaveChangesAsync(ct);
+    }
+    
+    public async ValueTask<bool> TryCommitTransactionAsync(CancellationToken ct = default) {
+        if (_transaction == null) return false;
+        
         await _transaction.CommitAsync(ct);
-        _transaction = null;
+        _transaction.Dispose();
+        
+        return true;
+    }
+    
+    public async ValueTask<bool> TryCreateTransactionAsync(CancellationToken ct = default) {
+        if (_transaction != null) return false;
+        
+        _transaction = await _msSqlDb.GetValueAsync()
+            .ContinueWith(db => db.Result.Database.BeginTransactionAsync(ct), ct)
+            .Unwrap();
+
+        return true;
     }
 
-    /// <inheritdoc />
-    public async Task<bool> TryCommitAsync(CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await GetDbContextAsync(ct);
-        try {
-            if (_transaction == null) {
-                await dbContext.SaveChangesAsync(ct);
-                return true;
-            }
-
-            await _transaction.CommitAsync(ct);
-            _transaction = null;
-            return true;
-
-        }
-        catch (Exception ex) {
-            logger.Error(ex, "Error while committing transaction");
-            return false;
-        }
-    }
-
-    /// <inheritdoc />
-    public async Task BeginTransactionAsync(CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await GetDbContextAsync(ct);
-        _transaction = await dbContext.Database.BeginTransactionAsync(ct);
-    }
-
-    /// <inheritdoc />
-    public Task RollbackAsync(CancellationToken ct = default) => TryRollbackAsync(ct);
-
-    /// <inheritdoc />
-    public async Task<bool> TryRollbackAsync(CancellationToken ct = default) {
+    public async ValueTask<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
-
+        
         await _transaction.RollbackAsync(ct);
-        _transaction = null;
+        _transaction.Dispose();
+        
         return true;
     }
-
-    /// <inheritdoc />
-    public async Task<bool> TryRollbackToSavepointAsync(string name, CancellationToken ct = default) {
+    
+    public async ValueTask<bool> TryRollbackToSavepointAsync(Guid id, CancellationToken ct = default) {
         if (_transaction == null) return false;
-
-        await _transaction.RollbackToSavepointAsync(name, ct);
+        if (!_transaction.SupportsSavepoints) return false;
+        
+        await _transaction.RollbackToSavepointAsync(id.ToString("N"), ct);
         return true;
     }
 
-    /// <inheritdoc />
-    public async Task<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) =>
-        _msSqlDb ??= await dbContextFactory.CreateDbContextAsync(ct);
-
-    /// <inheritdoc />
-    public async Task CreateSavepointAsync(string name, CancellationToken ct = default) {
-        await (_transaction?.CreateSavepointAsync(name, ct) ?? Task.CompletedTask);
+    public async ValueTask<bool> TryCreateSavepointAsync(Guid id, CancellationToken ct = default) {
+        if (_transaction == null) return false;
+        if (!_transaction.SupportsSavepoints) return false;
+        
+        await _transaction.CreateSavepointAsync(id.ToString("N"), ct);
+        return true;
     }
-
-    /// <summary>
-    ///     Asynchronously disposes the current resources.
-    ///     This method ensures the associated `InfiniLoreDbContext` and any
-    ///     active transactions are properly disposed asynchronously.
-    /// </summary>
+    
+    public async ValueTask<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) {
+        return await _msSqlDb.GetValueAsync();
+    }
+    
     public async ValueTask DisposeAsync() {
-        if (_msSqlDb != null) await _msSqlDb.DisposeAsync();
-        if (_transaction != null) await _transaction.DisposeAsync();
-
-        GC.SuppressFinalize(this);
-    }
-
-    public void Dispose() {
-        _msSqlDb?.Dispose();
-        _transaction?.Dispose();
+        if (_transaction != null) {
+            await TryRollbackTransactionAsync();
+            await _transaction.DisposeAsync();
+        }
         GC.SuppressFinalize(this);
     }
 }

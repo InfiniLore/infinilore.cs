@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.User;
 
 namespace Tests.InfiniLore.Database.Repositories.Data;
 // ---------------------------------------------------------------------------------------------------------------------

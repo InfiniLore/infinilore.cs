@@ -2,14 +2,15 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Contracts.Types;
 using System.Linq.Expressions;
 using Tests.InfiniLore.Database.Repositories.Data;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
+using Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 
-namespace Tests.InfiniLore.Database.Repositories.Content.Data.User.LorescopeRepository;
+namespace Tests.InfiniLore.Database.Repositories.Content.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

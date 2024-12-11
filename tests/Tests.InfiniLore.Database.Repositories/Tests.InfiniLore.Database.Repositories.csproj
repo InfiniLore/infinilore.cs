@@ -26,8 +26,4 @@
         <ProjectReference Include="..\..\src\server\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Content\Data\" />
-    </ItemGroup>
-
 </Project>

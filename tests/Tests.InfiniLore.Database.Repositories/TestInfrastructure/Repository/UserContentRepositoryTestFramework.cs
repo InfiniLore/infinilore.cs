@@ -9,9 +9,8 @@ using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
-using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 
-namespace Tests.InfiniLore.Database.Repositories;
+namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -44,7 +43,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
     protected async Task CanCreateSingleModel(TModel model) {
         // Act
         RepoResult commandResult = await _repository.TryAddAsync(model);
-        bool commitResult = await _unitOfWork.TryCommitAsync();
+        bool commitResult = await _unitOfWork.TryCommitTransactionAsync();
 
         // Assert
         await Assert.That(commitResult).IsTrue();
@@ -61,7 +60,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
         // Act
         IEnumerable<TModel> userContents = models as TModel[] ?? models.ToArray();
         RepoResult commandResult = await _repository.TryAddRangeAsync(userContents);
-        bool commitResult = await _unitOfWork.TryCommitAsync();
+        bool commitResult = await _unitOfWork.TryCommitTransactionAsync();
 
         // Assert
         await Assert.That(commitResult).IsTrue();
@@ -82,12 +81,12 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
         // Arrange
         var (model, updateFunc, validateFunc) = tuple;
         await _repository.TryAddAsync(model);
-        bool commitResult = await _unitOfWork.TryCommitAsync();
+        bool commitResult = await _unitOfWork.TryCommitTransactionAsync();
         model = await updateFunc(model);
 
         // Act
         RepoResult commandResult = await _repository.TryUpdateAsync(model);
-        bool commitResult2 = await _unitOfWork.TryCommitAsync();
+        bool commitResult2 = await _unitOfWork.TryCommitTransactionAsync();
 
         // Assert
         await Assert.That(commitResult).IsTrue();
@@ -104,11 +103,11 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
     protected async Task CanDeleteModel(TModel model) {
         // Arrange
         await _repository.TryAddAsync(model);
-        bool commitResult = await _unitOfWork.TryCommitAsync();
+        bool commitResult = await _unitOfWork.TryCommitTransactionAsync();
 
         // Act
         RepoResult commandResult = await _repository.TryDeleteAsync(model);
-        bool commitResult2 = await _unitOfWork.TryCommitAsync();
+        bool commitResult2 = await _unitOfWork.TryCommitTransactionAsync();
 
         // Assert
         await Assert.That(commitResult).IsTrue();
@@ -189,7 +188,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
     private async Task AddModelToDatabaseAsync(TModel model) {
         var repository = infrastructure.ServiceProvider.GetRequiredService<TRepository>();
         await repository.TryAddAsync(model);
-        await _unitOfWork.TryCommitAsync();
+        await _unitOfWork.TryCommitTransactionAsync();
     }
     #endregion
 }

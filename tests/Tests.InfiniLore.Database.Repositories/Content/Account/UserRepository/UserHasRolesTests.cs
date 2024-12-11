@@ -3,24 +3,28 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
+using Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 
-namespace Tests.InfiniLore.Database.Repositories.Content.Account.UserRepository;
+namespace Tests.InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[TestSubject(typeof(global::InfiniLore.Database.Repositories.Content.Account.UserRepository))]
+[TestSubject(typeof(UserRepository))]
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
-public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : RepositoryTestFramework<global::InfiniLore.Database.Repositories.Content.Account.UserRepository>(infrastructure) {
+public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : RepositoryTestFramework<UserRepository>(infrastructure) {
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
     [Before(Test)]
     public async Task SeedDatabase() {
+        await CreateSavepointAsync();
+        
         // Arrange seed data
         var originalUser = new InfiniLoreUser { Id = Guid.Parse("bc8caeb2-346e-4754-b05d-8a747a95dc0f"), UserName = "seedTestUser" };
         var roleAdminId = Guid.CreateVersion7();
@@ -44,6 +48,11 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
 
         // Commit changes
         await dbContext.SaveChangesAsync();
+    }
+
+    [After(Test)]
+    public async Task RunAfterTest() {
+        await RollbackToSavepointAsync();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

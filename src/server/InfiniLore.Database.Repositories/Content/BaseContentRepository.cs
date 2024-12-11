@@ -9,17 +9,20 @@ using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
+public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
+    protected virtual Expression<Func<T, bool>> UniqueModelPredicate(T originalModel) {
+        return dbModel => dbModel.Id == originalModel.Id;
+    }
+    
     public async virtual ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        if (await dbSet.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
+        if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         await dbSet.AddAsync(model, ct);
@@ -28,7 +31,7 @@ public class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) 
 
     public async virtual ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        if (await dbSet.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
+        if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         EntityEntry<T> result = await dbSet.AddAsync(model, ct);

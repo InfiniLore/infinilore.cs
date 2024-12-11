@@ -4,6 +4,7 @@
 using AterraEngine.DependencyInjection;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Types;
@@ -58,11 +59,15 @@ public class UserRepository(
 
         // Because we already got a user (either fed to this method or from the database), we can assume that the user exists.
         HashSet<string> userWithRoles = await dbContext.UserRoles
+            // If the user is an InfiniLoreUser, we can use the NoTracking query to avoid loading the user's roles
+            .ConditionalQueryable(userIdUnion.IsInfiniLoreUser, queryable => queryable.AsNoTracking()) 
+            
             .Where(ur => ur.UserId == user.Id)
             .Join(dbContext.Roles,
                 ur => ur.RoleId,
                 r => r.Id,
                 (ur, r) => r.NormalizedName!)
+            
             .ToHashSetAsync(ct);
 
         if (!userWithRoles.IsSupersetOf(roleSet)) {

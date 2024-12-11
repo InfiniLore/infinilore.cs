@@ -1,16 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.ComponentModel.DataAnnotations;
+namespace InfiniLore.Server.Contracts;
 
-namespace InfiniLore.Database.Models.Content.UserData;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UniverseModel : UserContent {
-    public required MultiverseModel Multiverse { get; set; }
-    public Guid MultiverseId { get; set; }
-
-    [MaxLength(64)] public required string Name { get; set; }
-    [MaxLength(512)] public required string Description { get; set; } = string.Empty;
+public static class Extensions {
+    public static IQueryable<TSource> ConditionalQueryable<TSource>(this IQueryable<TSource> source, bool condition, Func<IQueryable<TSource>, IQueryable<TSource>> queryableFunc) =>
+        condition
+            ? queryableFunc(source)
+            : source;
 }

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
@@ -27,16 +27,24 @@ public class CreateLorescopeHandler(
                 if (!await authService.ValidateIsOwnerAsync(request.Lorescope.OwnerId, ct)) return "Access Denied";
             }
 
+            await unitOfWork.TryCreateTransactionAsync(ct);
+
             // Pre-check if we can use the name
             // Done to get more human-readable error strings back
             RepoResult resultCanUseName = await lorescopeRepository.IsValidNewNameAsync(request.Lorescope.OwnerId, request.Lorescope.Name, ct);
-            if (!resultCanUseName) return resultCanUseName.AsFailure;
+            if (!resultCanUseName) {
+                // await unitOfWork.TryRollbackTransactionAsync(ct); // Don't roll back because we are just retrieving data
+                return resultCanUseName.AsFailure;
+            }
 
             // Actually add the lore scope to the db
             RepoResult<LorescopeModel> resultAddition = await lorescopeRepository.TryAddWithResultAsync(request.Lorescope, ct);
-            if (!resultAddition) return resultAddition.AsFailure;
+            if (!resultAddition) {
+                await unitOfWork.TryRollbackTransactionAsync(ct);
+                return resultAddition.AsFailure;
+            }
 
-            await unitOfWork.CommitAsync(ct);
+            await unitOfWork.TryCommitTransactionAsync(ct);
 
             // Because we already checked for IsFailure above, we know that the result is a Success
             return resultAddition.AsSuccess;

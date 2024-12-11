@@ -3,7 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.Models.Content.UserData;
+using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Database.Models.Content.Data.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -27,6 +28,7 @@ public class MsSqlDbContext : IdentityDbContext<InfiniLoreUser, IdentityRole<Gui
     public DbSet<UniverseModel> Universes { get; init; }
     public DbSet<JwtRefreshTokenModel> JwtRefreshTokens { get; init; }
     public DbSet<UserContentAccessModel> UserContentAccesses { get; init; }
+    public DbSet<InfinilorePermission> Permissions { get; init; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

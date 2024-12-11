@@ -13,7 +13,7 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
+public abstract class UserContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         T[] result = await dbSet
