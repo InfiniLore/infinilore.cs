@@ -41,17 +41,18 @@ public class UserRepository(
 
         return result;
     }
-    
+
     public async ValueTask<RepoResult<InfiniLoreUser>> UserHasAllRolesAsync(UserIdUnion userIdUnion, IEnumerable<string> roles, CancellationToken ct = default) {
         MsSqlDbContext dbContext = await unitOfWork.GetDbContextAsync(ct);
-       
+
         // If the user hasn't been found yet, we need to actually grab it
         if (!userIdUnion.TryGetAsInfiniLoreUser(out InfiniLoreUser? user)) {
-           RepoResult<InfiniLoreUser> getUserResult = await TryGetByIdAsync(userIdUnion, ct);
-           if (getUserResult.IsFailure) return getUserResult.AsFailure;
-           user = getUserResult.AsSuccess.Value;
+            RepoResult<InfiniLoreUser> getUserResult = await TryGetByIdAsync(userIdUnion, ct);
+            if (getUserResult.IsFailure) return getUserResult.AsFailure;
+
+            user = getUserResult.AsSuccess.Value;
         }
-       
+
         // Normalize the names
         HashSet<string> roleSet = roles
             .Select(r => r.ToUpperInvariant())
@@ -60,20 +61,18 @@ public class UserRepository(
         // Because we already got a user (either fed to this method or from the database), we can assume that the user exists.
         HashSet<string> userWithRoles = await dbContext.UserRoles
             // If the user is an InfiniLoreUser, we can use the NoTracking query to avoid loading the user's roles
-            .ConditionalQueryable(userIdUnion.IsInfiniLoreUser, queryable => queryable.AsNoTracking()) 
-            
+            .ConditionalQueryable(userIdUnion.IsInfiniLoreUser, queryableFunc: queryable => queryable.AsNoTracking())
             .Where(ur => ur.UserId == user.Id)
             .Join(dbContext.Roles,
-                ur => ur.RoleId,
-                r => r.Id,
-                (ur, r) => r.NormalizedName!)
-            
+                outerKeySelector: ur => ur.RoleId,
+                innerKeySelector: r => r.Id,
+                resultSelector: (ur, r) => r.NormalizedName!)
             .ToHashSetAsync(ct);
 
         if (!userWithRoles.IsSupersetOf(roleSet)) {
             return "User does not have all roles.";
         }
-        
+
         return user;
     }
 }

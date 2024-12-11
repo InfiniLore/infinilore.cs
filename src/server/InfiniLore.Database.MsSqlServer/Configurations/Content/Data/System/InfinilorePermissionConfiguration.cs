@@ -5,7 +5,6 @@ using InfiniLore.Database.Models.Content.Data.System;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Database.MsSqlServer.Configurations.Content.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

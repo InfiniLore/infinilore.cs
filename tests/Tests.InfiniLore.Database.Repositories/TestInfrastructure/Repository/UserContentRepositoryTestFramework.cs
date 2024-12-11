@@ -79,7 +79,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
         (TModel model, Func<TModel, ValueTask<TModel>> updateFunc, Func<TModel, bool> validateFunc) tuple
     ) {
         // Arrange
-        var (model, updateFunc, validateFunc) = tuple;
+        (TModel model, Func<TModel, ValueTask<TModel>> updateFunc, Func<TModel, bool> validateFunc) = tuple;
         await _repository.TryAddAsync(model);
         bool commitResult = await _unitOfWork.TryCommitTransactionAsync();
         model = await updateFunc(model);
@@ -137,7 +137,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
 
     protected async Task CanGetByUserAsync((UserIdUnion userUnion, TModel model) tuple) {
         // Arrange
-        var (userUnion, model) = tuple;
+        (UserIdUnion userUnion, TModel model) = tuple;
         await AddModelToDatabaseAsync(model);
 
         // Act
@@ -173,7 +173,7 @@ public abstract class UserContentRepositoryTestFramework<TRepository, TModel>(Da
 
     protected async Task CanGetByCriteriaAsync((Expression<Func<TModel, bool>> predicate, TModel model) tuple) {
         // Arrange
-        var (predicate, model) = tuple;
+        (Expression<Func<TModel, bool>> predicate, TModel model) = tuple;
         await AddModelToDatabaseAsync(model);
 
         // Act

@@ -17,44 +17,38 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
     private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = unitOfWork;
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    protected virtual Expression<Func<T, bool>> UniqueModelPredicate(T originalModel) {
-        return dbModel => dbModel.Id == originalModel.Id;
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async virtual ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
+
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         await dbSet.AddAsync(model, ct);
         await _unitOfWork.SaveChangesAsync(ct);
-        
+
         return new Success();
     }
 
     public async virtual ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
+
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
         model.UpdateLastModifiedDate();
         EntityEntry<T> result = await dbSet.AddAsync(model, ct);
         await _unitOfWork.SaveChangesAsync(ct);
-        
+
         return result;
     }
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
-        
+
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
@@ -69,13 +63,13 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     public async ValueTask<RepoResult<T>> TryUpdateWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
-        
+
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
         model.UpdateLastModifiedDate();
         dbContext.Entry(existing).CurrentValues.SetValues(model);
-        await _unitOfWork.SaveChangesAsync(ct); 
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return existing;
     }
@@ -91,14 +85,14 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         List<T> existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToListAsync(ct);
 
         if (existingEntities.Count != modelArray.Length) {
-            return "One or more Models do not exist"; // Some entities are missing
+            return "One or more Models do not exist";// Some entities are missing
         }
 
         // Update existing entities with new values
         foreach (T existingEntity in existingEntities) {
             T updatedModel = modelArray.First(m => m.Id == existingEntity.Id);
-            existingEntity.UpdateLastModifiedDate(); // Update individual properties
-            dbContext.Entry(existingEntity).CurrentValues.SetValues(updatedModel); // Map the changes
+            existingEntity.UpdateLastModifiedDate();// Update individual properties
+            dbContext.Entry(existingEntity).CurrentValues.SetValues(updatedModel);// Map the changes
         }
 
         await _unitOfWork.SaveChangesAsync(ct);
@@ -107,7 +101,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
-        if (model.Id == Guid.Empty) return await TryAddAsync(model, ct); // If no ID, always add
+        if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// If no ID, always add
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
@@ -116,14 +110,14 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         T? existingModel = await dbSet.FindAsync([model.Id], ct);
 
         if (existingModel is null) {
-            await dbSet.AddAsync(model, ct); // If it doesn't exist, add it
+            await dbSet.AddAsync(model, ct);// If it doesn't exist, add it
             await _unitOfWork.SaveChangesAsync(ct);
             return new Success();
         }
 
         // Update the tracked entity with new values
-        existingModel.UpdateLastModifiedDate(); // Update necessary fields
-        dbContext.Entry(existingModel).CurrentValues.SetValues(model); // Map incoming values to tracked entity
+        existingModel.UpdateLastModifiedDate();// Update necessary fields
+        dbContext.Entry(existingModel).CurrentValues.SetValues(model);// Map incoming values to tracked entity
 
         await _unitOfWork.SaveChangesAsync(ct);
         return new Success();
@@ -133,7 +127,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     public async virtual ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
-    
+
         T[] userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
 
@@ -148,8 +142,8 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         // Handle tracked updates for existing models
         foreach (T modelToUpdate in modelsToUpdate) {
             T existingModel = existingModels.First(em => em.Id == modelToUpdate.Id);
-            existingModel.UpdateLastModifiedDate(); // Update required fields
-            dbContext.Entry(existingModel).CurrentValues.SetValues(modelToUpdate); // Map incoming changes to tracked entity
+            existingModel.UpdateLastModifiedDate();// Update required fields
+            dbContext.Entry(existingModel).CurrentValues.SetValues(modelToUpdate);// Map incoming changes to tracked entity
         }
 
         // Add new models
@@ -157,7 +151,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
 
         // Save all changes
         await _unitOfWork.SaveChangesAsync(ct);
-    
+
         return new Success();
     }
 
@@ -174,7 +168,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
+
         IEnumerable<T> userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
 
@@ -192,26 +186,26 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
+
         HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
 
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteUpdateAsync(setPropertyCalls: s => BaseContent.SoftDeleteWithPropertyCalls(s), ct);
-        
+
         return new Success();
     }
 
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
+
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
         dbSet.Remove(existing);
         await _unitOfWork.SaveChangesAsync(ct);
-        
+
         return new Success();
     }
 
@@ -310,5 +304,11 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
             .ToArrayAsync(cancellationToken: ct);
 
         return result;
+    }
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected virtual Expression<Func<T, bool>> UniqueModelPredicate(T originalModel) {
+        return dbModel => dbModel.Id == originalModel.Id;
     }
 }

@@ -24,7 +24,7 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
     [Before(Test)]
     public async Task SeedDatabase() {
         await CreateSavepointAsync();
-        
+
         // Arrange seed data
         var originalUser = new InfiniLoreUser { Id = Guid.Parse("bc8caeb2-346e-4754-b05d-8a747a95dc0f"), UserName = "seedTestUser" };
         var roleAdminId = Guid.CreateVersion7();

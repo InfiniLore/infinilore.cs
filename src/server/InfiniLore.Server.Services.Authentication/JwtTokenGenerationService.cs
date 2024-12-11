@@ -28,11 +28,11 @@ public class JwtTokenGenerationService(
     ILogger logger,
     UserManager<InfiniLoreUser> userManager
 ) : IJwtTokenGenerationService {
-    private readonly string _jwtKey = configuration["Jwt:Key"]!;
     private readonly int _jwtAccessExpiresInMinutes = int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!);
-    private readonly int _jwtRefreshExpiresInDays = int.Parse(configuration["Jwt:RefreshExpiresInDays"]!);
-    private readonly string _jwtIssuer = configuration["Jwt:Issuer"]!;
     private readonly string _jwtAudience = configuration["Jwt:Audience"]!;
+    private readonly string _jwtIssuer = configuration["Jwt:Issuer"]!;
+    private readonly string _jwtKey = configuration["Jwt:Key"]!;
+    private readonly int _jwtRefreshExpiresInDays = int.Parse(configuration["Jwt:RefreshExpiresInDays"]!);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

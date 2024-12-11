@@ -17,7 +17,7 @@ public class CreateLorescopeMapper : Mapper<CreateLorescopeRequest, LorescopeRes
         ls.Multiverses.Select(selector: m => m.Id).ToArray()
     );
 
-    public override LorescopeModel ToEntity(CreateLorescopeRequest request) 
+    public override LorescopeModel ToEntity(CreateLorescopeRequest request)
         => new() {
             OwnerId = request.UserId,
             Name = request.Name,

@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="AterraEngine.Unions" Version="2.5.0" />
+        <PackageReference Include="AterraEngine.Unions" Version="2.5.0"/>
         <PackageReference Include="AterraEngine.Unions.Generators" Version="2.5.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

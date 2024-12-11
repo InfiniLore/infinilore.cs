@@ -2,22 +2,23 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace InfiniLore.Server.Contracts.Types;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class AsyncLazy<T>(Func<Task<T>> valueFactory) {
     private readonly Lock _lock = new();
     private Task<T>? _valueTask;
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task<T> GetValueAsync() {
         if (_valueTask != null) return await _valueTask;
+
         lock (_lock) {
-            _valueTask ??= valueFactory(); // Double check locking
+            _valueTask ??= valueFactory();// Double check locking
         }
+
         return await _valueTask;
     }
 }

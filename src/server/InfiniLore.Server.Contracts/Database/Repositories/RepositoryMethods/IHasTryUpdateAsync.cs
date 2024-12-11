@@ -37,17 +37,18 @@ public interface IHasTryUpdateAsync<T> where T : BaseContent {
     ValueTask<RepoResult<T>> TryUpdateWithResultAsync(T model, CancellationToken ct = default);
 
     /// <summary>
-    /// Asynchronously attempts to update a collection of models in the repository.
+    ///     Asynchronously attempts to update a collection of models in the repository.
     /// </summary>
     /// <param name="models">
-    /// A collection of models to be updated. Each model must be of a type derived from BaseContent.
+    ///     A collection of models to be updated. Each model must be of a type derived from BaseContent.
     /// </param>
     /// <param name="ct">
-    /// A cancellation token to signal the asynchronous operation to cancel if required. Defaults to CancellationToken.None.
+    ///     A cancellation token to signal the asynchronous operation to cancel if required. Defaults to
+    ///     CancellationToken.None.
     /// </param>
     /// <return>
-    /// A ValueTask representing the asynchronous operation that contains a RepoResult indicating the outcome of
-    /// the update operation, whether successful or not.
+    ///     A ValueTask representing the asynchronous operation that contains a RepoResult indicating the outcome of
+    ///     the update operation, whether successful or not.
     /// </return>
     ValueTask<RepoResult> TryUpdateAsync(IEnumerable<T> models, CancellationToken ct = default);
 }

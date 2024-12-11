@@ -8,17 +8,17 @@ namespace InfiniLore.Server.Contracts.Database;
 /// <summary>
 ///     Implementation of the unit of work pattern specific to InfiniLore database context.
 /// </summary>
-public interface IUnitOfWork: IAsyncDisposable {
+public interface IUnitOfWork : IAsyncDisposable {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // ----------------------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Saves all changes made in this context to the database asynchronously.
+    ///     Saves all changes made in this context to the database asynchronously.
     /// </summary>
     /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
     /// <returns>
-    /// A task that represents the asynchronous save operation. The task result contains the number of state entries
-    /// written to the database.
+    ///     A task that represents the asynchronous save operation. The task result contains the number of state entries
+    ///     written to the database.
     /// </returns>
     ValueTask SaveChangesAsync(CancellationToken ct = default);
 

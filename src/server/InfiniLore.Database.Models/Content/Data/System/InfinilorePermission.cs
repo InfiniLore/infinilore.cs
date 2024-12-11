@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Database.Models.Content.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,7 +18,7 @@ public class InfinilorePermission : BaseContent {
             NormalizedName = value.ToUpperInvariant();
         }
     }
-    
+
     [MaxLength(255)] public string NormalizedName { get; set; } = string.Empty;
     [MaxLength(511)] public string Description { get; set; } = string.Empty;
 }

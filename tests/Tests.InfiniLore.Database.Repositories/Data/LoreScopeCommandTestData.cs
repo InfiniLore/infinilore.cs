@@ -48,12 +48,12 @@ public static class LoreScopeCommandTestData {
         };
 
         yield return () => [
-            new() {
+            new LorescopeModel {
                 Name = "Test Scope Without Server Side Id",
                 Description = "Test Scope Description 3",
                 Owner = user1
             },
-            new() {
+            new LorescopeModel {
                 Name = "Test Scope Without Server Side Id 2",
                 Description = "Test Scope Description 4",
                 Owner = user1
@@ -63,18 +63,18 @@ public static class LoreScopeCommandTestData {
 
     public static IEnumerable<(LorescopeModel model, Func<LorescopeModel, ValueTask<LorescopeModel>> function,
         Func<LorescopeModel, bool> predicate)> GetUpdate() {
-        yield return new(
+        yield return new ValueTuple<LorescopeModel, Func<LorescopeModel, ValueTask<LorescopeModel>>, Func<LorescopeModel, bool>>(
             new LorescopeModel {
                 Id = Guid.NewGuid(),
                 Name = "Test Scope 5",
                 Description = "Test Scope Description 5",
                 Owner = InfiniLoreUserCommandTestData.GetUser1()
             },
-            async model => {
+            item2: async model => {
                 model.Description = "Updated Scope Description 5";
                 return await Task.FromResult(model);
             },
-            model => model.Description == "Updated Scope Description 5"
+            item3: model => model.Description == "Updated Scope Description 5"
         );
     }
 

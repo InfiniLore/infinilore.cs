@@ -12,4 +12,5 @@ namespace InfiniLore.Server.Services.CQRS.Requests.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 public record GetOneLorescopeQuery(
     UserIdUnion UserIdUnion,
-    Guid LorescopeId) : ICqrsRequest<LorescopeModel>;
+    Guid LorescopeId
+) : ICqrsRequest<LorescopeModel>;

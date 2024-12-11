@@ -33,7 +33,7 @@ public static class LoreScopeQueryTestData {
     public static (UserIdUnion userId, LorescopeModel model) GetUserModels() {
         InfiniLoreUser user1 = InfiniLoreUserCommandTestData.GetUser1();
 
-        return new(user1, new LorescopeModel {
+        return new ValueTuple<UserIdUnion, LorescopeModel>(user1, new LorescopeModel {
             Id = Guid.NewGuid(),
             Name = "Test Query Scope for User 1",
             Description = "Test Query Scope Description for User 1",
@@ -44,14 +44,14 @@ public static class LoreScopeQueryTestData {
     public static IEnumerable<LorescopeModel> GetMultipleModels() {
         InfiniLoreUser user1 = InfiniLoreUserCommandTestData.GetUser1();
 
-        yield return new() {
+        yield return new LorescopeModel {
             Id = Guid.NewGuid(),
             Name = "Test Query Scope 3",
             Description = "Test Query Scope Description 3",
             Owner = user1
         };
 
-        yield return new() {
+        yield return new LorescopeModel {
             Id = Guid.NewGuid(),
             Name = "Test Query Scope 4",
             Description = "Test Query Scope Description 4",
@@ -69,8 +69,8 @@ public static class LoreScopeQueryTestData {
             Owner = user1
         };
 
-        return new(
-            scope => scope.Name == "Test Query Scope with Criteria",
+        return new ValueTuple<Expression<Func<LorescopeModel, bool>>, LorescopeModel>(
+            item1: scope => scope.Name == "Test Query Scope with Criteria",
             model
         );
     }

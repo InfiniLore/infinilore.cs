@@ -19,7 +19,7 @@ public class MsSqlDbContext : IdentityDbContext<InfiniLoreUser, IdentityRole<Gui
     // -----------------------------------------------------------------------------------------------------------------
     public MsSqlDbContext() {}
     public MsSqlDbContext(DbContextOptions<MsSqlDbContext> options) : base(options) {}
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // DbSets
     // -----------------------------------------------------------------------------------------------------------------

@@ -21,9 +21,6 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
         .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
         .Build();
 
-    public MsSqlDbContext DbContext { get; }
-    public IServiceProvider ServiceProvider { get; }
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
@@ -56,16 +53,19 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
         DbContext = db;
     }
 
+    public MsSqlDbContext DbContext { get; }
+    public IServiceProvider ServiceProvider { get; }
+
+    public async ValueTask DisposeAsync() {
+        await _msSqlContainer.DisposeAsync();
+        await DbContext.DisposeAsync();
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task InitializeAsync() {
         await DbContext.Database.EnsureCreatedAsync();
         await DbContext.SaveChangesAsync();
-    }
-
-    public async ValueTask DisposeAsync() {
-        await _msSqlContainer.DisposeAsync();
-        await DbContext.DisposeAsync();
     }
 }

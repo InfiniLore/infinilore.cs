@@ -22,7 +22,7 @@ public class CreateLorescopeEndpoint(IMediator mediator, IMediatorOutputService 
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lore-scopes/");
-        Permissions(ApiPermissions.LorescopeWrite, ApiPermissions.LorescopeManage); // Remember, Permissions works as (a or b), PermissionsALl works as (a and b)
+        Permissions(ApiPermissions.LorescopeWrite, ApiPermissions.LorescopeManage);// Remember, Permissions works as (a or b), PermissionsALl works as (a and b)
     }
 
     public async override Task<Results<Ok<LorescopeResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateLorescopeRequest req, CancellationToken ct) {

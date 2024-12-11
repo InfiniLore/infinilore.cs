@@ -23,21 +23,21 @@ public class MsSqlDbUnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactor
         MsSqlDbContext dbContext = await _msSqlDb.GetValueAsync();
         await dbContext.SaveChangesAsync(ct);
     }
-    
+
     public async ValueTask<bool> TryCommitTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
-        
+
         await _transaction.CommitAsync(ct);
         _transaction.Dispose();
-        
+
         return true;
     }
-    
+
     public async ValueTask<bool> TryCreateTransactionAsync(CancellationToken ct = default) {
         if (_transaction != null) return false;
-        
+
         _transaction = await _msSqlDb.GetValueAsync()
-            .ContinueWith(db => db.Result.Database.BeginTransactionAsync(ct), ct)
+            .ContinueWith(continuationFunction: db => db.Result.Database.BeginTransactionAsync(ct), ct)
             .Unwrap();
 
         return true;
@@ -45,17 +45,17 @@ public class MsSqlDbUnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactor
 
     public async ValueTask<bool> TryRollbackTransactionAsync(CancellationToken ct = default) {
         if (_transaction == null) return false;
-        
+
         await _transaction.RollbackAsync(ct);
         _transaction.Dispose();
-        
+
         return true;
     }
-    
+
     public async ValueTask<bool> TryRollbackToSavepointAsync(Guid id, CancellationToken ct = default) {
         if (_transaction == null) return false;
         if (!_transaction.SupportsSavepoints) return false;
-        
+
         await _transaction.RollbackToSavepointAsync(id.ToString("N"), ct);
         return true;
     }
@@ -63,20 +63,19 @@ public class MsSqlDbUnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactor
     public async ValueTask<bool> TryCreateSavepointAsync(Guid id, CancellationToken ct = default) {
         if (_transaction == null) return false;
         if (!_transaction.SupportsSavepoints) return false;
-        
+
         await _transaction.CreateSavepointAsync(id.ToString("N"), ct);
         return true;
     }
-    
-    public async ValueTask<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) {
-        return await _msSqlDb.GetValueAsync();
-    }
-    
+
+    public async ValueTask<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) => await _msSqlDb.GetValueAsync();
+
     public async ValueTask DisposeAsync() {
         if (_transaction != null) {
             await TryRollbackTransactionAsync();
             await _transaction.DisposeAsync();
         }
+
         GC.SuppressFinalize(this);
     }
 }
