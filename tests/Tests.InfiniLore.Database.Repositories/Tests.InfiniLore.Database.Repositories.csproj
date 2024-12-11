@@ -16,9 +16,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="JetBrains.Annotations" Version="2024.3.0"/>
-        <PackageReference Include="Testcontainers" Version="4.0.0"/>
-        <PackageReference Include="Testcontainers.MsSql" Version="4.0.0"/>
-        <PackageReference Include="TUnit" Version="0.4.92"/>
+        <PackageReference Include="Testcontainers" Version="4.1.0" />
+        <PackageReference Include="Testcontainers.MsSql" Version="4.1.0" />
+        <PackageReference Include="TUnit" Version="0.4.99" />
     </ItemGroup>
 
     <ItemGroup>

@@ -34,11 +34,6 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
 
     public const string EmptyId = "00000000-0000-0000-0000-000000000000";
 
-    public Faker<InfinilorePermission> PermissionFaker = new Faker<InfinilorePermission>()
-        .RuleFor(property: p => p.Id, setter: _ => Guid.NewGuid())// Just use a random guid for the id, instead of the version7 guid.
-        .RuleFor(property: p => p.Name, setter: _ => Truncate(Guid.NewGuid().ToString(), MaxNameLength))// To ensure they are unique
-        .RuleFor(property: p => p.Description, setter: f => Truncate(f.Lorem.Sentence(), MaxDescriptionLength));
-
     private static string Truncate(string value, int maxLength) =>
         value.Length > maxLength ? value[..maxLength] : value;
 
@@ -230,8 +225,8 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
 
         List<InfinilorePermission> permissions = guidValues.Select(guid => new InfinilorePermission {
             Id = Guid.Parse(guid),
-            Name = PermissionFaker.Generate().Name,
-            Description = PermissionFaker.Generate().Description
+            Name = FakerLib.InfinilorePermission.Generate().Name,
+            Description = FakerLib.InfinilorePermission.Generate().Description
         }).ToList();
 
         // Act & Assert
@@ -251,8 +246,8 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         string[] guidValues = [SomethingId, SomethingDifferentId, Guid.CreateVersion7().ToString()];
         List<InfinilorePermission> permissions = guidValues.Select(guid => new InfinilorePermission {
             Id = Guid.Parse(guid),
-            Name = PermissionFaker.Generate().Name,
-            Description = PermissionFaker.Generate().Description
+            Name = FakerLib.InfinilorePermission.Generate().Name,
+            Description = FakerLib.InfinilorePermission.Generate().Description
         }).ToList();
 
         // Act & Assert
@@ -264,8 +259,8 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task Repeat_TryAddOrUpdateAsync_ShouldReturnSuccess() {
         // Arrange
         var guid = Guid.NewGuid();
-        string name = PermissionFaker.Generate().Name;
-        string description = PermissionFaker.Generate().Description;
+        string name = FakerLib.InfinilorePermission.Generate().Name;
+        string description = FakerLib.InfinilorePermission.Generate().Description;
         InfinilorePermission permission = new() {
             Id = guid,
             Name = name,
@@ -302,7 +297,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     [Test]
     public async Task TryAddOrUpdateRangeAsync_ShouldReturnSuccess() {
         // Arrange
-        List<InfinilorePermission>? permissions = PermissionFaker.Generate(100);
+        List<InfinilorePermission>? permissions = FakerLib.InfinilorePermission.Generate(100);
 
         // Act & Assert
         await Base_TryAddOrUpdateRangeAsync_ShouldReturnSuccess(permissions);
@@ -320,8 +315,8 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         Guid guid = Guid.Parse(guidValue);
         InfinilorePermission permission = new() {
             Id = guid,
-            Name = PermissionFaker.Generate().Name,
-            Description = PermissionFaker.Generate().Description
+            Name = FakerLib.InfinilorePermission.Generate().Name,
+            Description = FakerLib.InfinilorePermission.Generate().Description
         };
 
         // Act & Assert
@@ -335,8 +330,8 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         Guid guid = Guid.Parse(guidValue);
         InfinilorePermission permission = new() {
             Id = guid,
-            Name = PermissionFaker.Generate().Name,
-            Description = PermissionFaker.Generate().Description
+            Name = FakerLib.InfinilorePermission.Generate().Name,
+            Description = FakerLib.InfinilorePermission.Generate().Description
         };
 
         // Act & Assert
@@ -346,7 +341,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     [Test]
     public async Task TryAddRangeAsync_ShouldReturnSuccess() {
         // Arrange
-        List<InfinilorePermission>? permissions = PermissionFaker.Generate(100);
+        List<InfinilorePermission>? permissions = FakerLib.InfinilorePermission.Generate(100);
 
         // Act & Assert
         await Base_TryAddRange_ShouldReturnSuccess(permissions);
