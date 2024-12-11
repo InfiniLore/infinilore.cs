@@ -46,26 +46,20 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
         services.RegisterServicesFromInfiniLoreDatabaseRepositories();
 
         ServiceProvider = services.BuildServiceProvider().CreateScope().ServiceProvider;
-
-        MsSqlDbContext db = ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>()
-            .GetDbContextAsync().GetAwaiter().GetResult();
-
-        DbContext = db;
     }
-
-    public MsSqlDbContext DbContext { get; }
     public IServiceProvider ServiceProvider { get; }
 
     public async ValueTask DisposeAsync() {
         await _msSqlContainer.DisposeAsync();
-        await DbContext.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task InitializeAsync() {
-        await DbContext.Database.EnsureCreatedAsync();
-        await DbContext.SaveChangesAsync();
+        MsSqlDbContext db = await ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>().GetDbContextAsync();
+        await db.Database.EnsureCreatedAsync();
+        await db.SaveChangesAsync();
     }
 }

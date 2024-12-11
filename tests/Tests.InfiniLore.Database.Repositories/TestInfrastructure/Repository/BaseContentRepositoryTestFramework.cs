@@ -63,8 +63,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryAddAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         DbSet<TModel> dbSet = dbContext.Set<TModel>();
         TModel? modelFromDb = await dbSet.FirstOrDefaultAsync(x => x.Id == guid);
 
@@ -81,8 +80,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryAddAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();
@@ -96,8 +94,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
         // Act
         RepoResult<TModel> result = await Repository.TryAddWithResultAsync(model);
         bool validValue = result.TryGetSuccessValue(out TModel? outputModel);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(validValue).IsTrue();
@@ -113,8 +110,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryAddRangeAsync(baseContents);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
@@ -128,8 +124,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult<TModel> result = await Repository.TryAddWithResultAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();
@@ -141,8 +136,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryUpdateAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await AssertModelExists(model);
@@ -153,8 +147,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryUpdateAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();
@@ -166,8 +159,8 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult<TModel> result = await Repository.TryUpdateWithResultAsync(model);
-        await UnitOfWork.SaveChangesAsync();
         bool hasValue = result.TryGetSuccessValue(out TModel? resultModel);
+        
 
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
@@ -183,8 +176,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult<TModel> result = await Repository.TryUpdateWithResultAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();
@@ -196,8 +188,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryUpdateAsync(models);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
@@ -208,8 +199,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryUpdateAsync(models);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();
@@ -221,8 +211,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryAddOrUpdateAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         TModel resultModel = await AssertModelExists(model);
@@ -235,8 +224,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
         // Act
         IEnumerable<TModel> baseContents = models as TModel[] ?? models.ToArray();
         RepoResult result = await Repository.TryAddOrUpdateRangeAsync(baseContents);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
@@ -250,8 +238,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryDeleteAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
@@ -263,8 +250,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
         // Act
         RepoResult result = await Repository.TryDeleteAsync(model);
-        await UnitOfWork.SaveChangesAsync();
-
+        
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.IsSuccess).IsFalse();

@@ -16,7 +16,8 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Data.System.Permissions
 [TestSubject(typeof(PermissionsRepository))]
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
-public class BaseContentTests(DatabaseInfrastructure infrastructure) : BaseContentRepositoryTestFramework<PermissionsRepository, InfinilorePermission>(infrastructure) {
+// ReSharper disable once InconsistentNaming
+public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure) : BaseContentRepositoryTestFramework<PermissionsRepository, InfinilorePermission>(infrastructure) {
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
@@ -257,8 +258,7 @@ public class BaseContentTests(DatabaseInfrastructure infrastructure) : BaseConte
         // Act & Assert
         await Base_TryUpdateRangeAsync_ShouldReturnFailure(permissions.ToArray());
     }
-
-
+    
     [Test]
     [Repeat(100)]
     public async Task Repeat_TryAddOrUpdateAsync_ShouldReturnSuccess() {
@@ -278,8 +278,7 @@ public class BaseContentTests(DatabaseInfrastructure infrastructure) : BaseConte
         await Assert.That(modelFromDb.Name).IsEqualTo(name);
         await Assert.That(modelFromDb.Description).IsEqualTo(description);
     }
-
-
+    
     [Test]
     [Arguments("79b081c0-fc2d-472f-a38c-68f9caaad863", "something.different.else", "Something Different")]
     [Arguments(SomethingId, "something.different.that.doesnt.crash", "Something Different")]
