@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
 using InfiniLore.Server.Contracts.Database.Seeding;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -11,8 +10,6 @@ namespace InfiniLore.Database.Seeding;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// Seeder should be created once and then never again really?
-[InjectableService<ISeederService>(ServiceLifetime.Singleton)]
 public class SeederService(IServiceProvider provider) : ISeederService {
     private readonly AsyncServiceScope _scope = provider.CreateAsyncScope();
     private IServiceProvider? _provider;

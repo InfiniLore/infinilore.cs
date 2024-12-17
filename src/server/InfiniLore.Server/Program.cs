@@ -151,6 +151,8 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreDatabaseSeeding();
 
+        builder.Services.AddHostedService<SeederService>();
+
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------
