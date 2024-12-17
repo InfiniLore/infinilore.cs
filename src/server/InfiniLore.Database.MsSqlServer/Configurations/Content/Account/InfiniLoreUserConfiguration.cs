@@ -30,5 +30,8 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
         builder.HasMany(user => user.ContentAccesses)
             .WithOne()
             .HasForeignKey(access => access.UserId);
+
+        builder.HasMany(user => user.Permissions)
+            .WithMany(permission => permission.Users);
     }
 }

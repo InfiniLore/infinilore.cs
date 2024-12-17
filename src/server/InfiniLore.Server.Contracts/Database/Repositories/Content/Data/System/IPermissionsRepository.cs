@@ -1,21 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
+using InfiniLore.Database.Models.Content.Data.System;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories;
+namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IBaseContentRepository<T> :
-    IHasTryAddAsync<T>,
-    IHasTryUpdateAsync<T>,
-    IHasTryAddOrUpdateAsync<T>,
-    IHasTryDeleteAsync<T>,
-    IHasTryRemoveAsync<T>,
-    IHasTryGetByIdAsync<T>,
-    IHasTryGetAllAsync<T>,
-    IHasTryGetByCriteriaAsync<T>,
-    IHasCountAsync
-    where T : BaseContent;
+public interface IPermissionsRepository : IBaseContentRepository<InfinilorePermission> {
+    public ValueTask<RepoResult> AllPermissionNamesIncludedAsync(string[] permissionNames, CancellationToken ct = default);
+}

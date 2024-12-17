@@ -60,7 +60,7 @@ public class JwtRefreshTokenRepository(IDbUnitOfWork<MsSqlDbContext> unitOfWork)
         if (await dbContext.JwtRefreshTokens.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
 
         EntityEntry<JwtRefreshTokenModel> result = await dbContext.JwtRefreshTokens.AddAsync(model, ct);
-        return result;
+        return result.Entity;
     }
 
     public async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<JwtRefreshTokenModel> models, CancellationToken ct = default) {

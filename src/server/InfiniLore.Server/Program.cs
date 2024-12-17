@@ -9,6 +9,7 @@ using FastEndpoints.Swagger;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories;
+using InfiniLore.Database.Seeding;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Services;
@@ -148,6 +149,7 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthorization();
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthentication();
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
+        builder.Services.RegisterServicesFromInfiniLoreDatabaseSeeding();
 
         // -------------------------------------------------------------------------------------------------------------
         // App

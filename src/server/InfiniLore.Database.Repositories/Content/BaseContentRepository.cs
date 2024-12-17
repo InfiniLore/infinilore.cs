@@ -42,7 +42,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         EntityEntry<T> result = await dbSet.AddAsync(model, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        return result;
+        return result.Entity;
     }
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
@@ -305,6 +305,15 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
 
         return result;
     }
+    
+    public async virtual ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        
+        int count = await dbSet.CountAsync(ct);
+        
+        return count;
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

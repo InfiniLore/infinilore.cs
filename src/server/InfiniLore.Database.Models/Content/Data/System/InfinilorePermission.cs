@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Database.Models.Content.Account;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -21,4 +22,6 @@ public class InfinilorePermission : BaseContent {
 
     [MaxLength(255)] public string NormalizedName { get; set; } = string.Empty;
     [MaxLength(511)] public string Description { get; set; } = string.Empty;
+    
+    public ICollection<InfiniLoreUser> Users { get; init; } = [];
 }

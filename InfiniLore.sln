@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.CQRS.PipelineBehaviours", "src\server\InfiniLore.Server.Services.CQRS.PipelineBehaviours\InfiniLore.Server.Services.CQRS.PipelineBehaviours.csproj", "{DFEA49B9-F9AF-4665-B706-DE3BDAC4A5DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Database.Seeding", "src\server\InfiniLore.Database.Seeding\InfiniLore.Database.Seeding.csproj", "{2D28DED0-EC6C-4195-9047-7F9D045810C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{DFEA49B9-F9AF-4665-B706-DE3BDAC4A5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFEA49B9-F9AF-4665-B706-DE3BDAC4A5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFEA49B9-F9AF-4665-B706-DE3BDAC4A5DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D28DED0-EC6C-4195-9047-7F9D045810C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D28DED0-EC6C-4195-9047-7F9D045810C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D28DED0-EC6C-4195-9047-7F9D045810C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D28DED0-EC6C-4195-9047-7F9D045810C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -156,5 +162,6 @@ Global
 		{B9B99A14-A2BC-43EF-ADAB-BC027D1A8D9A} = {2AD5C2EC-5836-469E-B2C8-08FF34269B22}
 		{C74EC6F0-E96E-437D-A620-63D7AE79EF61} = {01C7445D-32FF-4602-AE4B-EE5336015F92}
 		{DFEA49B9-F9AF-4665-B706-DE3BDAC4A5DA} = {B7113FA8-3A74-424D-9B0B-F22906B59E0E}
+		{2D28DED0-EC6C-4195-9047-7F9D045810C2} = {293C9679-45D9-4945-929D-97DF9720B429}
 	EndGlobalSection
 EndGlobal

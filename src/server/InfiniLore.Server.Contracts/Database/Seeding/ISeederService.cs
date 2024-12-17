@@ -1,21 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
+using Microsoft.Extensions.Hosting;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories;
+namespace InfiniLore.Server.Contracts.Database.Seeding;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IBaseContentRepository<T> :
-    IHasTryAddAsync<T>,
-    IHasTryUpdateAsync<T>,
-    IHasTryAddOrUpdateAsync<T>,
-    IHasTryDeleteAsync<T>,
-    IHasTryRemoveAsync<T>,
-    IHasTryGetByIdAsync<T>,
-    IHasTryGetAllAsync<T>,
-    IHasTryGetByCriteriaAsync<T>,
-    IHasCountAsync
-    where T : BaseContent;
+public interface ISeederService : IHostedService {
+    
+    
+}
