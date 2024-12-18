@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.Seeding.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
