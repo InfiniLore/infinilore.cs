@@ -6,9 +6,9 @@ using InfiniLore.Database.Models;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
+using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using UserIdUnion=InfiniLore.Server.Contracts.Types.UserIdUnion;
 
 namespace InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------

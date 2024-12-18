@@ -17,5 +17,6 @@ public interface IBaseContentRepository<T> :
     IHasTryGetByIdAsync<T>,
     IHasTryGetAllAsync<T>,
     IHasTryGetByCriteriaAsync<T>,
-    IHasCountAsync
+    IHasCountAsync,
+    IRepository
     where T : BaseContent;

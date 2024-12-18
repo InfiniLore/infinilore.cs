@@ -8,13 +8,13 @@ using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
+using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
 using System.Text;
 using RepoResult=InfiniLore.Server.Contracts.Database.Repositories.RepoResult;
-using UserIdUnion=InfiniLore.Server.Contracts.Types.UserIdUnion;
 
 namespace InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------

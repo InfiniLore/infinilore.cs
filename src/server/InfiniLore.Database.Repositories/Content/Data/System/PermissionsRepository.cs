@@ -17,17 +17,18 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
 public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentRepository<InfinilorePermission>(unitOfWork), IPermissionsRepository {
-    protected override Expression<Func<InfinilorePermission, bool>> UniqueModelPredicate(InfinilorePermission originalModel) {
-        return model => model.Id == originalModel.Id
-            || model.Name == originalModel.Name;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-
+    protected override Expression<Func<InfinilorePermission, bool>> UniqueModelPredicate(InfinilorePermission originalModel) {
+        return model => model.Id == originalModel.Id
+            || model.Name == originalModel.Name;
+    }
+    
     public async ValueTask<RepoResult> AllPermissionNamesIncludedAsync(string[] permissionNames, CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         
         HashSet<string> foundPermissionNames = await dbContext.Permissions
             .Where(p => permissionNames.Contains(p.Name))

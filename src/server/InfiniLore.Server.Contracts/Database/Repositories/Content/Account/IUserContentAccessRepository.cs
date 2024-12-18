@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using UserIdUnion=InfiniLore.Server.Contracts.Types.UserIdUnion;
+using InfiniLore.Server.Contracts.Types;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------

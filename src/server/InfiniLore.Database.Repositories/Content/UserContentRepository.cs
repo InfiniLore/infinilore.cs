@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
+using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Types;
@@ -12,8 +13,15 @@ namespace InfiniLore.Database.Repositories.Content;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, CancellationToken ct = default) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        DbSet<T> dbSet = dbContext.Set<T>();
+        
         T[] result = await dbSet
             .Where(ls => ls.OwnerId == userUnion.ToGuid())
             .ToArrayAsync(cancellationToken: ct);
@@ -22,7 +30,9 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseCon
     }
 
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, PaginationInfo pageInfo, CancellationToken ct = default) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        DbSet<T> dbSet = dbContext.Set<T>();
+        
         T[] result = await dbSet
             .Where(ls => ls.OwnerId == userUnion.ToGuid())
             .Skip(pageInfo.SkipAmount)
@@ -33,7 +43,9 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseCon
     }
 
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(UserIdUnion ownerUnion, UserIdUnion accessorUnion, AccessKind level, CancellationToken ct = default) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        DbSet<T> dbSet = dbContext.Set<T>();
+        
 
         T[] result = await dbSet
             .Where(
@@ -46,7 +58,9 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseCon
     }
 
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(UserIdUnion ownerUnion, UserIdUnion accessorUnion, AccessKind level, PaginationInfo pageInfo, CancellationToken ct = default) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        DbSet<T> dbSet = dbContext.Set<T>();
+        
 
         T[] result = await dbSet
             .Where(
