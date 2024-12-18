@@ -17,19 +17,22 @@ public class SeederService(IServiceProvider provider) : ISeederService {
     // -----------------------------------------------------------------------------------------------------------------
     public async Task StartAsync(CancellationToken cancellationToken) {
         // Collect all the types in the current assembly that seed the database
-        Assembly currentAssembly = typeof(SeederService).Assembly;
+        IEnumerable<Task> tasks  = typeof(SeederService).Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(ISeeder)))
+            .Select(t => (Type: t, CancellationToken: cancellationToken, Provider: provider))
+            // Create the tasks with each their own scope
+            .Select(static async tuple => {
+                (Type type, CancellationToken ct, IServiceProvider provider) = tuple;
+                
+                await using AsyncServiceScope scope = provider.CreateAsyncScope();
+                IServiceProvider scopedProvider = scope.ServiceProvider;
+
+                var seeder = (ISeeder)scopedProvider.GetRequiredService(type);
+                await seeder.StartSeedingAsync(ct);
+            });
         
-        IEnumerable<Type> types = currentAssembly.GetTypes().Where(t => t.IsAssignableTo(typeof(ISeeder)));
-        foreach (Type type in types) {
-            AsyncServiceScope scope = provider.CreateAsyncScope();
-            IServiceProvider scopedProvider = scope.ServiceProvider;
-            
-            // Every seeder has their own scope
-            var seeder = (ISeeder)scopedProvider.GetRequiredService(type);
-            await seeder.StartSeedingAsync(cancellationToken);
-            
-            await scope.DisposeAsync();
-        }
+        await Task.WhenAll(tasks);
     }
     
     public Task StopAsync(CancellationToken cancellationToken) {
