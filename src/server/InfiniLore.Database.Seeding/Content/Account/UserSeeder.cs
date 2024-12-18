@@ -27,9 +27,7 @@ public class UserSeeder(UserManager<InfiniLoreUser> userManager, ILogger logger)
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                 ConcurrencyStamp = "a22a94ae-95ae-41d9-9b76-69332a675474",
                 UserName = "testuser",
-                NormalizedUserName = "TESTUSER",
                 Email = "testuser@example.com",
-                NormalizedEmail = "TESTUSER@EXAMPLE.COM",
                 EmailConfirmed = true,
                 SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
                 PasswordHash = "AQAAAAIAAYagAAAAEPcntIx4Y071oyt5g84a1kLZSkEA3/WG4dB8VJiyGcbZD2XUFHSqpWL9PqF+LL6aeQ=="// Test@1234

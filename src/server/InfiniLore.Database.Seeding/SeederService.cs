@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Database.Seeding;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace InfiniLore.Database.Seeding;
 

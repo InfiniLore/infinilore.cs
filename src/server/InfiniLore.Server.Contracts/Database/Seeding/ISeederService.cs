@@ -8,7 +8,4 @@ namespace InfiniLore.Server.Contracts.Database.Seeding;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ISeederService : IHostedService {
-    
-    
-}
+public interface ISeederService : IHostedService;

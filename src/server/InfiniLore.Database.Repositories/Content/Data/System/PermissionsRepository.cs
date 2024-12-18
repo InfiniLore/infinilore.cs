@@ -27,18 +27,6 @@ public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentReposito
             || model.Name == originalModel.Name;
     }
     
-    public async ValueTask<RepoResult> AllPermissionNamesIncludedAsync(string[] permissionNames, CancellationToken ct = default) {
-        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        
-        HashSet<string> foundPermissionNames = await dbContext.Permissions
-            .Where(p => permissionNames.Contains(p.Name))
-            .Select(p => p.Name) // Project only the names to minimize data transfer
-            .ToHashSetAsync(ct);
-        
-        if (!permissionNames.All(foundPermissionNames.Contains)) return "Not all permissions were found";
-        return true;
-    }
-    
     public async ValueTask<RepoResult<InfinilorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default) {
         var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         

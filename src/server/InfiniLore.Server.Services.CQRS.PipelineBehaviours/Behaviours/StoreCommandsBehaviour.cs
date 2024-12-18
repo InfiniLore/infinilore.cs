@@ -3,14 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Services.CQRS;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS.PipelineBehaviours.Behaviours;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class StoreCommandsBehaviour<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
+public class StoreCommandsBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>, ICqrsCommand
     where TResponse : notnull{
 
