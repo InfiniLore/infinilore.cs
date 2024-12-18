@@ -38,4 +38,12 @@ public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentReposito
         if (!permissionNames.All(foundPermissionNames.Contains)) return "Not all permissions were found";
         return true;
     }
+    
+    public async ValueTask<RepoResult<InfinilorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default) {
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        
+        InfinilorePermission[] result = await dbContext.Permissions.Where(p => names.Contains(p.Name)).ToArrayAsync(cancellationToken: ct);
+        
+        return result;
+    }
 }

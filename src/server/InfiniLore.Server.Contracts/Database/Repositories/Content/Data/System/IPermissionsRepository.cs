@@ -10,4 +10,6 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IPermissionsRepository : IBaseContentRepository<InfinilorePermission> {
     public ValueTask<RepoResult> AllPermissionNamesIncludedAsync(string[] permissionNames, CancellationToken ct = default);
+    
+    public ValueTask<RepoResult<InfinilorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default);
 }
