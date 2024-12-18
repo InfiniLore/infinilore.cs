@@ -14,12 +14,14 @@ builder.Services.AddDbContextFactory<MsSqlDbContext>(options =>
         options.UseSqlServer()
 );
 
-
 builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
         options.SignIn.RequireConfirmedAccount = false;
     })
     .AddRoles<IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<MsSqlDbContext>();
+    .AddEntityFrameworkStores<MsSqlDbContext>()
+    .AddSignInManager();
+
+builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
 
 WebApplication app = builder.Build();
 
