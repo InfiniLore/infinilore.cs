@@ -15,9 +15,9 @@ namespace InfiniLore.Database.Repositories.Content.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IUserContentAccessRepository>(ServiceLifetime.Scoped)]
-public class UserContentAccessRepository(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : IUserContentAccessRepository {
+public class UserContentAccessRepository(IUnitOfWork unitOfWork) : IUserContentAccessRepository {
     public async ValueTask<bool> UserHasKindAsync(Guid contentId, UserIdUnion accessorId, AccessKind accessKind, CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         UserContentAccessModel[] potentialAccesses = await dbContext.UserContentAccesses.Where(
             access => access.ContentId == contentId
                 && access.UserId == accessorId.ToGuid()

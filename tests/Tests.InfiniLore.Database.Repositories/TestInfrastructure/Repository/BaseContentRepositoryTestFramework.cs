@@ -24,7 +24,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
     protected async Task<TModel> AssertModelExists(TModel model) {
         // Arrange
         Guid guid = model.Id;
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
         dbContext.ChangeTracker.Clear();
         DbSet<TModel> dbSet = dbContext.Set<TModel>();
 
@@ -42,7 +42,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
     protected async Task AssertModelDoesNotExist(TModel model) {
         // Arrange
         Guid guid = model.Id;
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
         dbContext.ChangeTracker.Clear();
         DbSet<TModel> dbSet = dbContext.Set<TModel>();
 
@@ -59,7 +59,7 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
     protected async Task<TModel> Base_TryAddAsync_ShouldReturnSuccess(TModel model) {
         // Arrange
         Guid guid = model.Id;
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act
         RepoResult result = await Repository.TryAddAsync(model);

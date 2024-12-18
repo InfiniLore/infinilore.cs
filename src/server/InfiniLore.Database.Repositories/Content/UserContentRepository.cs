@@ -2,18 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore;
-using UserIdUnion=InfiniLore.Server.Contracts.Types.UserIdUnion;
 
 namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
+public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
     public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         T[] result = await dbSet

@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Bogus;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories.Content.Data.System;
@@ -21,9 +20,6 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
-    private const int MaxNameLength = 255;
-    private const int MaxDescriptionLength = 511;
-
     public const string SomethingName = "something.else";
     public const string SomethingDescription = "A permission to do Something Else";
     public const string SomethingId = "6f77e414-e716-469e-9c1d-643ae55cd270";
@@ -33,9 +29,6 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public const string SomethingDifferentId = "6f77e414-e716-469e-9c1d-643ae55c1234";
 
     public const string EmptyId = "00000000-0000-0000-0000-000000000000";
-
-    private static string Truncate(string value, int maxLength) =>
-        value.Length > maxLength ? value[..maxLength] : value;
 
     [Before(Test)]
     public async Task SeedDatabase() {
@@ -55,7 +48,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         };
 
         // Seed database 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
         await dbContext.Permissions.AddRangeAsync(permission1, permission2);
         await dbContext.SaveChangesAsync();
     }
@@ -169,7 +162,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
             Description = description
         };
 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act & Assert
         await Base_TryUpdateAsync_ShouldFail(permission);
@@ -208,7 +201,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
             Description = description
         };
 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act & Assert
         await Base_TryUpdateWithResultAsync_ShouldFail(permission);

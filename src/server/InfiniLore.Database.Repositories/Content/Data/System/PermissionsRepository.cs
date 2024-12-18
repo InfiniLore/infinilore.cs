@@ -16,7 +16,7 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
-public class PermissionsRepository(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : BaseContentRepository<InfinilorePermission>(unitOfWork), IPermissionsRepository {
+public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentRepository<InfinilorePermission>(unitOfWork), IPermissionsRepository {
     protected override Expression<Func<InfinilorePermission, bool>> UniqueModelPredicate(InfinilorePermission originalModel) {
         return model => model.Id == originalModel.Id
             || model.Name == originalModel.Name;

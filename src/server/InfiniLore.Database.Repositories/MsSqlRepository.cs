@@ -14,14 +14,14 @@ namespace InfiniLore.Database.Repositories;
 ///     Represents an abstract base class for repositories that handle entities within an MSSQL database context.
 /// </summary>
 /// <typeparam name="T">The type of entity that the repository will manage.</typeparam>
-public abstract class MsSqlRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : IRepository where T : class {
+public abstract class MsSqlRepository<T>(IUnitOfWork unitOfWork) : IRepository where T : class {
     #region Queryables
     /// <summary>
     ///     Asynchronously retrieves the current instance of the MsSqlDbContext.
     /// </summary>
     /// <param name="ct">A token to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the MsSqlDbContext instance.</returns>
-    public async ValueTask<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) => await unitOfWork.GetDbContextAsync(ct);
+    public async ValueTask<MsSqlDbContext> GetDbContextAsync(CancellationToken ct = default) => await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
     /// <summary>
     ///     Asynchronously retrieves the DbSet for the specified entity type <typeparamref name="T" />.

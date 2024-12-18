@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Data.User.Lorescopes
 // ---------------------------------------------------------------------------------------------------------------------
 public class CreateLorescopeHandler(
     ILorescopeRepository lorescopeRepository,
-    IDbUnitOfWork<MsSqlDbContext> unitOfWork,
+    IUnitOfWork unitOfWork,
     IUserContentAuthorizationService authService
 ) : IRequestHandler<CreateLorescopeCommand, SuccessOrFailure<LorescopeModel>> {
 

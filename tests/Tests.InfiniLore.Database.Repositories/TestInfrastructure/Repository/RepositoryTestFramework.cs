@@ -27,13 +27,13 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     ///     Represents a private instance of <see cref="IServiceScope" /> used for managing
     ///     a scoped lifetime of services within the test framework.
     /// </summary>
-    private IServiceScope _scope = default!;
+    private IServiceScope _scope = null!;
 
 
     /// <summary>
     ///     Represents the unit of work for managing database transactions and operations across multiple repositories.
     /// </summary>
-    protected IDbUnitOfWork<MsSqlDbContext> UnitOfWork = default!;
+    protected IUnitOfWork UnitOfWork = null!;
 
     /// <summary>
     ///     Represents the generic repository instance used for performing database operations in test cases.
@@ -52,7 +52,7 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     /// <inheritdoc />
     public async virtual Task InitializeAsync() {
         _scope = infrastructure.ServiceProvider.CreateScope();
-        UnitOfWork = _scope.ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>();
+        UnitOfWork = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         await UnitOfWork.TryCreateTransactionAsync();
     }
     protected async Task RollbackToSavepointAsync() {

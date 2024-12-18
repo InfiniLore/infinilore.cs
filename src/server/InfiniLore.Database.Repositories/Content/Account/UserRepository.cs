@@ -19,7 +19,7 @@ namespace InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IUserRepository>(ServiceLifetime.Scoped)]
 public class UserRepository(
-    IDbUnitOfWork<MsSqlDbContext> unitOfWork,
+    IUnitOfWork unitOfWork,
     UserManager<InfiniLoreUser> userManager
 ) : IUserRepository, IRepository {
     /// <inheritdoc />
@@ -31,7 +31,7 @@ public class UserRepository(
 
     /// <inheritdoc />
     public async ValueTask<RepoResult<InfiniLoreUser>> TryGetByIdAsync(UserIdUnion userId, CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         var id = userId.ToGuid();
 
         InfiniLoreUser? result = await dbContext.Users
@@ -43,7 +43,7 @@ public class UserRepository(
     }
 
     public async ValueTask<RepoResult<InfiniLoreUser>> UserHasAllRolesAsync(UserIdUnion userIdUnion, IEnumerable<string> roles, CancellationToken ct = default) {
-        MsSqlDbContext dbContext = await unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         // If the user hasn't been found yet, we need to actually grab it
         if (!userIdUnion.TryGetAsInfiniLoreUser(out InfiniLoreUser? user)) {

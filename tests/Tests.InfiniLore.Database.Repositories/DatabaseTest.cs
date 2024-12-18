@@ -13,12 +13,12 @@ namespace Tests.InfiniLore.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
 public class LoreScopeCommandRepositoryTest(DatabaseInfrastructure infrastructure) {
-    private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = infrastructure.ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>();
+    private readonly IUnitOfWork _unitOfWork = infrastructure.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
     [Test]
     public async Task TestCanConnect() {
         // Arrange: get dbContext
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync();
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act: check the connection
         bool canConnect = await dbContext.Database.CanConnectAsync();

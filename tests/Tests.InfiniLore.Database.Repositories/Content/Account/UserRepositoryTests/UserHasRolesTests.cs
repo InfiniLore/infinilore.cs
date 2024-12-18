@@ -36,7 +36,7 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
             new() { Id = roleUserId, Name = "User", NormalizedName = "USER" }
         ];
 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Seed database with users and roles
         await dbContext.Users.AddAsync(originalUser);

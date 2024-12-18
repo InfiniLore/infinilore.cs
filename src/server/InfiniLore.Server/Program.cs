@@ -12,6 +12,7 @@ using InfiniLore.Database.Repositories;
 using InfiniLore.Database.Seeding;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Authentication;
 using InfiniLore.Server.Services.Authorization;
@@ -53,7 +54,7 @@ public static class Program {
             // .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
         );
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IDbUnitOfWork<T>
+        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
         #endregion
 
         #region Authentication
@@ -200,7 +201,8 @@ public static class Program {
     private async static ValueTask MigrateDatabaseAsync(WebApplication app) {
         // Create a localised scope so we can get the DbContextFactory correctly.
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
-        await using MsSqlDbContext db = await app.Services.GetRequiredService<IDbContextFactory<MsSqlDbContext>>().CreateDbContextAsync();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        await using var db = await unitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         await db.Database.MigrateAsync();
         await db.SaveChangesAsync();

@@ -17,7 +17,7 @@ namespace InfiniLore.Database.Repositories.Content.Data.User;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILorescopeRepository>(ServiceLifetime.Scoped)]
-public class LorescopeRepository(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : UserContentRepository<LorescopeModel>(unitOfWork), ILorescopeRepository {
+public class LorescopeRepository(IUnitOfWork unitOfWork) : UserContentRepository<LorescopeModel>(unitOfWork), ILorescopeRepository {
     public async ValueTask<RepoResult> IsValidNewNameAsync(UserIdUnion userId, string name, CancellationToken ct = default) {
         DbSet<LorescopeModel> dbSet = await GetDbSetAsync(ct);
 

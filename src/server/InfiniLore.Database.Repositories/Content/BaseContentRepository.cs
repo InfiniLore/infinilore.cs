@@ -15,8 +15,8 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
-    private readonly IDbUnitOfWork<MsSqlDbContext> _unitOfWork = unitOfWork;
+public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : MsSqlRepository<T>(unitOfWork), IBaseContentRepository<T> where T : BaseContent {
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
@@ -47,7 +47,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -62,7 +62,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     /// <inheritdoc />
     public async ValueTask<RepoResult<T>> TryUpdateWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -78,7 +78,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     public async ValueTask<RepoResult> TryUpdateAsync(IEnumerable<T> models, CancellationToken ct = default) {
         T[] modelArray = models as T[] ?? models.ToArray();
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         HashSet<Guid> idsToUpdate = modelArray.Select(m => m.Id).ToHashSet();
 
         // Fetch existing entities from the database
@@ -104,7 +104,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
         if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// If no ID, always add
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         // Find the existing model in the database
         T? existingModel = await dbSet.FindAsync([model.Id], ct);
@@ -126,7 +126,7 @@ public abstract class BaseContentRepository<T>(IDbUnitOfWork<MsSqlDbContext> uni
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        MsSqlDbContext dbContext = await _unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         T[] userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();

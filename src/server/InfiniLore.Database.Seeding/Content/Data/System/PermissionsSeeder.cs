@@ -19,7 +19,7 @@ namespace InfiniLore.Database.Seeding.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<PermissionsSeeder>(ServiceLifetime.Scoped)]
-public class PermissionsSeeder(ILogger logger, IDbUnitOfWork<MsSqlDbContext> unitOfWork, IPermissionsRepository repository) : ISeeder {
+public class PermissionsSeeder(ILogger logger, IUnitOfWork unitOfWork, IPermissionsRepository repository) : ISeeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -29,7 +29,7 @@ public class PermissionsSeeder(ILogger logger, IDbUnitOfWork<MsSqlDbContext> uni
         RepoResult result = await repository.AllPermissionNamesIncludedAsync(permissions, ct); 
         if (result.IsFailure) return; // Permissions already exist.
 
-        MsSqlDbContext dbContext = await unitOfWork.GetDbContextAsync(ct);
+        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         
         // TODO this has to become a method on the repository
         InfinilorePermission[] existingPermissions = await dbContext.Permissions.Where(p => permissions.Contains(p.Name)).ToArrayAsync(cancellationToken: ct);
