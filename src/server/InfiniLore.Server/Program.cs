@@ -60,7 +60,8 @@ public static class Program {
             })
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<MsSqlDbContext>()
-            .AddSignInManager();
+            .AddSignInManager()
+            .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
         builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
         #endregion

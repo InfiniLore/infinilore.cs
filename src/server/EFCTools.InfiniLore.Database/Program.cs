@@ -19,7 +19,8 @@ builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
     })
     .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<MsSqlDbContext>()
-    .AddSignInManager();
+    .AddSignInManager()
+    .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
 builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
 
