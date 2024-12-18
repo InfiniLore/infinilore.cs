@@ -54,6 +54,13 @@ public static class Program {
                 options.UseSqlServer(container.GetConnectionString())
             // .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
         );
+        
+        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<MsSqlDbContext>()
+            .AddSignInManager();
 
         builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
         #endregion
@@ -77,13 +84,6 @@ public static class Program {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         });
-
-        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-            .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<MsSqlDbContext>()
-            .AddSignInManager();
 
         builder.Services.ConfigureApplicationCookie(
             cookieOptions => {
