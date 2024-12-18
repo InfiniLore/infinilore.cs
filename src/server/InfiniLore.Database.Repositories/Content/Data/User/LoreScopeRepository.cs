@@ -6,11 +6,11 @@ using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Contracts.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RepoResult=InfiniLore.Server.Contracts.Database.Repositories.RepoResult;
 
 namespace InfiniLore.Database.Repositories.Content.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------

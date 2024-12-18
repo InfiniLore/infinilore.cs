@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
 using System.Text;
-using RepoResult=InfiniLore.Server.Contracts.Database.Repositories.RepoResult;
 
 namespace InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------
