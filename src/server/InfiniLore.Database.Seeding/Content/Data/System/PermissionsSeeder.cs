@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
-using CodeOfChaos.Extensions.Serilog;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
@@ -23,6 +22,8 @@ public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task StartSeedingAsync(CancellationToken ct = default) {
+        // TODO Use appropriate CQRS Handlers for seeding of : Permissions
+        
         // If Permissions already exist.
         //      We can safely just ignore all of this
         string[] permissions = ApiPermissions.GetAllPermissions().ToArray();
