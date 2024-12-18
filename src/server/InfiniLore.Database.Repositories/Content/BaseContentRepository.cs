@@ -16,13 +16,16 @@ namespace InfiniLore.Database.Repositories.Content;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseContentRepository<T> where T : BaseContent {
-
+    protected async Task<DbSet<T>> GetDbSetAsync(CancellationToken ct = default) {
+        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        return dbContext.Set<T>();
+    }
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async virtual ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
@@ -34,8 +37,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     }
 
     public async virtual ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
 
@@ -48,7 +50,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -63,7 +65,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     /// <inheritdoc />
     public async ValueTask<RepoResult<T>> TryUpdateWithResultAsync(T model, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -78,8 +80,9 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryUpdateAsync(IEnumerable<T> models, CancellationToken ct = default) {
         T[] modelArray = models as T[] ?? models.ToArray();
+        
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         HashSet<Guid> idsToUpdate = modelArray.Select(m => m.Id).ToHashSet();
 
         // Fetch existing entities from the database
@@ -103,9 +106,9 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
         if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// If no ID, always add
-
+        
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
 
         // Find the existing model in the database
         T? existingModel = await dbSet.FindAsync([model.Id], ct);
@@ -127,7 +130,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
 
         T[] userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
@@ -158,8 +161,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -170,8 +172,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         IEnumerable<T> userContents = models as T[] ?? models.ToArray();
         HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
@@ -189,8 +190,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
 
@@ -203,8 +203,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
@@ -217,8 +216,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
 
@@ -233,8 +231,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? result = await dbSet
             .FirstOrDefaultAsync(predicate: ls => ls.Id == id, ct);
@@ -246,8 +243,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .ToArrayAsync(cancellationToken: ct);
@@ -259,8 +255,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async virtual ValueTask<RepoResult<T[]>> TryGetAllASync(PaginationInfo pageInfo, CancellationToken ct) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .Skip(pageInfo.SkipAmount)
@@ -272,8 +267,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, bool>> predicate, CancellationToken ct) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .Where(predicate)
@@ -284,8 +278,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
     /// <inheritdoc />
     public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, int, bool>> predicate, CancellationToken ct) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .Where(predicate)
@@ -298,8 +291,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> orderBy, PaginationInfo pageInfo, CancellationToken ct) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .Where(predicate)
@@ -315,8 +307,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, int, bool>> predicate, Expression<Func<T, object>> orderBy, PaginationInfo pageInfo, CancellationToken ct) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
             .Where(predicate)
@@ -329,8 +320,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     }
     
     public async virtual ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        DbSet<T> dbSet = dbContext.Set<T>();
+        DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         int count = await dbSet.CountAsync(ct);
         
