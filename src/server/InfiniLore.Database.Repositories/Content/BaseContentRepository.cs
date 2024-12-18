@@ -83,7 +83,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
         
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        HashSet<Guid> idsToUpdate = modelArray.Select(m => m.Id).ToHashSet();
+        Guid[] idsToUpdate = modelArray.Select(m => m.Id).ToArray();
 
         // Fetch existing entities from the database
         List<T> existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToListAsync(ct);
@@ -133,11 +133,11 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
         DbSet<T> dbSet = await GetDbSetAsync(ct);
 
         T[] userContents = models as T[] ?? models.ToArray();
-        HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
+        Guid[] modelIds = userContents.Select(m => m.Id).ToArray();
 
         // Fetch all existing models from the database
         List<T> existingModels = await dbSet.Where(m => modelIds.Contains(m.Id)).ToListAsync(ct);
-        HashSet<Guid> existingModelIds = existingModels.Select(m => m.Id).ToHashSet();
+        Guid[] existingModelIds = existingModels.Select(m => m.Id).ToArray();
 
         // Separate models into new and updateable ones
         IEnumerable<T> modelsToUpdate = userContents.Where(m => existingModelIds.Contains(m.Id));
@@ -174,8 +174,8 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async virtual ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
-        IEnumerable<T> userContents = models as T[] ?? models.ToArray();
-        HashSet<Guid> modelIds = userContents.Select(m => m.Id).ToHashSet();
+        IEnumerable<T> content = models as T[] ?? models.ToArray();
+        Guid[] modelIds = content.Select(m => m.Id).ToArray();
 
         // Get all models in the db that match any Ids of the passed-in models
         List<T> existingModels = await dbSet.Where(m => modelIds.Contains(m.Id)).ToListAsync(ct);
@@ -183,7 +183,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
         if (existingModels.Count > 0)
             return "One or more Models already exist";
 
-        await dbSet.AddRangeAsync(userContents, ct);
+        await dbSet.AddRangeAsync(content, ct);
         await unitOfWork.SaveChangesAsync(ct);
         return new Success();
     }
@@ -192,7 +192,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async virtual ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
-        HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
+        Guid[] ids = models.Select(model => model.Id).ToArray();
 
         await dbSet
             .Where(model => ids.Contains(model.Id))
@@ -218,13 +218,13 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
     public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
-        HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
+        Guid[] ids = models.Select(model => model.Id).ToArray();
 
         int recordsAffected = await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteDeleteAsync(ct);
 
-        if (recordsAffected <= 0 && ids.Count != 0) return "No models were deleted";
+        if (recordsAffected <= 0 && ids.Length != 0) return "No models were deleted";
 
         return new Success();
     }
