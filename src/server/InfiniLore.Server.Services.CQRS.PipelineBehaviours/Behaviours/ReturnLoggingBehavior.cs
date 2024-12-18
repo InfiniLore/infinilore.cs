@@ -5,12 +5,12 @@ using AterraEngine.Unions;
 using MediatR;
 using Serilog;
 
-namespace InfiniLore.Server.Services.CQRS.PipelineBehaviours;
+namespace InfiniLore.Server.Services.CQRS.PipelineBehaviours.Behaviours;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ReturnLoggingBehavior<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : IRequest<TResponse>
     where TResponse : ITryGetAsFailureValue<string> {
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) {

@@ -16,6 +16,7 @@ using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Authentication;
 using InfiniLore.Server.Services.Authorization;
+using InfiniLore.Server.Services.CQRS.PipelineBehaviours;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -143,6 +144,7 @@ public static class Program {
         #region MediatR
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.IAssemblyEntry>();
+            cfg.AddInfinilorePipelineBehaviours();
         });
         #endregion
 
