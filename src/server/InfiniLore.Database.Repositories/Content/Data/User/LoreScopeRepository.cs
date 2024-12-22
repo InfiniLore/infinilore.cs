@@ -6,7 +6,6 @@ using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +26,10 @@ public class LorescopeRepository(IUnitOfWork unitOfWork) : UserContentRepository
         var dbContext = await _unitOfWork1.GetDbContextAsync<MsSqlDbContext>(ct);
 
         LorescopeModel? existing = await dbContext.Lorescopes
+            .AsNoTracking()
             .FirstOrDefaultAsync(predicate: model => model.OwnerId == userId && model.Name == name, ct);
 
-        if (existing != null) return "A lorescope with that name already exists";
-
+        if (existing != null) return "A lore scope with that name already exists";
         return new Success();
     }
 }

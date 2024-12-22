@@ -5,7 +5,6 @@ using AterraEngine.DependencyInjection;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;

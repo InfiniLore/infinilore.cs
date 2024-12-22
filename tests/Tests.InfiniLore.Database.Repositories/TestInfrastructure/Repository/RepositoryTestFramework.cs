@@ -17,7 +17,7 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 /// <typeparam name="TRepository">
 ///     The type of the repository being tested, which must implement the <see cref="IRepository" /> interface.
 /// </typeparam>
-public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructure infrastructure) : IAsyncInitializer, IAsyncDisposable
+public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructure infrastructure) : IAsyncInitializer
     where TRepository : class, IRepository {
 
     private readonly Guid _transactionId = Guid.NewGuid();
@@ -38,12 +38,6 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     ///     Represents the generic repository instance used for performing database operations in test cases.
     /// </summary>
     protected TRepository Repository => ActivatorUtilities.CreateInstance<TRepository>(_scope.ServiceProvider);
-
-    /// <inheritdoc />
-    public async virtual ValueTask DisposeAsync() {
-        await UnitOfWork.DisposeAsync();
-        _scope.Dispose();
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

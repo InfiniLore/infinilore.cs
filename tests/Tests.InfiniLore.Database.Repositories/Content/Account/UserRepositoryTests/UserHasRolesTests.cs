@@ -4,7 +4,6 @@
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories.Content.Account;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Types;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
@@ -68,12 +67,11 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
         Guid userId = Guid.Parse(userIdValue);
 
         // Act
-        RepoResult<InfiniLoreUser> result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
-        await Assert.That(result.AsSuccess.Value.Id).IsEqualTo(userId);
     }
 
     [Test]
@@ -84,7 +82,7 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
         Guid userId = Guid.Parse(userIdValue);
 
         // Act
-        RepoResult<InfiniLoreUser> result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
@@ -99,7 +97,7 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
         Guid userId = Guid.Parse(userIdValue);
 
         // Act
-        RepoResult<InfiniLoreUser> result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsFailure).IsTrue();

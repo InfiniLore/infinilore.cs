@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Seeding;
 using InfiniLore.Server.Services;

@@ -5,11 +5,10 @@ using AterraEngine.DependencyInjection;
 using AterraEngine.Unions;
 using InfiniLore.Database.Models;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
-using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Services.Authorization;
@@ -18,9 +17,9 @@ namespace InfiniLore.Server.Services.Authorization;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IUserContentAuthorizationService>(ServiceLifetime.Scoped)]
 public class UserContentAuthorizationService(
-    IUserRepository userRepository,
     IUserContentAccessRepository userContentAccessRepository,
-    IHttpContextAccessor contextAccessor
+    IHttpContextAccessor contextAccessor,
+    UserManager<InfiniLoreUser> userManager
 ) : IUserContentAuthorizationService {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -53,11 +52,10 @@ public class UserContentAuthorizationService(
     // -----------------------------------------------------------------------------------------------------------------
     private async ValueTask<SuccessOrFailure<InfiniLoreUser, string>> GetUserFromClaimsPrincipalAsync(CancellationToken ct) {
         if (contextAccessor.HttpContext is not {} accessor) return new Failure<string>("No HttpContext found in IHttpContextAccessor");
-
-        RepoResult<InfiniLoreUser> accessorResult = await userRepository.TryGetByClaimsPrincipalAsync(accessor.User, ct);
-        if (accessorResult.IsFailure) return accessorResult.AsFailure;
-
-        InfiniLoreUser accessorUser = accessorResult.AsSuccess.Value;
-        return accessorUser;
+        InfiniLoreUser? user = await userManager.GetUserAsync(accessor.User);
+        if (user is null) return new Failure<string>("No user found in IHttpContextAccessor");
+        
+        ct.ThrowIfCancellationRequested();
+        return user;
     }
 }

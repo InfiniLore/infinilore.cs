@@ -5,7 +5,6 @@ using AterraEngine.DependencyInjection;
 using AterraEngine.Unions;
 using FastEndpoints.Security;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Types;

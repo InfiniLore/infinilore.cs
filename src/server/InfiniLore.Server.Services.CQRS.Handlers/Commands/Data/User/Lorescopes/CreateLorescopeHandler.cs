@@ -4,7 +4,6 @@
 using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;

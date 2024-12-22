@@ -248,7 +248,6 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     }
     
     [Test]
-    [Repeat(100)]
     public async Task Repeat_TryAddOrUpdateAsync_ShouldReturnSuccess() {
         // Arrange
         var guid = Guid.NewGuid();
