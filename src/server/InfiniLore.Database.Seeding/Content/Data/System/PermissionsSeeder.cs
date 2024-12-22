@@ -27,13 +27,13 @@ public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository
         // If Permissions already exist.
         //      We can safely just ignore all of this
         string[] permissions = ApiPermissions.GetAllPermissions().ToArray();
-        RepoResult<InfinilorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
+        RepoResult<InfiniLorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
         if (getResult.IsFailure) throw new Exception("Failed to get permissions.");
 
-        InfinilorePermission[] existingPermissions = getResult.AsSuccess.Value;
-        InfinilorePermission[] newPermissions = permissions
+        InfiniLorePermission[] existingPermissions = getResult.AsSuccess.Value;
+        InfiniLorePermission[] newPermissions = permissions
             .Except(existingPermissions.Select(p => p.Name))
-            .Select(name => new InfinilorePermission { Name = name }).ToArray();
+            .Select(name => new InfiniLorePermission { Name = name }).ToArray();
 
         if (newPermissions.Length == 0) {
             logger.Information("No new permissions to add.");

@@ -16,21 +16,21 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
-public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentRepository<InfinilorePermission>(unitOfWork), IPermissionsRepository {
+public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentRepository<InfiniLorePermission>(unitOfWork), IPermissionsRepository {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override Expression<Func<InfinilorePermission, bool>> UniqueModelPredicate(InfinilorePermission originalModel) {
+    protected override Expression<Func<InfiniLorePermission, bool>> UniqueModelPredicate(InfiniLorePermission originalModel) {
         return model => model.Id == originalModel.Id
             || model.Name == originalModel.Name;
     }
     
-    public async ValueTask<RepoResult<InfinilorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<InfiniLorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default) {
         var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         
-        InfinilorePermission[] result = await dbContext.Permissions.Where(p => names.Contains(p.Name)).ToArrayAsync(cancellationToken: ct);
+        InfiniLorePermission[] result = await dbContext.Permissions.Where(p => names.Contains(p.Name)).ToArrayAsync(cancellationToken: ct);
         
         return result;
     }

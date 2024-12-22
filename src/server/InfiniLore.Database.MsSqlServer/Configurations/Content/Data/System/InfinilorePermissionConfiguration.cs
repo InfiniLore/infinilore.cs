@@ -8,8 +8,8 @@ namespace InfiniLore.Database.MsSqlServer.Configurations.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfinilorePermissionConfiguration : BaseContentConfiguration<InfinilorePermission> {
-    public override void Configure(EntityTypeBuilder<InfinilorePermission> builder) {
+public class InfinilorePermissionConfiguration : BaseContentConfiguration<InfiniLorePermission> {
+    public override void Configure(EntityTypeBuilder<InfiniLorePermission> builder) {
         base.Configure(builder);
 
         builder.HasIndex(permission => permission.Name).IsUnique();

@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Security.Claims;
 using Testcontainers.MsSql;
 using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
@@ -36,7 +37,11 @@ public static class Program {
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.OverrideLoggingAsSeriLog();
+        builder.OverrideLoggingWithSerilog(
+            config => {
+                config.WriteTo.Console();
+            }
+        );
 
         #region Database
         MsSqlContainer container = new MsSqlBuilder()

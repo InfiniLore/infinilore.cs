@@ -16,7 +16,7 @@ public class InfiniLoreUser : IdentityUser<Guid> {
     public ICollection<JwtRefreshTokenModel> JwtRefreshTokens { get; init; } = [];
 
     public ICollection<UserContentAccessModel> ContentAccesses { get; init; } = [];
-    public ICollection<InfinilorePermission> Permissions { get; init; } = [];
+    public ICollection<InfiniLorePermission> Permissions { get; init; } = [];
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

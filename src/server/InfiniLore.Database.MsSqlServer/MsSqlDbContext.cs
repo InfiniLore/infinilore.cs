@@ -28,7 +28,7 @@ public class MsSqlDbContext : IdentityDbContext<InfiniLoreUser, IdentityRole<Gui
     public DbSet<UniverseModel> Universes { get; init; }
     public DbSet<JwtRefreshTokenModel> JwtRefreshTokens { get; init; }
     public DbSet<UserContentAccessModel> UserContentAccesses { get; init; }
-    public DbSet<InfinilorePermission> Permissions { get; init; }
+    public DbSet<InfiniLorePermission> Permissions { get; init; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
