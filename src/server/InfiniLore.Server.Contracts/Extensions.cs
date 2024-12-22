@@ -24,10 +24,3 @@ public static class Extensions {
         #endif
     }
 }
-
-
-// public class a {
-//     public static void Main() {
-//         Guid guid =  "12345678-1234-1234-1234-123456789012".ToGuid();
-//     }
-// }
