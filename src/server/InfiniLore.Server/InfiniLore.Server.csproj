@@ -21,21 +21,24 @@
         <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
         <PackageReference Include="Serilog" Version="4.2.0"/>
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.2.1"/>
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.21.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" PrivateAssets="All"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
         <PackageReference Include="Testcontainers.MsSql" Version="4.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\client\InfiniLore.WasmClient\InfiniLore.WasmClient.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Database.Seeding\InfiniLore.Database.Seeding.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.API\InfiniLore.Server.API.csproj"/>
         <ProjectReference Include="..\InfiniLore.Database.Repositories\InfiniLore.Database.Repositories.csproj"/>
         <ProjectReference Include="..\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.Authentication\InfiniLore.Server.Services.Authentication.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.Authorization\InfiniLore.Server.Services.Authorization.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.CQRS.Handlers\InfiniLore.Server.Services.CQRS.Handlers.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.CQRS.PipelineBehaviours\InfiniLore.Server.Services.CQRS.PipelineBehaviours.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj"/>
     </ItemGroup>
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Database.MsSqlServer.Migrations
 {
     [DbContext(typeof(MsSqlDbContext))]
-    [Migration("20241206161850_Initial")]
+    [Migration("20241218155441_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -89,24 +89,6 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "47f10b8e-02fc-4dd4-a8f7-28da4ef048b0",
-                            Email = "testuser@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "TESTUSER@EXAMPLE.COM",
-                            NormalizedUserName = "TESTUSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAENZVShBqVHYUIgO9F4Ty2JyR7OnL5pNMsixKoTKb9RNiGX4zVOsntVppW7/eCoC1WA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "d957c0f8-e90e-4068-a968-4f4b49fc165b",
-                            TwoFactorEnabled = false,
-                            UserName = "testuser"
-                        });
                 });
 
             modelBuilder.Entity("InfiniLore.Database.Models.Content.Account.JwtRefreshTokenModel", b =>
@@ -156,7 +138,53 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.ToTable("JwtRefreshTokens");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.LorescopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.System.InfinilorePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(511)
+                        .HasColumnType("nvarchar(511)")
+                        .HasDefaultValue("");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique();
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.LorescopeModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -205,7 +233,7 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.ToTable("Lorescopes");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.MultiverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.MultiverseModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,7 +287,7 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.ToTable("Multiverses");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.UniverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.UniverseModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -353,37 +381,19 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.ToTable("UserContentAccesses");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("InfiniLoreUserInfinilorePermission", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("PermissionsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("PermissionsId", "UsersId");
 
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("UsersId");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityRole");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "b693ab6e-5a2c-4093-947d-e1e1f3797294",
-                            Name = "admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "0b3715f5-d1d2-4ffb-b869-0ab2462ad504",
-                            Name = "user",
-                            NormalizedName = "USER"
-                        });
+                    b.ToTable("InfiniLoreUserInfinilorePermission");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -528,7 +538,7 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.LorescopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.LorescopeModel", b =>
                 {
                     b.HasOne("InfiniLore.Database.Models.Content.Account.InfiniLoreUser", "Owner")
                         .WithMany("Lorescopes")
@@ -539,9 +549,9 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.MultiverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.MultiverseModel", b =>
                 {
-                    b.HasOne("InfiniLore.Database.Models.Content.UserData.LorescopeModel", "Lorescope")
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.User.LorescopeModel", "Lorescope")
                         .WithMany("Multiverses")
                         .HasForeignKey("LorescopeId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -558,9 +568,9 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.UniverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.UniverseModel", b =>
                 {
-                    b.HasOne("InfiniLore.Database.Models.Content.UserData.MultiverseModel", "Multiverse")
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.User.MultiverseModel", "Multiverse")
                         .WithMany("Universes")
                         .HasForeignKey("MultiverseId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -579,21 +589,36 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
 
             modelBuilder.Entity("InfiniLore.Database.Models.UserContentAccessModel", b =>
                 {
-                    b.HasOne("InfiniLore.Database.Models.Content.UserData.LorescopeModel", null)
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.User.LorescopeModel", null)
                         .WithMany("UserAccess")
                         .HasForeignKey("LorescopeModelId");
 
-                    b.HasOne("InfiniLore.Database.Models.Content.UserData.MultiverseModel", null)
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.User.MultiverseModel", null)
                         .WithMany("UserAccess")
                         .HasForeignKey("MultiverseModelId");
 
-                    b.HasOne("InfiniLore.Database.Models.Content.UserData.UniverseModel", null)
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.User.UniverseModel", null)
                         .WithMany("UserAccess")
                         .HasForeignKey("UniverseModelId");
 
                     b.HasOne("InfiniLore.Database.Models.Content.Account.InfiniLoreUser", null)
                         .WithMany("ContentAccesses")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InfiniLoreUserInfinilorePermission", b =>
+                {
+                    b.HasOne("InfiniLore.Database.Models.Content.Data.System.InfinilorePermission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InfiniLore.Database.Models.Content.Account.InfiniLoreUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -662,21 +687,21 @@ namespace InfiniLore.Database.MsSqlServer.Migrations
                     b.Navigation("Universes");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.LorescopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.LorescopeModel", b =>
                 {
                     b.Navigation("Multiverses");
 
                     b.Navigation("UserAccess");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.MultiverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.MultiverseModel", b =>
                 {
                     b.Navigation("Universes");
 
                     b.Navigation("UserAccess");
                 });
 
-            modelBuilder.Entity("InfiniLore.Database.Models.Content.UserData.UniverseModel", b =>
+            modelBuilder.Entity("InfiniLore.Database.Models.Content.Data.User.UniverseModel", b =>
                 {
                     b.Navigation("UserAccess");
                 });

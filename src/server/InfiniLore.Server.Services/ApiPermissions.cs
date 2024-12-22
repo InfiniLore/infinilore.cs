@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 // [InjectableService<ApiPermissions>(ServiceLifetime.Singleton)] // Having this as a singleton could be a good idea in the future, but for now it's not needed.
-[PermissionsStore(GeneratorFlags.ParsePrefix)]
+[PermissionsStore(GeneratorFlags.ParsePrefix | GeneratorFlags.GenerateAllPermissionsMethod)]
 public static partial class ApiPermissions {
     // -----------------------------------------------------------------------------------------------------------------
     // SectionNames

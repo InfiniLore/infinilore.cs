@@ -5,10 +5,9 @@ using AterraEngine.DependencyInjection;
 using AterraEngine.Unions;
 using FastEndpoints.Security;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,7 +66,8 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<SuccessOrFailure<JwtTokenData>> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
-        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByIdAsync(refreshToken, ct);
+        string hashedToken = HashToken(refreshToken);
+        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (!getResult.TryGetSuccessValue(out JwtRefreshTokenModel? oldToken)) return "Refresh token not found";
         if (oldToken.ExpiresAt < DateTime.UtcNow) return "Refresh token has expired";
 
@@ -82,7 +82,8 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
-        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByIdAsync(refreshToken, ct);
+        string hashedToken = HashToken(refreshToken);
+        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (getResult.IsFailure) return false;
 
         JwtRefreshTokenModel oldToken = getResult.AsSuccess.Value;
@@ -93,7 +94,7 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
-        RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user, ct);
+        RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user.Id, ct);
         return deleteResult.IsSuccess;
     }
 

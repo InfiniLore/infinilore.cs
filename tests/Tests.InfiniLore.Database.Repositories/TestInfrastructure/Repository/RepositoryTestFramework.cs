@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using Microsoft.Extensions.DependencyInjection;
 using TUnit.Core.Interfaces;
@@ -18,7 +17,7 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 /// <typeparam name="TRepository">
 ///     The type of the repository being tested, which must implement the <see cref="IRepository" /> interface.
 /// </typeparam>
-public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructure infrastructure) : IAsyncInitializer, IAsyncDisposable
+public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructure infrastructure) : IAsyncInitializer
     where TRepository : class, IRepository {
 
     private readonly Guid _transactionId = Guid.NewGuid();
@@ -27,24 +26,18 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     ///     Represents a private instance of <see cref="IServiceScope" /> used for managing
     ///     a scoped lifetime of services within the test framework.
     /// </summary>
-    private IServiceScope _scope = default!;
+    private IServiceScope _scope = null!;
 
 
     /// <summary>
     ///     Represents the unit of work for managing database transactions and operations across multiple repositories.
     /// </summary>
-    protected IDbUnitOfWork<MsSqlDbContext> UnitOfWork = default!;
+    protected IUnitOfWork UnitOfWork = null!;
 
     /// <summary>
     ///     Represents the generic repository instance used for performing database operations in test cases.
     /// </summary>
     protected TRepository Repository => ActivatorUtilities.CreateInstance<TRepository>(_scope.ServiceProvider);
-
-    /// <inheritdoc />
-    public async virtual ValueTask DisposeAsync() {
-        await UnitOfWork.DisposeAsync();
-        _scope.Dispose();
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -52,7 +45,7 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     /// <inheritdoc />
     public async virtual Task InitializeAsync() {
         _scope = infrastructure.ServiceProvider.CreateScope();
-        UnitOfWork = _scope.ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>();
+        UnitOfWork = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         await UnitOfWork.TryCreateTransactionAsync();
     }
     protected async Task RollbackToSavepointAsync() {

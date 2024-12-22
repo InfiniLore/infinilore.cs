@@ -58,7 +58,7 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task InitializeAsync() {
-        MsSqlDbContext db = await ServiceProvider.GetRequiredService<IDbUnitOfWork<MsSqlDbContext>>().GetDbContextAsync();
+        var db = await ServiceProvider.GetRequiredService<IUnitOfWork>().GetDbContextAsync<MsSqlDbContext>();
         await db.Database.EnsureCreatedAsync();
         await db.SaveChangesAsync();
     }

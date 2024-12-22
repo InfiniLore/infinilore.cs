@@ -9,16 +9,20 @@ using FastEndpoints.Swagger;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories;
+using InfiniLore.Database.Seeding;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Authentication;
 using InfiniLore.Server.Services.Authorization;
+using InfiniLore.Server.Services.CQRS.PipelineBehaviours;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Security.Claims;
 using Testcontainers.MsSql;
 using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
@@ -33,7 +37,11 @@ public static class Program {
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.OverrideLoggingAsSeriLog();
+        builder.OverrideLoggingWithSerilog(
+            config => {
+                config.WriteTo.Console();
+            }
+        );
 
         #region Database
         MsSqlContainer container = new MsSqlBuilder()
@@ -51,8 +59,16 @@ public static class Program {
                 options.UseSqlServer(container.GetConnectionString())
             // .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
         );
+        
+        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<MsSqlDbContext>()
+            .AddSignInManager()
+            .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IDbUnitOfWork<T>
+        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
         #endregion
 
         #region Authentication
@@ -74,13 +90,6 @@ public static class Program {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         });
-
-        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-            .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<MsSqlDbContext>()
-            .AddSignInManager();
 
         builder.Services.ConfigureApplicationCookie(
             cookieOptions => {
@@ -141,6 +150,7 @@ public static class Program {
         #region MediatR
         builder.Services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.IAssemblyEntry>();
+            cfg.AddInfinilorePipelineBehaviours();
         });
         #endregion
 
@@ -148,6 +158,9 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthorization();
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthentication();
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
+        builder.Services.RegisterServicesFromInfiniLoreDatabaseSeeding();
+
+        builder.Services.AddHostedService<SeederService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // App
@@ -196,7 +209,8 @@ public static class Program {
     private async static ValueTask MigrateDatabaseAsync(WebApplication app) {
         // Create a localised scope so we can get the DbContextFactory correctly.
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
-        await using MsSqlDbContext db = await app.Services.GetRequiredService<IDbContextFactory<MsSqlDbContext>>().CreateDbContextAsync();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        await using var db = await unitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         await db.Database.MigrateAsync();
         await db.SaveChangesAsync();

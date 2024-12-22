@@ -1,6 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Microsoft.EntityFrameworkCore;
+
 namespace InfiniLore.Server.Contracts.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -65,4 +67,18 @@ public interface IUnitOfWork : IAsyncDisposable {
     /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     ValueTask<bool> TryCreateSavepointAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Asynchronously retrieves the current instance of the specified <see cref="DbContext"/> type.
+    /// </summary>
+    /// <typeparam name="T">
+    /// A type inheriting from <see cref="DbContext"/> representing the context to retrieve.
+    /// </typeparam>
+    /// <param name="ct">
+    /// A CancellationToken to monitor for cancellation requests.
+    /// </param>
+    /// <returns>
+    /// A task representing the asynchronous operation. The task result contains the specified <see cref="DbContext"/> instance.
+    /// </returns>
+    ValueTask<T> GetDbContextAsync<T>(CancellationToken ct = default) where T : DbContext;
 }

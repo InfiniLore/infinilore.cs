@@ -4,9 +4,9 @@
 using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Server.Contracts.Services;
-using InfiniLore.Server.Contracts.Types;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
+using InfiniLore.Server.Types;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 

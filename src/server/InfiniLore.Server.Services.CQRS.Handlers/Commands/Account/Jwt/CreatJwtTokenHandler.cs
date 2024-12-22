@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
-using InfiniLore.Server.Contracts.Types;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
+using InfiniLore.Server.Types;
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Account.Jwt;

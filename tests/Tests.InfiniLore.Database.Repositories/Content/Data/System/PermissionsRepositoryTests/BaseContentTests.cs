@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Bogus;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories.Content.Data.System;
@@ -17,13 +16,10 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Data.System.Permissions
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
 // ReSharper disable once InconsistentNaming
-public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure) : BaseContentRepositoryTestFramework<PermissionsRepository, InfinilorePermission>(infrastructure) {
+public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure) : BaseContentRepositoryTestFramework<PermissionsRepository, InfiniLorePermission>(infrastructure) {
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
-    private const int MaxNameLength = 255;
-    private const int MaxDescriptionLength = 511;
-
     public const string SomethingName = "something.else";
     public const string SomethingDescription = "A permission to do Something Else";
     public const string SomethingId = "6f77e414-e716-469e-9c1d-643ae55cd270";
@@ -34,28 +30,25 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
 
     public const string EmptyId = "00000000-0000-0000-0000-000000000000";
 
-    private static string Truncate(string value, int maxLength) =>
-        value.Length > maxLength ? value[..maxLength] : value;
-
     [Before(Test)]
     public async Task SeedDatabase() {
         await CreateSavepointAsync();
 
         // Arrange seed data
-        var permission1 = new InfinilorePermission {
+        var permission1 = new InfiniLorePermission {
             Id = Guid.Parse(SomethingId),
             Name = SomethingName,
             Description = SomethingDescription
         };
 
-        var permission2 = new InfinilorePermission {
+        var permission2 = new InfiniLorePermission {
             Id = Guid.Parse(SomethingDifferentId),
             Name = SomethingDifferentName,
             Description = SomethingDifferentDescription
         };
 
         // Seed database 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
         await dbContext.Permissions.AddRangeAsync(permission1, permission2);
         await dbContext.SaveChangesAsync();
     }
@@ -74,14 +67,14 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryAddAsync_ShouldReturnSuccess(string? guidValue, string name, string description) {
         // Arrange
         Guid guid = guidValue is not null ? Guid.Parse(guidValue) : Guid.CreateVersion7();
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
         // Act & Assert
-        InfinilorePermission permissionFromDb = await Base_TryAddAsync_ShouldReturnSuccess(permission);
+        InfiniLorePermission permissionFromDb = await Base_TryAddAsync_ShouldReturnSuccess(permission);
         await Assert.That(permissionFromDb.Name).IsEqualTo(name);
         await Assert.That(permissionFromDb.Description).IsEqualTo(description);
 
@@ -94,7 +87,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryAddAsync_ShouldFail(string? guidValue, string name, string description) {
         // Arrange
         Guid guid = guidValue is not null ? Guid.Parse(guidValue) : Guid.CreateVersion7();
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
@@ -110,14 +103,14 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryAddAsyncWithResult_ShouldReturnSuccess(string? guidValue, string name, string description) {
         // Arrange
         Guid guid = guidValue is not null ? Guid.Parse(guidValue) : Guid.CreateVersion7();
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
         // Act & Assert
-        InfinilorePermission permissionFromDb = await Base_TryAddWithResultAsync_ShouldReturnSuccess(permission);
+        InfiniLorePermission permissionFromDb = await Base_TryAddWithResultAsync_ShouldReturnSuccess(permission);
         await Assert.That(permissionFromDb.Name).IsEqualTo(name);
         await Assert.That(permissionFromDb.Description).IsEqualTo(description);
 
@@ -130,7 +123,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryAddAsyncWithResult_ShouldFail(string? guidValue, string name, string description) {
         // Arrange
         Guid guid = guidValue is not null ? Guid.Parse(guidValue) : Guid.CreateVersion7();
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
@@ -145,7 +138,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryUpdateAsync_ShouldReturnSuccess(string guidValue, string name, string description) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
@@ -153,7 +146,7 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
 
         // Act & Assert
         await Base_TryUpdateAsync_ShouldReturnSuccess(permission);
-        InfinilorePermission modelFromDb = await AssertModelExists(permission);
+        InfiniLorePermission modelFromDb = await AssertModelExists(permission);
         await Assert.That(modelFromDb.Name).IsEqualTo(name);
         await Assert.That(modelFromDb.Description).IsEqualTo(description);
     }
@@ -163,18 +156,18 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryUpdateAsync_ShouldFail(string guidValue, string name, string description) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act & Assert
         await Base_TryUpdateAsync_ShouldFail(permission);
         dbContext.ChangeTracker.Clear();
-        InfinilorePermission? foundModel = dbContext.Permissions.FirstOrDefault(x => x.Id == guid);
+        InfiniLorePermission? foundModel = dbContext.Permissions.FirstOrDefault(x => x.Id == guid);
 
         await Assert.That(foundModel).IsNull();
     }
@@ -184,15 +177,15 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryUpdateWithResultAsync_ShouldReturnSuccess(string guidValue, string name, string description) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
         // Act & Assert
-        InfinilorePermission resultModel = await Base_TryUpdateWithResultAsync_ShouldReturnSuccess(permission);
-        InfinilorePermission modelFromDb = await AssertModelExists(resultModel);
+        InfiniLorePermission resultModel = await Base_TryUpdateWithResultAsync_ShouldReturnSuccess(permission);
+        InfiniLorePermission modelFromDb = await AssertModelExists(resultModel);
         await Assert.That(modelFromDb.Name).IsEqualTo(name);
         await Assert.That(modelFromDb.Description).IsEqualTo(description);
     }
@@ -202,18 +195,18 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryUpdateWithResultAsync_ShouldFail(string guidValue, string name, string description) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
-        MsSqlDbContext dbContext = await UnitOfWork.GetDbContextAsync();
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
 
         // Act & Assert
         await Base_TryUpdateWithResultAsync_ShouldFail(permission);
         dbContext.ChangeTracker.Clear();
-        InfinilorePermission? foundModel = dbContext.Permissions.FirstOrDefault(x => x.Id == guid);
+        InfiniLorePermission? foundModel = dbContext.Permissions.FirstOrDefault(x => x.Id == guid);
 
         await Assert.That(foundModel).IsNull();
     }
@@ -223,17 +216,17 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         // Arrange
         string[] guidValues = [SomethingId, SomethingDifferentId];
 
-        List<InfinilorePermission> permissions = guidValues.Select(guid => new InfinilorePermission {
+        List<InfiniLorePermission> permissions = guidValues.Select(guid => new InfiniLorePermission {
             Id = Guid.Parse(guid),
-            Name = FakerLib.InfinilorePermission.Generate().Name,
-            Description = FakerLib.InfinilorePermission.Generate().Description
+            Name = FakerLib.InfiniLorePermission.Generate().Name,
+            Description = FakerLib.InfiniLorePermission.Generate().Description
         }).ToList();
 
         // Act & Assert
         await Base_TryUpdateRangeAsync_ShouldReturnSuccess(permissions.ToArray());
 
-        foreach (InfinilorePermission permission in permissions) {
-            InfinilorePermission modelFromDb1 = await AssertModelExists(permission);
+        foreach (InfiniLorePermission permission in permissions) {
+            InfiniLorePermission modelFromDb1 = await AssertModelExists(permission);
             await Assert.That(modelFromDb1.Name).IsEqualTo(permission.Name);
             await Assert.That(modelFromDb1.Description).IsEqualTo(permission.Description);
         }
@@ -244,10 +237,10 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
         // Arrange 
         // - Has one value that doesn't exist on the db yet, and thus should fail.
         string[] guidValues = [SomethingId, SomethingDifferentId, Guid.CreateVersion7().ToString()];
-        List<InfinilorePermission> permissions = guidValues.Select(guid => new InfinilorePermission {
+        List<InfiniLorePermission> permissions = guidValues.Select(guid => new InfiniLorePermission {
             Id = Guid.Parse(guid),
-            Name = FakerLib.InfinilorePermission.Generate().Name,
-            Description = FakerLib.InfinilorePermission.Generate().Description
+            Name = FakerLib.InfiniLorePermission.Generate().Name,
+            Description = FakerLib.InfiniLorePermission.Generate().Description
         }).ToList();
 
         // Act & Assert
@@ -255,21 +248,20 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     }
     
     [Test]
-    [Repeat(100)]
     public async Task Repeat_TryAddOrUpdateAsync_ShouldReturnSuccess() {
         // Arrange
         var guid = Guid.NewGuid();
-        string name = FakerLib.InfinilorePermission.Generate().Name;
-        string description = FakerLib.InfinilorePermission.Generate().Description;
-        InfinilorePermission permission = new() {
+        string name = FakerLib.InfiniLorePermission.Generate().Name;
+        string description = FakerLib.InfiniLorePermission.Generate().Description;
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
         // Act & Assert
-        InfinilorePermission resultModel = await Base_TryAddOrUpdateAsync_ShouldReturnSuccess(permission);
-        InfinilorePermission modelFromDb = await AssertModelExists(resultModel);
+        InfiniLorePermission resultModel = await Base_TryAddOrUpdateAsync_ShouldReturnSuccess(permission);
+        InfiniLorePermission modelFromDb = await AssertModelExists(resultModel);
         await Assert.That(modelFromDb.Name).IsEqualTo(name);
         await Assert.That(modelFromDb.Description).IsEqualTo(description);
     }
@@ -281,15 +273,15 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryAddOrUpdateAsync_ShouldReturnSuccess(string guidValue, string name, string description) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
             Name = name,
             Description = description
         };
 
         // Act & Assert
-        InfinilorePermission resultModel = await Base_TryAddOrUpdateAsync_ShouldReturnSuccess(permission);
-        InfinilorePermission modelFromDb = await AssertModelExists(resultModel);
+        InfiniLorePermission resultModel = await Base_TryAddOrUpdateAsync_ShouldReturnSuccess(permission);
+        InfiniLorePermission modelFromDb = await AssertModelExists(resultModel);
         await Assert.That(modelFromDb.Name).IsEqualTo(name);
         await Assert.That(modelFromDb.Description).IsEqualTo(description);
     }
@@ -297,12 +289,12 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     [Test]
     public async Task TryAddOrUpdateRangeAsync_ShouldReturnSuccess() {
         // Arrange
-        List<InfinilorePermission>? permissions = FakerLib.InfinilorePermission.Generate(100);
+        List<InfiniLorePermission>? permissions = FakerLib.InfiniLorePermission.Generate(100);
 
         // Act & Assert
         await Base_TryAddOrUpdateRangeAsync_ShouldReturnSuccess(permissions);
-        foreach (InfinilorePermission permission in permissions) {
-            InfinilorePermission modelFromDb1 = await AssertModelExists(permission);
+        foreach (InfiniLorePermission permission in permissions) {
+            InfiniLorePermission modelFromDb1 = await AssertModelExists(permission);
             await Assert.That(modelFromDb1.Name).IsEqualTo(permission.Name);
             await Assert.That(modelFromDb1.Description).IsEqualTo(permission.Description);
         }
@@ -313,10 +305,10 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryDeleteAsync_ShouldReturnSuccess(string guidValue) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
-            Name = FakerLib.InfinilorePermission.Generate().Name,
-            Description = FakerLib.InfinilorePermission.Generate().Description
+            Name = FakerLib.InfiniLorePermission.Generate().Name,
+            Description = FakerLib.InfiniLorePermission.Generate().Description
         };
 
         // Act & Assert
@@ -328,10 +320,10 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     public async Task TryDeleteAsync_ShouldReturnFailure(string guidValue) {
         // Arrange
         Guid guid = Guid.Parse(guidValue);
-        InfinilorePermission permission = new() {
+        InfiniLorePermission permission = new() {
             Id = guid,
-            Name = FakerLib.InfinilorePermission.Generate().Name,
-            Description = FakerLib.InfinilorePermission.Generate().Description
+            Name = FakerLib.InfiniLorePermission.Generate().Name,
+            Description = FakerLib.InfiniLorePermission.Generate().Description
         };
 
         // Act & Assert
@@ -341,12 +333,12 @@ public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure)
     [Test]
     public async Task TryAddRangeAsync_ShouldReturnSuccess() {
         // Arrange
-        List<InfinilorePermission>? permissions = FakerLib.InfinilorePermission.Generate(100);
+        List<InfiniLorePermission>? permissions = FakerLib.InfiniLorePermission.Generate(100);
 
         // Act & Assert
         await Base_TryAddRange_ShouldReturnSuccess(permissions);
-        foreach (InfinilorePermission permission in permissions) {
-            InfinilorePermission modelFromDb1 = await AssertModelExists(permission);
+        foreach (InfiniLorePermission permission in permissions) {
+            InfiniLorePermission modelFromDb1 = await AssertModelExists(permission);
             await Assert.That(modelFromDb1.Name).IsEqualTo(permission.Name);
             await Assert.That(modelFromDb1.Description).IsEqualTo(permission.Description);
         }

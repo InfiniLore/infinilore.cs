@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Contracts.Types;
+namespace InfiniLore.Server.Types;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -9,5 +9,6 @@ public readonly record struct JwtTokenData(
     string AccessToken,
     DateTime AccessTokenExpiryUtc,
     Guid RefreshToken,
-    DateTime RefreshTokenExpiryUtc
+    DateTime RefreshTokenExpiryUtc,
+    string[]? Permissions = null
 );
