@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ public interface IHasTryGetAllAsync<T> where T : BaseContent {
     /// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>
     ///     A <see cref="ValueTask{RepoResult{T[]}}" /> representing the asynchronous operation, which,
-    ///     on completion, returns a <see cref="RepoResult{T[]}" /> containing an array of the retrieved items
+    ///     on completion, returns a <see cref="RepoResult" /> containing an array of the retrieved items
     ///     if successful, or an error message if the operation fails.
     /// </returns>
     ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct = default);

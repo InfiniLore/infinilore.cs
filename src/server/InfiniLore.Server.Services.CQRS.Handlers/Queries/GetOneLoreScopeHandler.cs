@@ -7,6 +7,7 @@ using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
 using InfiniLore.Server.Services.CQRS.Requests.Queries;
+using InfiniLore.Server.Types;
 using MediatR;
 using Serilog;
 

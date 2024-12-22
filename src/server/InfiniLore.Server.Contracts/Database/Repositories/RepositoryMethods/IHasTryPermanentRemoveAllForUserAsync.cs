@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ public interface IHasTryPermanentRemoveAllForUserAsync {
     /// <summary>
     ///     Attempts to permanently remove all records associated with the specified user.
     /// </summary>
-    /// <param name="userUnion">
+    /// <param name="userId">
     ///     The union representing the user whose records are to be removed. Can be an InfiniLoreUser,
     ///     Guid, or string.
     /// </param>
@@ -24,5 +24,5 @@ public interface IHasTryPermanentRemoveAllForUserAsync {
     ///     A task that represents the asynchronous operation, containing a <see cref="RepoResult" /> which indicates
     ///     success or failure of the operation.
     /// </returns>
-    ValueTask<RepoResult> TryPermanentRemoveAllForUserAsync(UserIdUnion userUnion, CancellationToken ct = default);
+    ValueTask<RepoResult> TryPermanentRemoveAllForUserAsync(Guid userId, CancellationToken ct = default);
 }

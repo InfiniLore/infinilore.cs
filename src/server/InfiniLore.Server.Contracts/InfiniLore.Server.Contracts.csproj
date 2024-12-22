@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Database.Models\InfiniLore.Database.Models.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Types\InfiniLore.Server.Types.csproj" />
     </ItemGroup>
 
 </Project>

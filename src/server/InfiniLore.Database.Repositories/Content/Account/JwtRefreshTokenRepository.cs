@@ -8,7 +8,7 @@ using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,9 +70,8 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
         return new Success();
     }
 
-    public async ValueTask<RepoResult> TryPermanentRemoveAllForUserAsync(UserIdUnion userUnion, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> TryPermanentRemoveAllForUserAsync(Guid userId, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        var userId = userUnion.ToGuid();
 
         int recordsAffected = await dbContext.JwtRefreshTokens
             .Where(m => m.OwnerId == userId)

@@ -5,6 +5,7 @@ using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Database.Repositories;
+using InfiniLore.Server.Types;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories;
@@ -20,7 +20,7 @@ public interface IUserRepository {
     /// <param name="principal">The claims principal containing the user's identity information.</param>
     /// <param name="ct">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>
-    ///     A <see cref="RepoResult{InfiniLoreUser}" /> which represents the result of the user retrieval operation,
+    ///     A <see cref="RepoResult" /> which represents the result of the user retrieval operation,
     ///     containing either a successfully retrieved user or an error message.
     /// </returns>
     ValueTask<RepoResult<InfiniLoreUser>> TryGetByClaimsPrincipalAsync(ClaimsPrincipal principal, CancellationToken ct = default);
@@ -29,7 +29,7 @@ public interface IUserRepository {
     ///     Attempts to retrieve a user by a specified user ID.
     /// </summary>
     /// <param name="userId">
-    ///     A <c>UserIdUnion</c> representing the unique identifier of the user to be retrieved. This can be an instance of
+    ///     A <c>Guid</c> representing the unique identifier of the user to be retrieved. This can be an instance of
     ///     <c>InfiniLoreUser</c>, a GUID, or a string.
     /// </param>
     /// <param name="ct">
@@ -39,7 +39,7 @@ public interface IUserRepository {
     ///     A <c>ValueTask</c> containing a <c>RepoResult</c> of type <c>InfiniLoreUser</c>, which represents the result of
     ///     the repository operation. The result may indicate success or failure, and contain the user instance if successful.
     /// </returns>
-    ValueTask<RepoResult<InfiniLoreUser>> TryGetByIdAsync(UserIdUnion userId, CancellationToken ct = default);
+    ValueTask<RepoResult<InfiniLoreUser>> TryGetByIdAsync(Guid userId, CancellationToken ct = default);
 
-    ValueTask<RepoResult<InfiniLoreUser>> UserHasAllRolesAsync(UserIdUnion userId, IEnumerable<string> roles, CancellationToken ct = default);
+    ValueTask<RepoResult<InfiniLoreUser>> UserHasAllRolesAsync(Guid userId, IEnumerable<string> roles, CancellationToken ct = default);
 }

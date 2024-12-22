@@ -7,6 +7,7 @@ using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Seeding;
 using InfiniLore.Server.Services;
+using InfiniLore.Server.Types;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 

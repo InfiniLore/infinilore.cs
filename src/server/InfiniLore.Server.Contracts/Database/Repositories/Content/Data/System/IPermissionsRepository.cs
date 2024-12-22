@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 

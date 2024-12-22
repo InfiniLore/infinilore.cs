@@ -8,6 +8,7 @@ using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
+using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

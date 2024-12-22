@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Server.Contracts.Services.CQRS;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
 // ---------------------------------------------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,16 +21,16 @@ public interface IHasTryGetByUserAsync<T> where T : UserContent {
     /// <param name="ct">Optional. A cancellation token that can be used to cancel the operation.</param>
     /// <returns>
     ///     A <see cref="ValueTask{TResult}" /> that represents the asynchronous operation. The task result contains a
-    ///     <see cref="RepoResult{T}" />
+    ///     <see cref="RepoResult" />
     ///     indicating the success or failure of the retrieval operation. On success, it contains an array of the requested
     ///     user content.
     /// </returns>
-    ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, CancellationToken ct = default);
+    ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default);
 
     /// <summary>
     ///     Asynchronously attempts to retrieve an array of user content associated with a specified user.
     /// </summary>
-    /// <param name="userUnion">
+    /// <param name="userId">
     ///     A union struct that represents the identifier of the user whose content is being retrieved.
     /// </param>
     /// <param name="pageInfo">
@@ -43,7 +43,7 @@ public interface IHasTryGetByUserAsync<T> where T : UserContent {
     ///     A <see cref="ValueTask{TResult}" /> representing the asynchronous operation,
     ///     with a result of type <see cref="RepoResult{T}" />, which contains the array of user content.
     /// </returns>
-    ValueTask<RepoResult<T[]>> TryGetByUserAsync(UserIdUnion userUnion, PaginationInfo pageInfo, CancellationToken ct = default);
+    ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default);
 
     /// <summary>
     ///     Attempts to retrieve user content with specific access permissions.
@@ -57,15 +57,15 @@ public interface IHasTryGetByUserAsync<T> where T : UserContent {
     ///     A task that represents the asynchronous operation, containing a repository result with an array of user
     ///     content or an error message.
     /// </returns>
-    ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(UserIdUnion ownerUnion, UserIdUnion accessorUnion, AccessKind level, CancellationToken ct = default);
+    ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, CancellationToken ct = default);
 
     /// <summary>
     ///     Attempts to retrieve user content by the specified owner and accessor with a given access level and pagination
     ///     information.
     /// </summary>
     /// <typeparam name="T">The type of user content.</typeparam>
-    /// <param name="ownerUnion">A union representing the user who owns the content.</param>
-    /// <param name="accessorUnion">A union representing the user trying to access the content.</param>
+    /// <param name="ownerId">A union representing the user who owns the content.</param>
+    /// <param name="accessorId">A union representing the user trying to access the content.</param>
     /// <param name="level">The required access level for the accessor.</param>
     /// <param name="pageInfo">The pagination information for retrieving the content.</param>
     /// <param name="ct">A CancellationToken to observe while waiting for the task to complete.</param>
@@ -73,5 +73,5 @@ public interface IHasTryGetByUserAsync<T> where T : UserContent {
     ///     A task that represents the asynchronous operation, containing the result of the retrieval
     ///     in a <see cref="RepoResult{T}" /> structure where <c>T</c> is the type of user content.
     /// </returns>
-    ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(UserIdUnion ownerUnion, UserIdUnion accessorUnion, AccessKind level, PaginationInfo pageInfo, CancellationToken ct = default);
+    ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, PaginationInfo pageInfo, CancellationToken ct = default);
 }

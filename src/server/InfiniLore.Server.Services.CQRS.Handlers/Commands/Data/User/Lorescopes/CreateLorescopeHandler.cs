@@ -8,6 +8,7 @@ using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;
+using InfiniLore.Server.Types;
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Data.User.Lorescopes;

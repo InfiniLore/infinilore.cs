@@ -8,7 +8,7 @@ using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,7 +93,7 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
-        RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user, ct);
+        RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user.Id, ct);
         return deleteResult.IsSuccess;
     }
 

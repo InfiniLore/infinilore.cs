@@ -6,7 +6,7 @@ using InfiniLore.Database.Models;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;

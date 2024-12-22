@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 
 namespace InfiniLore.Server.API.Controllers.Account;
 // ---------------------------------------------------------------------------------------------------------------------

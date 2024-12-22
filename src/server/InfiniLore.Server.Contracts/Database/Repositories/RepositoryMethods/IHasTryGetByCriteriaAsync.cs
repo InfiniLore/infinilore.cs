@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Types;
+using InfiniLore.Server.Types;
 using System.Linq.Expressions;
 
 namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
