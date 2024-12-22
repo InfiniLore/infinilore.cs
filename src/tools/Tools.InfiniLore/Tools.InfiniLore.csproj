@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.1.0" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.2.0" />
     </ItemGroup>
 
 </Project>
