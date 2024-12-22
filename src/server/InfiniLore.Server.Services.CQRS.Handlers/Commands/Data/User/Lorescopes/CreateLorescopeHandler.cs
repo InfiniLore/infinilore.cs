@@ -23,7 +23,7 @@ public class CreateLorescopeHandler(
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(CreateLorescopeCommand request, CancellationToken ct) {
         try {
             if (!await authService.InDevelopmentAsync()) {
-                if (!await authService.ValidateIsOwnerAsync(request.Lorescope.OwnerId, ct)) return "Access Denied";
+                if (!await authService.ValidateHttpContextIsOwnerAsync(request.Lorescope.OwnerId, ct)) return "Access Denied";
             }
 
             await unitOfWork.TryCreateTransactionAsync(ct);
