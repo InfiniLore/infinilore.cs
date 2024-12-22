@@ -11,8 +11,6 @@ using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace InfiniLore.Database.Repositories.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,10 +19,8 @@ namespace InfiniLore.Database.Repositories.Content.Account;
 [InjectableService<IJwtRefreshTokenRepository>(ServiceLifetime.Scoped)]
 public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshTokenRepository {
 
-    #region Queries
-    public async ValueTask<RepoResult<JwtRefreshTokenModel>> TryGetByIdAsync(Guid refreshtoken, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<JwtRefreshTokenModel>> TryGetByHashedTokenAsync(string hashedToken, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        string hashedToken = HashToken(refreshtoken);
 
         JwtRefreshTokenModel? tokenData = await dbContext.JwtRefreshTokens
             .Include(t => t.Owner)
@@ -36,15 +32,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
 
         return tokenData;
     }
-    #endregion
 
-    private static string HashToken(Guid token) {
-        byte[] tokenBytes = Encoding.UTF8.GetBytes(token.ToString());
-        byte[] hashBytes = SHA256.HashData(tokenBytes);
-        return Convert.ToBase64String(hashBytes);
-    }
-
-    #region Commands
     public async ValueTask<RepoResult> TryAddAsync(JwtRefreshTokenModel model, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         if (await dbContext.JwtRefreshTokens.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
@@ -102,5 +90,4 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
 
         return new Success();
     }
-    #endregion
 }

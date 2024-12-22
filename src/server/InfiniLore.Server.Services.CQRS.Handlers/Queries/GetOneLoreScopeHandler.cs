@@ -24,7 +24,7 @@ public class GetOneLorescopeHandler(
         try {
             if (!await authService.HasAccessRead(request.LorescopeId, ct)) return "Access Denied";
 
-            RepoResult<LorescopeModel> result = await lorescopeRepository.TryGetByIdAsync(request.LorescopeId, ct);
+            RepoResult<LorescopeModel> result = await lorescopeRepository.TryGetByHashedTokenAsync(request.LorescopeId, ct);
             return result.ToSuccessOrFailure();
         }
         catch (Exception e) {

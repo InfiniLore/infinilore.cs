@@ -66,7 +66,8 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<SuccessOrFailure<JwtTokenData>> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
-        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByIdAsync(refreshToken, ct);
+        string hashedToken = HashToken(refreshToken);
+        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (!getResult.TryGetSuccessValue(out JwtRefreshTokenModel? oldToken)) return "Refresh token not found";
         if (oldToken.ExpiresAt < DateTime.UtcNow) return "Refresh token has expired";
 
@@ -81,7 +82,8 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
-        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByIdAsync(refreshToken, ct);
+        string hashedToken = HashToken(refreshToken);
+        RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (getResult.IsFailure) return false;
 
         JwtRefreshTokenModel oldToken = getResult.AsSuccess.Value;
