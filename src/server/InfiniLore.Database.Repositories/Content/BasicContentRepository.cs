@@ -264,60 +264,6 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
 
         return result;
     }
-
-    /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, bool>> predicate, CancellationToken ct) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
-        T[] result = await dbSet
-            .Where(predicate)
-            .ToArrayAsync(cancellationToken: ct);
-
-        return result;
-    }
-
-    /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, int, bool>> predicate, CancellationToken ct) {
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
-        T[] result = await dbSet
-            .Where(predicate)
-            .ToArrayAsync(cancellationToken: ct);
-
-        return result;
-    }
-
-    /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> orderBy, PaginationInfo pageInfo, CancellationToken ct) {
-        if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
-
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
-        T[] result = await dbSet
-            .Where(predicate)
-            .OrderBy(orderBy)
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize)
-            .ToArrayAsync(cancellationToken: ct);
-
-        return result;
-    }
-
-    /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByCriteriaAsync(Expression<Func<T, int, bool>> predicate, Expression<Func<T, object>> orderBy, PaginationInfo pageInfo, CancellationToken ct) {
-        if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
-
-        DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
-        T[] result = await dbSet
-            .Where(predicate)
-            .OrderBy(orderBy)
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize)
-            .ToArrayAsync(cancellationToken: ct);
-
-        return result;
-    }
     
     public async virtual ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);

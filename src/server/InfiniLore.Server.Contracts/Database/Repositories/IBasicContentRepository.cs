@@ -16,7 +16,6 @@ public interface IBasicContentRepository<T> :
     IHasTryRemoveAsync<T>,
     IHasTryGetByIdAsync<T>,
     IHasTryGetAllAsync<T>,
-    IHasTryGetByCriteriaAsync<T>,
     IHasCountAsync,
     IRepository
     where T : BasicContent;
