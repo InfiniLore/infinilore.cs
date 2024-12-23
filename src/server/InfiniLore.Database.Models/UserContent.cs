@@ -13,7 +13,7 @@ namespace InfiniLore.Database.Models;
 ///     serves as a base for more specific types of content, providing common properties and behaviors associated with
 ///     user-generated data.
 /// </summary>
-public abstract class UserContent : BaseContent, IHasOwner {
+public abstract class UserContent : BasicContent, IHasOwner {
     /// <summary>
     ///     Gets or sets the collection of access rights associated with the content.
     ///     This property contains a list of <see cref="UserContentAccessModel" /> objects that define

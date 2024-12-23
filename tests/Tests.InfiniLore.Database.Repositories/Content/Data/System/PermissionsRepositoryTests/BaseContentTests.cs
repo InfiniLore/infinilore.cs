@@ -16,7 +16,7 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Data.System.Permissions
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
 // ReSharper disable once InconsistentNaming
-public class Permissions_BaseContentTests(DatabaseInfrastructure infrastructure) : BaseContentRepositoryTestFramework<PermissionsRepository, InfiniLorePermission>(infrastructure) {
+public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure) : BasicContentRepositoryTestFramework<PermissionsRepository, InfiniLorePermission>(infrastructure) {
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------

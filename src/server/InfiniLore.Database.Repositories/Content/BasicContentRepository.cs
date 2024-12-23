@@ -15,7 +15,7 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseContentRepository<T> where T : BaseContent {
+public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasicContentRepository<T> where T : BasicContent {
     protected async Task<DbSet<T>> GetDbSetAsync(CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         return dbContext.Set<T>();
@@ -196,7 +196,7 @@ public abstract class BaseContentRepository<T>(IUnitOfWork unitOfWork) : IBaseCo
 
         await dbSet
             .Where(model => ids.Contains(model.Id))
-            .ExecuteUpdateAsync(setPropertyCalls: s => BaseContent.SoftDeleteWithPropertyCalls(s), ct);
+            .ExecuteUpdateAsync(setPropertyCalls: s => BasicContent.SoftDeleteWithPropertyCalls(s), ct);
 
         return new Success();
     }

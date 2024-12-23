@@ -11,7 +11,7 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BaseContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
+public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BasicContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

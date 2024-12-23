@@ -8,7 +8,7 @@ namespace InfiniLore.Database.Models;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class UserContentAccessModel {
-    [Key] public Guid Id { get; init; } = Guid.CreateVersion7();// Not part of the BaseContent family
+    [Key] public Guid Id { get; init; } = Guid.CreateVersion7();// Not part of the BasicContent family
     public required Guid ContentId { get; init; }
     public required Guid UserId { get; init; }
 

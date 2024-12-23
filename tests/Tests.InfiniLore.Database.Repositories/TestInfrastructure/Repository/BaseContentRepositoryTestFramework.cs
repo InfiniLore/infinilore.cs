@@ -13,10 +13,10 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(DatabaseInfrastructure infrastructure)
+public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(DatabaseInfrastructure infrastructure)
     : RepositoryTestFramework<TRepository>(infrastructure)
-    where TRepository : class, IRepository, IBaseContentRepository<TModel>
-    where TModel : BaseContent {
+    where TRepository : class, IRepository, IBasicContentRepository<TModel>
+    where TModel : BasicContent {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -107,15 +107,15 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
 
     protected async Task Base_TryAddRange_ShouldReturnSuccess(IEnumerable<TModel> models) {
         // Arrange
-        IEnumerable<TModel> baseContents = models as TModel[] ?? models.ToArray();
+        IEnumerable<TModel> BasicContents = models as TModel[] ?? models.ToArray();
 
         // Act
-        RepoResult result = await Repository.TryAddRangeAsync(baseContents);
+        RepoResult result = await Repository.TryAddRangeAsync(BasicContents);
         
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
-        foreach (TModel model in baseContents) {
+        foreach (TModel model in BasicContents) {
             await AssertModelExists(model);
         }
     }
@@ -223,13 +223,13 @@ public abstract class BaseContentRepositoryTestFramework<TRepository, TModel>(Da
         // Arrange
 
         // Act
-        IEnumerable<TModel> baseContents = models as TModel[] ?? models.ToArray();
-        RepoResult result = await Repository.TryAddOrUpdateRangeAsync(baseContents);
+        IEnumerable<TModel> BasicContents = models as TModel[] ?? models.ToArray();
+        RepoResult result = await Repository.TryAddOrUpdateRangeAsync(BasicContents);
         
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
-        foreach (TModel model in baseContents) {
+        foreach (TModel model in BasicContents) {
             await AssertModelExists(model);
         }
     }

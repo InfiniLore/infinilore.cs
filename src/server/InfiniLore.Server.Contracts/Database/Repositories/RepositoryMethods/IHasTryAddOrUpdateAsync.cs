@@ -11,12 +11,12 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 /// <summary>
 ///     Represents a contract for adding or updating a model in an asynchronous manner.
 /// </summary>
-/// <typeparam name="T">The type of the model, which must inherit from BaseContent.</typeparam>
-public interface IHasTryAddOrUpdateAsync<in T> where T : BaseContent {
+/// <typeparam name="T">The type of the model, which must inherit from BasicContent.</typeparam>
+public interface IHasTryAddOrUpdateAsync<in T> where T : BasicContent {
     /// <summary>
     ///     Attempts to add or update the specified model asynchronously in the repository.
     /// </summary>
-    /// <typeparam name="T">The type of the model, which must inherit from <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of the model, which must inherit from <see cref="BasicContent" />.</typeparam>
     /// <param name="model">The model instance to be added or updated in the repository.</param>
     /// <param name="ct">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>
@@ -28,7 +28,7 @@ public interface IHasTryAddOrUpdateAsync<in T> where T : BaseContent {
     /// <summary>
     ///     Attempts to add or update a range of models in the repository asynchronously.
     /// </summary>
-    /// <typeparam name="T">The type of models, which must derive from <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of models, which must derive from <see cref="BasicContent" />.</typeparam>
     /// <param name="models">An enumerable collection of models to add or update in the repository.</param>
     /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>

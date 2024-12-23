@@ -12,13 +12,13 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 ///     Provides asynchronous methods to retrieve collections of content entities from a repository.
 /// </summary>
 /// <typeparam name="T">
-///     The type of content entity, which must inherit from <see cref="BaseContent" />.
+///     The type of content entity, which must inherit from <see cref="BasicContent" />.
 /// </typeparam>
-public interface IHasTryGetAllAsync<T> where T : BaseContent {
+public interface IHasTryGetAllAsync<T> where T : BasicContent {
     /// <summary>
     ///     Asynchronously attempts to retrieve all available items of type <typeparamref name="T" /> from the repository.
     /// </summary>
-    /// <typeparam name="T">The type of content to retrieve, constrained to <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of content to retrieve, constrained to <see cref="BasicContent" />.</typeparam>
     /// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>
     ///     A <see cref="ValueTask{RepoResult{T[]}}" /> representing the asynchronous operation, which,
@@ -30,7 +30,7 @@ public interface IHasTryGetAllAsync<T> where T : BaseContent {
     /// <summary>
     ///     Attempts to retrieve all items of type <typeparamref name="T" /> asynchronously, with pagination support.
     /// </summary>
-    /// <typeparam name="T">The type of items to be retrieved, which must derive from <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of items to be retrieved, which must derive from <see cref="BasicContent" />.</typeparam>
     /// <param name="pageInfo">The pagination information indicating the page number and the number of items per page.</param>
     /// <param name="ct">Cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>

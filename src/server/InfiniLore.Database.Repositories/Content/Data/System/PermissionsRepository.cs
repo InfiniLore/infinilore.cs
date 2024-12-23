@@ -16,7 +16,7 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
-public class PermissionsRepository(IUnitOfWork unitOfWork) : BaseContentRepository<InfiniLorePermission>(unitOfWork), IPermissionsRepository {
+public class PermissionsRepository(IUnitOfWork unitOfWork) : BasicContentRepository<InfiniLorePermission>(unitOfWork), IPermissionsRepository {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     // -----------------------------------------------------------------------------------------------------------------

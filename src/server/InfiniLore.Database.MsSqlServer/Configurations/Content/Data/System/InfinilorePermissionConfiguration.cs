@@ -8,7 +8,7 @@ namespace InfiniLore.Database.MsSqlServer.Configurations.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfinilorePermissionConfiguration : BaseContentConfiguration<InfiniLorePermission> {
+public class InfinilorePermissionConfiguration : BasicContentConfiguration<InfiniLorePermission> {
     public override void Configure(EntityTypeBuilder<InfiniLorePermission> builder) {
         base.Configure(builder);
 

@@ -9,6 +9,6 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IPermissionsRepository : IBaseContentRepository<InfiniLorePermission> {
+public interface IPermissionsRepository : IBasicContentRepository<InfiniLorePermission> {
     public ValueTask<RepoResult<InfiniLorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default);
 }

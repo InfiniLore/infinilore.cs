@@ -13,8 +13,8 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 ///     Provides asynchronous methods to retrieve data based on specified criteria for a collection of objects of type
 ///     <typeparamref name="T" />.
 /// </summary>
-/// <typeparam name="T">The type of objects handled by these methods, which must derive from <see cref="BaseContent" />.</typeparam>
-public interface IHasTryGetByCriteriaAsync<T> where T : BaseContent {
+/// <typeparam name="T">The type of objects handled by these methods, which must derive from <see cref="BasicContent" />.</typeparam>
+public interface IHasTryGetByCriteriaAsync<T> where T : BasicContent {
     /// Attempts to retrieve an array of entities from the repository that match the specified criteria.
     /// This method supports various overloads to include criteria, ordering, and pagination options.
     /// <param name="predicate">
@@ -34,7 +34,7 @@ public interface IHasTryGetByCriteriaAsync<T> where T : BaseContent {
     /// <summary>
     ///     Attempts to retrieve an array of entities of type <typeparamref name="T" /> that match the specified criteria.
     /// </summary>
-    /// <typeparam name="T">The type of the entities to retrieve, constrained to <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of the entities to retrieve, constrained to <see cref="BasicContent" />.</typeparam>
     /// <param name="predicate">
     ///     An expression that represents the criteria for filtering the entities. This can be a function
     ///     accepting an index and entity to decide if it fulfills the conditions.
@@ -53,7 +53,7 @@ public interface IHasTryGetByCriteriaAsync<T> where T : BaseContent {
     /// <summary>
     ///     Attempts to retrieve a collection of items that match the specified criteria asynchronously.
     /// </summary>
-    /// <typeparam name="T">The type of objects to be retrieved, constrained to <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of objects to be retrieved, constrained to <see cref="BasicContent" />.</typeparam>
     /// <param name="predicate">A predicate to filter the objects of type <typeparamref name="T" />.</param>
     /// <param name="orderBy">An expression to order the result set by a specific property.</param>
     /// <param name="pageInfo">The pagination information to apply to the query.</param>
@@ -67,7 +67,7 @@ public interface IHasTryGetByCriteriaAsync<T> where T : BaseContent {
     /// <summary>
     ///     Asynchronously attempts to retrieve an array of items from the repository that match the specified criteria.
     /// </summary>
-    /// <typeparam name="T">The type of content being queried, which must derive from <see cref="BaseContent" />.</typeparam>
+    /// <typeparam name="T">The type of content being queried, which must derive from <see cref="BasicContent" />.</typeparam>
     /// <param name="predicate">An expression representing the criteria that each element must satisfy.</param>
     /// <param name="orderBy">
     ///     An optional expression used for ordering the resulting items, based on a property of the type

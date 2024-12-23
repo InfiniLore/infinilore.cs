@@ -9,6 +9,6 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IUserContentRepository<T> :
-    IBaseContentRepository<T>,
+    IBasicContentRepository<T>,
     IHasTryGetByUserAsync<T>
     where T : UserContent;

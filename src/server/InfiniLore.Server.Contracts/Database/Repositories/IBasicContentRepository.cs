@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IBaseContentRepository<T> :
+public interface IBasicContentRepository<T> :
     IHasTryAddAsync<T>,
     IHasTryUpdateAsync<T>,
     IHasTryAddOrUpdateAsync<T>,
@@ -19,4 +19,4 @@ public interface IBaseContentRepository<T> :
     IHasTryGetByCriteriaAsync<T>,
     IHasCountAsync,
     IRepository
-    where T : BaseContent;
+    where T : BasicContent;

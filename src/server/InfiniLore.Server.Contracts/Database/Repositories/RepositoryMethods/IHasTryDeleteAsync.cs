@@ -12,12 +12,12 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 ///     Provides asynchronous methods for attempting to delete entities of type <typeparamref name="T" /> from a
 ///     repository.
 /// </summary>
-/// <typeparam name="T">The type of entities to delete, which must derive from <see cref="BaseContent" />.</typeparam>
-public interface IHasTryDeleteAsync<in T> where T : BaseContent {
+/// <typeparam name="T">The type of entities to delete, which must derive from <see cref="BasicContent" />.</typeparam>
+public interface IHasTryDeleteAsync<in T> where T : BasicContent {
     /// <summary>
     ///     Attempts to delete the specified model asynchronously.
     /// </summary>
-    /// <typeparam name="T">The type of the model which extends BaseContent.</typeparam>
+    /// <typeparam name="T">The type of the model which extends BasicContent.</typeparam>
     /// <param name="model">The model instance to be deleted.</param>
     /// <param name="ct">Optional. A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>
@@ -29,7 +29,7 @@ public interface IHasTryDeleteAsync<in T> where T : BaseContent {
     /// <summary>
     ///     Attempts to delete a range of models asynchronously.
     /// </summary>
-    /// <typeparam name="T">The type of the model which extends BaseContent.</typeparam>
+    /// <typeparam name="T">The type of the model which extends BasicContent.</typeparam>
     /// <param name="models">A collection of models to be deleted.</param>
     /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>

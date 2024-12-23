@@ -11,8 +11,8 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 /// <summary>
 ///     Represents a contract for asynchronously attempting to remove entities.
 /// </summary>
-/// <typeparam name="T">The type of the entity, which must be a subclass of BaseContent.</typeparam>
-public interface IHasTryRemoveAsync<in T> where T : BaseContent {
+/// <typeparam name="T">The type of the entity, which must be a subclass of BasicContent.</typeparam>
+public interface IHasTryRemoveAsync<in T> where T : BasicContent {
     /// <summary>
     ///     Attempts to remove the specified model asynchronously.
     /// </summary>
@@ -27,7 +27,7 @@ public interface IHasTryRemoveAsync<in T> where T : BaseContent {
     /// <summary>
     ///     Attempts to remove a range of content models from the repository asynchronously.
     /// </summary>
-    /// <typeparam name="T">The type of the content model, must inherit from BaseContent.</typeparam>
+    /// <typeparam name="T">The type of the content model, must inherit from BasicContent.</typeparam>
     /// <param name="models">The collection of content models to be removed.</param>
     /// <param name="ct">Optional. A cancellation token to cancel the operation.</param>
     /// <returns>

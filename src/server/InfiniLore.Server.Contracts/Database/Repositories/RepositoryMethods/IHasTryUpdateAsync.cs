@@ -12,11 +12,11 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 ///     Defines methods for attempting to update records of type <typeparamref name="T" /> asynchronously in the database.
 /// </summary>
 /// <typeparam name="T">
-///     The type of the content to be updated, which must inherit from <see cref="BaseContent" />.
+///     The type of the content to be updated, which must inherit from <see cref="BasicContent" />.
 /// </typeparam>
-public interface IHasTryUpdateAsync<T> where T : BaseContent {
+public interface IHasTryUpdateAsync<T> where T : BasicContent {
     /// Asynchronously attempts to update the specified model in the repository.
-    /// <param name="model">The model to be updated, which must be of a type derived from BaseContent.</param>
+    /// <param name="model">The model to be updated, which must be of a type derived from BasicContent.</param>
     /// <param name="ct">
     ///     A cancellation token that can be used to cancel the asynchronous operation, if needed. Defaults to
     ///     CancellationToken.None.
@@ -31,7 +31,7 @@ public interface IHasTryUpdateAsync<T> where T : BaseContent {
     ///     Attempts to update the specified model asynchronously and returns the result,
     ///     indicating success or failure, along with the updated model.
     /// </summary>
-    /// <typeparam name="T">The type of the model to be updated, inheriting from BaseContent.</typeparam>
+    /// <typeparam name="T">The type of the model to be updated, inheriting from BasicContent.</typeparam>
     /// <param name="model">The model instance that needs to be updated.</param>
     /// <param name="ct">An optional CancellationToken to observe while waiting for the task to complete.</param>
     /// <returns>A ValueTask containing a RepoResult, which holds the update result status and the updated model if successful.</returns>
@@ -41,7 +41,7 @@ public interface IHasTryUpdateAsync<T> where T : BaseContent {
     ///     Asynchronously attempts to update a collection of models in the repository.
     /// </summary>
     /// <param name="models">
-    ///     A collection of models to be updated. Each model must be of a type derived from BaseContent.
+    ///     A collection of models to be updated. Each model must be of a type derived from BasicContent.
     /// </param>
     /// <param name="ct">
     ///     A cancellation token to signal the asynchronous operation to cancel if required. Defaults to

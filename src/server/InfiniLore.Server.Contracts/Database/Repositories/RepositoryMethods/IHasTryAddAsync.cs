@@ -11,8 +11,8 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.RepositoryMethods;
 /// <summary>
 ///     Defines methods for attempting to add content asynchronously to a repository.
 /// </summary>
-/// <typeparam name="T">The type of content to be added, which must be derived from <see cref="BaseContent" />.</typeparam>
-public interface IHasTryAddAsync<T> where T : BaseContent {
+/// <typeparam name="T">The type of content to be added, which must be derived from <see cref="BasicContent" />.</typeparam>
+public interface IHasTryAddAsync<T> where T : BasicContent {
     /// Attempts to asynchronously add a model of type T to the repository.
     /// If successful, returns a result indicating success; otherwise, returns a result indicating failure.
     /// <param name="model">The model of type T that is to be added to the repository.</param>

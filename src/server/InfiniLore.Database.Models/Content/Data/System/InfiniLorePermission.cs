@@ -9,7 +9,7 @@ namespace InfiniLore.Database.Models.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLorePermission : BaseContent {
+public class InfiniLorePermission : BasicContent {
     private string _name;
     [MaxLength(255)] public required string Name {
         get => _name;
