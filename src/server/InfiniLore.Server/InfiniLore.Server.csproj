@@ -5,10 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>b66030d9-dd4d-418e-9b45-ed964bbc8e4e</UserSecretsId>
-
-        <!-- OpenAPI Document -->
-        <!-- <OpenApiDocumentsDirectory>./</OpenApiDocumentsDirectory>-->
-        <!-- <OpenApiGenerateDocumentsOptions>&#45;&#45;file-name infinilore-api</OpenApiGenerateDocumentsOptions>-->
+        
     </PropertyGroup>
 
     <ItemGroup>

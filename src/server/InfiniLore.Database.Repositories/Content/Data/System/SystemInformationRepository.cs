@@ -1,17 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Database.MsSqlServer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using AterraEngine.DependencyInjection;
+using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Server.API;
+namespace InfiniLore.Database.Repositories.Content.Data.System;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class InfiniLoreControllerBase(IServiceProvider provider) : Controller {
-    private readonly IDbContextFactory<MsSqlDbContext> _factory = provider.GetRequiredService<IDbContextFactory<MsSqlDbContext>>();
-
-    protected Task<MsSqlDbContext> GetDbContext() => _factory.CreateDbContextAsync();
+[InjectableService<ISystemInformationRepository>(ServiceLifetime.Scoped)]
+public class SystemInformationRepository(UnitOfWork unitOfWork) : ISystemInformationRepository {
+    
 }

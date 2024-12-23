@@ -24,7 +24,7 @@ public class SeederService(IServiceProvider provider) : ISeederService {
             .Select(static async tuple => {
                 (Type type, CancellationToken ct, IServiceProvider provider) = tuple;
                 
-                await using AsyncServiceScope scope = provider.CreateAsyncScope();
+                AsyncServiceScope scope = provider.CreateAsyncScope();
                 IServiceProvider scopedProvider = scope.ServiceProvider;
 
                 var seeder = (ISeeder)scopedProvider.GetRequiredService(type);
