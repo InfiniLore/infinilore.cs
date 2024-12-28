@@ -3,12 +3,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
+using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using Serilog;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace InfiniLore.Server.Services.Authentication;
@@ -17,6 +19,7 @@ namespace InfiniLore.Server.Services.Authentication;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenParsingService>(ServiceLifetime.Scoped)]
 public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogger logger) : IJwtTokenParsingService {
+    private readonly ILogger _logger = logger.ForSectionProperty("JWT parsing");
     private readonly JwtSecurityTokenHandler _handler = new();
     private bool _gotValidToken;
     private JwtSecurityToken? _jwt;
@@ -51,8 +54,26 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
     }
 
     public bool TryGetPermissions([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("permissions", out permissions);
-
     public bool TryGetRoles([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("roles", out permissions);
+    public bool TryGetUserId(out Guid userId) => TryGetPayloadData(ClaimTypes.NameIdentifier, out userId);
+    
+    public bool TryGetAsJwtTokenRequestData([NotNullWhen(true)] out JwtTokenRequestData? data) {
+        data = null;
+        if (Jwt is null) return false;
+
+        if (!TryGetPermissions(out string[]? permissions)) {
+            return false;
+        }
+        if (!TryGetRoles(out string[]? roles)) return false;
+        if (!TryGetUserId(out Guid userId)) return false;
+
+        data = new JwtTokenRequestData(
+            userId,
+            permissions,
+            roles
+        );
+        return true;
+    }
 
     private bool TryGetPayloadData<T>(string key, [NotNullWhen(true)] out T? value) {
         value = default;
@@ -77,7 +98,7 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
             }
         }
         catch (Exception ex) {
-            logger.Error(ex, "Error parsing for {Key} at {Value}", key, objectValue);
+            _logger.Error(ex, "Error parsing for {Key} at {Value}", key, objectValue);
             return false;
         }
     }
