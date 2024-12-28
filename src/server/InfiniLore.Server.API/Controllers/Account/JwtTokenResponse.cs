@@ -15,13 +15,17 @@ public record JwtTokenResponse(
     string AccessToken,
     DateTime AccessTokenExpiryUtc,
     Guid RefreshToken,
-    DateTime RefreshTokenExpiryUtc
+    DateTime RefreshTokenExpiryUtc,
+    string[] Permissions,
+    string[] Roles
 ) {
     public static JwtTokenResponse FromModel(InfiniLoreUser user, JwtTokenData model) => new(
         user.Id,
         model.AccessToken,
         model.AccessTokenExpiryUtc,
         model.RefreshToken,
-        model.RefreshTokenExpiryUtc
+        model.RefreshTokenExpiryUtc,
+        model.Permissions,
+        model.Roles
     );
 }

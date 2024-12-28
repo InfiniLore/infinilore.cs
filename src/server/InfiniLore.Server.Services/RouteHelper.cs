@@ -1,15 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Types;
+using System.Diagnostics.CodeAnalysis;
+
+namespace InfiniLore.Server.Services;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly record struct JwtTokenData(
-    string AccessToken,
-    DateTime AccessTokenExpiryUtc,
-    Guid RefreshToken,
-    DateTime RefreshTokenExpiryUtc,
-    string[] Permissions,
-    string[] Roles
-);
+public static class RouteHelper {
+    public static string AsUserData([StringSyntax("Route")] string route) => "/data-user/{UserId:guid}/" + route.TrimStart('/');
+}

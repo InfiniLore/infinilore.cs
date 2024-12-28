@@ -4,7 +4,6 @@
 using AterraEngine.DependencyInjection;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +38,7 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory) : IU
     public async ValueTask<bool> TryCreateTransactionAsync(CancellationToken ct = default) {
         if (_msSqlTransaction != null) return false;
 
-        _msSqlTransaction = await _msSqlDb.GetValueAsync(ct)
+        _msSqlTransaction = await _msSqlDb.GetValueAsync(ct).AsTask()
             .ContinueWith(continuationFunction: db => db.Result.Database.BeginTransactionAsync(ct), ct)
             .Unwrap();
 

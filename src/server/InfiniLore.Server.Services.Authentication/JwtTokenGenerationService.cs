@@ -57,7 +57,10 @@ public class JwtTokenGenerationService(
                 accessToken,
                 accessTokenExpiryUtc,
                 refreshToken,
-                refreshTokenExpiryUtc);
+                refreshTokenExpiryUtc,
+                permissions,
+                roles
+            );
         }
         catch (Exception ex) {
             logger.Error(ex, "Error generating tokens");
