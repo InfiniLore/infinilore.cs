@@ -11,10 +11,10 @@ namespace InfiniLore.Server.Contracts.Services.Auth.Authentication;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IJwtTokenParsingService {
     JwtSecurityToken? Jwt { get; }
-    bool TryParseJwt([NotNullWhen(true)] out JwtSecurityToken? jwt);
+    bool TryParseJwtFromContext([NotNullWhen(true)] out JwtSecurityToken? jwt);
     bool TryGetPermissions([NotNullWhen(true)] out string[]? roles);
     bool TryGetRoles([NotNullWhen(true)] out string[]? permissions);
     bool TryGetUserId(out Guid userId);
     
-    bool TryGetAsAuthRequestData([NotNullWhen(true)] out AuthRequestData? data);
+    bool TryGetAsAuthRequestData(out AuthRequestData data);
 }

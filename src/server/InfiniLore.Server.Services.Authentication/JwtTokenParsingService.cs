@@ -26,7 +26,7 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
     public JwtSecurityToken? Jwt {
         get {
             if (_gotValidToken) return _jwt;
-            if (!TryParseJwt(out JwtSecurityToken? jwt)) return _jwt;
+            if (!TryParseJwtFromContext(out JwtSecurityToken? jwt)) return _jwt;
 
             _jwt = jwt;
             _gotValidToken = true;
@@ -38,7 +38,7 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public bool TryParseJwt([NotNullWhen(true)] out JwtSecurityToken? jwt) {
+    public bool TryParseJwtFromContext([NotNullWhen(true)] out JwtSecurityToken? jwt) {
         jwt = null;
 
         if (contextAccessor.HttpContext is not {} httpContext) return false;
@@ -57,15 +57,13 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
     public bool TryGetRoles([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("roles", out permissions);
     public bool TryGetUserId(out Guid userId) => TryGetPayloadData(ClaimTypes.NameIdentifier, out userId);
     
-    public bool TryGetAsAuthRequestData([NotNullWhen(true)] out AuthRequestData? data) {
-        data = null;
-        if (Jwt is null) return false;
+    public bool TryGetAsAuthRequestData(out AuthRequestData data) {
+        data = default;
+        if (Jwt is null) return _logger.WarningAsFalse("JWT not found");
 
-        if (!TryGetPermissions(out string[]? permissions)) {
-            return false;
-        }
-        if (!TryGetRoles(out string[]? roles)) return false;
-        if (!TryGetUserId(out Guid userId)) return false;
+        if (!TryGetPermissions(out string[]? permissions)) return _logger.WarningAsFalse("Permissions not found");
+        if (!TryGetRoles(out string[]? roles)) return _logger.WarningAsFalse("Roles not found");
+        if (!TryGetUserId(out Guid userId)) return _logger.WarningAsFalse("User ID not found");
 
         data = new AuthRequestData(
             userId,
