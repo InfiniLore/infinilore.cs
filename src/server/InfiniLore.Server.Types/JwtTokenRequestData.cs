@@ -6,7 +6,7 @@ namespace InfiniLore.Server.Types;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record struct JwtTokenRequestData(
+public record struct AuthRequestData(
     Guid OwnerId,
     string[] Permissions,
     string[] Roles

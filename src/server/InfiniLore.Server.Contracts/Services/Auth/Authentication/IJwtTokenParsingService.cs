@@ -16,5 +16,5 @@ public interface IJwtTokenParsingService {
     bool TryGetRoles([NotNullWhen(true)] out string[]? permissions);
     bool TryGetUserId(out Guid userId);
     
-    bool TryGetAsJwtTokenRequestData([NotNullWhen(true)] out JwtTokenRequestData? data);
+    bool TryGetAsAuthRequestData([NotNullWhen(true)] out AuthRequestData? data);
 }

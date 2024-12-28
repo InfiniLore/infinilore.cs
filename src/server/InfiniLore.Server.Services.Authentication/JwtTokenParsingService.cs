@@ -57,7 +57,7 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
     public bool TryGetRoles([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("roles", out permissions);
     public bool TryGetUserId(out Guid userId) => TryGetPayloadData(ClaimTypes.NameIdentifier, out userId);
     
-    public bool TryGetAsJwtTokenRequestData([NotNullWhen(true)] out JwtTokenRequestData? data) {
+    public bool TryGetAsAuthRequestData([NotNullWhen(true)] out AuthRequestData? data) {
         data = null;
         if (Jwt is null) return false;
 
@@ -67,7 +67,7 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
         if (!TryGetRoles(out string[]? roles)) return false;
         if (!TryGetUserId(out Guid userId)) return false;
 
-        data = new JwtTokenRequestData(
+        data = new AuthRequestData(
             userId,
             permissions,
             roles
