@@ -8,7 +8,7 @@
 
         <!-- Main package name -->
         <PackageId>InfiniLore.Server.Types</PackageId>
-        <Version>0.3.0</Version>
+        <Version>0.4.0</Version>
         <Authors>Anna Sas</Authors>
         <Description>A small library of commonly used types within the InfiniLore Server</Description>
         <PackageProjectUrl>https://github.com/InfiniLore/infinilore.cs</PackageProjectUrl>
