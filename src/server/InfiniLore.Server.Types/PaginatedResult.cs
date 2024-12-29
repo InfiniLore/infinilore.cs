@@ -31,7 +31,7 @@ public record struct PaginatedResult<T>(
     public static PaginatedResult<T> Empty { get; } = new(
         Items: [],
         TotalCount: 0,
-        CurrentPage: -1,
-        TotalPages: -1
+        CurrentPage: 0,
+        TotalPages: 0
     );
 }
