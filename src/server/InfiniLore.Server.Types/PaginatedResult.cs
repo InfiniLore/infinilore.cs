@@ -14,9 +14,24 @@ namespace InfiniLore.Server.Types;
 /// <param name="TotalCount">The total number of items across all pages.</param>
 /// <param name="CurrentPage">The current page number (starting from 1).</param>
 /// <param name="TotalPages">The total number of pages in the result set.</param>
-public record struct PaginatedResult<T> (
+public record struct PaginatedResult<T>(
     T[] Items,
     int TotalCount,
     int CurrentPage,
     int TotalPages
-);
+) {
+    public bool HasNextPage => CurrentPage < TotalPages;
+    public bool HasPreviousPage => CurrentPage > 1;
+    public bool IsFirstPage => CurrentPage == 1;
+    public bool IsLastPage => CurrentPage == TotalPages;
+    
+    public bool IsEmpty => Items.Length == 0 ;
+    public bool IsNotEmpty => Items.Length > 0;
+    
+    public static PaginatedResult<T> Empty { get; } = new(
+        Items: [],
+        TotalCount: 0,
+        CurrentPage: -1,
+        TotalPages: -1
+    );
+}
