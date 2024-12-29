@@ -10,4 +10,14 @@ public record struct AuthRequestData(
     Guid OwnerId,
     string[] Permissions,
     string[] Roles
-);
+) {
+    public bool IsEmpty { get; private init; } = false;
+    
+    public static AuthRequestData Empty { get; } = new(
+        Guid.Empty,
+        [],
+        []
+    ) {
+        IsEmpty = true
+    };
+}
