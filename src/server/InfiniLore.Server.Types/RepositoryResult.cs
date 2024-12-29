@@ -39,3 +39,26 @@ public readonly partial struct RepoResult<T>() : IUnion<Success<T>, Failure<stri
         return AsFailure;
     }
 }
+
+[UnionAliases("Success", "Failure")]
+public readonly partial struct PaginatedRepoResult<T>() : IUnion<Success<PaginatedResult<T>>, Failure<string>> {
+    public bool TryGetSuccessValue([NotNullWhen(true)] out PaginatedResult<T>? value) {
+        if (IsSuccess) {
+            value = AsSuccess.Value;
+            return true;
+        }
+        
+        value = null;
+        return false;
+    }
+
+    public static implicit operator PaginatedRepoResult<T>(string input) => new Failure<string>(input);
+    public static implicit operator PaginatedRepoResult<T>(PaginatedResult<T> value) => new Success<PaginatedResult<T>>(value);
+
+    public static implicit operator bool(PaginatedRepoResult<T> value) => value.IsSuccess;
+
+    public SuccessOrFailure<PaginatedResult<T>> ToSuccessOrFailure() {
+        if (IsSuccess) return AsSuccess;
+        return AsFailure;
+    }
+}
