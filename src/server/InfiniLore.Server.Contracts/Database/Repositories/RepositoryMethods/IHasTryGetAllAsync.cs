@@ -26,7 +26,7 @@ public interface IHasTryGetAllAsync<T> where T : BasicContent {
     /// on completion, returns a <see cref="RepoResult" /> containing an array of the retrieved items
     /// if successful, or an error message if the operation fails.
     /// </returns>
-    ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse, CancellationToken ct = default);
+    ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse = false, CancellationToken ct = default);
 
     /// <summary>
     /// Attempts to asynchronously retrieve all items of type <typeparamref name="T" /> with pagination support.
@@ -40,5 +40,5 @@ public interface IHasTryGetAllAsync<T> where T : BasicContent {
     /// returns a <see cref="PaginatedRepoResult{T}" /> containing the paginated result of items if successful, or
     /// an error message if the operation fails.
     /// </returns>
-    ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse, CancellationToken ct = default);
+    ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse = false, CancellationToken ct = default);
 }

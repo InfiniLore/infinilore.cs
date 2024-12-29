@@ -230,7 +230,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct) {
+    public async virtual ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? result = await dbSet
@@ -242,7 +242,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse, CancellationToken ct) {
+    public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse = false, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
@@ -253,7 +253,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse, CancellationToken ct) {
+    public async virtual ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse = false, CancellationToken ct = default) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
