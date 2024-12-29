@@ -94,28 +94,28 @@ public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(D
 
         // Act
         RepoResult<TModel> result = await Repository.TryAddWithResultAsync(model);
-        bool validValue = result.TryGetSuccessValue(out TModel? outputModel);
+        bool validValue = result.TryGetAsSuccess(out TModel? outputModel);
         
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(validValue).IsTrue();
         await Assert.That(outputModel).IsNotNull();
-        await Assert.That(outputModel!.Id).IsEqualTo(guid);
+        await Assert.That(outputModel.Id).IsEqualTo(guid);
 
         return outputModel;
     }
 
     protected async Task Base_TryAddRange_ShouldReturnSuccess(IEnumerable<TModel> models) {
         // Arrange
-        IEnumerable<TModel> BasicContents = models as TModel[] ?? models.ToArray();
+        IEnumerable<TModel> basicContents = models as TModel[] ?? models.ToArray();
 
         // Act
-        RepoResult result = await Repository.TryAddRangeAsync(BasicContents);
+        RepoResult result = await Repository.TryAddRangeAsync(basicContents);
         
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
-        foreach (TModel model in BasicContents) {
+        foreach (TModel model in basicContents) {
             await AssertModelExists(model);
         }
     }
@@ -160,7 +160,7 @@ public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(D
 
         // Act
         RepoResult<TModel> result = await Repository.TryUpdateWithResultAsync(model);
-        bool hasValue = result.TryGetSuccessValue(out TModel? resultModel);
+        bool hasValue = result.TryGetAsSuccess(out TModel? resultModel);
         
 
         // Assert
@@ -169,7 +169,7 @@ public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(D
         await Assert.That(hasValue).IsTrue();
         await Assert.That(resultModel).IsNotNull();
 
-        return resultModel!;
+        return resultModel;
     }
 
     protected async Task Base_TryUpdateWithResultAsync_ShouldFail(TModel model) {
@@ -223,13 +223,13 @@ public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(D
         // Arrange
 
         // Act
-        IEnumerable<TModel> BasicContents = models as TModel[] ?? models.ToArray();
-        RepoResult result = await Repository.TryAddOrUpdateRangeAsync(BasicContents);
+        IEnumerable<TModel> basicContents = models as TModel[] ?? models.ToArray();
+        RepoResult result = await Repository.TryAddOrUpdateRangeAsync(basicContents);
         
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.IsFailure).IsFalse();
-        foreach (TModel model in BasicContents) {
+        foreach (TModel model in basicContents) {
             await AssertModelExists(model);
         }
     }

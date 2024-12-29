@@ -41,7 +41,7 @@ public class RepoResultTests {
 
         // Act
         RepoResult<object> result = error;
-        bool isSuccess = result.TryGetSuccessValue(out object? value);
+        bool isSuccess = result.TryGetAsSuccess(out object? value);
 
         // Assert
         await Assert.That(isSuccess).IsFalse();
@@ -51,11 +51,11 @@ public class RepoResultTests {
     [Test]
     public async Task RepoResultOfT_ImplicitConversionFromT_Success() {
         // Arrange
-        const string entity = "test";
+        const int entity = 123456789;
 
         // Act
-        RepoResult<string> result = new Success<string>(entity);
-        bool isSuccess = result.TryGetSuccessValue(out string? value);
+        RepoResult<int> result = entity;
+        bool isSuccess = result.TryGetAsSuccess(out int value);
 
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
@@ -66,11 +66,11 @@ public class RepoResultTests {
     [Test]
     public async Task RepoResultOfT_ToSuccessOrFailure_Success() {
         // Arrange
-        const string entity = "test";
-        RepoResult<string> result = new Success<string>(entity);
+        const int entity = 123456789;
+        RepoResult<int> result = entity;
 
         // Act
-        SuccessOrFailure<string> successOrFailure = result.ToSuccessOrFailure();
+        SuccessOrFailure<int> successOrFailure = result.ToSuccessOrFailure();
 
         // Assert
         await Assert.That(successOrFailure.IsSuccess).IsTrue();
@@ -80,7 +80,7 @@ public class RepoResultTests {
     [Test]
     public async Task RepoResultOfT_ToSuccessOrFailure_Failure() {
         // Arrange
-        string error = "Error";
+        const string error = "Error";
         RepoResult<int[]> result = error;
 
         // Act

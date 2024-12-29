@@ -13,7 +13,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.26.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.27.0" />
         <PackageReference Include="FastEndpoints" Version="5.32.0"/>
         <PackageReference Include="FastEndpoints.Attributes" Version="5.32.0"/>
         <PackageReference Include="FastEndpoints.Security" Version="5.32.0"/>

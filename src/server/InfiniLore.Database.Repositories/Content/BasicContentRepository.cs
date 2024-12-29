@@ -238,31 +238,41 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
 
         if (result is null) return "Content not found.";
 
-        return new Success<T>(result);
+        return result;
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct) {
+    public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse, CancellationToken ct) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
+            .ConditionalReverse(reverse)
             .ToArrayAsync(cancellationToken: ct);
 
         return result;
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetAllASync(PaginationInfo pageInfo, CancellationToken ct) {
+    public async virtual ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse, CancellationToken ct) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
+        int totalCount = await dbSet.CountAsync(ct);
+        if (totalCount == 0) return new PaginatedResult<T>([], 0, 0, 0);
+        
         T[] result = await dbSet
+            .ConditionalReverse(reverse)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize)
             .ToArrayAsync(ct);
 
-        return result;
+        return new PaginatedResult<T>(
+            Items: result,
+            TotalCount: totalCount,
+            CurrentPage: pageInfo.PageNumber,
+            TotalPages: (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
+        );
     }
     
     public async virtual ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {

@@ -30,7 +30,7 @@ public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository
         RepoResult<InfiniLorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
         if (getResult.IsFailure) throw new Exception("Failed to get permissions.");
 
-        InfiniLorePermission[] existingPermissions = getResult.AsSuccess.Value;
+        InfiniLorePermission[] existingPermissions = getResult.AsSuccess;
         InfiniLorePermission[] newPermissions = permissions
             .Except(existingPermissions.Select(p => p.Name))
             .Select(name => new InfiniLorePermission { Name = name }).ToArray();
