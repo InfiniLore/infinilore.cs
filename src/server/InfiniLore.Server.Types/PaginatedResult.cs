@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Types;
 /// <param name="TotalCount">The total number of items across all pages.</param>
 /// <param name="CurrentPage">The current page number (starting from 1).</param>
 /// <param name="TotalPages">The total number of pages in the result set.</param>
-public record struct PaginatedResult<T>(
+public record struct PaginatedResult<T> (
     IReadOnlyCollection<T> Items,
     int TotalCount,
     int CurrentPage,
