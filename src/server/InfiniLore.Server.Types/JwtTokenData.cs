@@ -6,6 +6,7 @@ namespace InfiniLore.Server.Types;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public readonly record struct JwtTokenData(
+    Guid OwnerId,
     string AccessToken,
     DateTime AccessTokenExpiryUtc,
     Guid RefreshToken,

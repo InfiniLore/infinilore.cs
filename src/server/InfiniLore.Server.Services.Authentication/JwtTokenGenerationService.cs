@@ -54,6 +54,7 @@ public class JwtTokenGenerationService(
             if (!resultGenerate.TryGetAsSuccessValue(out Guid refreshToken)) return "Refresh token could not be generated";
 
             return new JwtTokenData(
+                user.Id,
                 accessToken,
                 accessTokenExpiryUtc,
                 refreshToken,
