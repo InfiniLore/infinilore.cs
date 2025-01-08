@@ -16,14 +16,11 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 public class GetOneLorescopeHandler(
     ILorescopeRepository lorescopeRepository,
-    ILogger logger,
-    IUserContentAuthorizationService authService
+    ILogger logger
 ) : IRequestHandler<GetOneLorescopeQuery, SuccessOrFailure<LorescopeModel>> {
 
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(GetOneLorescopeQuery request, CancellationToken ct) {
         try {
-            if (!await authService.HttpContextHasAccessRead(request.LorescopeId, ct)) return "Access Denied";
-
             RepoResult<LorescopeModel> result = await lorescopeRepository.TryGetByIdAsync(request.LorescopeId, ct);
             return result.ToSuccessOrFailure();
         }

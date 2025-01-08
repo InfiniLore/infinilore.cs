@@ -43,7 +43,7 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     /// <inheritdoc />
-    public async virtual Task InitializeAsync() {
+    public virtual async Task InitializeAsync() {
         _scope = infrastructure.ServiceProvider.CreateScope();
         UnitOfWork = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         await UnitOfWork.TryCreateTransactionAsync();

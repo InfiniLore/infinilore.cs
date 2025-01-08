@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
+using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Types;
@@ -17,7 +17,6 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
 public class PermissionsRepository(IUnitOfWork unitOfWork) : BasicContentRepository<InfiniLorePermission>(unitOfWork), IPermissionsRepository {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -28,10 +27,50 @@ public class PermissionsRepository(IUnitOfWork unitOfWork) : BasicContentReposit
     }
     
     public async ValueTask<RepoResult<InfiniLorePermission[]>> TryGetByNamesAsync(string[] names, CancellationToken ct = default) {
-        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
-        
-        InfiniLorePermission[] result = await dbContext.Permissions.Where(p => names.Contains(p.Name)).ToArrayAsync(cancellationToken: ct);
-        
+        DbSet<InfiniLorePermission> permissions = await GetDbSetAsync(ct);
+
+        InfiniLorePermission[] result = await permissions
+            .Where(p => names.Contains(p.Name))
+            .ToArrayAsync(cancellationToken: ct);
+
+        return result;
+    }
+
+    public async ValueTask<RepoResult<InfiniLorePermission>> TryGetByNameAsync(string name, CancellationToken ct = default) {
+        DbSet<InfiniLorePermission> permissions = await GetDbSetAsync(ct);
+
+        // Retrieve the permission matching the provided name
+        InfiniLorePermission? permission = await permissions
+            .FirstOrDefaultAsync(predicate: p => p.Name == name, ct);
+
+        // If permission is null, return a failure result
+        if (permission == null) {
+            return $"Permission with name '{name}' not found.";
+        }
+
+        // Return success result with the permission
+        return permission;
+    }
+
+    public async ValueTask<RepoResult<bool>> UserHasPermissionAsync(InfiniLoreUser user, InfiniLorePermission permission, CancellationToken ct = default) {
+        DbSet<InfiniLorePermission> permissions = await GetDbSetAsync(ct);
+
+        // Check if the user exists within the Users collection of the given permission
+        bool hasPermission = await permissions
+            .Where(p => p.Id == permission.Id)
+            .AnyAsync(predicate: p => p.Users.Any(u => u.Id == user.Id), ct);
+
+        // If the user has the permission, return a successful result
+        return hasPermission;
+    }
+
+    public override async ValueTask<RepoResult<InfiniLorePermission[]>> TryGetAllAsync(bool reverse = false, CancellationToken ct = default) {
+        DbSet<InfiniLorePermission> permissions = await GetDbSetAsync(ct);
+
+        InfiniLorePermission[] result = await permissions
+            .ConditionalReverse(reverse)
+            .ToArrayAsync(cancellationToken: ct);
+
         return result;
     }
 }

@@ -5,7 +5,6 @@ using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
-using InfiniLore.Server.Contracts.Services.Auth.Authorization;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;
 using InfiniLore.Server.Types;
 using MediatR;
@@ -16,16 +15,11 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Data.User.Lorescopes
 // ---------------------------------------------------------------------------------------------------------------------
 public class CreateLorescopeHandler(
     ILorescopeRepository lorescopeRepository,
-    IUnitOfWork unitOfWork,
-    IUserContentAuthorizationService authService
+    IUnitOfWork unitOfWork
 ) : IRequestHandler<CreateLorescopeCommand, SuccessOrFailure<LorescopeModel>> {
 
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(CreateLorescopeCommand request, CancellationToken ct) {
         try {
-            if (!await authService.InDevelopmentAsync()) {
-                if (!await authService.ValidateHttpContextIsOwnerAsync(request.Lorescope.OwnerId, ct)) return "Access Denied";
-            }
-
             await unitOfWork.TryCreateTransactionAsync(ct);
 
             // Pre-check if we can use the name

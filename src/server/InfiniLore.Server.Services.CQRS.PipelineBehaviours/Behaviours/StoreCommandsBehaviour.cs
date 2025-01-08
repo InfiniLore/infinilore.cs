@@ -15,7 +15,7 @@ public class StoreCommandsBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) {
         // TODO use a Document-Oriented db like MongoDb to store the command
-        //      We shouldn't wait for the result necessarily, as we can just fire and forget.
+        //      We shouldn't wait for the result necessarily, as we can  just fire and forget.
         
         // Continue as normal
         TResponse response = await next();

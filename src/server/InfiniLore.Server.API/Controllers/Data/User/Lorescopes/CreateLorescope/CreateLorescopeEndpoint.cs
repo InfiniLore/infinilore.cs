@@ -25,7 +25,7 @@ public class CreateLorescopeEndpoint(IMediator mediator, IMediatorOutputService 
         Permissions(ApiPermissions.LorescopeWrite, ApiPermissions.LorescopeManage);// Remember, Permissions works as (a or b), PermissionsALl works as (a and b)
     }
 
-    public async override Task<Results<Ok<LorescopeResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateLorescopeRequest req, CancellationToken ct) {
+    public override async Task<Results<Ok<LorescopeResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateLorescopeRequest req, CancellationToken ct) {
         SuccessOrFailure<LorescopeModel> result = await mediator.Send(
             new CreateLorescopeCommand(Map.ToEntity(req)),
             ct

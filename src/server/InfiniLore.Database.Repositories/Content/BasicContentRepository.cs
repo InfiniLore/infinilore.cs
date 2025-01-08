@@ -24,7 +24,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async virtual ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
@@ -36,7 +36,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
         return new Success();
     }
 
-    public async virtual ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T>> TryAddWithResultAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         if (await dbSet.AnyAsync(UniqueModelPredicate(model), ct)) return "Model already exists";
@@ -104,7 +104,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
         if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// If no ID, always add
         
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
@@ -128,7 +128,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         DbSet<T> dbSet = await GetDbSetAsync(ct);
 
@@ -160,7 +160,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? existing = await dbSet.FindAsync([model.Id], ct);
@@ -171,7 +171,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         IEnumerable<T> content = models as T[] ?? models.ToArray();
@@ -189,7 +189,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         Guid[] ids = models.Select(model => model.Id).ToArray();
@@ -230,7 +230,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T? result = await dbSet
@@ -242,7 +242,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse = false, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T[]>> TryGetAllAsync(bool reverse = false, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
@@ -253,7 +253,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
     }
 
     /// <inheritdoc />
-    public async virtual ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse = false, CancellationToken ct = default) {
+    public virtual async ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, bool reverse = false, CancellationToken ct = default) {
         if (pageInfo.IsNotValid(out Failure<string> pageInfoFailure)) return pageInfoFailure;
 
         DbSet<T> dbSet = await GetDbSetAsync(ct);
@@ -275,7 +275,7 @@ public abstract class BasicContentRepository<T>(IUnitOfWork unitOfWork) : IBasic
         );
     }
     
-    public async virtual ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         int count = await dbSet.CountAsync(ct);

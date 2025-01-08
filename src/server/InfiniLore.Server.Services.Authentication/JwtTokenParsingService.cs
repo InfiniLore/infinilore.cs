@@ -53,23 +53,24 @@ public class JwtTokenParsingService(IHttpContextAccessor contextAccessor, ILogge
         return (Jwt = jwt = _handler.ReadJwtToken(token)) is not null;
     }
 
-    public bool TryGetPermissions([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("permissions", out permissions);
-    public bool TryGetRoles([NotNullWhen(true)] out string[]? permissions) => TryGetPayloadData("roles", out permissions);
-    public bool TryGetUserId(out Guid userId) => TryGetPayloadData(ClaimTypes.NameIdentifier, out userId);
+    public string[] GetPermissions() => TryGetPayloadData("Permissions", out string[]? roles) ? roles : [];
+    public string[] GetRoles() => TryGetPayloadData("roles", out string[]? roles) ? roles : [];
+    public bool TryGetUserId(out Guid userId) {
+        userId = Guid.Empty;
+        return TryGetPayloadData(ClaimTypes.NameIdentifier, out string? temp) && Guid.TryParse(temp, out userId);
+    }
     
     public bool TryGetAsAuthRequestData(out AuthRequestData data) {
         data = default;
         if (Jwt is null) return _logger.WarningAsFalse("JWT not found");
-
-        if (!TryGetPermissions(out string[]? permissions)) return _logger.WarningAsFalse("Permissions not found");
-        if (!TryGetRoles(out string[]? roles)) return _logger.WarningAsFalse("Roles not found");
         if (!TryGetUserId(out Guid userId)) return _logger.WarningAsFalse("User ID not found");
 
         data = new AuthRequestData(
             userId,
-            permissions,
-            roles
+            GetPermissions(),// Roles and Permissions might not be present depending on how it encoded
+            GetRoles()
         );
+
         return true;
     }
 

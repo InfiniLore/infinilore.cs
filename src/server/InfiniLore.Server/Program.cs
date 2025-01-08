@@ -233,7 +233,7 @@ public static class Program {
         await app.RunAsync();
     }
 
-    private async static ValueTask MigrateDatabaseAsync(WebApplication app) {
+    private static async ValueTask MigrateDatabaseAsync(WebApplication app) {
         // Create a localised scope so we can get the DbContextFactory correctly.
         await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();

@@ -25,7 +25,7 @@ public class GetLorescopeEndpoint(IMediator mediator) : Endpoint<GetLorescopeReq
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async override Task<EndpointResult> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
+    public override async Task<EndpointResult> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
         SuccessOrFailure<LorescopeModel> data = await mediator.Send(
             new GetOneLorescopeQuery(
                 req.UserId,
