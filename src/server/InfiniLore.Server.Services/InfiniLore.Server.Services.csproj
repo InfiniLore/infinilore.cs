@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="2.7.1" />
+        <PackageReference Include="AterraEngine.Unions" Version="3.5.0" />
         <PackageReference Include="FastEndpoints" Version="5.33.0" />
 
         <PackageReference Include="AterraEngine.DependencyInjection" Version="1.3.4" />
@@ -15,8 +15,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="InfiniLore.Permissions" Version="1.3.1" />
-        <PackageReference Include="InfiniLore.Permissions.Generators" Version="1.3.1">
+        <PackageReference Include="InfiniLore.Permissions" Version="1.3.2" />
+        <PackageReference Include="InfiniLore.Permissions.Generators" Version="1.3.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
