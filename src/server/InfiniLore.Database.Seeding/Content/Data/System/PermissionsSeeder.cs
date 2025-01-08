@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.DependencyInjection;
+using CodeOfChaos.Types;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
-using InfiniLore.Server.Contracts.Database.Seeding;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Types;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +16,12 @@ namespace InfiniLore.Database.Seeding.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<PermissionsSeeder>(ServiceLifetime.Scoped)]
-public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository) : ISeeder {
+public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository) : Seeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task StartSeedingAsync(CancellationToken ct = default) {
+    public override async Task SeedAsync(CancellationToken ct = new()) {
         // TODO Use appropriate CQRS Handlers for seeding of : Permissions
         
         // If Permissions already exist.

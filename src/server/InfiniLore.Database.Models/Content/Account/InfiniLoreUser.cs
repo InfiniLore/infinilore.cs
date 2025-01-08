@@ -9,6 +9,7 @@ namespace InfiniLore.Database.Models.Content.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+// ReSharper disable CollectionNeverUpdated.Global
 public class InfiniLoreUser : IdentityUser<Guid> {
     public ICollection<LorescopeModel> Lorescopes { get; init; } = [];
     public ICollection<MultiverseModel> Multiverses { get; init; } = [];
@@ -17,10 +18,4 @@ public class InfiniLoreUser : IdentityUser<Guid> {
 
     public ICollection<UserContentAccessModel> ContentAccesses { get; init; } = [];
     public ICollection<InfiniLorePermission> Permissions { get; init; } = [];
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Constructors
-    // -----------------------------------------------------------------------------------------------------------------
-    // public InfiniLoreUser() {}
-    // public InfiniLoreUser(string username) : base(username) {} // Solves an issue with FastEndpoints
 }

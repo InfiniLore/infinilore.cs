@@ -16,8 +16,8 @@ public class LorescopeModel : UserContent {
     public ICollection<MultiverseModel> Multiverses { get; init; } = [];
 
     [NotMapped] [MemberNotNullWhen(true, nameof(SingleMultiverse))] public bool HasOnlyOneMultiverse => Multiverses.Count == 1;
-    [NotMapped] public MultiverseModel? SingleMultiverse
-        => HasOnlyOneMultiverse == false ? null : Multiverses.First();
+    [NotMapped] public MultiverseModel? SingleMultiverse => HasOnlyOneMultiverse == false ? null : Multiverses.First();
+    
     public bool TryGetAsSingleMultiverse([NotNullWhen(true)] out MultiverseModel? value) {
         value = HasOnlyOneMultiverse ? SingleMultiverse : null;
         return HasOnlyOneMultiverse;
