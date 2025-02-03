@@ -11,11 +11,10 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using Tools.AdvancedCSharp.Commands.DownloadRepo;
 using NuGetRepository=NuGet.Protocol.Core.Types.Repository;
 using GitRepository=LibGit2Sharp.Repository;
 
-namespace Tools.InfiniLore.Properties.DownloadRepo;
+namespace Tools.InfiniLore.Commands.DownloadRepo;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -163,7 +162,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
 
             // Checkout the tag
             var commit = tag.Target as Commit;
-            Commands.Checkout(repo, commit);
+            LibGit2Sharp.Commands.Checkout(repo, commit);
 
             Console.WriteLine($"Downloaded {data.Name} - {data.Version}");
         }, ct);

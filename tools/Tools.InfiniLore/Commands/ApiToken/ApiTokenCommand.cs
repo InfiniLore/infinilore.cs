@@ -10,7 +10,7 @@ using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 using TextCopy;
 
-namespace Tools.InfiniLore.Properties.ApiToken;
+namespace Tools.InfiniLore.Commands.ApiToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -71,7 +71,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.InfiniLore.Server.Typ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5A604355-8BDB-4280-AF6A-8D3A8304FEC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore", "src\tools\Tools.InfiniLore\Tools.InfiniLore.csproj", "{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore", "tools\Tools.InfiniLore\Tools.InfiniLore.csproj", "{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

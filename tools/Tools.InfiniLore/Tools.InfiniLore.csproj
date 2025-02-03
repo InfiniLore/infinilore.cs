@@ -24,8 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\client\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj" />
-      <ProjectReference Include="..\..\server\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
+      <ProjectReference Include="..\..\src\client\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj" />
+      <ProjectReference Include="..\..\src\server\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Commands\" />
     </ItemGroup>
 
 </Project>

@@ -4,9 +4,8 @@
 using CodeOfChaos.CliArgsParser;
 using JetBrains.Annotations;
 using System.Diagnostics;
-using Tools.AdvancedCSharp.Commands.KiotaWrapper;
 
-namespace Tools.InfiniLore.Properties.KiotaWrapper;
+namespace Tools.InfiniLore.Commands.KiotaWrapper;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
