@@ -12,8 +12,8 @@ namespace InfiniLore.Database.MsSqlServer.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IUnitOfWork>(ServiceLifetime.Scoped)]
-public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, IServiceProvider provider) : IUnitOfWork{
+[FactoryCreatedService<IUnitOfWorkFactory, IUnitOfWork>(ServiceLifetime.Scoped)]
+public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, IServiceScope serviceScope) : IUnitOfWork{
     private readonly AsyncLazy<MsSqlDbContext> _msSqlDb = new(async ct => await dbContextFactory.CreateDbContextAsync(ct));
     private IDbContextTransaction? _msSqlTransaction;
     private ConcurrentDictionary<Type, IRepository> AttachedRepositories { get; } = [];
@@ -37,11 +37,12 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ISer
 
     public async ValueTask<bool> TryCreateTransactionAsync(CancellationToken ct = default) {
         if (_msSqlTransaction != null) return false;
-
-        _msSqlTransaction = await _msSqlDb.GetValueAsync(ct).AsTask()
-            .ContinueWith(continuationFunction: db => db.Result.Database.BeginTransactionAsync(ct), ct)
-            .Unwrap();
-
+        
+        MsSqlDbContext dbContext = await _msSqlDb.GetValueAsync(ct);
+        if (dbContext.Database.CurrentTransaction != null) return false;
+        
+        _msSqlTransaction = await dbContext.Database.BeginTransactionAsync(ct);
+        
         return true;
     }
 
@@ -81,8 +82,9 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ISer
         if (AttachedRepositories.TryGetValue(typeof(TRepo), out IRepository? cachedRepo) && cachedRepo is TRepo castedCachedRepo) return castedCachedRepo;
         
         // Cache miss so we create a new instance
-        var repo = provider.GetRequiredService<TRepo>();
-        repo.TryAttach(this);
+        var repo = serviceScope.ServiceProvider.GetRequiredService<TRepo>();
+        
+        repo.Attach(this);
         AttachedRepositories.AddOrUpdate(typeof(TRepo), repo);
         return repo;
     }
@@ -97,12 +99,14 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ISer
         if (!AttachedRepositories.IsEmpty) {
             // First detach all references to this unit of work
             foreach ((_, IRepository repo) in AttachedRepositories) {
-                repo.TryDetach(this);
+                repo.Detach(this);
             }
             
             // Then clear our own reference to them
             AttachedRepositories.Clear();
-        } 
+        }
+        
+        serviceScope.Dispose();
 
         GC.SuppressFinalize(this);
     }

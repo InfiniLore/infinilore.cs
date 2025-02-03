@@ -14,13 +14,15 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Data.User.Lorescopes
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class CreateLorescopeHandler(
-    ILorescopeRepository lorescopeRepository,
-    IUnitOfWork unitOfWork
+    IUnitOfWorkFactory unitOfWorkFactory,
+    IMediator mediator  
 ) : IRequestHandler<CreateLorescopeCommand, SuccessOrFailure<LorescopeModel>> {
 
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(CreateLorescopeCommand request, CancellationToken ct) {
         try {
-            await unitOfWork.TryCreateTransactionAsync(ct);
+            await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
+            
+            var lorescopeRepository = unitOfWork.GetRepository<ILorescopeRepository>();
 
             // Pre-check if we can use the name
             // Done to get more human-readable error strings back
@@ -28,22 +30,25 @@ public class CreateLorescopeHandler(
             if (!resultCanUseName) {
                 // await unitOfWork.TryRollbackTransactionAsync(ct); // Don't roll back because we are just retrieving data
                 return resultCanUseName.AsFailure;
-            }
+            } 
 
             // Actually add the lore scope to the db
             RepoResult<LorescopeModel> resultAddition = await lorescopeRepository.TryAddWithResultAsync(request.Lorescope, ct);
-            if (!resultAddition) {
+            if (!resultAddition.TryGetAsSuccess(out LorescopeModel? model)) {
                 await unitOfWork.TryRollbackTransactionAsync(ct);
                 return resultAddition.AsFailure;
             }
 
+            // Everything is good
+            // Because unhappy flow is already checked we can proceed with finalization
             await unitOfWork.TryCommitTransactionAsync(ct);
-
-            // Because we already checked for IsFailure above, we know that the result is a Success
-            return resultAddition.AsSuccess;
+            // await mediator.Publish(new NewLorescopeNotification(model.Id), ct); // TODO create notification handler
+            return model;
         }
         catch {
             return "An unknown error occurred";
         }
     }
 }
+
+// public record NewLorescopeNotification(Guid ModelId);

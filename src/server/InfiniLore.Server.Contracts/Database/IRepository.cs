@@ -6,6 +6,6 @@ namespace InfiniLore.Server.Contracts.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IRepository {
-    bool TryAttach(IUnitOfWork unitOfWork);
-    bool TryDetach(IUnitOfWork unitOfWork);
+    void Attach(IUnitOfWork unitOfWork);
+    void Detach(IUnitOfWork unitOfWork);
 }

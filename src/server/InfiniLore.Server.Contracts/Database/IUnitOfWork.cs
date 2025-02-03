@@ -7,6 +7,7 @@ namespace InfiniLore.Server.Contracts.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+
 /// <summary>
 ///     Implementation of the unit of work pattern specific to InfiniLore database context.
 /// </summary>

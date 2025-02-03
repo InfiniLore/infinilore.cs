@@ -18,16 +18,16 @@ public abstract class Repository<T> : IRepository {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public bool TryAttach(IUnitOfWork unitOfWork) {
-        if (_unitOfWork is not null) return false;
+    public void Attach(IUnitOfWork unitOfWork) {
+        if (_unitOfWork is not null) return;
+
         UnitOfWork = unitOfWork;
-        return true;
     }
 
-    public bool TryDetach(IUnitOfWork unitOfWork) {
-        if (_unitOfWork is null || _unitOfWork == unitOfWork) return false;
+    public void Detach(IUnitOfWork unitOfWork) {
+        if (_unitOfWork is null || _unitOfWork == unitOfWork) return;
+     
         _unitOfWork = null;
-        return true;
     }
     
     protected virtual IQueryable<T> IncludeOnGet(IQueryable<T> query) => query;

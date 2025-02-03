@@ -29,6 +29,21 @@
       "_readme" : "downloads a png to a specific location to then be used by nuget packages as a built in icon",
       "commandName": "Project",
       "commandLineArgs": "nuget-download-icon --origin=\"https://avatars.githubusercontent.com/u/102103683\" --projects=\"%PROJECTS%\""
+    },
+    "Update Kiota Client": {
+      "_readme": "ONLY RUN WHEN THE SERVER IS LIVE! Updates the kiota client to the latest version",
+      "commandName": "Project",
+      "commandLineArgs": "kiota-wrapper --namespace=\"InfiniLore.KiotaApiClient\" --output=\"src/client/InfiniLore.KiotaApiClient/\" --classname=\"InfiniLoreApiClient\" --openapi=\"https://localhost:7059/swagger/v1/swagger.json\" --csproj=\"src/client/InfiniLore.KiotaApiClient/InfiniLore.KiotaApiClient.csproj\""
+    },
+    "download Repos": {
+      "_readme": "Download all externally self built packages",
+      "commandName": "Project",
+      "commandLineArgs": "download-repo --output=\"\" --link"
+    },
+    "Get API Jwt Token": {
+      "_readme": "ONLY RUN WHEN THE SERVER IS LIVE! Retrieves a JWT token for a given user",
+      "commandName": "Project",
+      "commandLineArgs": "api-token --user=\"user1@example.com\" --password=\"DefaultPassword123!\" --copy=\"ApiToken\""
     }
   }
 }

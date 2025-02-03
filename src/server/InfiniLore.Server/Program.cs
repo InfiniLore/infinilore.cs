@@ -13,7 +13,6 @@ using InfiniLore.Database.Seeding.Content.Account;
 using InfiniLore.Database.Seeding.Content.Data.System;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Authentication;
 using InfiniLore.Server.Services.Authorization;
@@ -26,7 +25,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Security.Claims;
 using Testcontainers.MsSql;
-using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -136,7 +134,7 @@ public static class Program {
         builder.Services
             .AddFastEndpoints(options => {
                 options.Assemblies = [
-                    typeof(IAssemblyEntry).Assembly
+                    typeof(IApiAssemblyEntry).Assembly
                 ];
             })
             .SwaggerDocument(options => {
@@ -191,7 +189,6 @@ public static class Program {
         // App
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
-        await MigrateDatabaseAsync(app);
 
         if (app.Environment.IsDevelopment()) {
             app.UseWebAssemblyDebugging();
@@ -229,16 +226,6 @@ public static class Program {
         });
 
         await app.RunAsync();
-    }
-
-    private static async ValueTask MigrateDatabaseAsync(WebApplication app) {
-        // Create a localised scope so we can get the DbContextFactory correctly.
-        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        await using var db = await unitOfWork.GetDbContextAsync<MsSqlDbContext>();
-
-        await db.Database.MigrateAsync();
-        await db.SaveChangesAsync();
     }
 
     private static bool IsApiRequest(RedirectContext<CookieAuthenticationOptions> context) => context is { Request.Path.Value: "/api", Response.StatusCode: 200 };

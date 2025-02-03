@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth.Authorization;
 using InfiniLore.Server.Types;
@@ -15,8 +16,8 @@ namespace InfiniLore.Server.Services.Authorization;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IPermissionValidator>(ServiceLifetime.Singleton)]
-public class PermissionValidator(IPermissionsRepository permissionsRepository, ILogger logger) : IPermissionValidator {
+[InjectableService<IPermissionValidator>(ServiceLifetime.Scoped)]
+public class PermissionValidator(IUnitOfWork unitOfWork, ILogger logger) : IPermissionValidator {
     private readonly ILogger _logger = logger.ForSectionProperty("PERMISSIONS");
 
     // TODO : Cache needs to be cleared / altered when a user's Permissions are updated.
@@ -41,6 +42,7 @@ public class PermissionValidator(IPermissionsRepository permissionsRepository, I
         // Missed the cache, so we need to grab it manually
 
         // Check if the permission actually exists
+        var permissionsRepository = unitOfWork.GetRepository<IPermissionsRepository>();
         RepoResult<InfiniLorePermission> resultExists = await permissionsRepository.TryGetByNameAsync(permission, ct);
         if (resultExists is { IsFailure: true, AsFailure.Value: var existsFailure }) return _logger.WarningAsFalse(existsFailure);
 

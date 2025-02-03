@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Types;
@@ -16,7 +17,7 @@ namespace InfiniLore.Database.Seeding.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<PermissionsSeeder>(ServiceLifetime.Scoped)]
-public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository) : Seeder {
+public class PermissionsSeeder(ILogger logger, IUnitOfWork unitOfWork) : Seeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -26,7 +27,8 @@ public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository
         
         // If Permissions already exist.
         //      We can safely just ignore all of this
-        string[] permissions = ApiPermissions.GetAllPermissions().ToArray();
+        string[] permissions = ApiPermissionsStore.GetAllPermissions().ToArray();
+        var repository = unitOfWork.GetRepository<IPermissionsRepository>();
         RepoResult<InfiniLorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
         if (getResult.IsFailure) throw new Exception("Failed to get permissions.");
 

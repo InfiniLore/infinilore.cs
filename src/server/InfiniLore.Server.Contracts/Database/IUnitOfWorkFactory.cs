@@ -1,15 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Contracts;
+using CodeOfChaos.Extensions.DependencyInjection;
+
+namespace InfiniLore.Server.Contracts.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IJwtConfiguration {
-    public int AccessExpiresInMinutes {get;}
-    public string Audience {get;}
-    public string Issuer {get;}
-    public string Key {get;}
-    public int RefreshExpiresInDays {get;}
+public interface IUnitOfWorkFactory : IFactoryService<IUnitOfWork> {
+    Task<IUnitOfWork> CreateWithTransactionAsync(CancellationToken ct = default);
 }

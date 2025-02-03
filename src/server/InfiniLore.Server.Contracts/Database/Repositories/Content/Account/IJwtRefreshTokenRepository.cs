@@ -12,7 +12,9 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 public interface IJwtRefreshTokenRepository :
     IHasTryAddAsync<JwtRefreshTokenModel>,
     IHasTryRemoveAsync<JwtRefreshTokenModel>,
-    IHasTryPermanentRemoveAllForUserAsync {
+    IHasTryPermanentRemoveAllForUserAsync ,
+    IRepository
+{
     
     ValueTask<RepoResult<JwtRefreshTokenModel>> TryGetByHashedTokenAsync(string hashedToken, CancellationToken ct = default);
 }
