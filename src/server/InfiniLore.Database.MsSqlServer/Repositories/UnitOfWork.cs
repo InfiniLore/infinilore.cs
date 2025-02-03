@@ -31,6 +31,7 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ISer
 
         await _msSqlTransaction.CommitAsync(ct);
         _msSqlTransaction.Dispose();
+        _msSqlTransaction = null;
 
         return true;
     }
@@ -51,6 +52,7 @@ public class UnitOfWork(IDbContextFactory<MsSqlDbContext> dbContextFactory, ISer
 
         await _msSqlTransaction.RollbackAsync(ct);
         _msSqlTransaction.Dispose();
+        _msSqlTransaction = null;
 
         return true;
     }

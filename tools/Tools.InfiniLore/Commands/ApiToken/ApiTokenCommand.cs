@@ -40,14 +40,14 @@ public partial class ApiTokenCommand : ICommand<ApiTokenParameters> {
         var apiClient = new InfiniLoreApiClient(adapter);
 
         // ReSharper disable once SuggestVarOrType_SimpleTypes
-        var body = new InfiniLoreServerAPIControllersAccountJWTCreateJwtCreateTokensRequest {
+        var body = new InfiniLoreServerAPIControllersAccountJwtCreateJwtTokenRequest() {
             Username = parameters.User,
             Password = parameters.Password,
             Roles = [],
             Permissions = ApiPermissionsStore.GetAllPermissions().ToList()
         };
 
-        InfiniLoreServerAPIModelsJwtResponse? data = await apiClient.Api.Account.Jwt.TokensCreate.PostAsync(
+        InfiniLoreServerAPIControllersAccountJwtTokenResponse? data = await apiClient.Api.V1.Account.Jwt.CreateToken.PostAsync(
             body
         );
 
@@ -57,7 +57,7 @@ public partial class ApiTokenCommand : ICommand<ApiTokenParameters> {
         Console.WriteLine();
 
         Console.WriteLine($"'{parameters.User}' has userId :");
-        // Console.WriteLine(data.OwnerId);
+        Console.WriteLine(data.OwnerId);
         Console.WriteLine();
 
         Console.WriteLine($"'{parameters.User}' has refresh token :");

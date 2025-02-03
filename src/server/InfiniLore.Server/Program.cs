@@ -52,7 +52,7 @@ public static class Program {
             .Build();
 
         await container.StartAsync();
-        // Console.WriteLine($"Database connection string {container.GetConnectionString()}");
+        Console.WriteLine($"Database connection string: {container.GetConnectionString()}");
 
         ILoggerFactory databaseLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("EFCORE mssqldb");
         builder.Services.AddDbContextFactory<MsSqlDbContext>(options =>

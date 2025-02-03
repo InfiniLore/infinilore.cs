@@ -45,8 +45,8 @@ public class CreateLorescopeHandler(
             // await mediator.Publish(new NewLorescopeNotification(model.Id), ct); // TODO create notification handler
             return model;
         }
-        catch {
-            return "An unknown error occurred";
+        catch (Exception ex) {
+            return ex.Message;
         }
     }
 }

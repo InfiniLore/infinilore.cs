@@ -9,7 +9,7 @@ namespace InfiniLore.KiotaApiClient.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class InfiniLoreServerAPIModelsJwtResponse : IParsable
+    public partial class InfiniLoreServerAPIControllersAccountJwtTokenResponse : IParsable
     #pragma warning restore CS1591
     {
         /// <summary>The accessToken property</summary>
@@ -22,6 +22,22 @@ namespace InfiniLore.KiotaApiClient.Models
 #endif
         /// <summary>The accessTokenExpiryUtc property</summary>
         public DateTimeOffset? AccessTokenExpiryUtc { get; set; }
+        /// <summary>The ownerId property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? OwnerId { get; set; }
+#nullable restore
+#else
+        public string OwnerId { get; set; }
+#endif
+        /// <summary>The permissions property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<string>? Permissions { get; set; }
+#nullable restore
+#else
+        public List<string> Permissions { get; set; }
+#endif
         /// <summary>The refreshToken property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -32,15 +48,23 @@ namespace InfiniLore.KiotaApiClient.Models
 #endif
         /// <summary>The refreshTokenExpiryUtc property</summary>
         public DateTimeOffset? RefreshTokenExpiryUtc { get; set; }
+        /// <summary>The roles property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public List<string>? Roles { get; set; }
+#nullable restore
+#else
+        public List<string> Roles { get; set; }
+#endif
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsJwtResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIControllersAccountJwtTokenResponse"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsJwtResponse CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIControllersAccountJwtTokenResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIModelsJwtResponse();
+            return new global::InfiniLore.KiotaApiClient.Models.InfiniLoreServerAPIControllersAccountJwtTokenResponse();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -52,8 +76,11 @@ namespace InfiniLore.KiotaApiClient.Models
             {
                 { "accessToken", n => { AccessToken = n.GetStringValue(); } },
                 { "accessTokenExpiryUtc", n => { AccessTokenExpiryUtc = n.GetDateTimeOffsetValue(); } },
+                { "ownerId", n => { OwnerId = n.GetStringValue(); } },
+                { "permissions", n => { Permissions = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
                 { "refreshToken", n => { RefreshToken = n.GetStringValue(); } },
                 { "refreshTokenExpiryUtc", n => { RefreshTokenExpiryUtc = n.GetDateTimeOffsetValue(); } },
+                { "roles", n => { Roles = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
             };
         }
         /// <summary>
@@ -65,8 +92,11 @@ namespace InfiniLore.KiotaApiClient.Models
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("accessToken", AccessToken);
             writer.WriteDateTimeOffsetValue("accessTokenExpiryUtc", AccessTokenExpiryUtc);
+            writer.WriteStringValue("ownerId", OwnerId);
+            writer.WriteCollectionOfPrimitiveValues<string>("permissions", Permissions);
             writer.WriteStringValue("refreshToken", RefreshToken);
             writer.WriteDateTimeOffsetValue("refreshTokenExpiryUtc", RefreshTokenExpiryUtc);
+            writer.WriteCollectionOfPrimitiveValues<string>("roles", Roles);
         }
     }
 }

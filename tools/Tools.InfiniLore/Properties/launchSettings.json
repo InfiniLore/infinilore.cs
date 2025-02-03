@@ -43,7 +43,7 @@
     "Get API Jwt Token": {
       "_readme": "ONLY RUN WHEN THE SERVER IS LIVE! Retrieves a JWT token for a given user",
       "commandName": "Project",
-      "commandLineArgs": "api-token --user=\"user1@example.com\" --password=\"DefaultPassword123!\" --copy=\"ApiToken\""
+      "commandLineArgs": "api-token --user=\"testuser\" --password=\"Test@1234\" --copy=\"ApiToken\""
     }
   }
 }
