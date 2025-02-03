@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +10,12 @@ namespace InfiniLore.Database.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BasicContentRepository<T>(unitOfWork), IUserContentRepository<T> where T : UserContent {
+public abstract class UserContentRepository<T> : BasicContentRepository<T>, IUserContentRepository<T> where T : UserContent {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
@@ -26,7 +25,7 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BasicCo
         return result;
     }
 
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
         T[] result = await dbSet
@@ -38,10 +37,9 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BasicCo
         return result;
     }
 
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
         
-
         T[] result = await dbSet
             .Where(
                 model => model.OwnerId == ownerId
@@ -52,9 +50,8 @@ public abstract class UserContentRepository<T>(IUnitOfWork unitOfWork) : BasicCo
         return result;
     }
 
-    public async virtual ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, PaginationInfo pageInfo, CancellationToken ct = default) {
+    public virtual async ValueTask<RepoResult<T[]>> TryGetByUserWithUserAccessAsync(Guid ownerId, Guid accessorId, AccessKind level, PaginationInfo pageInfo, CancellationToken ct = default) {
         DbSet<T> dbSet = await GetDbSetAsync(ct);
-        
 
         T[] result = await dbSet
             .Where(

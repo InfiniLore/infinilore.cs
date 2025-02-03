@@ -1,11 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Contracts.Database;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
+
+namespace InfiniLore.Database.MsSqlServer.Configurations;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IRepository {
-    bool TryAttach(IUnitOfWork unitOfWork);
-    bool TryDetach(IUnitOfWork unitOfWork);
+public static class ConverterHelpers {
+    public static readonly ValueConverter<ICollection<Guid>, string> GuidCollectionConverter =  new(
+        v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+        v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions?)null) ?? new List<Guid>()
+    );
 }

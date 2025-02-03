@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Database.Repositories;
 using InfiniLore.Server.Contracts.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +42,6 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
         // Register the services which access and manipulate the database.
         services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();
-        services.RegisterServicesFromInfiniLoreDatabaseRepositories();
 
         ServiceProvider = services.BuildServiceProvider().CreateScope().ServiceProvider;
     }

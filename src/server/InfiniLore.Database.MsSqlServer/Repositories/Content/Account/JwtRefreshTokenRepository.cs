@@ -1,11 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +16,10 @@ namespace InfiniLore.Database.Repositories.Content.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtRefreshTokenRepository>(ServiceLifetime.Scoped)]
-public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshTokenRepository {
+public class JwtRefreshTokenRepository : Repository<JwtRefreshTokenModel>, IJwtRefreshTokenRepository {
 
     public async ValueTask<RepoResult<JwtRefreshTokenModel>> TryGetByHashedTokenAsync(string hashedToken, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         JwtRefreshTokenModel? tokenData = await dbContext.JwtRefreshTokens
             .Include(t => t.Owner)
@@ -34,7 +33,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult> TryAddAsync(JwtRefreshTokenModel model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         if (await dbContext.JwtRefreshTokens.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
 
         await dbContext.JwtRefreshTokens.AddAsync(model, ct);
@@ -42,7 +41,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult<JwtRefreshTokenModel>> TryAddWithResultAsync(JwtRefreshTokenModel model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         if (await dbContext.JwtRefreshTokens.AnyAsync(predicate: m => m.Id == model.Id, ct)) return "Model already exists";
 
         EntityEntry<JwtRefreshTokenModel> result = await dbContext.JwtRefreshTokens.AddAsync(model, ct);
@@ -50,7 +49,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<JwtRefreshTokenModel> models, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         if (await dbContext.JwtRefreshTokens.AnyAsync(predicate: m => models.Any(m2 => m2.Id == m.Id), ct)) return "One or more Models already exist";
 
         await dbContext.JwtRefreshTokens.AddRangeAsync(models, ct);
@@ -58,7 +57,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult> TryPermanentRemoveAllForUserAsync(Guid userId, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         int recordsAffected = await dbContext.JwtRefreshTokens
             .Where(m => m.OwnerId == userId)
@@ -70,7 +69,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult> TryRemoveAsync(JwtRefreshTokenModel model, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         JwtRefreshTokenModel? existing = await dbContext.JwtRefreshTokens.FindAsync([model.Id], ct);
         if (existing == null) return "Model does not exist";
 
@@ -79,7 +78,7 @@ public class JwtRefreshTokenRepository(IUnitOfWork unitOfWork) : IJwtRefreshToke
     }
 
     public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<JwtRefreshTokenModel> models, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
         HashSet<Guid> ids = models.Select(model => model.Id).ToHashSet();
 
         int recordsAffected = await dbContext.JwtRefreshTokens

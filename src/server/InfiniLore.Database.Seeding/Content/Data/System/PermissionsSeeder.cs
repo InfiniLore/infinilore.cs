@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;

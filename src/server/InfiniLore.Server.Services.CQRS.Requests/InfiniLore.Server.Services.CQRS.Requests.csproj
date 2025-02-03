@@ -9,7 +9,7 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="AterraEngine.Unions" Version="3.5.0" />
+        <PackageReference Include="AterraEngine.Unions" Version="3.8.0" />
         <PackageReference Include="MediatR.Contracts" Version="2.0.1"/>
     </ItemGroup>
 

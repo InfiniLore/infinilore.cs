@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
 using FastEndpoints;
 using InfiniLore.Server.Contracts.Services;

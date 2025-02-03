@@ -11,17 +11,32 @@ namespace InfiniLore.Database.MsSqlServer.Configurations.Content.Account;
 public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUser> {
 
     public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
+        #region LoreScopes
         builder.HasMany(user => user.Lorescopes)
             .WithOne(scope => scope.Owner)
             .HasForeignKey(x => x.OwnerId);
 
+        builder.Property(u => u.LorescopeIds)
+            .HasConversion(ConverterHelpers.GuidCollectionConverter);
+        #endregion
+        
+        #region Multiverses
         builder.HasMany(user => user.Multiverses)
             .WithOne(multiverse => multiverse.Owner)
             .HasForeignKey(x => x.OwnerId);
+        
+        builder.Property(u => u.MultiverseIds)
+            .HasConversion(ConverterHelpers.GuidCollectionConverter);
+        #endregion
 
+        #region Universes
         builder.HasMany(user => user.Universes)
             .WithOne(universe => universe.Owner)
             .HasForeignKey(x => x.OwnerId);
+        
+        builder.Property(u => u.UniverseIds)
+            .HasConversion(ConverterHelpers.GuidCollectionConverter);
+        #endregion
 
         builder.HasMany(user => user.JwtRefreshTokens)
             .WithOne(token => token.Owner)

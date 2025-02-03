@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
@@ -15,11 +15,9 @@ namespace InfiniLore.Database.Repositories.Content.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IUserRepository>(ServiceLifetime.Scoped)]
-public class UserRepository(
-    IUnitOfWork unitOfWork
-) : IUserRepository, IRepository {
+public class UserRepository : Repository<InfiniLoreUser>, IUserRepository {
     public async ValueTask<RepoResult> UserHasAllRolesAsync(Guid userId, IEnumerable<string> roles, CancellationToken ct = default) {
-        var dbContext = await unitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         // If the user hasn't been found yet, we need to actually grab it
         InfiniLoreUser? user = await dbContext.Users

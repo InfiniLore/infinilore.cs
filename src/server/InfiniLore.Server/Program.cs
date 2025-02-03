@@ -184,7 +184,6 @@ public static class Program {
         });
         #endregion
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseRepositories();
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthorization();
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthentication();
         builder.Services.RegisterServicesFromInfiniLoreServerServices();

@@ -1,10 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,7 @@ namespace InfiniLore.Database.Repositories.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IPermissionsRepository>(ServiceLifetime.Scoped)]
-public class PermissionsRepository(IUnitOfWork unitOfWork) : BasicContentRepository<InfiniLorePermission>(unitOfWork), IPermissionsRepository {
+public class PermissionsRepository : BasicContentRepository<InfiniLorePermission>, IPermissionsRepository {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

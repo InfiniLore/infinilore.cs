@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
 using InfiniLore.Database.Models.Content.Data.User;
 using InfiniLore.Database.MsSqlServer;
@@ -16,14 +16,18 @@ namespace InfiniLore.Database.Repositories.Content.Data.User;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILorescopeRepository>(ServiceLifetime.Scoped)]
-public class LorescopeRepository(IUnitOfWork unitOfWork) : UserContentRepository<LorescopeModel>(unitOfWork), ILorescopeRepository {
-    private readonly IUnitOfWork _unitOfWork1 = unitOfWork;
+public class LorescopeRepository : UserContentRepository<LorescopeModel>, ILorescopeRepository {
+    protected override IQueryable<LorescopeModel> IncludeOnGet(IQueryable<LorescopeModel> query) => query
+        .Include(model => model.Multiverses)
+            .ThenInclude(multiverse => multiverse.Universes)
+        .Include(model => model.Owner)    
+    ;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoResult> IsValidNewNameAsync(Guid userId, string name, CancellationToken ct = default) {
-        var dbContext = await _unitOfWork1.GetDbContextAsync<MsSqlDbContext>(ct);
+        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>(ct);
 
         LorescopeModel? existing = await dbContext.Lorescopes
             .AsNoTracking()

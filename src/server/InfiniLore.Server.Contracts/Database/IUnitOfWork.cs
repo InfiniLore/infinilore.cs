@@ -81,4 +81,6 @@ public interface IUnitOfWork : IAsyncDisposable {
     /// A task representing the asynchronous operation. The task result contains the specified <see cref="DbContext"/> instance.
     /// </returns>
     ValueTask<T> GetDbContextAsync<T>(CancellationToken ct = default) where T : DbContext;
+
+    TRepo GetRepository<TRepo>() where TRepo : class, IRepository;
 }

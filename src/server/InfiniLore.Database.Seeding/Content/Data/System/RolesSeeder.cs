@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

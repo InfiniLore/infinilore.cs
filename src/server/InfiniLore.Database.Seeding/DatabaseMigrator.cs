@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
