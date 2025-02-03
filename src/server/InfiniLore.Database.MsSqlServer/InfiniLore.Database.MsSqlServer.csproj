@@ -18,7 +18,7 @@
         <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
-        <PackageReference Include="Serilog" Version="4.2.1-dev-02337" />
+        <PackageReference Include="Serilog" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>
