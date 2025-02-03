@@ -150,7 +150,7 @@ public static class Program {
 
         #region MediatR
         builder.Services.AddMediatR(cfg => {
-            cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.IAssemblyEntry>();
+            cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.ICqrsHandlersAssemblyEntry>();
             cfg.AddInfinilorePipelineBehaviours();
         });
         #endregion

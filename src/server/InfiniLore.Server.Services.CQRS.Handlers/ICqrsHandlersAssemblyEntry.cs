@@ -5,4 +5,4 @@ namespace InfiniLore.Server.Services.CQRS.Handlers;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAssemblyEntry;
+public interface ICqrsHandlersAssemblyEntry;
