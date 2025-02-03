@@ -12,9 +12,11 @@ namespace InfiniLore.Database.MsSqlServer.Configurations;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ConverterHelpers {
     public static readonly ValueConverter<ICollection<Guid>, string> GuidCollectionConverter =  new(
-        v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-        v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions?)null) ?? new List<Guid>()
-    );
+        valueToExport => JsonSerializer.Serialize(valueToExport, (JsonSerializerOptions?)null),
+        valueToImport => valueToImport.IsNotNullOrWhiteSpace()
+            ? JsonSerializer.Deserialize<List<Guid>>(valueToImport, (JsonSerializerOptions?)null) ?? new List<Guid>()
+            :  new List<Guid>()
+        );
     
     public static readonly ValueComparer<ICollection<Guid>> GuidCollectionComparer = new(
         (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
