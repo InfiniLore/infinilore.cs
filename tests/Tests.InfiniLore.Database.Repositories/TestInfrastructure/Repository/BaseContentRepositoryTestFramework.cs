@@ -13,10 +13,11 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BasicContentRepositoryTestFramework<TRepository, TModel>(DatabaseInfrastructure infrastructure)
-    : RepositoryTestFramework<TRepository>(infrastructure)
-    where TRepository : class, IRepository, IBasicContentRepository<TModel>
-    where TModel : BasicContent {
+public abstract class BasicContentRepositoryTestFramework<TRepository, TRepositoryInterface, TModel>(DatabaseInfrastructure infrastructure)
+    : RepositoryTestFramework<TRepository, TRepositoryInterface>(infrastructure)
+    where TRepository : class, TRepositoryInterface, IRepository, IBasicContentRepository<TModel>
+    where TModel : BasicContent
+    where TRepositoryInterface : class, IRepository {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

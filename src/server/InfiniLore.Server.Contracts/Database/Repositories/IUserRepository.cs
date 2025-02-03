@@ -11,6 +11,6 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 ///     Provides an interface for accessing user data from the database.
 ///     Under the hood this interface should be implemented with UserManager to actually handle most of its methods.
 /// </summary>
-public interface IUserRepository {
+public interface IUserRepository : IRepository {
     ValueTask<RepoResult> UserHasAllRolesAsync(Guid userId, IEnumerable<string> roles, CancellationToken ct = default);
 }

@@ -6,7 +6,7 @@ using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Database.Repositories.Content.Data.System;
+namespace InfiniLore.Database.MsSqlServer.Repositories.Content.Data.System;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

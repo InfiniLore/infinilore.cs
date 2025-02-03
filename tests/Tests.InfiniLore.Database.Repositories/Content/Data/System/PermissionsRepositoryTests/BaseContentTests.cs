@@ -2,8 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Data.System;
+using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Database.Repositories.Content.Data.System;
+using InfiniLore.Database.MsSqlServer.Repositories.Content.Data.System;
 using JetBrains.Annotations;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
@@ -16,7 +17,7 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Data.System.Permissions
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
 // ReSharper disable once InconsistentNaming
-public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure) : BasicContentRepositoryTestFramework<PermissionsRepository, InfiniLorePermission>(infrastructure) {
+public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure) : BasicContentRepositoryTestFramework<PermissionsRepository, IPermissionsRepository, InfiniLorePermission>(infrastructure) {
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------

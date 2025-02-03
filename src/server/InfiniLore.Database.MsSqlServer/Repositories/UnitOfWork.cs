@@ -2,14 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 
-namespace InfiniLore.Database.Repositories;
+namespace InfiniLore.Database.MsSqlServer.Repositories;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

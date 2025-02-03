@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using InfiniLore.Database.Models;
-using InfiniLore.Database.MsSqlServer;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Types;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
-namespace InfiniLore.Database.Repositories.Content;
+namespace InfiniLore.Database.MsSqlServer.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

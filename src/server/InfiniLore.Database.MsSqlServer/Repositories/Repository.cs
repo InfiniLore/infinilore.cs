@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Database;
 
-namespace InfiniLore.Database.Repositories;
+namespace InfiniLore.Database.MsSqlServer.Repositories;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

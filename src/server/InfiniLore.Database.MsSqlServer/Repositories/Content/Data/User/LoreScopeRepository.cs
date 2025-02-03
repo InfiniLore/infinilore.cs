@@ -1,17 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Types;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Database.Repositories.Content.Data.User;
+namespace InfiniLore.Database.MsSqlServer.Repositories.Content.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -17,8 +17,9 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
 /// <typeparam name="TRepository">
 ///     The type of the repository being tested, which must implement the <see cref="IRepository" /> interface.
 /// </typeparam>
-public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructure infrastructure) : IAsyncInitializer
-    where TRepository : class, IRepository {
+/// <typeparam name="TRepositoryInterface"></typeparam>
+public abstract class RepositoryTestFramework<TRepository, TRepositoryInterface>(DatabaseInfrastructure infrastructure) : IAsyncInitializer
+    where TRepository : TRepositoryInterface, IRepository where TRepositoryInterface : class, IRepository {
 
     private readonly Guid _transactionId = Guid.NewGuid();
 
@@ -37,7 +38,7 @@ public abstract class RepositoryTestFramework<TRepository>(DatabaseInfrastructur
     /// <summary>
     ///     Represents the generic repository instance used for performing database operations in test cases.
     /// </summary>
-    protected TRepository Repository => ActivatorUtilities.CreateInstance<TRepository>(_scope.ServiceProvider);
+    protected TRepository Repository => (TRepository)UnitOfWork.GetRepository<TRepositoryInterface>();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

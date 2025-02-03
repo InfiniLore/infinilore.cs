@@ -6,11 +6,10 @@ using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.Models.Content.Data.System;
 using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Types;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 
-namespace InfiniLore.Database.Repositories.Content.Data.System;
+namespace InfiniLore.Database.MsSqlServer.Repositories.Content.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

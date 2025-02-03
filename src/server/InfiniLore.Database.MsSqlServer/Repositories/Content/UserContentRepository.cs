@@ -4,9 +4,8 @@
 using InfiniLore.Database.Models;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Types;
-using Microsoft.EntityFrameworkCore;
 
-namespace InfiniLore.Database.Repositories.Content;
+namespace InfiniLore.Database.MsSqlServer.Repositories.Content;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

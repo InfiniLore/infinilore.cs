@@ -8,7 +8,6 @@ using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using InfiniLore.Database.Models.Content.Account;
 using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Database.Repositories;
 using InfiniLore.Database.Seeding;
 using InfiniLore.Database.Seeding.Content.Account;
 using InfiniLore.Database.Seeding.Content.Data.System;
