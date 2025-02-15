@@ -11,7 +11,7 @@ namespace InfiniLore.Server.Types;
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
 public readonly partial struct RepoResult() : IUnion<Success, Failure<string>> {
     public static implicit operator RepoResult(string input) => new Failure<string>(input);
-    public static implicit operator RepoResult(bool value) => value ? new Success() : new Failure<string>();
+    public static implicit operator RepoResult(bool value) => value ? Success.Empty : Failure<string>.Empty;
 
     public static implicit operator bool(RepoResult value) => value.IsSuccess;
 }
