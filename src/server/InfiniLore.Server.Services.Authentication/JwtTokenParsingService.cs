@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Contracts.Services.Auth.Authentication;
+using InfiniLore.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

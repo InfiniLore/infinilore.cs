@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tailwind", "tailwind", "{C5
 		tailwind.config.js = tailwind.config.js
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Database.MsSqlServer", "src\server\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj", "{4A645185-2DF9-48C7-B90A-486630EDBFFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Database", "src\server\InfiniLore.Database\InfiniLore.Database.csproj", "{4A645185-2DF9-48C7-B90A-486630EDBFFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.API", "src\server\InfiniLore.Server.API\InfiniLore.Server.API.csproj", "{EFD0DD77-625A-4B93-90CC-46DADE1AC991}"
 EndProject
@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KiotaClient", "KiotaClient"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.KiotaApiClient", "src\client\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Contracts", "src\server\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj", "{B9B99A14-A2BC-43EF-ADAB-BC027D1A8D9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Contracts", "src\server\InfiniLore.Contracts\InfiniLore.Contracts.csproj", "{B9B99A14-A2BC-43EF-ADAB-BC027D1A8D9A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{293C9679-45D9-4945-929D-97DF9720B429}"
 EndProject

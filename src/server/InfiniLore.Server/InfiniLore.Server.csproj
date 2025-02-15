@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.SwaggerUI.Themes" Version="2.0.0"/>
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.18.1" />
         <PackageReference Include="FastEndpoints" Version="5.34.0" />
         <PackageReference Include="FastEndpoints.Attributes" Version="5.34.0" />
         <PackageReference Include="FastEndpoints.Security" Version="5.34.0" />
@@ -30,7 +31,7 @@
         <ProjectReference Include="..\..\client\InfiniLore.WasmClient\InfiniLore.WasmClient.csproj"/>
         <ProjectReference Include="..\InfiniLore.Database.Seeding\InfiniLore.Database.Seeding.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.API\InfiniLore.Server.API.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Database\InfiniLore.Database.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.Authentication\InfiniLore.Server.Services.Authentication.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.Authorization\InfiniLore.Server.Services.Authorization.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.CQRS.Handlers\InfiniLore.Server.Services.CQRS.Handlers.csproj"/>

@@ -10,10 +10,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.18.1" />
         <PackageReference Include="coverlet.collector" Version="6.0.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
         <PackageReference Include="Testcontainers" Version="4.2.0" />
         <PackageReference Include="Testcontainers.MsSql" Version="4.2.0" />
         <PackageReference Include="Bogus" Version="35.6.1"/>
@@ -22,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\server\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj"/>
+        <ProjectReference Include="..\..\src\server\InfiniLore.Database\InfiniLore.Database.csproj" />
     </ItemGroup>
 
     <ItemGroup>

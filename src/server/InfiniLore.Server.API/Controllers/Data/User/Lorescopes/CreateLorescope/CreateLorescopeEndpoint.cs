@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Contracts.Services;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;
 using MediatR;

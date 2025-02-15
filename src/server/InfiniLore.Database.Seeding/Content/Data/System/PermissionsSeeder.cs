@@ -3,9 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
+using InfiniLore.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Types;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +27,7 @@ public class PermissionsSeeder(ILogger logger, IUnitOfWorkFactory unitOfWorkFact
 
     public override async Task<bool> ShouldSeedAsync(CancellationToken ct = default) {
         string[] permissions = ApiPermissionsStore.GetAllPermissions().ToArray();
-        var repository = UnitOfWork.Value.GetRepository<IPermissionsRepository>();
+        var repository = await UnitOfWork.Value.GetRepositoryAsync<IPermissionsRepository>(ct);
         RepoResult<InfiniLorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
         if (getResult.IsFailure) return true;
 
@@ -50,7 +50,7 @@ public class PermissionsSeeder(ILogger logger, IUnitOfWorkFactory unitOfWorkFact
             return;
         }
         
-        var repository = UnitOfWork.Value.GetRepository<IPermissionsRepository>();
+        var repository = await UnitOfWork.Value.GetRepositoryAsync<IPermissionsRepository>(ct);
 
         RepoResult result = await repository.TryAddRangeAsync(CachedPermissions, ct);
         if (result.IsFailure) throw new Exception("Failed to seed permissions.");

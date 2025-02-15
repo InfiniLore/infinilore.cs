@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
+using InfiniLore.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Services.CQRS.Requests.Queries;
 using InfiniLore.Server.Types;
 using MediatR;
@@ -22,7 +22,7 @@ public class GetOneLorescopeHandler(
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(GetOneLorescopeQuery request, CancellationToken ct) {
         try {
             await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
-            var lorescopeRepository = unitOfWork.GetRepository<ILorescopeRepository>();
+            var lorescopeRepository = await unitOfWork.GetRepositoryAsync<ILorescopeRepository>(ct);
             
             RepoResult<LorescopeModel> result = await lorescopeRepository.TryGetByIdAsync(request.LorescopeId, ct);
             return result.ToSuccessOrFailure();

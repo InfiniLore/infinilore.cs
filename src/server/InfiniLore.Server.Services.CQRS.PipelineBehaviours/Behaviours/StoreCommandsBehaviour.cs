@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Services.CQRS;
+using InfiniLore.Contracts.Services.CQRS;
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.PipelineBehaviours.Behaviours;

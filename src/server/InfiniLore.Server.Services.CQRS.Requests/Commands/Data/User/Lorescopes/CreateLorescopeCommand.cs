@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Services.CQRS;
+using InfiniLore.Contracts.Services.CQRS;
 
 // ReSharper disable once CheckNamespace
 namespace InfiniLore.Server.Services.CQRS.Requests.Commands;

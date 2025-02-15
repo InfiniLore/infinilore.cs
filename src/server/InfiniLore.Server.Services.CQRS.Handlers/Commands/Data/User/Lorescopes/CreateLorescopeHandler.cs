@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
+using InfiniLore.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;
 using InfiniLore.Server.Types;
 using MediatR;
@@ -22,7 +22,7 @@ public class CreateLorescopeHandler(
         try {
             await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
             
-            var lorescopeRepository = unitOfWork.GetRepository<ILorescopeRepository>();
+            var lorescopeRepository = await unitOfWork.GetRepositoryAsync<ILorescopeRepository>();
 
             // Pre-check if we can use the name
             // Done to get more human-readable error strings back

@@ -25,7 +25,7 @@ public static class Program {
         //      Code is the true saviour
         string projects = string.Join(";", 
             "InfiniLore.Server.Types",
-            "InfiniLore.Server.Contracts"
+            "InfiniLore.Contracts"
         );
         string oneLineArgs = InputHelper.ToOneLine(args).Replace("%PROJECTS%", projects);
         

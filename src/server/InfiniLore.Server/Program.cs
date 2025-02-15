@@ -3,11 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AspNetCore.Swagger.Themes;
 using CodeOfChaos.Extensions.AspNetCore;
+using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Database;
 using InfiniLore.Database.Seeding;
 using InfiniLore.Database.Seeding.Content.Account;
 using InfiniLore.Database.Seeding.Content.Data.System;
@@ -55,7 +56,7 @@ public static class Program {
         Console.WriteLine($"Database connection string: {container.GetConnectionString()}");
 
         ILoggerFactory databaseLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("EFCORE mssqldb");
-        builder.Services.AddDbContextFactory<MsSqlDbContext>(options =>
+        builder.Services.AddDbContextFactory<ContentDbContext>(options =>
                 options.UseSqlServer(container.GetConnectionString())
                     .UseLoggerFactory(databaseLoggerFactory)
             // .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
@@ -65,11 +66,12 @@ public static class Program {
                 options.SignIn.RequireConfirmedAccount = false;
             })
             .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<MsSqlDbContext>()
+            .AddEntityFrameworkStores<ContentDbContext>()
             .AddSignInManager()
             .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
+        builder.Services.AddUnitOfWork<ContentDbContext>();
+        builder.Services.RegisterServicesFromInfiniLoreDatabase();// Registers the IUnitOfWorkDb<T>
         #endregion
 
         #region Authentication

@@ -12,7 +12,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj" />
+      <ProjectReference Include="..\InfiniLore.Database\InfiniLore.Database.csproj" />
     </ItemGroup>
 
 </Project>

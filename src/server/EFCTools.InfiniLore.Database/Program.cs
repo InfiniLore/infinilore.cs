@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 // ---------------------------------------------------------------------------------------------------------------------
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContextFactory<MsSqlDbContext>(options =>
+builder.Services.AddDbContextFactory<ContentDbContext>(options =>
         options.UseSqlServer()
 );
 
@@ -18,7 +18,7 @@ builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
         options.SignIn.RequireConfirmedAccount = false;
     })
     .AddRoles<IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<MsSqlDbContext>()
+    .AddEntityFrameworkStores<ContentDbContext>()
     .AddSignInManager()
     .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 

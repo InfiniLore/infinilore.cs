@@ -3,12 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
+using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints.Security;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts;
-using InfiniLore.Server.Contracts.Database;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
-using InfiniLore.Server.Contracts.Services.Auth.Authentication;
+using InfiniLore.Contracts;
+using InfiniLore.Contracts.Database.Repositories.Content.Account;
+using InfiniLore.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
@@ -49,7 +49,7 @@ public class JwtTokenGenerationService(
 
     public async ValueTask<SuccessOrFailure<JwtTokenData>> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
         string hashedToken = HashToken(refreshToken);
-        var repository = unitOfWork.GetRepository<IJwtRefreshTokenRepository>();
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         
         RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (!getResult.TryGetAsSuccess(out JwtRefreshTokenModel? oldToken)) return "Refresh token not found";
@@ -69,7 +69,7 @@ public class JwtTokenGenerationService(
 
     public async ValueTask<bool> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
         string hashedToken = HashToken(refreshToken);
-        var repository = unitOfWork.GetRepository<IJwtRefreshTokenRepository>();
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         
         RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (getResult.IsFailure) return false;
@@ -82,7 +82,7 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
-        var repository = unitOfWork.GetRepository<IJwtRefreshTokenRepository>();
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user.Id, ct);
         return deleteResult.IsSuccess;
     }
@@ -115,7 +115,7 @@ public class JwtTokenGenerationService(
             Permissions = permissions
         };
 
-        var repository = unitOfWork.GetRepository<IJwtRefreshTokenRepository>();
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         RepoResult result = await repository.TryAddAsync(refreshToken, ct);
         return result.IsSuccess 
             ? token 

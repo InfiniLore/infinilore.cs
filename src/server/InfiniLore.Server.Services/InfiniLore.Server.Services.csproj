@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="3.10.0" />
+        <PackageReference Include="AterraEngine.Unions" Version="3.11.0" />
         <PackageReference Include="FastEndpoints" Version="5.34.0" />
 
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.36.4" />
@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Contracts\InfiniLore.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

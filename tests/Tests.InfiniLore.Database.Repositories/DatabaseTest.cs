@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 
-using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Server.Contracts.Database;
+using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 
@@ -18,7 +18,7 @@ public class LoreScopeCommandRepositoryTest(DatabaseInfrastructure infrastructur
     [Test]
     public async Task TestCanConnect() {
         // Arrange: get dbContext
-        var dbContext = await _unitOfWork.GetDbContextAsync<MsSqlDbContext>();
+        var dbContext = await _unitOfWork.GetDbContextAsync<ContentDbContext>();
 
         // Act: check the connection
         bool canConnect = await dbContext.Database.CanConnectAsync();

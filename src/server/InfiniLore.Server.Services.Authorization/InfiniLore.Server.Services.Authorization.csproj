@@ -13,7 +13,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="AterraEngine.Unions" Version="3.10.0" />
+        <PackageReference Include="AterraEngine.Unions" Version="3.11.0" />
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.36.4" />
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.36.4" />
@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Contracts\InfiniLore.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

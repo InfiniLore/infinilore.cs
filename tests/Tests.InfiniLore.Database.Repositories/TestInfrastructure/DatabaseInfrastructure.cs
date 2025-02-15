@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,10 +15,11 @@ namespace Tests.InfiniLore.Database.Repositories.TestInfrastructure;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
+public class DatabaseInfrastructure : IAsyncInitializer {
     private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder()
         .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
         .Build();
+    public IServiceProvider ServiceProvider { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -29,34 +30,34 @@ public class DatabaseInfrastructure : IAsyncInitializer, IAsyncDisposable {
         _msSqlContainer.StartAsync().Wait();
 
         services.AddSingleton(Logger.None);
-        services.AddDbContextFactory<MsSqlDbContext>(
-            options => options.UseSqlServer(_msSqlContainer.GetConnectionString())
+        services.AddDbContextFactory<ContentDbContext>(
+            options => options
+                .UseSqlServer(_msSqlContainer.GetConnectionString())
+                .EnableSensitiveDataLogging()
         );
 
         services.AddIdentityCore<InfiniLoreUser>(options => {
                 options.SignIn.RequireConfirmedAccount = false;
             })
             .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<MsSqlDbContext>()
+            .AddEntityFrameworkStores<ContentDbContext>()
             .AddSignInManager();
 
         // Register the services which access and manipulate the database.
-        services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();
+        services.AddUnitOfWork<ContentDbContext>();
+        services.RegisterServicesFromInfiniLoreDatabase();
 
-        ServiceProvider = services.BuildServiceProvider().CreateScope().ServiceProvider;
-    }
-    public IServiceProvider ServiceProvider { get; }
-
-    public async ValueTask DisposeAsync() {
-        await _msSqlContainer.DisposeAsync();
-        GC.SuppressFinalize(this);
+        ServiceProvider = services.BuildServiceProvider();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task InitializeAsync() {
-        var db = await ServiceProvider.GetRequiredService<IUnitOfWork>().GetDbContextAsync<MsSqlDbContext>();
+        var factory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        await using IUnitOfWork unitOfWork = factory.Create();
+        
+        var db = await unitOfWork.GetDbContextAsync<ContentDbContext>();
         await db.Database.EnsureCreatedAsync();
         await db.SaveChangesAsync();
     }
