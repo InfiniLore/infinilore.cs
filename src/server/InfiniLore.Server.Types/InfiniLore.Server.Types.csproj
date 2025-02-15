@@ -23,12 +23,12 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="3.8.0" />
-        <PackageReference Include="AterraEngine.Unions.Generators" Version="3.8.0">
+        <PackageReference Include="AterraEngine.Unions" Version="3.10.0" />
+        <PackageReference Include="AterraEngine.Unions.Generators" Version="3.10.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.5.0" />
     </ItemGroup>
 
     <ItemGroup Label="InternalsVisibleTo">
