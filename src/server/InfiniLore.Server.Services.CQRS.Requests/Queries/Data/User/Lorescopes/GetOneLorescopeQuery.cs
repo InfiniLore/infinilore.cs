@@ -9,7 +9,6 @@ namespace InfiniLore.Server.Services.CQRS.Requests.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetOneLorescopeQuery(
-    Guid Guid,
+public readonly record struct GetOneLorescopeQuery(
     Guid LorescopeId
 ) : ICqrsRequest<LorescopeModel>;

@@ -20,26 +20,6 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
             .HasConversion(ConverterHelpers.GuidCollectionConverter)
             .Metadata.SetValueComparer(ConverterHelpers.GuidCollectionComparer);
         #endregion
-        
-        #region Multiverses
-        builder.HasMany(user => user.Multiverses)
-            .WithOne(multiverse => multiverse.Owner)
-            .HasForeignKey(x => x.OwnerId);
-
-        builder.Property(u => u.MultiverseIds)
-            .HasConversion(ConverterHelpers.GuidCollectionConverter)
-            .Metadata.SetValueComparer(ConverterHelpers.GuidCollectionComparer);
-        #endregion
-
-        #region Universes
-        builder.HasMany(user => user.Universes)
-            .WithOne(universe => universe.Owner)
-            .HasForeignKey(x => x.OwnerId);
-        
-        builder.Property(u => u.UniverseIds)
-            .HasConversion(ConverterHelpers.GuidCollectionConverter)
-            .Metadata.SetValueComparer(ConverterHelpers.GuidCollectionComparer);
-        #endregion
 
         builder.HasMany(user => user.JwtRefreshTokens)
             .WithOne(token => token.Owner)

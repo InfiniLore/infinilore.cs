@@ -10,20 +10,22 @@ namespace InfiniLore.Server.Types;
 public readonly record struct PaginationInfo(int PageNumber, int PageSize) {
     public int SkipAmount => (PageNumber - 1) * PageSize;
     internal const string PageNumberErrorMessage = "Page number must be greater than 0.";
+    private static readonly Failure<string> PageNumberError = new(PageNumberErrorMessage);
     internal const string PageSizeErrorMessage = "Page size must be greater than 0.";
+    private static readonly Failure<string> PageSizeError = new(PageSizeErrorMessage);
 
     public bool IsValid(out Failure<string> error) {
         if (PageNumber < 1) {
-            error = new Failure<string>(PageNumberErrorMessage);
+            error = PageNumberError;
             return false;
         }
 
         if (PageSize < 1) {
-            error = new Failure<string>(PageSizeErrorMessage);
+            error = PageSizeError;
             return false;
         }
 
-        error = new Failure<string>();
+        error = Failure<string>.Empty;
         return true;
     }
 

@@ -14,12 +14,6 @@ public class InfiniLoreUser : IdentityUser<Guid> {
     public ICollection<LorescopeModel> Lorescopes { get; init; } = [];
     public ICollection<Guid> LorescopeIds { get; init; } = []; // Regularly stored as JSON, but this is easier to work with.
     
-    public ICollection<MultiverseModel> Multiverses { get; init; } = [];
-    public ICollection<Guid> MultiverseIds { get; init; } = []; // Regularly stored as JSON, but this is easier to work with.
-    
-    public ICollection<UniverseModel> Universes { get; init; } = [];
-    public ICollection<Guid> UniverseIds { get; init; } = []; // Regularly stored as JSON, but this is easier to work with.
-    
     public ICollection<JwtRefreshTokenModel> JwtRefreshTokens { get; init; } = [];
     public ICollection<UserContentAccessModel> ContentAccesses { get; init; } = [];
     public ICollection<InfiniLorePermission> Permissions { get; init; } = [];

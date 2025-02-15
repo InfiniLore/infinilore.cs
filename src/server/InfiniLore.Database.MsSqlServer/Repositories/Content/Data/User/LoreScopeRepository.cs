@@ -14,11 +14,7 @@ namespace InfiniLore.Database.MsSqlServer.Repositories.Content.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILorescopeRepository>(ServiceLifetime.Scoped)]
 public class LorescopeRepository : UserContentRepository<LorescopeModel>, ILorescopeRepository {
-    protected override IQueryable<LorescopeModel> IncludeOnGet(IQueryable<LorescopeModel> query) => query
-        .Include(model => model.Multiverses)
-            .ThenInclude(multiverse => multiverse.Universes)
-        .Include(model => model.Owner)    
-    ;
+    protected override IQueryable<LorescopeModel> IncludeOnGet(IQueryable<LorescopeModel> query) => query;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

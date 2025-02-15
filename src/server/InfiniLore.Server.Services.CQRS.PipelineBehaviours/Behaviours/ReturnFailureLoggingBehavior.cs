@@ -9,19 +9,22 @@ namespace InfiniLore.Server.Services.CQRS.PipelineBehaviours.Behaviours;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ReturnLoggingBehavior<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
+public class ReturnFailureLoggingBehavior<TRequest, TResponse>(ILogger logger) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : ITryGetAsFailureValue<string> {
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) {
-        // Code that runs before the Handler is called
+        // Run before next step
+
+        // Execute next step
         TResponse response = await next();
 
-        // Code that runs after the Handler is called
+        // run after next step
         if (response.TryGetAsFailureValue(out string? output)) {
-            logger.Error("Request failed: {Request} - {Output}", request, output);
+            logger.Error("Request failed: {Request} - \"{Output}\"", request, output);
         }
 
+        // exit
         return response;
     }
 }

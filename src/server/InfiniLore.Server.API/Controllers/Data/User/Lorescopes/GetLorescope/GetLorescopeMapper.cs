@@ -13,7 +13,6 @@ public class GetLorescopeMapper : ResponseMapper<LorescopeResponse, LorescopeMod
         ls.Id,
         ls.OwnerId,
         ls.Name,
-        ls.Description,
-        ls.Multiverses.Select(selector: m => m.Id).ToArray()
+        ls.Description
     );
 }

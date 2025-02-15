@@ -13,8 +13,7 @@ public class CreateLorescopeMapper : Mapper<CreateLorescopeRequest, LorescopeRes
         ls.Id,
         ls.OwnerId,
         ls.Name,
-        ls.Description,
-        ls.Multiverses.Select(selector: m => m.Id).ToArray()
+        ls.Description
     );
 
     public override LorescopeModel ToEntity(CreateLorescopeRequest request)

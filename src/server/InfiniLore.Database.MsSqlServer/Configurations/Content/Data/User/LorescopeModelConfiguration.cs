@@ -15,10 +15,5 @@ public class LorescopeModelConfiguration : UserContentConfiguration<LorescopeMod
 
         builder.HasIndex(model => new { model.Name, model.OwnerId })
             .IsUnique();
-
-        builder.HasMany(model => model.Multiverses)
-            .WithOne(multiverse => multiverse.Lorescope)
-            .HasForeignKey(x => x.LorescopeId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

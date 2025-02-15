@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record CreateJwtTokenCommand(
+public readonly record struct CreateJwtTokenCommand(
     InfiniLoreUser User,
     string[] Roles,
     string[] Permissions,
