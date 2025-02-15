@@ -7,7 +7,7 @@ namespace InfiniLore.Server.Types;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record struct AuthRequestData(
-    Guid OwnerId,
+    Guid UserId,
     string[] Permissions,
     string[] Roles
 ) {

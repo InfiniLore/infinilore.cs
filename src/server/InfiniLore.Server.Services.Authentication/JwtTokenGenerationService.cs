@@ -1,17 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
 using AterraEngine.Unions;
+using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints.Security;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Account;
-using InfiniLore.Server.Contracts.Services.Auth.Authentication;
+using InfiniLore.Contracts;
+using InfiniLore.Contracts.Database.Repositories.Content.Account;
+using InfiniLore.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Types;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,71 +21,56 @@ namespace InfiniLore.Server.Services.Authentication;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenGenerationService>(ServiceLifetime.Scoped)]
 public class JwtTokenGenerationService(
-    IConfiguration configuration,
-    IJwtRefreshTokenRepository repository,
-    ILogger logger,
-    UserManager<InfiniLoreUser> userManager
+    IUnitOfWork unitOfWork,
+    IJwtConfiguration jwtConfiguration
 ) : IJwtTokenGenerationService {
-    private readonly int _jwtAccessExpiresInMinutes = int.Parse(configuration["Jwt:AccessExpiresInMinutes"]!);
-    private readonly string _jwtAudience = configuration["Jwt:Audience"]!;
-    private readonly string _jwtIssuer = configuration["Jwt:Issuer"]!;
-    private readonly string _jwtKey = configuration["Jwt:Key"]!;
-    private readonly int _jwtRefreshExpiresInDays = int.Parse(configuration["Jwt:RefreshExpiresInDays"]!);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<SuccessOrFailure<JwtTokenData>> GenerateTokensAsync(InfiniLoreUser user, string[] roles, string[] permissions, int? expiresInDays, CancellationToken ct = default) {
-        try {
-            // Check if all provided roles exist in the user's roles
-            // TODO move to IUserRepository usage
-            IList<string> userRoles = await userManager.GetRolesAsync(user);
-            if (!roles.All(role => userRoles.Contains(role))) {
-                logger.Warning("User {UserId} does not have all specified roles", user.Id);
-                return "User does not have the required roles";
-            }
+        DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(jwtConfiguration.AccessExpiresInMinutes);
+        DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(expiresInDays ?? jwtConfiguration.RefreshExpiresInDays);
 
-            DateTime accessTokenExpiryUtc = DateTime.UtcNow.AddMinutes(_jwtAccessExpiresInMinutes);
-            DateTime refreshTokenExpiryUtc = DateTime.UtcNow.AddDays(_jwtRefreshExpiresInDays);
+        string accessToken = GenerateAccessToken(user, roles, permissions, accessTokenExpiryUtc);
+        Guid refreshToken = await GenerateRefreshTokenAsync(user, roles, permissions, refreshTokenExpiryUtc, ct);
+        if (refreshToken == Guid.Empty) return "Refresh token could not be generated";
 
-            string accessToken = GenerateAccessToken(user, roles, permissions, accessTokenExpiryUtc);
-            SuccessOrFailure<Guid> resultGenerate = await GenerateRefreshTokenAsync(user, roles, permissions, refreshTokenExpiryUtc, ct);
-            if (!resultGenerate.TryGetAsSuccessValue(out Guid refreshToken)) return "Refresh token could not be generated";
-
-            return new JwtTokenData(
-                user.Id,
-                accessToken,
-                accessTokenExpiryUtc,
-                refreshToken,
-                refreshTokenExpiryUtc,
-                permissions,
-                roles
-            );
-        }
-        catch (Exception ex) {
-            logger.Error(ex, "Error generating tokens");
-            return "Unexpected error generating tokens";
-        }
+        return new JwtTokenData(
+            user.Id,
+            accessToken,
+            accessTokenExpiryUtc,
+            refreshToken,
+            refreshTokenExpiryUtc,
+            permissions,
+            roles
+        );
     }
 
     public async ValueTask<SuccessOrFailure<JwtTokenData>> RefreshTokensAsync(Guid refreshToken, CancellationToken ct = default) {
         string hashedToken = HashToken(refreshToken);
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
+        
         RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (!getResult.TryGetAsSuccess(out JwtRefreshTokenModel? oldToken)) return "Refresh token not found";
+
+        await repository.TryRemoveAsync(oldToken, ct); // If it is expired or not, we can remove it.
+
         if (oldToken.ExpiresAt < DateTime.UtcNow) return "Refresh token has expired";
 
-        await repository.TryRemoveAsync(oldToken, ct);
         return await GenerateTokensAsync(
             oldToken.Owner,
             oldToken.Roles,
             oldToken.Permissions,
-            oldToken.ExpiresInDays ?? int.Parse(configuration["Jwt:RefreshExpiresInDays"]!),
+            oldToken.ExpiresInDays,
             ct
         );
     }
 
     public async ValueTask<bool> RevokeTokensAsync(InfiniLoreUser user, Guid refreshToken, CancellationToken ct = default) {
         string hashedToken = HashToken(refreshToken);
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
+        
         RepoResult<JwtRefreshTokenModel> getResult = await repository.TryGetByHashedTokenAsync(hashedToken, ct);
         if (getResult.IsFailure) return false;
 
@@ -98,6 +82,7 @@ public class JwtTokenGenerationService(
     }
 
     public async ValueTask<bool> RevokeAllTokensFromUserAsync(InfiniLoreUser user, CancellationToken ct = default) {
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         RepoResult deleteResult = await repository.TryPermanentRemoveAllForUserAsync(user.Id, ct);
         return deleteResult.IsSuccess;
     }
@@ -108,23 +93,19 @@ public class JwtTokenGenerationService(
         return Convert.ToBase64String(hashBytes);
     }
 
-    private string GenerateAccessToken(InfiniLoreUser user, string[] roles, string[] permissions, DateTime expiresAt) {
-        string jwtToken = JwtBearer.CreateToken(
-            o => {
-                o.SigningKey = _jwtKey;
-                o.ExpireAt = expiresAt;
-                o.Audience = _jwtAudience;
-                o.Issuer = _jwtIssuer;
+    private string GenerateAccessToken(InfiniLoreUser user, string[] roles, string[] permissions, DateTime expiresAt)
+        => JwtBearer.CreateToken(o => {
+            o.SigningKey = jwtConfiguration.Key;
+            o.ExpireAt = expiresAt;
+            o.Audience = jwtConfiguration.Audience;
+            o.Issuer = jwtConfiguration.Issuer;
 
-                o.User.Roles.Add(roles);
-                o.User.Permissions.Add(permissions);
-                o.User[ClaimTypes.NameIdentifier] = user.Id.ToString();
-            });
+            o.User.Roles.Add(roles);
+            o.User.Permissions.Add(permissions);
+            o.User[ClaimTypes.NameIdentifier] = user.Id.ToString();
+        });
 
-        return jwtToken;
-    }
-
-    private async ValueTask<SuccessOrFailure<Guid>> GenerateRefreshTokenAsync(InfiniLoreUser user, string[] roles, string[] permissions, DateTime expiresAt, CancellationToken ct = default) {
+    private async ValueTask<Guid> GenerateRefreshTokenAsync(InfiniLoreUser user, string[] roles, string[] permissions, DateTime expiresAt, CancellationToken ct = default) {
         var token = Guid.NewGuid();
         var refreshToken = new JwtRefreshTokenModel {
             OwnerId = user.Id,// Use the user's ID instead of the user object
@@ -134,9 +115,10 @@ public class JwtTokenGenerationService(
             Permissions = permissions
         };
 
+        var repository = await unitOfWork.GetRepositoryAsync<IJwtRefreshTokenRepository>();
         RepoResult result = await repository.TryAddAsync(refreshToken, ct);
-        if (result.IsSuccess) return token;
-
-        return new Failure<string>("Failed to save refresh token.");
+        return result.IsSuccess 
+            ? token 
+            : Guid.Empty;
     }
 }

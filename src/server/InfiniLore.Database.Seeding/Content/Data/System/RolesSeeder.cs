@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
-using InfiniLore.Server.Contracts.Database.Seeding;
+using CodeOfChaos.Extensions.DependencyInjection;
+using CodeOfChaos.Types;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -13,12 +13,12 @@ namespace InfiniLore.Database.Seeding.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<RolesSeeder>(ServiceLifetime.Scoped)]
-public class RolesSeeder(RoleManager<IdentityRole<Guid>> roleManager, ILogger logger) : ISeeder {
+public class RolesSeeder(RoleManager<IdentityRole<Guid>> roleManager, ILogger logger) : Seeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task StartSeedingAsync(CancellationToken ct = default) {
+    public override async Task SeedAsync(CancellationToken ct = new()) {
         // TODO Use appropriate CQRS Handlers for seeding of : Roles
         
         IdentityRole<Guid>[] roles = [

@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
+using CodeOfChaos.Types;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Database.Seeding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -14,12 +14,12 @@ namespace InfiniLore.Database.Seeding.Content.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(UserManager<InfiniLoreUser> userManager, ILogger logger) : ISeeder {
+public class UserSeeder(UserManager<InfiniLoreUser> userManager, ILogger logger) : Seeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task StartSeedingAsync(CancellationToken ct = default) {
+    public override async Task SeedAsync(CancellationToken ct = new()) {
         // TODO Use appropriate CQRS Handlers for seeding of : Users
         
         InfiniLoreUser[] users = [

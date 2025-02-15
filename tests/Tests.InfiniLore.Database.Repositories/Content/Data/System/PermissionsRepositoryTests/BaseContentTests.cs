@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Database;
 using InfiniLore.Database.Repositories.Content.Data.System;
 using JetBrains.Annotations;
 using Tests.InfiniLore.Database.Repositories.TestInfrastructure;
@@ -16,7 +17,8 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Data.System.Permissions
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
 // ReSharper disable once InconsistentNaming
-public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure) : BasicContentRepositoryTestFramework<PermissionsRepository, InfiniLorePermission>(infrastructure) {
+public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure) : BasicContentTestFramework<IPermissionsRepository, InfiniLorePermission>(infrastructure) {
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
@@ -29,10 +31,9 @@ public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure
     public const string SomethingDifferentId = "6f77e414-e716-469e-9c1d-643ae55c1234";
 
     public const string EmptyId = "00000000-0000-0000-0000-000000000000";
-
+    
     [Before(Test)]
     public async Task SeedDatabase() {
-        await CreateSavepointAsync();
 
         // Arrange seed data
         var permission1 = new InfiniLorePermission {
@@ -48,14 +49,14 @@ public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure
         };
 
         // Seed database 
-        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
+        ContentDbContext dbContext = await InitializeDbContextAsync();
         await dbContext.Permissions.AddRangeAsync(permission1, permission2);
         await dbContext.SaveChangesAsync();
     }
 
     [After(Test)]
     public async Task RunAfterTest() {
-        await RollbackToSavepointAsync();
+        await CleanupDbContextAsync();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure
             Description = description
         };
 
-        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
+        var dbContext = await UnitOfWork.GetDbContextAsync<ContentDbContext>();
 
         // Act & Assert
         await Base_TryUpdateAsync_ShouldFail(permission);
@@ -201,7 +202,7 @@ public class Permissions_BasicContentTests(DatabaseInfrastructure infrastructure
             Description = description
         };
 
-        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
+        var dbContext = await UnitOfWork.GetDbContextAsync<ContentDbContext>();
 
         // Act & Assert
         await Base_TryUpdateWithResultAsync_ShouldFail(permission);

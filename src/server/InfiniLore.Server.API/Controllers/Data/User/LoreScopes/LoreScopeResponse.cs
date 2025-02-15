@@ -10,6 +10,5 @@ public record LorescopeResponse(
     Guid Id,
     Guid UserId,
     string Name,
-    string Description,
-    ICollection<Guid> MultiverseIds
+    string Description
 );

@@ -1,10 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.DependencyInjection;
+using CodeOfChaos.Extensions.DependencyInjection;
+using CodeOfChaos.Types;
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Data.System;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.System;
-using InfiniLore.Server.Contracts.Database.Seeding;
+using InfiniLore.Contracts.Database.Repositories.Content.Data.System;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Types;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,33 +17,44 @@ namespace InfiniLore.Database.Seeding.Content.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<PermissionsSeeder>(ServiceLifetime.Scoped)]
-public class PermissionsSeeder(ILogger logger, IPermissionsRepository repository) : ISeeder {
-
+public class PermissionsSeeder(ILogger logger, IUnitOfWorkFactory unitOfWorkFactory) : Seeder {
+    private Lazy<IUnitOfWork> UnitOfWork => new(unitOfWorkFactory.Create);
+    private InfiniLorePermission[] CachedPermissions { get; set; } = [];
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task StartSeedingAsync(CancellationToken ct = default) {
-        // TODO Use appropriate CQRS Handlers for seeding of : Permissions
-        
-        // If Permissions already exist.
-        //      We can safely just ignore all of this
-        string[] permissions = ApiPermissions.GetAllPermissions().ToArray();
+
+    public override async Task<bool> ShouldSeedAsync(CancellationToken ct = default) {
+        string[] permissions = ApiPermissionsStore.GetAllPermissions().ToArray();
+        var repository = await UnitOfWork.Value.GetRepositoryAsync<IPermissionsRepository>(ct);
         RepoResult<InfiniLorePermission[]> getResult = await repository.TryGetByNamesAsync(permissions, ct);
-        if (getResult.IsFailure) throw new Exception("Failed to get permissions.");
+        if (getResult.IsFailure) return true;
 
-        InfiniLorePermission[] existingPermissions = getResult.AsSuccess;
-        InfiniLorePermission[] newPermissions = permissions
-            .Except(existingPermissions.Select(p => p.Name))
-            .Select(name => new InfiniLorePermission { Name = name }).ToArray();
+        // match a hashed map of both of the values against each-other
+        HashSet<string> existingPermissions = getResult.AsSuccess.Select(p => p.Name).ToHashSet();
 
-        if (newPermissions.Length == 0) {
+        CachedPermissions = permissions.ToHashSet()
+            .Except(existingPermissions)
+            .Select(name => new InfiniLorePermission { Name = name })
+            .ToArray();
+
+        return CachedPermissions.Length != 0;
+    }
+
+    public override async Task SeedAsync(CancellationToken ct = new()) {
+        // TODO Use appropriate CQRS Handlers for seeding of : Permissions
+
+        if (CachedPermissions.Length == 0) {
             logger.Information("No new permissions to add.");
             return;
         }
+        
+        var repository = await UnitOfWork.Value.GetRepositoryAsync<IPermissionsRepository>(ct);
 
-        RepoResult result = await repository.TryAddRangeAsync(newPermissions, ct);
+        RepoResult result = await repository.TryAddRangeAsync(CachedPermissions, ct);
         if (result.IsFailure) throw new Exception("Failed to seed permissions.");
         
-        logger.Information("{Count} new permissions added.", newPermissions.Length);
+        logger.Information("{Count} new permissions added.", CachedPermissions.Length);
     }
 }

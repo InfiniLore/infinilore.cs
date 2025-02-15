@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Contracts.Services;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.CQRS.Requests.Commands;
 using MediatR;
@@ -22,10 +22,10 @@ public class CreateLorescopeEndpoint(IMediator mediator, IMediatorOutputService 
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lore-scopes/");
-        Permissions(ApiPermissions.LorescopeWrite, ApiPermissions.LorescopeManage);// Remember, Permissions works as (a or b), PermissionsALl works as (a and b)
+        Permissions(ApiPermissionsStore.LorescopeWrite, ApiPermissionsStore.LorescopeManage);// Remember, Permissions works as (a or b), PermissionsALl works as (a and b)
     }
 
-    public async override Task<Results<Ok<LorescopeResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateLorescopeRequest req, CancellationToken ct) {
+    public override async Task<Results<Ok<LorescopeResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateLorescopeRequest req, CancellationToken ct) {
         SuccessOrFailure<LorescopeModel> result = await mediator.Send(
             new CreateLorescopeCommand(Map.ToEntity(req)),
             ct

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Server.Contracts.Services.Auth.Authentication;
+using InfiniLore.Contracts.Services.Auth.Authentication;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
 using InfiniLore.Server.Types;
 using MediatR;

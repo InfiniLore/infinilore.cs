@@ -9,7 +9,7 @@ indent_size = 4
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers = false
 csharp_new_line_before_open_brace = none
-csharp_preferred_modifier_order = public, internal, protected, private, static, async, virtual, file, new, sealed, override, required, abstract, extern, volatile, unsafe, readonly:suggestion
+csharp_preferred_modifier_order = public, internal, protected, private, static, virtual, file, new, sealed, override, required, abstract, async, extern, volatile, unsafe, readonly:suggestion
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_var_elsewhere = false:none
 csharp_style_var_for_built_in_types = false:suggestion
@@ -71,7 +71,7 @@ dotnet_naming_symbols.private_instance_fields_symbols.resharper_applicable_kinds
 dotnet_naming_symbols.private_instance_fields_symbols.resharper_required_modifiers = instance
 dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_accessibilities = private
 dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_kinds = field
-dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_applicable_kinds = field,readonly_field
+dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_applicable_kinds = field, readonly_field
 dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_required_modifiers = instance
 dotnet_naming_symbols.private_static_fields_symbols.applicable_accessibilities = private
 dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field

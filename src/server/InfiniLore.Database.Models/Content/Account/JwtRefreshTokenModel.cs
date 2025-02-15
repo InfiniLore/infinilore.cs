@@ -8,7 +8,6 @@ namespace InfiniLore.Database.Models.Content.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class JwtRefreshTokenModel : BasicContent, IHasOwner {
-
     [MaxLength(64)] public required string TokenHash { get; init; }
     public required DateTime ExpiresAt { get; init; }
 

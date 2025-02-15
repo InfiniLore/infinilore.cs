@@ -8,11 +8,11 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" PrivateAssets="All" />
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Database.MsSqlServer\InfiniLore.Database.MsSqlServer.csproj" />
+      <ProjectReference Include="..\InfiniLore.Database\InfiniLore.Database.csproj" />
     </ItemGroup>
 
 </Project>

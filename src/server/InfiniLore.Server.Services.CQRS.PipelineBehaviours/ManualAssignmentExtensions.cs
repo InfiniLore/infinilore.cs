@@ -14,7 +14,7 @@ public static class ManualAssignmentExtensions {
 
         // see https://github.com/jbogard/MediatR/wiki/Behaviors#registering-pipeline-behaviors
         configuration.AddOpenBehavior(typeof(StoreCommandsBehaviour<,>));
-        configuration.AddOpenBehavior(typeof(ReturnLoggingBehavior<,>));
+        configuration.AddOpenBehavior(typeof(ReturnFailureLoggingBehavior<,>));
         
         return configuration;
     }

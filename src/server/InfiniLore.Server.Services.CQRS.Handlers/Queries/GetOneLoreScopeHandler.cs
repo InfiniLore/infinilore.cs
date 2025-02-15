@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Database.Models.Content.Data.User;
-using InfiniLore.Server.Contracts.Database.Repositories.Content.Data.User;
-using InfiniLore.Server.Contracts.Services.Auth.Authorization;
+using InfiniLore.Contracts.Database.Repositories.Content.Data.User;
 using InfiniLore.Server.Services.CQRS.Requests.Queries;
 using InfiniLore.Server.Types;
 using MediatR;
@@ -15,15 +15,15 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Queries;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class GetOneLorescopeHandler(
-    ILorescopeRepository lorescopeRepository,
-    ILogger logger,
-    IUserContentAuthorizationService authService
+    IUnitOfWorkFactory unitOfWorkFactory,
+    ILogger logger
 ) : IRequestHandler<GetOneLorescopeQuery, SuccessOrFailure<LorescopeModel>> {
 
     public async Task<SuccessOrFailure<LorescopeModel>> Handle(GetOneLorescopeQuery request, CancellationToken ct) {
         try {
-            if (!await authService.HttpContextHasAccessRead(request.LorescopeId, ct)) return "Access Denied";
-
+            await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+            var lorescopeRepository = await unitOfWork.GetRepositoryAsync<ILorescopeRepository>(ct);
+            
             RepoResult<LorescopeModel> result = await lorescopeRepository.TryGetByIdAsync(request.LorescopeId, ct);
             return result.ToSuccessOrFailure();
         }

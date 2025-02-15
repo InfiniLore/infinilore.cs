@@ -3,16 +3,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AspNetCore.Swagger.Themes;
 using CodeOfChaos.Extensions.AspNetCore;
+using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FastEndpoints.Security;
 using FastEndpoints.Swagger;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.MsSqlServer;
-using InfiniLore.Database.Repositories;
+using InfiniLore.Database;
 using InfiniLore.Database.Seeding;
+using InfiniLore.Database.Seeding.Content.Account;
+using InfiniLore.Database.Seeding.Content.Data.System;
 using InfiniLore.Server.API;
 using InfiniLore.Server.Components;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Authentication;
 using InfiniLore.Server.Services.Authorization;
@@ -25,7 +26,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Security.Claims;
 using Testcontainers.MsSql;
-using IAssemblyEntry=InfiniLore.Server.API.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -37,26 +37,28 @@ public static class Program {
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.OverrideLoggingWithSerilog(
-            config => {
-                config.WriteTo.Console();
-            }
-        );
+        builder.OverrideLoggingWithSerilog(config => config.AsAnnaSasDevServerConsole());
+
 
         #region Database
+        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("CONTAINER mssqldb");
         MsSqlContainer container = new MsSqlBuilder()
+            .WithPortBinding(60426, MsSqlBuilder.MsSqlPort)
+            .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
             .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
             .WithPassword("AnnaIsTrans4Ever!")
-            .WithName("infinilore-production-db")
+            .WithName("infinilore-development-db")
             .WithReuse(true)
+            .WithLabel("reuse-id", "infinilore-development-db")
             .Build();
 
         await container.StartAsync();
+        Console.WriteLine($"Database connection string: {container.GetConnectionString()}");
 
-        Console.WriteLine($"Database connection string {container.GetConnectionString()}");
-
-        builder.Services.AddDbContextFactory<MsSqlDbContext>(options =>
+        ILoggerFactory databaseLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("EFCORE mssqldb");
+        builder.Services.AddDbContextFactory<ContentDbContext>(options =>
                 options.UseSqlServer(container.GetConnectionString())
+                    .UseLoggerFactory(databaseLoggerFactory)
             // .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
         );
         
@@ -64,11 +66,12 @@ public static class Program {
                 options.SignIn.RequireConfirmedAccount = false;
             })
             .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<MsSqlDbContext>()
+            .AddEntityFrameworkStores<ContentDbContext>()
             .AddSignInManager()
             .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseMsSqlServer();// Registers the IUnitOfWorkDb<T>
+        builder.Services.AddUnitOfWork<ContentDbContext>();
+        builder.Services.RegisterServicesFromInfiniLoreDatabase();// Registers the IUnitOfWorkDb<T>
         #endregion
 
         #region Authentication
@@ -133,7 +136,7 @@ public static class Program {
         builder.Services
             .AddFastEndpoints(options => {
                 options.Assemblies = [
-                    typeof(IAssemblyEntry).Assembly
+                    typeof(IApiAssemblyEntry).Assembly
                 ];
             })
             .SwaggerDocument(options => {
@@ -149,24 +152,45 @@ public static class Program {
 
         #region MediatR
         builder.Services.AddMediatR(cfg => {
-            cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.IAssemblyEntry>();
+            cfg.RegisterServicesFromAssemblyContaining<Services.CQRS.Handlers.ICqrsHandlersAssemblyEntry>();
             cfg.AddInfinilorePipelineBehaviours();
         });
         #endregion
+        
+        #region Seeding
+        // Don't forget to add the seeder classes to the service collection!
+        builder.Services.RegisterServicesFromInfiniLoreDatabaseSeeding();
+        builder.Services.AddOneTimeDataSeeder(seeder => {
+            // Always start with migrating the DB if necessary
+            //      I've debated a bit over if this is the correct location or not for this to happen
+            //      In the end I've decided that this is a clear step in the "seeding" process of the server,
+            //      and through a Seeder method overload we can also set up a system to ignore this seeder step if needed.
+            seeder.AddSeeder<DatabaseMigrator>();
 
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseRepositories();
+            // One SeederGroup has their seeders run in concurrency
+            //      They do have their own scope, and thus their own dbContext
+            //      This means they can execute data in "parallel" and therefor can't rely on each-other's data 
+            seeder.AddSeederGroup(group => group
+                .AddSeeder<RolesSeeder>()
+                .AddSeeder<PermissionsSeeder>()
+            );
+
+            // User generation depends on a lot of things, and should thus come after "dependency-less" seeders
+            seeder.AddSeeder<UserSeeder>();
+
+            // // To ensure we don't forget one
+            // seeder.AddRemainderSeedersAsOneGroup(typeof(AdvancedCSharp.Database.Seeding.IAssemblyEntry).Assembly);
+        });
+        #endregion
+
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthorization();
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuthentication();
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
-        builder.Services.RegisterServicesFromInfiniLoreDatabaseSeeding();
-
-        builder.Services.AddHostedService<SeederService>();
 
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------
         WebApplication app = builder.Build();
-        await MigrateDatabaseAsync(app);
 
         if (app.Environment.IsDevelopment()) {
             app.UseWebAssemblyDebugging();
@@ -204,16 +228,6 @@ public static class Program {
         });
 
         await app.RunAsync();
-    }
-
-    private async static ValueTask MigrateDatabaseAsync(WebApplication app) {
-        // Create a localised scope so we can get the DbContextFactory correctly.
-        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        await using var db = await unitOfWork.GetDbContextAsync<MsSqlDbContext>();
-
-        await db.Database.MigrateAsync();
-        await db.SaveChangesAsync();
     }
 
     private static bool IsApiRequest(RedirectContext<CookieAuthenticationOptions> context) => context is { Request.Path.Value: "/api", Response.StatusCode: 200 };

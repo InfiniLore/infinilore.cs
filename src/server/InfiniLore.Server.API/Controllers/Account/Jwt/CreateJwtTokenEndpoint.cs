@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Contracts.Services;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account;
 using InfiniLore.Server.Services.CQRS.Requests.Commands.Account.Jwt;
 using InfiniLore.Server.Types;
@@ -28,7 +28,7 @@ public class JwtCreateTokenEndpoint(IMediator mediator, IMediatorOutputService m
         AllowAnonymous();
     }
 
-    public async override Task<Results<Ok<JwtTokenResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateJwtTokenRequest req, CancellationToken ct) {
+    public override async Task<Results<Ok<JwtTokenResponse>, BadRequest<ProblemDetails>>> ExecuteAsync(CreateJwtTokenRequest req, CancellationToken ct) {
         SuccessOrFailure<InfiniLoreUser> resultLogin = await mediator.Send(new LoginCommand(req.Username, req.Password), ct);
         if (resultLogin.TryGetAsFailureValue(out string? loginFailure)) return mediatorOutput.ToBadRequest<JwtTokenResponse>(loginFailure);
 

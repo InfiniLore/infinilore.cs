@@ -11,16 +11,11 @@ namespace InfiniLore.Server.Services.CQRS.Handlers.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoginCommandHandler(SignInManager<InfiniLoreUser> signInManager, UserManager<InfiniLoreUser> userManager) : IRequestHandler<LoginCommand, SuccessOrFailure<InfiniLoreUser>> {
+public class LoginCommandHandler(SignInManager<InfiniLoreUser> signInManager) : IRequestHandler<LoginCommand, SuccessOrFailure<InfiniLoreUser>> {
 
     public async Task<SuccessOrFailure<InfiniLoreUser>> Handle(LoginCommand request, CancellationToken cancellationToken) {
-        if (await signInManager.UserManager.FindByNameAsync(request.Username) is not {} user) {
-            return "Invalid username";
-        }
-
-        if (!await signInManager.CanSignInAsync(user)) {
-            return "Unable to sign in.";
-        }
+        if (await signInManager.UserManager.FindByNameAsync(request.Username) is not {} user) return "Invalid username";
+        if (!await signInManager.CanSignInAsync(user)) return "Unable to sign in.";
 
         SignInResult signInResult = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         return signInResult switch {

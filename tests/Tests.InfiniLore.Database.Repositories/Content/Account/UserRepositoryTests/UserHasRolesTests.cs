@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Contracts.Database.Repositories;
 using InfiniLore.Database.Models.Content.Account;
-using InfiniLore.Database.MsSqlServer;
+using InfiniLore.Database;
 using InfiniLore.Database.Repositories.Content.Account;
 using InfiniLore.Server.Types;
 using JetBrains.Annotations;
@@ -17,13 +18,13 @@ namespace Tests.InfiniLore.Database.Repositories.Content.Account.UserRepositoryT
 [TestSubject(typeof(UserRepository))]
 [NotInParallel]
 [ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
-public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : RepositoryTestFramework<UserRepository>(infrastructure) {
+public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : RepositoryTestFramework(infrastructure){
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Seeding
     // -----------------------------------------------------------------------------------------------------------------
     [Before(Test)]
     public async Task SeedDatabase() {
-        await CreateSavepointAsync();
 
         // Arrange seed data
         var originalUser = new InfiniLoreUser { Id = Guid.Parse("bc8caeb2-346e-4754-b05d-8a747a95dc0f"), UserName = "seedTestUser" };
@@ -36,9 +37,8 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
             new() { Id = roleUserId, Name = "User", NormalizedName = "USER" }
         ];
 
-        var dbContext = await UnitOfWork.GetDbContextAsync<MsSqlDbContext>();
-
         // Seed database with users and roles
+        ContentDbContext dbContext = await InitializeDbContextAsync();
         await dbContext.Users.AddAsync(originalUser);
         await dbContext.Roles.AddRangeAsync(roles);
         await dbContext.UserRoles.AddRangeAsync(
@@ -52,7 +52,7 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
 
     [After(Test)]
     public async Task RunAfterTest() {
-        await RollbackToSavepointAsync();
+        await CleanupDbContextAsync();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -65,9 +65,10 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
     public async Task UserHasAllRoles_ShouldReturnValidUser(string userIdValue, string[] roles) {
         // Arrange
         Guid userId = Guid.Parse(userIdValue);
+        var repository = await UnitOfWork.GetRepositoryAsync<IUserRepository>();
 
         // Act
-        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
@@ -80,9 +81,10 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
     public async Task UserHasAllRoles_ShouldReturnFailure(string userIdValue, string[] roles) {
         // Arrange
         Guid userId = Guid.Parse(userIdValue);
+        var repository =  await UnitOfWork.GetRepositoryAsync<IUserRepository>();
 
         // Act
-        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
@@ -95,9 +97,10 @@ public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : Reposito
     public async Task UserHasAllRoles_ShouldReturnFailureUserDoesntExist(string userIdValue, string[] roles) {
         // Arrange
         Guid userId = Guid.Parse(userIdValue);
+        var repository = await UnitOfWork.GetRepositoryAsync<IUserRepository>();
 
         // Act
-        RepoResult result = await Repository.UserHasAllRolesAsync(userId, roles);
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
 
         // Assert
         await Assert.That(result.IsFailure).IsTrue();
