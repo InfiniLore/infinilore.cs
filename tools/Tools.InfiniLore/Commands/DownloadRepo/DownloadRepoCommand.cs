@@ -330,11 +330,11 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
                     propertyGroup.Descendants("PackageIcon").Remove();
                 }
                 
-                var itemGroups = doc.Descendants("ItemGroup")
+                List<XElement> itemGroups = doc.Descendants("ItemGroup")
                     .Where(group => group.Attributes("Label").FirstOrDefault()?.Value != "InternalsVisibleTo")
                     .ToList();
                 
-                foreach (var itemGroup in itemGroups) {
+                foreach (XElement itemGroup in itemGroups) {
                     List<XElement> noneElements = itemGroup.Descendants("None")
                         .Where(e =>
                             e.Attribute("Include")?.Value.Contains("LICENSE") == true 
@@ -363,10 +363,5 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
                 Console.WriteLine($"Cleaned up {path}");
             }
         }
-
-    }
-
-    private record struct ProjectData(string Name, string Version, string? GithubLink = null) {
-        public static ProjectData operator +(ProjectData a, string? github) => a with { GithubLink = github };
     }
 }

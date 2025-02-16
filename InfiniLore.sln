@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.WasmClient",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{EB00BE10-6020-4E39-A00F-C202A0165920}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WasmClient", "WasmClient", "{774835FD-5D7B-41CB-8A2E-48E5F20F377C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tailwind", "tailwind", "{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4}"
 	ProjectSection(SolutionItems) = preProject
 		package.json = package.json
@@ -31,31 +29,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9837
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KiotaClient", "KiotaClient", "{B7C12299-7FB3-488E-89FB-B30DDB7480B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.KiotaApiClient", "src\client\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota", "src\client\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Contracts", "src\server\Old.InfiniLore.Contracts\Old.InfiniLore.Contracts.csproj", "{B9B99A14-A2BC-43EF-ADAB-BC027D1A8D9A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{293C9679-45D9-4945-929D-97DF9720B429}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Database.Models", "src\server\Old.InfiniLore.Database.Models\Old.InfiniLore.Database.Models.csproj", "{5918E1AF-1E14-4199-B82C-37240BF98186}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.Tests.InfiniLore.Database.Repositories", "tests\Old.Tests.InfiniLore.Database.Repositories\Old.Tests.InfiniLore.Database.Repositories.csproj", "{188801E5-1506-4822-9B69-F8EE242855D3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{01C7445D-32FF-4602-AE4B-EE5336015F92}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CQRS", "CQRS", "{B7113FA8-3A74-424D-9B0B-F22906B59E0E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Server.Services.CQRS.Handlers", "src\server\Old.InfiniLore.Server.Services.CQRS.Handlers\Old.InfiniLore.Server.Services.CQRS.Handlers.csproj", "{AE4F5381-2780-4E46-9E0F-AC9134E8C835}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Server.Services.CQRS.Requests", "src\server\Old.InfiniLore.Server.Services.CQRS.Requests\Old.InfiniLore.Server.Services.CQRS.Requests.csproj", "{22F3C636-8628-46E5-B1A9-0C0C1919464E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{25326A39-74B3-48B9-B345-BFC1D1DB78DE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Server.Services.Authorization", "src\server\Old.InfiniLore.Server.Services.Authorization\Old.InfiniLore.Server.Services.Authorization.csproj", "{F03AB56F-E8AB-4B70-A886-D5995CAD5274}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Server.Services.Authentication", "src\server\Old.InfiniLore.Server.Services.Authentication\Old.InfiniLore.Server.Services.Authentication.csproj", "{55850CFD-7B44-4649-BA61-525EA3EE7D78}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{2AD5C2EC-5836-469E-B2C8-08FF34269B22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Old.InfiniLore.Server.Services", "src\server\Old.InfiniLore.Server.Services\Old.InfiniLore.Server.Services.csproj", "{C74EC6F0-E96E-437D-A620-63D7AE79EF61}"
 EndProject
@@ -74,6 +62,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore", "tools\Tools.InfiniLore\Tools.InfiniLore.csproj", "{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "old", "old", "{3E203D1F-EAD9-4941-9580-F4BC1094A825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server", "src\InfiniLore.Server\InfiniLore.Server\InfiniLore.Server.csproj", "{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Wasm", "src\InfiniLore.Server\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj", "{DC28E2A2-BE12-42C2-A547-115E172D7DE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,19 +149,21 @@ Global
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC28E2A2-BE12-42C2-A547-115E172D7DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC28E2A2-BE12-42C2-A547-115E172D7DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC28E2A2-BE12-42C2-A547-115E172D7DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC28E2A2-BE12-42C2-A547-115E172D7DE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
 		{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{9837BD46-BACA-4E98-8C3A-52C045FD848F} = {7304F551-466C-4016-A729-CDA819CE9983}
-		{774835FD-5D7B-41CB-8A2E-48E5F20F377C} = {9837BD46-BACA-4E98-8C3A-52C045FD848F}
 		{B7C12299-7FB3-488E-89FB-B30DDB7480B3} = {9837BD46-BACA-4E98-8C3A-52C045FD848F}
 		{9081D485-0279-4D05-BD39-2F427C35F79A} = {B7C12299-7FB3-488E-89FB-B30DDB7480B3}
-		{293C9679-45D9-4945-929D-97DF9720B429} = {EB00BE10-6020-4E39-A00F-C202A0165920}
-		{01C7445D-32FF-4602-AE4B-EE5336015F92} = {EB00BE10-6020-4E39-A00F-C202A0165920}
-		{B7113FA8-3A74-424D-9B0B-F22906B59E0E} = {01C7445D-32FF-4602-AE4B-EE5336015F92}
-		{25326A39-74B3-48B9-B345-BFC1D1DB78DE} = {01C7445D-32FF-4602-AE4B-EE5336015F92}
-		{2AD5C2EC-5836-469E-B2C8-08FF34269B22} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3} = {5A604355-8BDB-4280-AF6A-8D3A8304FEC8}
 		{51DCDAEC-2D16-4C16-A229-1250708EB3D8} = {3E203D1F-EAD9-4941-9580-F4BC1094A825}
 		{B9B99A14-A2BC-43EF-ADAB-BC027D1A8D9A} = {3E203D1F-EAD9-4941-9580-F4BC1094A825}
@@ -188,5 +182,7 @@ Global
 		{EFD0DD77-625A-4B93-90CC-46DADE1AC991} = {3E203D1F-EAD9-4941-9580-F4BC1094A825}
 		{188801E5-1506-4822-9B69-F8EE242855D3} = {3E203D1F-EAD9-4941-9580-F4BC1094A825}
 		{FDFD0CF3-CE7C-4C9F-A40C-8F32E860D91D} = {3E203D1F-EAD9-4941-9580-F4BC1094A825}
+		{007B534C-DA38-4402-9C7F-F9C5FCCF20CC} = {EB00BE10-6020-4E39-A00F-C202A0165920}
+		{DC28E2A2-BE12-42C2-A547-115E172D7DE1} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 	EndGlobalSection
 EndGlobal

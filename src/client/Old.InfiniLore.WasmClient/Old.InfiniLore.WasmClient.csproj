@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj" />
     </ItemGroup>
 
 </Project>

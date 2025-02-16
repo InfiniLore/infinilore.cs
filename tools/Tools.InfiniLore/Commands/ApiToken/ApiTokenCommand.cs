@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
-using InfiniLore.KiotaApiClient;
-using InfiniLore.KiotaApiClient.Models;
+using InfiniLore.Clients.Kiota;
+using InfiniLore.Clients.Kiota.Models;
 using Old.InfiniLore.Server.Services;
 using JetBrains.Annotations;
 using Microsoft.Kiota.Abstractions.Authentication;
