@@ -171,9 +171,9 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
     private static void ExtractPackage(DownloadRepoParameters parameters, ProjectData data) {
         string gitDirectory = Path.Combine(parameters.Root, ".temp/packages", data.Name, data.Version);
 
-        // Handle special case for InfiniLore.Server.Types
+        // Handle special case for Old.InfiniLore.Server.Types
         string projectDirectory;
-        if (data.Name == "InfiniLore.Server.Types")
+        if (data.Name == "Old.InfiniLore.Server.Types")
             projectDirectory = Path.Combine(gitDirectory, "src", "server", data.Name);
         else
             projectDirectory = Path.Combine(gitDirectory, "src", data.Name);

@@ -1,0 +1,110 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using Old.InfiniLore.Contracts.Database.Repositories;
+using Old.InfiniLore.Database.Models.Content.Account;
+using Old.InfiniLore.Database;
+using Old.InfiniLore.Database.Repositories.Content.Account;
+using Old.InfiniLore.Server.Types;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Identity;
+using Old.Tests.InfiniLore.Database.Repositories.TestInfrastructure;
+using Old.Tests.InfiniLore.Database.Repositories.TestInfrastructure.Repository;
+
+namespace Old.Tests.InfiniLore.Database.Repositories.Content.Account.UserRepositoryTests;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+[TestSubject(typeof(UserRepository))]
+[NotInParallel]
+[ClassDataSource<DatabaseInfrastructure>(Shared = SharedType.PerTestSession)]
+public class UserHasRolesTests(DatabaseInfrastructure infrastructure) : RepositoryTestFramework(infrastructure){
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Seeding
+    // -----------------------------------------------------------------------------------------------------------------
+    [Before(Test)]
+    public async Task SeedDatabase() {
+
+        // Arrange seed data
+        var originalUser = new InfiniLoreUser { Id = Guid.Parse("bc8caeb2-346e-4754-b05d-8a747a95dc0f"), UserName = "seedTestUser" };
+        var roleAdminId = Guid.CreateVersion7();
+        var roleEditorId = Guid.CreateVersion7();
+        var roleUserId = Guid.CreateVersion7();
+        IdentityRole<Guid>[] roles = [
+            new() { Id = roleAdminId, Name = "Admin", NormalizedName = "ADMIN" },
+            new() { Id = roleEditorId, Name = "Editor", NormalizedName = "EDITOR" },
+            new() { Id = roleUserId, Name = "User", NormalizedName = "USER" }
+        ];
+
+        // Seed database with users and roles
+        ContentDbContext dbContext = await InitializeDbContextAsync();
+        await dbContext.Users.AddAsync(originalUser);
+        await dbContext.Roles.AddRangeAsync(roles);
+        await dbContext.UserRoles.AddRangeAsync(
+            new IdentityUserRole<Guid> { UserId = originalUser.Id, RoleId = roleAdminId },
+            new IdentityUserRole<Guid> { UserId = originalUser.Id, RoleId = roleUserId }
+        );
+
+        // Commit changes
+        await dbContext.SaveChangesAsync();
+    }
+
+    [After(Test)]
+    public async Task RunAfterTest() {
+        await CleanupDbContextAsync();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    [Test]
+    [Arguments("bc8caeb2-346e-4754-b05d-8a747a95dc0f", new[] { "Admin", "User" })]
+    [Arguments("bc8caeb2-346e-4754-b05d-8a747a95dc0f", new[] { "User" })]
+    [Arguments("bc8caeb2-346e-4754-b05d-8a747a95dc0f", new[] { "Admin" })]
+    public async Task UserHasAllRoles_ShouldReturnValidUser(string userIdValue, string[] roles) {
+        // Arrange
+        Guid userId = Guid.Parse(userIdValue);
+        var repository = await UnitOfWork.GetRepositoryAsync<IUserRepository>();
+
+        // Act
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
+
+        // Assert
+        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.IsFailure).IsFalse();
+    }
+
+    [Test]
+    [Arguments("bc8caeb2-346e-4754-b05d-8a747a95dc0f", new[] { "Admin", "Editor" })]
+    [Arguments("bc8caeb2-346e-4754-b05d-8a747a95dc0f", new[] { "Editor" })]
+    public async Task UserHasAllRoles_ShouldReturnFailure(string userIdValue, string[] roles) {
+        // Arrange
+        Guid userId = Guid.Parse(userIdValue);
+        var repository =  await UnitOfWork.GetRepositoryAsync<IUserRepository>();
+
+        // Act
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
+
+        // Assert
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.IsSuccess).IsFalse();
+        await Assert.That(result.AsFailure.Value).IsEqualTo("User does not have all roles.");
+    }
+
+    [Test]
+    [Arguments("d9494938-0bef-47b5-9a92-6f10d26779a6", new[] { "Admin", "User" })]
+    public async Task UserHasAllRoles_ShouldReturnFailureUserDoesntExist(string userIdValue, string[] roles) {
+        // Arrange
+        Guid userId = Guid.Parse(userIdValue);
+        var repository = await UnitOfWork.GetRepositoryAsync<IUserRepository>();
+
+        // Act
+        RepoResult result = await repository.UserHasAllRolesAsync(userId, roles);
+
+        // Assert
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.IsSuccess).IsFalse();
+        await Assert.That(result.AsFailure.Value).IsEqualTo("User not found.");
+    }
+}

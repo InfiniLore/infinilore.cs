@@ -4,7 +4,7 @@
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.KiotaApiClient;
 using InfiniLore.KiotaApiClient.Models;
-using InfiniLore.Server.Services;
+using Old.InfiniLore.Server.Services;
 using JetBrains.Annotations;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;

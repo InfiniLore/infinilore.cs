@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AterraEngine.Unions" Version="3.11.0" />
+        <PackageReference Include="FastEndpoints" Version="5.34.0" />
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.36.4" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.36.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="InfiniLore.Permissions" Version="1.6.1" />
+        <PackageReference Include="InfiniLore.Permissions.Generators" Version="1.6.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Old.InfiniLore.Contracts\Old.InfiniLore.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>
