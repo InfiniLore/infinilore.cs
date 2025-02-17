@@ -11,8 +11,6 @@ namespace InfiniLore.Server.Database.Configurations;
 // ---------------------------------------------------------------------------------------------------------------------
 public class UserDataConfiguration : BasicDataConfiguration<UserData> {
     public override void Configure(EntityTypeBuilder<UserData> builder) {
-        base.Configure(builder);
-
         builder.HasOne(x => x.Owner)
             .WithMany()
             .HasForeignKey(x => x.OwnerId)

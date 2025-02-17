@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Old.InfiniLore.Database;
 using Testcontainers.MsSql;
 
 namespace InfiniLore.Server.Database;
@@ -58,7 +57,7 @@ public static class ContentDbFactory {
     /// An action to configure the database context options.
     /// </param>
     public static void RegisterDatabase(WebApplicationBuilder builder, Action<DbContextOptionsBuilder> optionsAction) {
-        builder.Services.AddDbContextFactory<ContentDbContext>(options => {
+        builder.Services.AddDbContextFactory<ContentDb>(options => {
             ILoggerFactory databaseLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("EFCORE ContentDb");
             options.UseLoggerFactory(databaseLoggerFactory);
             
@@ -69,11 +68,13 @@ public static class ContentDbFactory {
                 options.SignIn.RequireConfirmedAccount = false;
             })
             .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<ContentDbContext>()
+            .AddEntityFrameworkStores<ContentDb>()
             .AddSignInManager()
             .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-        builder.Services.AddUnitOfWork<ContentDbContext>();
-        builder.Services.AddUnitOfWork<ContentDbContext>("ContentDb");
+        builder.Services.AddUnitOfWork<ContentDb>();
+        builder.Services.AddUnitOfWork<ContentDb>("ContentDb");
+        
+        builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
     }
 }
