@@ -1,14 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models;
-
-namespace InfiniLore.Server.Database.Repositories;
+namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class SystemDataRepository : BasicDataRepository<SystemData> {
-    
-    
+public interface IHasCountAsync {
+    ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default);
 }

@@ -1,14 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models;
-
-namespace InfiniLore.Server.Database.Repositories;
+namespace InfiniLore.Server.Contracts.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class SystemDataRepository : BasicDataRepository<SystemData> {
+public enum RepositoryFailures {
+    Unknown = 0,
     
+    ModelFailedValidation,
+    ModelFailedUniqueConstraint,
     
+    ModelNotFound,
+    ModelsNotFound,
+    
+    PaginationInvalidPageNumber,
+    PaginationInvalidPageSize,
 }

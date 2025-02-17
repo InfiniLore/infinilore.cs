@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AterraEngine.Unions" Version="3.11.0" />
+      <PackageReference Include="AterraEngine.Unions.Generators" Version="3.11.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.18.1" />
     </ItemGroup>
 

@@ -1,24 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Contracts.Database.RepositoryMethods;
 using InfiniLore.Server.Database.Models;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories;
-
+namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IBasicDataRepository<T> : 
-    IUnitOfWorkRepository, 
-    IHasTryAddAsync<T>,
-    IHasTryUpdateAsync<T>,
-    IHasTryAddOrUpdateAsync<T>,
-    IHasTryDeleteAsync<T>,
-    IHasTryRemoveAsync<T>,
-    IHasTryGetByIdAsync<T>,
-    IHasTryGetAllAsync<T>,
-    IHasCountAsync
-
-    where T : BasicData;
+public interface IHasTryDeleteAsync<in T> where T : BasicData {
+    ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default);
+    ValueTask<RepoResult> TryDeleteByIdAsync(Guid id, CancellationToken ct = default);
+    
+    ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
+    ValueTask<RepoResult> TryDeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+}
