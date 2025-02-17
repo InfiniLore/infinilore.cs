@@ -38,8 +38,7 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingWithSerilog(config => config.AsAnnaSasDevServerConsole());
-
-
+        
         #region Database
         ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("CONTAINER mssqldb");
         MsSqlContainer container = new MsSqlBuilder()

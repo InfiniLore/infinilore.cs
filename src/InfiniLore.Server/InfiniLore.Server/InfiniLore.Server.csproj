@@ -4,10 +4,15 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>36e3e62b-26d0-4af0-b20e-8b5945483ab1</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj" />
+        <ProjectReference Include="..\..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.36.4" />
+        <PackageReference Include="FastEndpoints" Version="5.34.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2"/>
     </ItemGroup>
 
