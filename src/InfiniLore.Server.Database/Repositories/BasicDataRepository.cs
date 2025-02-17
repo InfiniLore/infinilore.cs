@@ -13,7 +13,7 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
-    protected virtual IQueryable<T> AutoIncluder(IQueryable<T> query) => query;
+    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
     
     protected virtual async ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default) {
         DbSet<T> dbSet = GetDbSet<T>();
@@ -283,7 +283,7 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
         
         // Build Query
         IQueryable<T> query = dbSet.Where(ls => ls.Id == id);
-        AutoIncluder(query);
+        query = AutoInclude(query);
         T? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
         
         // Retrieve Data
@@ -306,10 +306,9 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
         
         // Build Query
         IQueryable<T> query = dbSet;
-        AutoIncluder(query);
         
         // Retrieve Data
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
     public async ValueTask<RepoResult<T[]>> TryGetAllReverseAsync(CancellationToken ct = default) {
@@ -335,10 +334,9 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
             .Reverse();
-        AutoIncluder(query);
 
         // Retrieve Data
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
 
@@ -376,10 +374,9 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
-        AutoIncluder(query);
         
         // Retrieve Data
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             Items: data,
             TotalCount: totalCount,
@@ -424,10 +421,9 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
             .Reverse()
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
-        AutoIncluder(query);
         
         // Retrieve Data
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             Items: data,
             TotalCount: totalCount,
