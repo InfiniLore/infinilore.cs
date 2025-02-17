@@ -16,5 +16,7 @@ public class UserDataConfiguration : IEntityTypeConfiguration<UserData> {
             .WithMany()
             .HasForeignKey(x => x.OwnerId)
             .IsRequired();
+        
+        builder.UseTptMappingStrategy();
     }
 }

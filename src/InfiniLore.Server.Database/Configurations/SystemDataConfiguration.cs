@@ -12,6 +12,6 @@ namespace InfiniLore.Server.Database.Configurations;
 // ---------------------------------------------------------------------------------------------------------------------
 public class SystemDataConfiguration : IEntityTypeConfiguration<SystemData> {
     public void Configure(EntityTypeBuilder<SystemData> builder) {
-        
+        builder.UseTptMappingStrategy();
     }
 }

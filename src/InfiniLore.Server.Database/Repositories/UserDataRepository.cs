@@ -11,7 +11,7 @@ namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
+public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
     public async ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default) {
         // Define Access
         DbSet<T> dbSet = GetDbSet<T>();

@@ -16,5 +16,19 @@ public class JwtRefreshTokenDataConfiguration : IEntityTypeConfiguration<JwtRefr
         builder.Property(x => x.TokenHash)
             .HasMaxLength(JwtRefreshTokenData.MaxLengthTokenHash)
             .IsRequired();
+        
+        builder.Property(e => e.Roles)
+            .HasConversion(
+                v => string.Join(',', v),                
+                v => v.Split(',', StringSplitOptions.None)
+            );
+
+        builder.Property(e => e.Permissions)
+            .HasConversion(
+                v => string.Join(',', v), 
+                v => v.Split(',', StringSplitOptions.None)
+            );
+
+        builder.Ignore(x => x.ExpiresAt);
     }
 }

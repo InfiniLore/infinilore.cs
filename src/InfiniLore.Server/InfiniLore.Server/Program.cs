@@ -28,7 +28,7 @@ public static class Program {
         // Most of the DB registration is handled through the Factory class
         //      Some extra setup is required on this end though
         //      We need to register what db we are using, this way we can reuse the factory for testing, etc...
-        ContentDbFactory.RegisterDatabase(builder, options => {
+        ContentDbFactory.RegisterDatabase(builder.Services, options => {
             options.UseSqlServer(connectionString);
         });
         #endregion
@@ -57,6 +57,11 @@ public static class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(IEntrypointInfiniLoreClientsWasm).Assembly);
+
+        await using (ContentDb db = await app.Services.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync()) {
+            await db.Database.MigrateAsync();
+            await db.SaveChangesAsync();
+        }
 
         await app.RunAsync();
     }

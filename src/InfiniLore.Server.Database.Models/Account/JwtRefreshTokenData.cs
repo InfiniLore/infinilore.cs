@@ -11,7 +11,7 @@ namespace InfiniLore.Server.Database.Models.Account;
 public class JwtRefreshTokenData : UserData {
     public const int MaxLengthTokenHash = 255;
     [MaxLength(MaxLengthTokenHash)] public required string TokenHash { get; init; } = string.Empty;
-    public required int ExpiresInDays { get; init; } = 0;
+    public required int ExpiresInDays { get; init; }
 
     public string[] Roles { get; init; } = [];
     public string[] Permissions { get; init; } = [];

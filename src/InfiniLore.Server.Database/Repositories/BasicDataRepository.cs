@@ -12,21 +12,20 @@ namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
+public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
     protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
     
     protected virtual async ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default) {
         DbSet<T> dbSet = GetDbSet<T>();
         return await dbSet.AnyAsync(foundModel => foundModel.Id == originalModel.Id, ct);
-
     }
+    
     protected virtual async ValueTask<bool> IsNotUniqueRangeAsync(T[] originalModels, CancellationToken ct = default) {
         DbSet<T> dbSet = GetDbSet<T>();
         
         Guid[] modelIds = originalModels.Select(m => m.Id).ToArray();
         
         return await dbSet.AnyAsync(foundModel => modelIds.Contains(foundModel.Id), ct);
-        
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -91,8 +90,8 @@ public class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDat
 
         T[] modelArray = models as T[] ?? models.ToArray();
         Guid[] idsToUpdate = modelArray.Select(m => m.Id).ToArray();
-        List<T> existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToListAsync(ct);
-        if (existingEntities.Count != modelArray.Length) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        T[] existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToArrayAsync(ct);
+        if (existingEntities.Length != modelArray.Length) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
         
         // Build Query
         foreach (T existingEntity in existingEntities) {

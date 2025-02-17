@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Database.Models;
 
 namespace InfiniLore.Server.Database.Repositories;
@@ -8,7 +9,6 @@ namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class SystemDataRepository : BasicDataRepository<SystemData> {
-    
+public abstract class SystemDataRepository<T> : BasicDataRepository<T>, ISystemDataRepository<T> where T : SystemData  {
     
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // This is all that is required for EFC to generate the appropriate migrations
-ContentDbFactory.RegisterDatabase(builder, options =>
+ContentDbFactory.RegisterDatabase(builder.Services, options =>
     options.UseSqlServer()
 );
 

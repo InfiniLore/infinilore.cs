@@ -29,7 +29,7 @@ public static class ContentDbFactory {
     /// A string containing the connection string to the started MSSQL Docker container.
     /// </returns>
     public static async Task<string> CreateDockerMsSqlContainer() {
-        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("CONTAINER mssqldb");
+        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("DOCK mssqldb");
         MsSqlContainer container = new MsSqlBuilder()
             .WithPortBinding(60426, MsSqlBuilder.MsSqlPort)
             .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
@@ -56,15 +56,15 @@ public static class ContentDbFactory {
     /// <param name="optionsAction">
     /// An action to configure the database context options.
     /// </param>
-    public static void RegisterDatabase(WebApplicationBuilder builder, Action<DbContextOptionsBuilder> optionsAction) {
-        builder.Services.AddDbContextFactory<ContentDb>(options => {
+    public static void RegisterDatabase(IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction) {
+        services.AddDbContextFactory<ContentDb>(options => {
             ILoggerFactory databaseLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("EFCORE ContentDb");
             options.UseLoggerFactory(databaseLoggerFactory);
             
             optionsAction.Invoke(options);
         });
         
-        builder.Services.AddIdentityCore<InfiniLoreUser>(options => {
+        services.AddIdentityCore<InfiniLoreUser>(options => {
                 options.SignIn.RequireConfirmedAccount = false;
             })
             .AddRoles<IdentityRole<Guid>>()
@@ -72,9 +72,11 @@ public static class ContentDbFactory {
             .AddSignInManager()
             .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-        builder.Services.AddUnitOfWork<ContentDb>();
-        builder.Services.AddUnitOfWork<ContentDb>("ContentDb");
+        services.AddUnitOfWork<ContentDb>();
+        services.AddUnitOfWork<ContentDb>("ContentDb");
         
-        builder.Services.AddIdentityApiEndpoints<InfiniLoreUser>();
+        services.AddIdentityApiEndpoints<InfiniLoreUser>();
+        
+        services.RegisterServicesFromInfiniLoreServerDatabase();
     }
 }

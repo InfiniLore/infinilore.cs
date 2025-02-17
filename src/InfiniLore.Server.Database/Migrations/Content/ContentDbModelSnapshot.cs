@@ -88,7 +88,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.SystemData", b =>
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.BasicData", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,41 +105,9 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.HasKey("Id");
 
-                    b.ToTable("SystemData");
-                });
+                    b.ToTable("BasicData");
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("SoftDeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("UserData");
-
-                    b.HasDiscriminator().HasValue("UserData");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -273,6 +241,41 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.SystemData", b =>
+                {
+                    b.HasBaseType("InfiniLore.Server.Database.Models.BasicData");
+
+                    b.ToTable("SystemData");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
+                {
+                    b.HasBaseType("InfiniLore.Server.Database.Models.BasicData");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("UserData");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", b =>
+                {
+                    b.HasBaseType("InfiniLore.Server.Database.Models.SystemData");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.ToTable("KeyValueStores");
+                });
+
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Account.JwtRefreshTokenData", b =>
                 {
                     b.HasBaseType("InfiniLore.Server.Database.Models.UserData");
@@ -283,11 +286,11 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Property<Guid?>("InfiniLoreUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.PrimitiveCollection<string>("Permissions")
+                    b.Property<string>("Permissions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.PrimitiveCollection<string>("Roles")
+                    b.Property<string>("Roles")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -298,18 +301,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.HasIndex("InfiniLoreUserId");
 
-                    b.HasDiscriminator().HasValue("JwtRefreshTokenData");
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
-                {
-                    b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
+                    b.ToTable("JwtRefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -363,8 +355,49 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.SystemData", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Database.Models.BasicData", null)
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Database.Models.SystemData", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Database.Models.BasicData", null)
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Database.Models.UserData", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Database.Models.SystemData", null)
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Account.JwtRefreshTokenData", b =>
                 {
+                    b.HasOne("InfiniLore.Server.Database.Models.UserData", null)
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Database.Models.Account.JwtRefreshTokenData", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", null)
                         .WithMany("JwtRefreshTokens")
                         .HasForeignKey("InfiniLoreUserId");

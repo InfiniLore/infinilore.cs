@@ -87,6 +87,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Database.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore.Server.Database.EFC.Content", "src\Tools.InfiniLore.Server.Database.EFC.Content\Tools.InfiniLore.Server.Database.EFC.Content.csproj", "{CF14A158-1E2A-4ECA-8D7E-84462084CE17}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.InfiniLore.Server.Database", "tests\Tests.InfiniLore.Server.Database\Tests.InfiniLore.Server.Database.csproj", "{344ED333-E42B-48C3-9103-8C0D60831399}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,10 @@ Global
 		{CF14A158-1E2A-4ECA-8D7E-84462084CE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF14A158-1E2A-4ECA-8D7E-84462084CE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF14A158-1E2A-4ECA-8D7E-84462084CE17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344ED333-E42B-48C3-9103-8C0D60831399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344ED333-E42B-48C3-9103-8C0D60831399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344ED333-E42B-48C3-9103-8C0D60831399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344ED333-E42B-48C3-9103-8C0D60831399}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -242,5 +248,6 @@ Global
 		{B5B5E32B-09F8-4B69-908B-A34324647BC1} = {65B45547-1BBC-428D-9372-73AD2AF1CA7D}
 		{01FDB0C5-85E7-41F9-8F00-82F3025FC46A} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 		{CF14A158-1E2A-4ECA-8D7E-84462084CE17} = {65B45547-1BBC-428D-9372-73AD2AF1CA7D}
+		{344ED333-E42B-48C3-9103-8C0D60831399} = {56F59020-E2A2-4187-A847-5CF479A5BFD4}
 	EndGlobalSection
 EndGlobal

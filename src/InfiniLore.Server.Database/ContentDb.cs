@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.Data.System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ public class ContentDb : IdentityDbContext<InfiniLoreUser, IdentityRole<Guid>, G
     public DbSet<SystemData> SystemData { get; set; } = null!;
     
     public DbSet<JwtRefreshTokenData> JwtRefreshTokens { get; set; } = null!;
+    
+    public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
     
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors

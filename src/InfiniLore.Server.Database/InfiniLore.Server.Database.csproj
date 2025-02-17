@@ -7,15 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Configurations\Data\System\" />
       <Folder Include="Configurations\Data\User\" />
-      <Folder Include="Repositories\Data\System\" />
       <Folder Include="Repositories\Data\User\" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.36.4" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.18.1" />
+      <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.37.2" />
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.37.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.19.0" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
