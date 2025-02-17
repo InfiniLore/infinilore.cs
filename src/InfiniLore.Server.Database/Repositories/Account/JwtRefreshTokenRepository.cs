@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Identity;
+using InfiniLore.Server.Database.Models.Account;
 
-namespace InfiniLore.Server.Database.Models.Account;
+namespace InfiniLore.Server.Database.Repositories.Account;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUser : IdentityUser<Guid> {
-    public ICollection<JwtRefreshTokenData> JwtRefreshTokens { get; init; } = [];
+public class JwtRefreshTokenRepository : UserDataRepository<JwtRefreshTokenData> {
+    
 }

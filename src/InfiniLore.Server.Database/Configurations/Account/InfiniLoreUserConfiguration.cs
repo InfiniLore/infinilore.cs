@@ -14,5 +14,9 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
 
     public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
         builder.HasKey(x => x.Id);
+        
+        builder.HasMany(x => x.JwtRefreshTokens)
+            .WithOne(x => x.Owner)
+            .HasForeignKey(x => x.OwnerId);
     }
 }

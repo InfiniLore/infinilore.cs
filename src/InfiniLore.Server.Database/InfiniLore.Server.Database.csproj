@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Configurations\Data\System\" />
       <Folder Include="Configurations\Data\User\" />
-      <Folder Include="Repositories\Account\" />
       <Folder Include="Repositories\Data\System\" />
       <Folder Include="Repositories\Data\User\" />
     </ItemGroup>

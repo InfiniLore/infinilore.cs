@@ -10,11 +10,9 @@ namespace InfiniLore.Server.Database.Configurations;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BasicDataConfiguration : BasicDataConfiguration<BasicData> ;
-
 // Not used by EFC to make the configuration for BasicData, see class above
-public abstract class BasicDataConfiguration<T> : IEntityTypeConfiguration<T> where T : BasicData {
-    public virtual void Configure(EntityTypeBuilder<T> builder) {
+public abstract class BasicDataConfiguration : IEntityTypeConfiguration<BasicData> {
+    public void Configure(EntityTypeBuilder<BasicData> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Id).IsUnique();
         

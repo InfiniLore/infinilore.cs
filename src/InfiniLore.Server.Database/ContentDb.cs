@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,6 +16,11 @@ public class ContentDb : IdentityDbContext<InfiniLoreUser, IdentityRole<Guid>, G
     // -----------------------------------------------------------------------------------------------------------------
     // DbSets
     // -----------------------------------------------------------------------------------------------------------------
+    public DbSet<BasicData> BasicData { get; set; } = null!;
+    public DbSet<UserData> UserData { get; set; } = null!;
+    public DbSet<SystemData> SystemData { get; set; } = null!;
+    
+    public DbSet<JwtRefreshTokenData> JwtRefreshTokens { get; set; } = null!;
     
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
