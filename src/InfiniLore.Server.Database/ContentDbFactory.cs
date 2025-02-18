@@ -78,5 +78,7 @@ public static class ContentDbFactory {
         services.AddIdentityApiEndpoints<InfiniLoreUser>();
         
         services.RegisterServicesFromInfiniLoreServerDatabase();
+
+        services.AddMemoryCache();
     }
 }

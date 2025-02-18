@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Bogus;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
@@ -10,29 +9,15 @@ using InfiniLore.Server.Database.Models.Data.System;
 using InfiniLore.Server.Database.Repositories.Data.System;
 using Microsoft.EntityFrameworkCore;
 using Tests.InfiniLore.Server.Database.DataSources;
-using Tests.InfiniLore.Server.Database.Stores;
+using Tests.InfiniLore.Server.Database.Fakers;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure>(Shared = SharedType.PerTestSession)]
-public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure) {
-    [Before(Test)]
-    public async Task SeedDatabase() {
-        var dbContext = await infrastructure.GetDbContextAsync<ContentDb>();
-        if (await dbContext.KeyValueStores.AnyAsync()) return;
-
-        try {
-            await dbContext.KeyValueStores.AddAsync(KeyValueStoreFaker.Entry001);
-            await dbContext.SaveChangesAsync();
-        }
-        catch {
-            // ignored
-        }
-    }
-
+[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -82,7 +67,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
-        KeyValueStore modelWithSameId = KeyValueStoreFaker.EntryWithFixedId(KeyValueStoreFaker.Entry001Id);
+        KeyValueStore modelWithSameId = faker.GetById(GuidStore.Entry001.ToGuid());
 
         // Act
         RepoResult result = await repo.TryAddAsync(modelWithSameId);

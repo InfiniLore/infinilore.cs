@@ -16,7 +16,7 @@ namespace Tests.InfiniLore.Server.Database.DataSources;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ContentDbInfrastructure :  IAsyncInitializer, IAsyncDisposable {
-    private string? ConnectionString { get; set; }
+    public string? ConnectionString { get; set; }
     private MsSqlContainer? Container { get; set; }
     private IServiceProvider? ServiceProvider { get; set; }
     
@@ -46,10 +46,15 @@ public class ContentDbInfrastructure :  IAsyncInitializer, IAsyncDisposable {
         
         ServiceProvider = services.BuildServiceProvider();
 
-        await using IUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
-        var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
-        await dbContext.Database.MigrateAsync();
-        await dbContext.SaveChangesAsync();
+        await using (IUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>().Create()) {
+            var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
+            await dbContext.Database.MigrateAsync();
+            await dbContext.SaveChangesAsync();
+        }
+        
+        var populator = new ContentDbPopulator(ServiceProvider);
+        await populator.PopulateAsync();
+
     }
     
     public async Task<IUnitOfWork> GetUnitOfWork() {
