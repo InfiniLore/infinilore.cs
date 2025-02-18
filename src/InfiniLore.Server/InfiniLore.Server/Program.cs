@@ -33,6 +33,8 @@ public static class Program {
         });
         #endregion
         
+        builder.Services.AddMemoryCache();
+        
         builder.Services.AddRazorComponents()
             .AddInteractiveWebAssemblyComponents();
         

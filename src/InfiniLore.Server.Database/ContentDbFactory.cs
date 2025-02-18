@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.AspNetCore;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database.Models.Account;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +28,7 @@ public static class ContentDbFactory {
     /// A string containing the connection string to the started MSSQL Docker container.
     /// </returns>
     public static async Task<string> CreateDockerMsSqlContainer() {
-        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("DOCK mssqldb");
+        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("DOCKER mssql");
         MsSqlContainer container = new MsSqlBuilder()
             .WithPortBinding(60426, MsSqlBuilder.MsSqlPort)
             .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
@@ -50,9 +49,7 @@ public static class ContentDbFactory {
     /// <summary>
     /// Registers the database context and related services for the application.
     /// </summary>
-    /// <param name="builder">
-    /// The web application builder used to configure and build the application.
-    /// </param>
+    /// <param name="services">the Webapp Service collection</param>
     /// <param name="optionsAction">
     /// An action to configure the database context options.
     /// </param>
@@ -78,7 +75,5 @@ public static class ContentDbFactory {
         services.AddIdentityApiEndpoints<InfiniLoreUser>();
         
         services.RegisterServicesFromInfiniLoreServerDatabase();
-
-        services.AddMemoryCache();
     }
 }
