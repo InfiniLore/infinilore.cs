@@ -1,0 +1,42 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using Auth0.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/logout"
+@rendermode InteractiveServer
+
+@inject IHttpContextAccessor HttpContextAccessor
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    private async Task PerformLogout()
+    {
+        // Build the logout authentication properties
+        AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+            .WithRedirectUri("/")
+            .Build();
+
+        // Sign out from Auth0 and cookies
+        if (HttpContextAccessor.HttpContext != null) {
+            await HttpContextAccessor.HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+            await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PerformLogout();
+    }
+
+}

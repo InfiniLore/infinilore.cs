@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg bg-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">SampleMvcApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <div class="d-block d-lg-flex justify-content-between w-100">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+
+                    <AuthorizeView>
+                        <Authorized>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/account/profile">Hello @UserName!</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/account/logout">Logout</a>
+                            </li>
+                        </Authorized>
+                        <NotAuthorized>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/account/login?ReturnUrl=/">Login</a>
+                            </li>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    public string UserName = "Hello";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState is not null)
+        {
+            var state = await AuthenticationState;
+
+            UserName = state?.User.Identity?.Name ?? string.Empty;
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

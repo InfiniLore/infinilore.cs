@@ -1,0 +1,51 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using Auth0.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication
+@using System.Security.Claims
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/login"
+
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "ReturnUrl")]
+    public string? ReturnUrl { get; set; }
+    
+    private async Task RedirectToLogin(string redirectUri) {
+        AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
+            .WithRedirectUri(redirectUri)
+            .Build();
+
+        if (HttpContextAccessor.HttpContext != null)
+            await HttpContextAccessor.HttpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+    }
+
+    protected override async Task OnInitializedAsync() {
+        // Example redirectUri, you can modify this logic if needed
+        ClaimsPrincipal? user = HttpContextAccessor.HttpContext?.User;
+
+        if (user is null || !user.Identity?.IsAuthenticated == true) {
+            string redirectUri = !string.IsNullOrEmpty(ReturnUrl) ? ReturnUrl : NavigationManager.Uri;
+            await RedirectToLogin(redirectUri);
+            return;
+        }
+
+        //Redirect to home
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
+    }
+}

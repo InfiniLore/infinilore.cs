@@ -1,0 +1,76 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Server.Components.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/profile"
+@rendermode InteractiveServer
+
+@inject TokenProvider TokenProvider
+@attribute [Authorize]
+@layout MainLayout
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<PageTitle>Profile</PageTitle>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <h2>Profile</h2>
+
+            <div class="col-md-2">
+                <img src="@_picture"
+                     alt="" class="img-rounded img-responsive" />
+            </div>
+            <div class="col-md-4">
+                <h3>@_username</h3>
+                <p>
+                    <i class="bi bi-envelope"></i> @_emailAddress
+                </p>
+                <p>
+                    <strong>Id Token</strong>: @_idToken
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+    private string _username = string.Empty;
+    private string _emailAddress = string.Empty;
+    private string _picture = string.Empty;
+    private string? _idToken = string.Empty;
+
+    protected override async Task OnInitializedAsync() {
+        AuthenticationState state = await AuthenticationStateTask;
+
+        _username = state.User.Identity?.Name ?? string.Empty;
+        _emailAddress = state.User.Claims
+            .Where(c => c.Type.Equals(System.Security.Claims.ClaimTypes.Email))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        _picture = state.User.Claims
+            .Where(c => c.Type.Equals("picture"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+
+        _idToken = TokenProvider.IdToken;
+
+        await base.OnInitializedAsync();
+    }
+    
+}
