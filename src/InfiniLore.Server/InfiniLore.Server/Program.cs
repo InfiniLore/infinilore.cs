@@ -9,6 +9,9 @@ using InfiniLore.Clients.Wasm;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.Services.AuthenticationStateSyncer;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -27,25 +30,21 @@ public static class Program {
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        #region Logging
         LoggingLevelSwitch loggingLevelSwitch = new();
-        LoggerConfiguration loggerConfig = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy(loggingLevelSwitch);
-
-        loggerConfig.AsAnnaSasDevServerConsole();
-
-        Log.Logger = loggerConfig.CreateLogger();
-
-
+        Logger logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(loggingLevelSwitch)
+            .AsAnnaSasDevServerConsole()
+            .CreateLogger();
+        
         // Clear default providers and setup Serilog
         builder.Logging.ClearProviders();
-        // builder.Logging.AddSerilog(Log.Logger);
-        // builder.Services.AddSingleton(Log.Logger);
 
         builder.Services.AddHostedService<LoggingOverrideExtensions.ApplicationShutdownLoggerCleanup>(); // Ensure cleanup
-        builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(Log.Logger));
+        builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
+        #endregion
         
-        // builder.OverrideLoggingWithSerilog(config => config.AsAnnaSasDevServerConsole());
-
         #region Database
         // Technically we need to wrap this as a `IsDevelopment`
         //      And have another value for when we don't pull from our own container 
@@ -59,23 +58,21 @@ public static class Program {
         });
         #endregion
 
-        builder.Services.AddMemoryCache();
-
         #region Auth0
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => {
                 options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
-                ;
                 options.Audience = builder.Configuration["Auth0:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters {
                     NameClaimType = ClaimTypes.NameIdentifier
                 };
             });
+        
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
         
-
         builder.Services.AddAuth0WebAppAuthentication(options => {
             options.Domain = builder.Configuration["Auth0:Domain"]!;
             options.ClientId = builder.Configuration["Auth0:ClientId"]!;
@@ -95,6 +92,8 @@ public static class Program {
         builder.Services.SwaggerDocument();
         #endregion
 
+        builder.Services.AddHttpClient();
+        builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
@@ -114,18 +113,38 @@ public static class Program {
 
         app.UseHttpsRedirection();
 
+        app.UseStaticFiles();
         app.UseAntiforgery();
-
-        app.MapStaticAssets();
-
-
+        
         app.UseAuthentication();
         app.UseAuthorization();
+        
+        #region Authentication Endpoints
+        app.MapGet("/account/login", async Task (HttpContext httpContext, string redirectUri = "/") => {
+            AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
+                .WithRedirectUri(redirectUri)
+                .Build();
+
+            await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+        });
+
+        app.MapGet("/account/logout", async Task (HttpContext httpContext, string redirectUri = "/") => {
+            AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
+                .WithRedirectUri(redirectUri)
+                .Build();
+
+            await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        });
+        #endregion
+        
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
         });
         app.UseSwaggerGen();
 
+        app.MapStaticAssets();
+        
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()

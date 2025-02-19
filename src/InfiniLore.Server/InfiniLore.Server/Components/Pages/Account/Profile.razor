@@ -10,7 +10,6 @@
 @page "/account/profile"
 @rendermode InteractiveServer
 
-@inject TokenProvider TokenProvider
 @attribute [Authorize]
 @layout MainLayout
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -31,9 +30,6 @@
                 <h3>@_username</h3>
                 <p>
                     <i class="bi bi-envelope"></i> @_emailAddress
-                </p>
-                <p>
-                    <strong>Id Token</strong>: @_idToken
                 </p>
             </div>
 
@@ -59,7 +55,6 @@
     private string _username = string.Empty;
     private string _emailAddress = string.Empty;
     private string _picture = string.Empty;
-    private string? _idToken = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
@@ -74,9 +69,6 @@
             .Where(c => c.Type.Equals("picture"))
             .Select(c => c.Value)
             .FirstOrDefault() ?? string.Empty;
-
-
-        _idToken = TokenProvider.IdToken;
 
         await base.OnInitializedAsync();
     }

@@ -1,40 +1,28 @@
-﻿@using InfiniLore.Server.Components.Layout
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
 @using Microsoft.AspNetCore.Components.Authorization
 
-@inject TokenProvider TokenProvider
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
 
-<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>
-                    <p>Determining session state, please wait...</p>
-                </Authorizing>
-                <NotAuthorized>
-                    <h1>Sorry</h1>
-                    <p>You're not authorized to reach this page. You need to log in.</p>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingAuthenticationState>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<Router 
+    AppAssembly="@typeof(IEntrypointInfiniLoreServer).Assembly"
+    AdditionalAssemblies="new[] { typeof(IEntrypointInfiniLoreClientsWasm).Assembly }">
+    
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)"/>
+        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+    </Found>
+</Router>
 
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter]
-    public InitialApplicationState? InitialState { get; set; }
-
-    protected override Task OnInitializedAsync() {
-        TokenProvider.AccessToken = InitialState?.AccessToken;
-        TokenProvider.IdToken = InitialState?.IdToken;
-        TokenProvider.RefreshToken = InitialState?.RefreshToken;
-
-        return base.OnInitializedAsync();
-    }
+    
 }

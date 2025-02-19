@@ -6,4 +6,18 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Components.Server">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.12\Microsoft.AspNetCore.Components.Server.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.2" />
+    </ItemGroup>
+
 </Project>

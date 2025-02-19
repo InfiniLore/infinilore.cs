@@ -11,6 +11,7 @@
         <ProjectReference Include="..\..\InfiniLore.Server.Api\InfiniLore.Server.Api.csproj" />
         <ProjectReference Include="..\..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj" />
         <ProjectReference Include="..\..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
+        <ProjectReference Include="..\..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj" />
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.39.0" />
@@ -24,6 +25,7 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor" />
       <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\auth0-dotnet-ebook.png" />
     </ItemGroup>
 
 </Project>
