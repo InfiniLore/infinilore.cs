@@ -13,7 +13,6 @@
 @inject TokenProvider TokenProvider
 @attribute [Authorize]
 @layout MainLayout
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -37,10 +36,19 @@
                     <strong>Id Token</strong>: @_idToken
                 </p>
             </div>
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <h3>Admin Dashboard</h3>
+                </Authorized>
+                <NotAuthorized>
+                    <h3>You do not have access to this page.</h3>
+                </NotAuthorized>
+            </AuthorizeView>
+            
         </div>
     </div>
 </div>
-
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code

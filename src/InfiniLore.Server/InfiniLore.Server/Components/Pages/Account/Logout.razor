@@ -19,8 +19,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    private async Task PerformLogout()
-    {
+    private async Task PerformLogout() {
         // Build the logout authentication properties
         AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
             .WithRedirectUri("/")
@@ -34,8 +33,7 @@
 
     }
 
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         await PerformLogout();
     }
 
