@@ -20,6 +20,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly PersistentComponentState _state;
     private readonly IdentityOptions _options;
+    private readonly ILogger<PersistingRevalidatingAuthenticationStateProvider> _logger;
 
     private readonly PersistingComponentStateSubscription _subscription;
 
@@ -40,6 +41,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _scopeFactory = scopeFactory;
         _state = state;
         _options = options.Value;
+        _logger = loggerFactory.CreateLogger<PersistingRevalidatingAuthenticationStateProvider>();
 
         AuthenticationStateChanged += OnAuthenticationStateChanged;
         _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
@@ -57,7 +59,22 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     }
 
     private static bool ValidateSecurityStampAsync(ClaimsPrincipal principal) => principal.Identity?.IsAuthenticated is not false;
-    private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask) => _authenticationStateTask = authenticationStateTask;
+    private async void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask) {
+        _authenticationStateTask = authenticationStateTask;
+
+        AuthenticationState authenticationState = await authenticationStateTask;
+        ClaimsPrincipal principal = authenticationState.User;
+
+        if (principal.Identity?.IsAuthenticated != true) return;
+
+        string? userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
+        string? name = principal.FindFirst("name")?.Value;
+        string? email = principal.FindFirst("email")?.Value;
+        _logger.LogInformation("User {userId} logged in.", userId);
+
+        if (userId is null || name is null || email is null) return;
+    }
+
 
     private async Task OnPersistingAsync() {
         if (_authenticationStateTask is null) {

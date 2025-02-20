@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
-using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
@@ -26,22 +25,33 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
+        LoggingLevelSwitch loggingLevelSwitch = new();
+        Logger logger = new LoggerConfiguration()
+            .MinimumLevel.ControlledBy(loggingLevelSwitch)
+            .AsAnnaSasDevServerConsole()
+            .CreateLogger();
+
+        Log.Logger = logger;
+
+        try {
+            await Start(logger, args);
+        }
+        catch (Exception ex) {
+            Log.Logger.Fatal(ex, "Host terminated unexpectedly");
+        }
+        finally {
+            await Log.CloseAndFlushAsync();
+        }
+    }
+    
+    private static async Task Start(Logger logger, string[] args) {
         // -------------------------------------------------------------------------------------------------------------
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         #region Logging
-        LoggingLevelSwitch loggingLevelSwitch = new();
-        Logger logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy(loggingLevelSwitch)
-            .AsAnnaSasDevServerConsole()
-            .CreateLogger();
-        
-        // Clear default providers and setup Serilog
         builder.Logging.ClearProviders();
-
-        builder.Services.AddHostedService<LoggingOverrideExtensions.ApplicationShutdownLoggerCleanup>(); // Ensure cleanup
         builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
         #endregion
         
@@ -61,24 +71,24 @@ public static class Program {
         #region Auth0
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => {
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
                 options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
                 options.Audience = builder.Configuration["Auth0:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters {
                     NameClaimType = ClaimTypes.NameIdentifier
                 };
             });
+
+        builder.Services.AddAuth0WebAppAuthentication(options => {
+                options.Domain = builder.Configuration["Auth0:Domain"]!;
+                options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+                options.Scope = "openid profile email";
+                options.CallbackPath = "/auth/callback";
+            });
         
-        builder.Services.AddAuthorizationCore();
+        builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
-        
-        builder.Services.AddAuth0WebAppAuthentication(options => {
-            options.Domain = builder.Configuration["Auth0:Domain"]!;
-            options.ClientId = builder.Configuration["Auth0:ClientId"]!;
-            options.Scope = "openid profile email";
-            options.CallbackPath = "/auth/callback";
-        });
         
         builder.Services.AddScoped<TokenProvider>();
         builder.Services.AddScoped<InitialApplicationState>();
@@ -136,10 +146,6 @@ public static class Program {
 
             await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        });
-
-        app.MapGet("/auth/callback", async Task (HttpContext httpContext, string redirectUri = "/") => {
-            Console.WriteLine("Callback");
         });
         #endregion
         
