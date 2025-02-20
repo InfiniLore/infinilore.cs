@@ -29,8 +29,9 @@ public static class Program {
         //      This is so we can override the logging configuration
         //      And have proper application exception catching 
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.OverrideLoggingWithSerilog(config =>
-            config.AsAnnaSasDevServerConsole()
+        builder.OverrideLoggingWithSerilog(config => config
+            .AsAnnaSasDevServerConsole(sectionMaxLength:24)
+            .WithTruncateSourceContextEnricher(maxLength:24)
         );
 
         try {

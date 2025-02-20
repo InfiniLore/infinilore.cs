@@ -41,7 +41,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _scopeFactory = scopeFactory;
         _state = state;
         _options = options.Value;
-        _logger = loggerFactory.CreateLogger("Auth");
+        _logger = loggerFactory.CreateLogger("AUTH persisting");
 
         AuthenticationStateChanged += OnAuthenticationStateChanged;
         _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
@@ -71,7 +71,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         string? userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
         string? name = principal.FindFirst("name")?.Value;
         string? email = principal.FindFirst("email")?.Value;
-        _logger.LogInformation("User {userId} logged in under the name {name} and email {email}", userId, name, email);
+        _logger.Information("User {userId} logged in under the name {name} and email {email}", userId, name, email);
     }
 
 
