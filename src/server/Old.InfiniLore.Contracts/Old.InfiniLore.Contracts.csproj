@@ -29,8 +29,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.39.3" />
-        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.20.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.39.4" />
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.21.0" />
         <PackageReference Include="FastEndpoints" Version="5.34.0" />
         <PackageReference Include="FastEndpoints.Attributes" Version="5.34.0" />
         <PackageReference Include="InfiniLore.Permissions" Version="1.6.1" />

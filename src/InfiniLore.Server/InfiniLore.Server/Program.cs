@@ -154,6 +154,7 @@ public static class Program {
         
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
+            config.Errors.UseProblemDetails();
         });
         app.UseSwaggerGen();
 

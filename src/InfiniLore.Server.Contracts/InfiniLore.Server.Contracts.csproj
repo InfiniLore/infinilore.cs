@@ -12,7 +12,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.20.0" />
+      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.21.0" />
     </ItemGroup>
 
     <ItemGroup>
