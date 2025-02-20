@@ -77,8 +77,9 @@ public static class Program {
             options.Domain = builder.Configuration["Auth0:Domain"]!;
             options.ClientId = builder.Configuration["Auth0:ClientId"]!;
             options.Scope = "openid profile email";
-            options.CallbackPath = new PathString("/auth/callback");
+            options.CallbackPath = "/auth/callback";
         });
+        
         builder.Services.AddScoped<TokenProvider>();
         builder.Services.AddScoped<InitialApplicationState>();
         #endregion
@@ -135,6 +136,10 @@ public static class Program {
 
             await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        });
+
+        app.MapGet("/auth/callback", async Task (HttpContext httpContext, string redirectUri = "/") => {
+            Console.WriteLine("Callback");
         });
         #endregion
         

@@ -13,11 +13,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions" Version="0.39.0" />
+      <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.39.0" />
       <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
       <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.2" />
+      <PackageReference Include="Serilog" Version="4.2.0" />
     </ItemGroup>
 
 </Project>
