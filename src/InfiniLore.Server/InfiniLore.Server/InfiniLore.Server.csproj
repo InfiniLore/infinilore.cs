@@ -14,7 +14,7 @@
         <ProjectReference Include="..\..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj" />
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.39.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.39.1" />
         <PackageReference Include="FastEndpoints" Version="5.34.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.34.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />

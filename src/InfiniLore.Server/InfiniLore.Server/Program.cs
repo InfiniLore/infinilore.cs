@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
+using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
@@ -16,7 +17,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Serilog.Core;
 using System.Security.Claims;
 
 namespace InfiniLore.Server;
@@ -25,16 +25,17 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
-        LoggingLevelSwitch loggingLevelSwitch = new();
-        Logger logger = new LoggerConfiguration()
-            .MinimumLevel.ControlledBy(loggingLevelSwitch)
-            .AsAnnaSasDevServerConsole()
-            .CreateLogger();
-
-        Log.Logger = logger;
+        // Builder is setup here first
+        //      This is so we can override the logging configuration
+        //      And have proper application exception catching 
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        builder.OverrideLoggingWithSerilog(config =>
+            config.AsAnnaSasDevServerConsole()
+        );
 
         try {
-            await Start(logger, args);
+            WebApplication app = await BuildApp(builder);
+            await Start(app);
         }
         catch (Exception ex) {
             Log.Logger.Fatal(ex, "Host terminated unexpectedly");
@@ -44,17 +45,10 @@ public static class Program {
         }
     }
     
-    private static async Task Start(Logger logger, string[] args) {
-        // -------------------------------------------------------------------------------------------------------------
-        // Builder
-        // -------------------------------------------------------------------------------------------------------------
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        #region Logging
-        builder.Logging.ClearProviders();
-        builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(logger));
-        #endregion
-        
+    // -----------------------------------------------------------------------------------------------------------------
+    // Builder
+    // -----------------------------------------------------------------------------------------------------------------
+    private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
         #region Database
         // Technically we need to wrap this as a `IsDevelopment`
         //      And have another value for when we don't pull from our own container 
@@ -108,12 +102,14 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
-        // -------------------------------------------------------------------------------------------------------------
-        // App
-        // -------------------------------------------------------------------------------------------------------------
-        WebApplication app = builder.Build();
-
+        
+        return builder.Build();
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // App
+    // -----------------------------------------------------------------------------------------------------------------
+    private static async Task Start(WebApplication app) {
         if (app.Environment.IsDevelopment()) {
             app.UseWebAssemblyDebugging();
         }
