@@ -10,6 +10,7 @@ using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Services.AuthenticationStateSyncer;
+using InfiniLore.Server.Services.CQRS;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,7 +26,7 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
-        // Builder is setup here first
+        // Builder is set up here first
         //      This is so we can override the logging configuration
         //      And have proper application exception catching 
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -63,7 +64,7 @@ public static class Program {
         });
         #endregion
 
-        #region Auth0
+        #region Auth
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
@@ -84,18 +85,23 @@ public static class Program {
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
-        
-        builder.Services.AddScoped<TokenProvider>();
-        builder.Services.AddScoped<InitialApplicationState>();
         #endregion
 
         #region FastEndpoints
         builder.Services.AddFastEndpoints(options => {
+            options.DisableAutoDiscovery = true;
+            
             options.Assemblies = [
                 typeof(IEntrypointInfiniLoreServerApi).Assembly
             ];
         });
         builder.Services.SwaggerDocument();
+        #endregion
+        
+        #region MediatR
+        builder.Services.AddMediatR(config => {
+            config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
+        });
         #endregion
 
         builder.Services.AddHttpClient();
