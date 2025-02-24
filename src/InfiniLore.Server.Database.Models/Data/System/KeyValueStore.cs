@@ -9,9 +9,11 @@ namespace InfiniLore.Server.Database.Models.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class KeyValueStore : SystemData{
-    public const int MaxKeyLength = 255;
-    [MaxLength(MaxKeyLength)] public required string Key { get; set; } = string.Empty;
+    [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; set; } = string.Empty;
+    [MaxLength(Defaults.ValueMaxLength)] public string? Value { get; set; }
     
-    public const int MaxValueLength = 1024;
-    [MaxLength(MaxValueLength)] public string? Value { get; set; }
+    public static class Defaults {
+        public const int KeyMaxLength = 256;
+        public const int ValueMaxLength = 1024;
+    }
 }

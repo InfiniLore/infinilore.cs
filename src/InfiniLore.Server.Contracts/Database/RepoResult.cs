@@ -15,6 +15,8 @@ public readonly partial struct RepoResult() : IUnion<Success, RepoResultFailure>
     
     public static readonly RepoResult Success = FromSuccess(new Success());
 
+    public static RepoResult FromBool(bool value) => value ? Success : FromFailure(RepositoryFailures.Unknown);
+    
     public static RepoResult FromFailure(RepositoryFailures failure) => FromFailure(RepoResultFailure.FromKnownFailure(failure));
     public static RepoResult FromFailure(Failure<string> failure) => FromFailure(RepoResultFailure.FromUnknownFailure(failure));
     public static RepoResult FromFailure(string failure) => FromFailure(RepoResultFailure.FromUnknownFailure(new Failure<string>(failure)));

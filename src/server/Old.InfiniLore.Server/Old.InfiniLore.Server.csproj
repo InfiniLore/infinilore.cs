@@ -24,7 +24,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" PrivateAssets="All" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
-        <PackageReference Include="Testcontainers.MsSql" Version="4.2.0" />
+        <PackageReference Include="Testcontainers.MsSql" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>

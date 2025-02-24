@@ -14,12 +14,12 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
 
     public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
         builder.HasIndex(x => x.Auth0IdGoogle).IsUnique();
-        builder.Property(x => x.Auth0IdGoogle).HasMaxLength(256);
+        builder.Property(x => x.Auth0IdGoogle).HasMaxLength(InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength);
         
         builder.HasIndex(x => x.Auth0Github).IsUnique();
-        builder.Property(x => x.Auth0Github).HasMaxLength(256);
+        builder.Property(x => x.Auth0Github).HasMaxLength(InfiniLoreUser.Defaults.Auth0IdGithubMaxLength);
         
         builder.HasIndex(x => x.Username).IsUnique();
-        builder.Property(x => x.Username).HasMaxLength(256);
+        builder.Property(x => x.Username).HasMaxLength(InfiniLoreUser.Defaults.UsernameMaxLength);
     }
 }

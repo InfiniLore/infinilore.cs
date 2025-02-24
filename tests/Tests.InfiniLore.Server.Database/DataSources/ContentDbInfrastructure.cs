@@ -16,7 +16,7 @@ namespace Tests.InfiniLore.Server.Database.DataSources;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ContentDbInfrastructure :  IAsyncInitializer, IAsyncDisposable {
-    public string? ConnectionString { get; set; }
+    private string? ConnectionString { get; set; }
     private MsSqlContainer? Container { get; set; }
     private IServiceProvider? ServiceProvider { get; set; }
     
@@ -40,6 +40,7 @@ public class ContentDbInfrastructure :  IAsyncInitializer, IAsyncDisposable {
         #endregion
 
         var services = new ServiceCollection();
+        services.AddLogging();
         ContentDbFactory.RegisterDatabase(services, builder => {
             builder.UseSqlServer(ConnectionString);
         });
@@ -54,7 +55,6 @@ public class ContentDbInfrastructure :  IAsyncInitializer, IAsyncDisposable {
         
         var populator = new ContentDbPopulator(ServiceProvider);
         await populator.PopulateAsync();
-
     }
     
     public async Task<IUnitOfWork> GetUnitOfWork() {

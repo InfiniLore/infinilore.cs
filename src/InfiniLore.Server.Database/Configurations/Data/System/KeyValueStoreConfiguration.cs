@@ -14,10 +14,10 @@ public class KeyValueStoreConfiguration : IEntityTypeConfiguration<KeyValueStore
 
     public void Configure(EntityTypeBuilder<KeyValueStore> builder) {
         builder.Property(x => x.Key)
-            .HasMaxLength(KeyValueStore.MaxKeyLength)
+            .HasMaxLength(KeyValueStore.Defaults.KeyMaxLength)
             .IsRequired();
         
         builder.Property(x => x.Value)
-            .HasMaxLength(KeyValueStore.MaxValueLength);
+            .HasMaxLength(KeyValueStore.Defaults.ValueMaxLength);
     }
 }

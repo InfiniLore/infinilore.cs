@@ -52,4 +52,40 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
         return RepoResult<InfiniLoreUser>.FromSuccess(result);
     }
     #endregion
+
+    public async ValueTask<RepoResult> IsUsernameTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
+        if (username.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
+        // Define Access
+        DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
+        
+        // Build Query
+        IQueryable<InfiniLoreUser> query = dbSet
+            .Where(ls => ls.Username == username)
+            .ConditionalWhere(
+                skipUserId != Guid.Empty,
+                ls => ls.Id != skipUserId
+            );
+        
+        // Retrieve Data
+        bool result = await query.AnyAsync(cancellationToken: ct);
+        return RepoResult.FromBool(!result);
+    }
+    
+    public async ValueTask<RepoResult> IsUsernameNotTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
+        if (username.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
+        // Define Access
+        DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
+        
+        // Build Query
+        IQueryable<InfiniLoreUser> query = dbSet
+            .Where(ls => ls.Username == username)
+            .ConditionalWhere(
+                skipUserId != Guid.Empty,
+                ls => ls.Id != skipUserId
+            );
+        
+        // Retrieve Data
+        bool result = await query.AnyAsync(cancellationToken: ct);
+        return RepoResult.FromBool(result);
+    }
 }
