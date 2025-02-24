@@ -36,7 +36,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     [Parameter]
     [SupplyParameterFromQuery(Name = "auth0UserId")]
@@ -58,6 +57,9 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task HandleValidSubmitAsync() {
+        // Because this page is in "InteractiveServer" rendermode, we don't need to use the JSON API to make all of this work
+        //      We should use our internal systems directly 
+        
         // TODO store new username to Auth0 as well.
         //      will always be loaded as (ClaimsPrincipalIdentity.Name)
         InfiniLoreUser? result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
@@ -66,6 +68,7 @@
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
             ? ReturnUrl
             : "/";
+        
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
         Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
     }
