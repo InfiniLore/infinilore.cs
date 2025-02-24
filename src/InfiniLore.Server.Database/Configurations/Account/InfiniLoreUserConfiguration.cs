@@ -18,5 +18,8 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
         
         builder.HasIndex(x => x.Auth0Github).IsUnique();
         builder.Property(x => x.Auth0Github).HasMaxLength(256);
+        
+        builder.HasIndex(x => x.Username).IsUnique();
+        builder.Property(x => x.Username).HasMaxLength(256);
     }
 }

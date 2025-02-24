@@ -21,12 +21,18 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
             await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
             var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
+            // Create a new used based on the request
             var newUserId = Guid.CreateVersion7();
             var user = new InfiniLoreUser {
-                Id = newUserId
+                Id = newUserId,
+                Username = request.UserName
             };
             if (request.Auth0UserId.StartsWith("google")) user.Auth0IdGoogle = request.Auth0UserId;
             
+            // Validate the user model
+            // TODO Add Fluent Validation for InfiniLoreUser
+            
+            // Save to Db
             RepoResult result = await userRepo.TryAddAsync(user, ct);
             if (result.IsFailure) return null;
             

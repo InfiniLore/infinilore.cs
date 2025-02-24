@@ -9,6 +9,5 @@ namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasTryAddAsync<in T> where T : BasicData {
     ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default);
-    
     ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
 }
