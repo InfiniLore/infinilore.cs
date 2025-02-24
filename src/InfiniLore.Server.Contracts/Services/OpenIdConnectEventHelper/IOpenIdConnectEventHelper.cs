@@ -1,14 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace InfiniLore.Server.Database.Models.Account;
+namespace InfiniLore.Server.Contracts.Services.OpenIdConnectEventHelper;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUser : BasicData {
-    [MaxLength(256)] public string? Auth0IdGoogle { get; set; }
-    [MaxLength(256)] public string? Auth0Github { get; set; }
+public interface IOpenIdConnectEventHelper<in TContext> where TContext : BaseContext<OpenIdConnectOptions>   {
+    Task HandleAsync(TContext context);
 }

@@ -1,17 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 
-namespace InfiniLore.Server.Database.Repositories.Account;
+namespace InfiniLore.Server.Services.CQRS.Commands.Account;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IJwtRefreshTokenRepository>(ServiceLifetime.Scoped)]
-public class JwtRefreshTokenRepository : UserDataRepository<JwtRefreshTokenData>, IJwtRefreshTokenRepository {
-    
-}
+public record UserCreateRequest(
+    string Auth0UserId,
+    string UserName
+) : IRequest<InfiniLoreUser?>;

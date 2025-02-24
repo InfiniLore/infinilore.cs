@@ -10,8 +10,8 @@
         <PackageReference Include="AterraEngine.Unions" Version="3.11.0" />
         <PackageReference Include="FastEndpoints" Version="5.34.0" />
 
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.39.4" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.39.4">
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.40.1" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.40.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

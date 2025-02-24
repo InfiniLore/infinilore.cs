@@ -66,19 +66,9 @@ public static class ContentDbFactory {
             
             optionsAction.Invoke(options);
         });
-        
-        services.AddIdentityCore<InfiniLoreUser>(options => {
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-            .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<ContentDb>()
-            .AddSignInManager()
-            .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
         services.AddUnitOfWork<ContentDb>();
         services.AddUnitOfWork<ContentDb>("ContentDb");
-        
-        services.AddIdentityApiEndpoints<InfiniLoreUser>();
         
         services.RegisterServicesFromInfiniLoreServerDatabase();
     }

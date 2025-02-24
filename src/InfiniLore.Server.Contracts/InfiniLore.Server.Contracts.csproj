@@ -13,6 +13,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.21.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>

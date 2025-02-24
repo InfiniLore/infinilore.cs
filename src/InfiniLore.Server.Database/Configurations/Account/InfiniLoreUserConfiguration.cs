@@ -13,10 +13,10 @@ namespace InfiniLore.Server.Database.Configurations.Account;
 public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUser>{
 
     public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
-        builder.HasKey(x => x.Id);
+        builder.HasIndex(x => x.Auth0IdGoogle).IsUnique();
+        builder.Property(x => x.Auth0IdGoogle).HasMaxLength(256);
         
-        builder.HasMany(x => x.JwtRefreshTokens)
-            .WithOne(x => x.Owner)
-            .HasForeignKey(x => x.OwnerId);
+        builder.HasIndex(x => x.Auth0Github).IsUnique();
+        builder.Property(x => x.Auth0Github).HasMaxLength(256);
     }
 }

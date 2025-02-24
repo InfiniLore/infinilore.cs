@@ -9,16 +9,18 @@ using InfiniLore.Clients.Wasm;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Services.AuthenticationStateSyncer;
+using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.CQRS;
+using InfiniLore.Server.Services.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
+using TokenValidatedContext=Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,7 +42,7 @@ public static class Program {
             await Start(app);
         }
         catch (Exception ex) {
-            Log.Logger.Fatal(ex, "Host terminated unexpectedly");
+            Log.Logger.Fatal(ex, "Host terminated unexpectedly: {Message} \n {Trace}", ex.Message, ex.StackTrace);
         }
         finally {
             await Log.CloseAndFlushAsync();
@@ -78,13 +80,19 @@ public static class Program {
         builder.Services.AddAuth0WebAppAuthentication(options => {
                 options.Domain = builder.Configuration["Auth0:Domain"]!;
                 options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+                
+                // Add ClientSecret
+                // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
                 options.Scope = "openid profile email";
                 options.CallbackPath = "/auth/callback";
-            });
+                
+                options.OpenIdConnectEvents = new OpenIdConnectEvents {
+                    OnTokenValidated = OpenIdConnectEventHelper.HandleWith<OnTokenValidated, TokenValidatedContext>()
+                };
+        });
         
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
         #endregion
 
         #region FastEndpoints
@@ -109,6 +117,8 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
+
+        builder.Services.RegisterServicesFromInfiniLoreServerServices();
         
         return builder.Build();
     }

@@ -1,0 +1,70 @@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Server.Database.Models.Account
+@using InfiniLore.Server.Services.CQRS.Commands.Account
+@using MediatR
+@using System.ComponentModel.DataAnnotations
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/register"
+@inject NavigationManager Navigation
+@inject IMediator Mediator
+@rendermode InteractiveServer
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<h3>Register</h3>
+<p>User ID: @Auth0UserId</p>
+
+<EditForm Model="@userModel" OnValidSubmit="HandleValidSubmitAsync">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div>
+        <label for="username">Username:</label>
+        <InputText id="username" @bind-Value="userModel.Username" class="form-control"/>
+        <ValidationMessage For="@(() => userModel.Username)"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auth0UserId")]
+    public string Auth0UserId { get; set; } = string.Empty;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string ReturnUrl { get; set; } = string.Empty;
+
+    private readonly UserModel userModel = new();
+
+    private class UserModel {
+        [Required]
+        [StringLength(50, ErrorMessage = "Username must be less than 50 characters.")]
+        public string Username { get; set; } = string.Empty;
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private async Task HandleValidSubmitAsync() {
+        InfiniLoreUser? result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
+        ArgumentNullException.ThrowIfNull(result);
+        
+        string returnUl = ReturnUrl.IsNotNullOrEmpty()
+            ? ReturnUrl
+            : "/";
+        string encodedReturnUl = Uri.EscapeDataString(returnUl);
+        Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
+    }
+}

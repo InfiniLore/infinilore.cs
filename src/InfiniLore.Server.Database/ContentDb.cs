@@ -4,8 +4,6 @@
 using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Database.Models.Data.System;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Database;
@@ -13,7 +11,8 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ContentDb : IdentityDbContext<InfiniLoreUser, IdentityRole<Guid>, Guid>{
+// Not an IdentityDbContext due to Auth0 handling all of the auth & identity stuff
+public class ContentDb : DbContext{
     // -----------------------------------------------------------------------------------------------------------------
     // DbSets
     // -----------------------------------------------------------------------------------------------------------------
@@ -21,9 +20,9 @@ public class ContentDb : IdentityDbContext<InfiniLoreUser, IdentityRole<Guid>, G
     public DbSet<UserData> UserData { get; set; } = null!;
     public DbSet<SystemData> SystemData { get; set; } = null!;
     
-    public DbSet<JwtRefreshTokenData> JwtRefreshTokens { get; set; } = null!;
-    
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
+    
+    public DbSet<InfiniLoreUser> Users { get; set; } = null!;
     
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
