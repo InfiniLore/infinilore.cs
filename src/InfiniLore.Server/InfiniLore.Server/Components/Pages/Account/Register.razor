@@ -58,6 +58,8 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task HandleValidSubmitAsync() {
+        // TODO store new username to Auth0 as well.
+        //      will always be loaded as (ClaimsPrincipalIdentity.Name)
         InfiniLoreUser? result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
         ArgumentNullException.ThrowIfNull(result);
         
