@@ -62,7 +62,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
         if (parameters.LinkToSolution) {
             await AddProjectsToSolutionAsync(parameters, projects);
             await CleanupCsprojFilesAsync(parameters, projects);
-            await RemapDependenciesAsync(parameters, projects);
+            // await RemapDependenciesAsync(parameters, projects);
         }
     }
 
@@ -292,7 +292,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
     }
 
     private static async ValueTask AddProjectsToSolutionAsync(DownloadRepoParameters parameters, ProjectData[] projects) {
-        string solutionFilePath = Path.Combine(parameters.Root, "AdvancedCSharp.sln");
+        string solutionFilePath = Path.Combine(parameters.Root, parameters.SolutionFile);
         if (!File.Exists(solutionFilePath)) {
             Console.WriteLine($"Solution file {solutionFilePath} not found.");
             return;
