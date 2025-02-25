@@ -57,18 +57,12 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
         IEnumerable<Task> downloadTasks = results.Select(project => DownloadPackageAsync(parameters, project));
         await Task.WhenAll(downloadTasks);
 
-        // Step 6: Ensure all target directories are prepared for overriding
+        // Step 6: Extract files
         foreach (ProjectData project in results) {
-            DeleteDirectoryIfExists(
-                Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name));
-            DeleteDirectoryIfExists(
-                Path.Combine(parameters.Root, $"{parameters.OutputFolder}tests", $"Tests.{project.Name}"));
-
-            // Step 7: Extract and override files
             ExtractPackage(parameters, project);
         }
 
-        // Step 8: Update solution and dependencies
+        // Step 7: Update solution and dependencies
         if (parameters.LinkToSolution) {
             await AddProjectsToSolutionAsync(parameters, projects);
             await CleanupCsprojFilesAsync(parameters, projects);
@@ -112,10 +106,10 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
 
         foreach (string folder in Directory.EnumerateDirectories(Path.Combine(parameters.Root, "src"))) {
             string backupPath = Path.Combine(backupDir, Path.GetFileName(folder));
-            if (!Directory.Exists(backupPath)) {
-                Directory.Move(folder, backupPath);
-                Console.WriteLine($"Backed up {folder} to {backupPath}");
-            }
+            if (Directory.Exists(backupPath)) continue;
+
+            Directory.Move(folder, backupPath);
+            Console.WriteLine($"Backed up {folder} to {backupPath}");
         }
     }
 
