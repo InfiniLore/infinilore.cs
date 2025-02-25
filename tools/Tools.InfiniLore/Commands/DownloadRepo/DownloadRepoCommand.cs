@@ -23,7 +23,7 @@ namespace Tools.InfiniLore.Commands.DownloadRepo;
 public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
     private readonly SourceCacheContext Cache = new();
     private readonly SourceRepository Repo = NuGetRepository.Factory.GetCoreV3("https://api.nuget.org/v3/index.json");
-    
+
     [GeneratedRegex(@"^(?!Tools).*\.csproj$")]
     private static partial Regex ExcludeToolsRegex { get; }
 
@@ -33,46 +33,92 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
     public async Task ExecuteAsync(DownloadRepoParameters parameters) {
         string[] paths = GetProjectPaths(parameters);
         string tempDirectory = Path.Combine(parameters.Root, ".temp");
-        if (Directory.Exists(tempDirectory)) {
-            // Remove the read-only attribute if present
-            var directoryInfo = new DirectoryInfo(tempDirectory);
-            foreach (FileInfo file in directoryInfo.GetFiles()) {
-                file.IsReadOnly = false;// Set to false before deletion
-            }
 
-            // Now delete the directory
-            Directory.Delete(tempDirectory, true);
+        // Step 1: Clean up temporary and existing repositories
+        if (Directory.Exists(tempDirectory)) {
+            CleanDirectory(tempDirectory);// Custom cleanup that handles locked files
         }
 
-        // Collect the projects
-        ProjectData[][] projectDatas = await Task.WhenAll(paths.Select(p => GetExternalProjectsAsync(p)));
-        ProjectData[] projects = projectDatas
-            .SelectMany(p => p)
-            .DistinctBy(p => p.Name)
-            .ToArray();
+        // Step 2: Backup or log existing state (optional)
+        BackupRepositories(parameters);
 
-        // Get all the links
-        ProjectData[] results = await Task.WhenAll(projects.Select(async project => project + await GetGithubLinkAsync(project)));
+        // Step 3: Collect the projects to override
+        ProjectData[][] projectDatas = await Task.WhenAll(paths.Select(p => GetExternalProjectsAsync(p)));
+        ProjectData[] projects = projectDatas.SelectMany(p => p).DistinctBy(p => p.Name).ToArray();
+
+        // Step 4: Fetch project data with links
+        IEnumerable<Task<ProjectData>> tasks = projects.Select(async project => project + await GetGithubLinkAsync(project));
+        ProjectData[] results = await Task.WhenAll(tasks);
         foreach (ProjectData project in results) {
             Console.WriteLine($"{project.Name} - {project.Version} - {project.GithubLink}");
         }
 
-        // Download the repo's
-        IEnumerable<Task> tasks = results.Select(project => DownloadPackageAsync(parameters, project));
-        await Task.WhenAll(tasks);
+        // Step 5: Download all repositories (overrides handled in ExtractPackage)
+        IEnumerable<Task> downloadTasks = results.Select(project => DownloadPackageAsync(parameters, project));
+        await Task.WhenAll(downloadTasks);
 
-        // Extract the packages
-        foreach (ProjectData project in results) ExtractPackage(parameters, project);
+        // Step 6: Ensure all target directories are prepared for overriding
+        foreach (ProjectData project in results) {
+            DeleteDirectoryIfExists(
+                Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name));
+            DeleteDirectoryIfExists(
+                Path.Combine(parameters.Root, $"{parameters.OutputFolder}tests", $"Tests.{project.Name}"));
 
-        // Add the projects to the solution
-        if (!parameters.LinkToSolution) return;
-        await AddProjectsToSolutionAsync(parameters, projects);
-        
-        // Cleanup csproj files
-        await CleanupCsprojFiles(parameters, projects);
-        
-        // TODO: link old references with newly imported packages
+            // Step 7: Extract and override files
+            ExtractPackage(parameters, project);
+        }
+
+        // Step 8: Update solution and dependencies
+        if (parameters.LinkToSolution) {
+            await AddProjectsToSolutionAsync(parameters, projects);
+            await CleanupCsprojFilesAsync(parameters, projects);
+            await RemapDependenciesAsync(parameters, projects);
+        }
     }
+
+    private static void CleanDirectory(string directoryPath) {
+        if (!Directory.Exists(directoryPath)) return;
+
+        var directoryInfo = new DirectoryInfo(directoryPath);
+
+        try {
+            // Remove read-only attributes from all files
+            foreach (FileInfo file in directoryInfo.GetFiles("*", SearchOption.AllDirectories)) {
+                if (file.IsReadOnly) {
+                    file.IsReadOnly = false;// Remove read-only attribute
+                }
+
+                file.Delete();// Delete the file
+            }
+
+            // Recursively delete all subdirectories
+            foreach (DirectoryInfo subDirectory in directoryInfo.GetDirectories()) {
+                CleanDirectory(subDirectory.FullName);// Recursive cleaning
+            }
+
+            // Finally, delete the directory itself
+            Directory.Delete(directoryPath, true);
+            Console.WriteLine($"Successfully cleaned: {directoryPath}");
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Failed to clean directory {directoryPath}: {ex.Message}");
+        }
+    }
+
+
+    private static void BackupRepositories(DownloadRepoParameters parameters) {
+        string backupDir = Path.Combine(parameters.Root, "backup");
+        Directory.CreateDirectory(backupDir);
+
+        foreach (string folder in Directory.EnumerateDirectories(Path.Combine(parameters.Root, "src"))) {
+            string backupPath = Path.Combine(backupDir, Path.GetFileName(folder));
+            if (!Directory.Exists(backupPath)) {
+                Directory.Move(folder, backupPath);
+                Console.WriteLine($"Backed up {folder} to {backupPath}");
+            }
+        }
+    }
+
 
     public static string[] GetProjectPaths(DownloadRepoParameters parameters) {
         var paths = new List<string>();
@@ -294,32 +340,31 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
         }
     }
 
-    private static async ValueTask CleanupCsprojFiles(DownloadRepoParameters parameters, ProjectData[] projects) {
+    private static async ValueTask CleanupCsprojFilesAsync(DownloadRepoParameters parameters, ProjectData[] projects) {
         var settings = new XmlWriterSettings {
             Indent = true,
             IndentChars = "    ",
             Async = true,
             OmitXmlDeclaration = true,
-            NewLineOnAttributes = false // Keeps attributes on the same line
+            NewLineOnAttributes = false// Keeps attributes on the same line
         };
-        
+
         foreach (ProjectData project in projects) {
             string projectFilePath = Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name, $"{project.Name}.csproj");
             string testFilePath = Path.Combine(parameters.Root, $"{parameters.OutputFolder}tests", $"Tests.{project.Name}", $"Tests.{project.Name}.csproj");
-            
-            // I want to comment out
-            foreach (string path in new[] {projectFilePath, testFilePath}) {
+
+            foreach (string path in new[] { projectFilePath, testFilePath }) {
                 if (!File.Exists(path)) {
                     Console.WriteLine($"File not found: {path}");
                     continue;
                 }
-                
+
                 // LOAD
                 XDocument doc;
                 await using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
                     doc = await XDocument.LoadAsync(stream, LoadOptions.PreserveWhitespace, CancellationToken.None);
                 }
-                
+
                 // do stuff
                 XElement? propertyGroup = doc.Descendants("PropertyGroup").FirstOrDefault();
                 if (propertyGroup != null) {
@@ -327,15 +372,15 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
                     propertyGroup.Descendants("PackageReadmeFile").Remove();
                     propertyGroup.Descendants("PackageIcon").Remove();
                 }
-                
+
                 List<XElement> itemGroups = doc.Descendants("ItemGroup")
                     .Where(group => group.Attributes("Label").FirstOrDefault()?.Value != "InternalsVisibleTo")
                     .ToList();
-                
+
                 foreach (XElement itemGroup in itemGroups) {
                     List<XElement> noneElements = itemGroup.Descendants("None")
                         .Where(e =>
-                            e.Attribute("Include")?.Value.Contains("LICENSE") == true 
+                            e.Attribute("Include")?.Value.Contains("LICENSE") == true
                             || e.Attribute("Include")?.Value.Contains("README.md") == true
                             || e.Attribute("Include")?.Value.Contains("icon.png") == true
                         )
@@ -351,15 +396,85 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
                     }
                 }
 
-                
+
                 // SAVE
                 await using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
                     await using var writer = XmlWriter.Create(stream, settings);
                     doc.Save(writer);// Save while enforcing indentation
                 }
-                
+
                 Console.WriteLine($"Cleaned up {path}");
             }
+        }
+    }
+
+    private static async ValueTask RemapDependenciesAsync(DownloadRepoParameters parameters, ProjectData[] projects) {
+        foreach (ProjectData project in projects) {
+            string projectFilePath = Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name, $"{project.Name}.csproj");
+
+            if (!File.Exists(projectFilePath)) {
+                Console.WriteLine($"Project file not found: {projectFilePath}");
+                continue;
+            }
+
+            Console.WriteLine($"Remapping dependencies for {project.Name}...");
+
+            // Load the project file
+            XDocument doc;
+            await using (var stream = new FileStream(projectFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+                doc = await XDocument.LoadAsync(stream, LoadOptions.PreserveWhitespace, CancellationToken.None);
+            }
+
+            // Update PackageReference versions (if applicable)
+            IEnumerable<XElement> packageReferences = doc.Descendants("PackageReference");
+            foreach (XElement packageReference in packageReferences) {
+                string? packageName = packageReference.Attribute("Include")?.Value;
+
+                // Update logic for PackageReference
+                ProjectData matchingProject = projects.FirstOrDefault(p => p.Name == packageName);
+                Console.WriteLine($"Updating {packageName} to version {matchingProject.Version}...");
+                packageReference.SetAttributeValue("Version", matchingProject.Version);
+            }
+
+            // Update ProjectReference paths (if applicable)
+            IEnumerable<XElement> projectReferences = doc.Descendants("ProjectReference");
+            foreach (XElement projectReference in projectReferences) {
+                string? projectPath = projectReference.Attribute("Include")?.Value;
+                if (projectPath == null) continue;
+
+                // Resolve full path of the old project reference
+                string oldProjectFullPath = Path.Combine(Path.GetDirectoryName(projectFilePath) ?? string.Empty, projectPath);
+                string newProjectPath;
+
+                // Check if the project exists in the new "src" folder
+                if (File.Exists(Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath)))) {
+                    newProjectPath = Path.Combine("..", "..", "src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath));
+                    Console.WriteLine($"Updating project reference path: {projectPath} -> {newProjectPath}");
+                }
+                else {
+                    Console.WriteLine($"Could not resolve new path for {projectPath}. Keeping the existing reference.");
+                    newProjectPath = projectPath;// Keep the original, unaltered path if no new path is found
+                }
+
+                // Update the ProjectReference to the new location
+                projectReference.SetAttributeValue("Include", newProjectPath);
+
+            }
+
+            // Save the updated `.csproj` file
+            var settings = new XmlWriterSettings {
+                Indent = true,
+                IndentChars = "    ",
+                Async = true,
+                OmitXmlDeclaration = true
+            };
+
+            await using (var stream = new FileStream(projectFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
+                await using var writer = XmlWriter.Create(stream, settings);
+                doc.Save(writer);
+            }
+
+            Console.WriteLine($"Dependencies remapped successfully for {project.Name}.");
         }
     }
 }
