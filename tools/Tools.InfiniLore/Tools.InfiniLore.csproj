@@ -15,7 +15,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.3.4"/>
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.36.4" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.40.1" />
         <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.17.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
         <PackageReference Include="LibGit2Sharp" Version="0.31.0"/>
@@ -24,8 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\client\InfiniLore.KiotaApiClient\InfiniLore.KiotaApiClient.csproj" />
-      <ProjectReference Include="..\..\src\server\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj" />
+      <ProjectReference Include="..\..\src\client\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -19,4 +19,8 @@ public readonly partial struct DownloadRepoParameters : IParameters {
     [CliArgsParameter("link", "l")]
     [CliArgsDescription("The root directory of the project to update")]
     public bool LinkToSolution { get; init; } = false;
+    
+    [CliArgsParameter("solution", "s")]
+    [CliArgsDescription("The root solution file of the project to update")]
+    public required string SolutionFile { get; init; }
 }

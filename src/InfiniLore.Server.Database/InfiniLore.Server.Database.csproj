@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Configurations\Data\User\" />
+      <Folder Include="Repositories\Data\User\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Auth0.AuthenticationApi" Version="7.34.0" />
+      <PackageReference Include="Auth0.ManagementApi" Version="7.34.0" />
+      <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.40.1" />
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.40.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.40.1" />
+      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.40.1" />
+      <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.21.0" />
+      <PackageReference Include="FluentValidation" Version="12.0.0-preview1" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+      <PackageReference Include="Testcontainers.MsSql" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Migrations\" />
+    </ItemGroup>
+
+</Project>

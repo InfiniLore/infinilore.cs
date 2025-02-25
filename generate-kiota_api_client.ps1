@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------------------------------------------
 $Language = "CSharp"
 $NameSpace = "InfiniLore.KiotaApiClient"
-$OutputFolder = "./src/client/InfiniLore.KiotaApiClient/"
+$OutputFolder = "./src/client/InfiniLore.Clients.Kiota/"
 $ClassName = "InfiniLoreApiClient"
 $OpenApiFile = "https://localhost:7059/swagger/v1/swagger.json"
 

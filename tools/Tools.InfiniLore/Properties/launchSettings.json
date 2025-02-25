@@ -38,12 +38,7 @@
     "download Repos": {
       "_readme": "Download all externally self built packages",
       "commandName": "Project",
-      "commandLineArgs": "download-repo --output=\"\" --link"
-    },
-    "Get API Jwt Token": {
-      "_readme": "ONLY RUN WHEN THE SERVER IS LIVE! Retrieves a JWT token for a given user",
-      "commandName": "Project",
-      "commandLineArgs": "api-token --user=\"testuser\" --password=\"Test@1234\" --copy=\"ApiToken\""
+      "commandLineArgs": "download-repo --output=\"\" --link --solution=\"InfiniLore.sln\""
     }
   }
 }
