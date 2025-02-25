@@ -35,9 +35,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
         string tempDirectory = Path.Combine(parameters.Root, ".temp");
 
         // Step 1: Clean up temporary and existing repositories
-        if (Directory.Exists(tempDirectory)) {
-            CleanDirectory(tempDirectory);// Custom cleanup that handles locked files
-        }
+        if (Directory.Exists(tempDirectory)) CleanDirectory(tempDirectory);
 
         // Step 2: Backup or log existing state (optional)
         BackupRepositories(parameters);
@@ -58,9 +56,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
         await Task.WhenAll(downloadTasks);
 
         // Step 6: Extract files
-        foreach (ProjectData project in results) {
-            ExtractPackage(parameters, project);
-        }
+        foreach (ProjectData project in results) ExtractPackage(parameters, project);
 
         // Step 7: Update solution and dependencies
         if (parameters.LinkToSolution) {
