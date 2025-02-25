@@ -21,15 +21,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9837
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kiota", "Kiota", "{B7C12299-7FB3-488E-89FB-B30DDB7480B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota", "src\client\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota", "src\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5A604355-8BDB-4280-AF6A-8D3A8304FEC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore", "tools\Tools.InfiniLore\Tools.InfiniLore.csproj", "{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server", "src\InfiniLore.Server\InfiniLore.Server\InfiniLore.Server.csproj", "{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server", "src\InfiniLore.Server\InfiniLore.Server.csproj", "{007B534C-DA38-4402-9C7F-F9C5FCCF20CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Wasm", "src\InfiniLore.Server\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj", "{DC28E2A2-BE12-42C2-A547-115E172D7DE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Wasm", "src\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj", "{DC28E2A2-BE12-42C2-A547-115E172D7DE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services", "src\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj", "{1EC4F098-31C7-4058-9724-52B2F39EC70A}"
 EndProject
