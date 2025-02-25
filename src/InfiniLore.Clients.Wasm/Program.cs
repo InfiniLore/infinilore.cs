@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace InfiniLore.Clients.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,11 +20,11 @@ public static class Program {
         builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
         builder.Services.AddHttpClient("ServerAPI",
-            client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+            configureClient: client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
         builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
             .CreateClient("ServerAPI"));
-        
+
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------

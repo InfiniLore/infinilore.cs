@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfiniLore.Server.Database.Models;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

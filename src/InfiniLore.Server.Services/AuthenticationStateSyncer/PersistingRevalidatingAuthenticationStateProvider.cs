@@ -19,15 +19,13 @@ namespace InfiniLore.Server.Services.AuthenticationStateSyncer;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<AuthenticationStateProvider>(ServiceLifetime.Scoped)]
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider {
+    private readonly IdentityOptions _options;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly PersistentComponentState _state;
-    private readonly IdentityOptions _options;
 
     private readonly PersistingComponentStateSubscription _subscription;
 
     private Task<AuthenticationState>? _authenticationStateTask;
-
-    protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -47,6 +45,8 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
     }
 
+    protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -59,9 +59,9 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
     }
 
     private static bool ValidateSecurityStampAsync(ClaimsPrincipal principal) => principal.Identity?.IsAuthenticated is not false;
-    
+
     private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask) => _authenticationStateTask = authenticationStateTask;
-    
+
     private async Task OnPersistingAsync() {
         if (_authenticationStateTask is null) {
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");

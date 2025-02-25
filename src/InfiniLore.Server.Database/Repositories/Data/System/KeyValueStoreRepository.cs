@@ -19,7 +19,7 @@ public class KeyValueStoreRepository : SystemDataRepository<KeyValueStore>, IKey
 
         IQueryable<KeyValueStore> query = GetDbContext().KeyValueStores
             .AsNoTracking()
-            .Where(foundModel => ids.Contains(foundModel.Id) || keys.Contains(foundModel.Key)); // Avoids joins here
+            .Where(foundModel => ids.Contains(foundModel.Id) || keys.Contains(foundModel.Key));// Avoids joins here
 
         return await query.AnyAsync(ct);
     }

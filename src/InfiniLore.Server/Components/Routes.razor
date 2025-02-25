@@ -1,7 +1,8 @@
-﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+﻿@using InfiniLore.Server.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Microsoft.AspNetCore.Components.Authorization
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -10,12 +11,12 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<Router 
+<Router
     AppAssembly="@typeof(IEntrypointInfiniLoreServer).Assembly"
     AdditionalAssemblies="new[] { typeof(IEntrypointInfiniLoreClientsWasm).Assembly }">
-    
+
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)"/>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
     </Found>
 </Router>
@@ -23,6 +24,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
-    
+
 }

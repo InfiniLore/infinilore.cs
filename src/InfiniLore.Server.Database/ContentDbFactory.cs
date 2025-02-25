@@ -10,28 +10,31 @@ using Testcontainers.MsSql;
 using ILogger=Microsoft.Extensions.Logging.ILogger;
 
 namespace InfiniLore.Server.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 /// <summary>
-/// The ContentDbFactory class provides functionality to create and manage the configuration of
-/// a database container and register the database services for a web application.
+///     The ContentDbFactory class provides functionality to create and manage the configuration of
+///     a database container and register the database services for a web application.
 /// </summary>
 public static class ContentDbFactory {
     private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Creates and starts a Docker container instance configured for an MSSQL database.
-    /// The method sets up the container with specific configurations such as port bindings,
-    /// image, password, container name, logging, and reuse policies. Once the container is
-    /// started, it retrieves and returns the database connection string.
+    ///     Creates and starts a Docker container instance configured for an MSSQL database.
+    ///     The method sets up the container with specific configurations such as port bindings,
+    ///     image, password, container name, logging, and reuse policies. Once the container is
+    ///     started, it retrieves and returns the database connection string.
     /// </summary>
     /// <returns>
-    /// A string containing the connection string to the started MSSQL Docker container.
+    ///     A string containing the connection string to the started MSSQL Docker container.
     /// </returns>
     public static async Task<string> CreateDockerMsSqlContainer() {
         ILogger logger = EmptyLoggerFactory.CreateLogger("DOCKER mssql");
-        
+
         MsSqlContainer container = new MsSqlBuilder()
             .WithPortBinding(60426, MsSqlBuilder.MsSqlPort)
             .WithLogger(logger)
@@ -44,30 +47,32 @@ public static class ContentDbFactory {
 
         await container.StartAsync();
         logger.LogInformation("Database connection string: {ConnectionString}", container.GetConnectionString());
-        
+
         return container.GetConnectionString();
     }
 
     /// <summary>
-    /// Registers the database context and related services for the application.
+    ///     Registers the database context and related services for the application.
     /// </summary>
     /// <param name="services">the Webapp Service collection</param>
     /// <param name="optionsAction">
-    /// An action to configure the database context options.
+    ///     An action to configure the database context options.
     /// </param>
     public static void RegisterDatabase(IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction) {
         services.AddDbContextFactory<ContentDb>(options => {
-            ILoggerFactory databaseLoggerFactory = LoggerFactory.Create(builder => 
+            ILoggerFactory databaseLoggerFactory = LoggerFactory.Create(builder =>
                 builder.AddSerilog(Log.Logger.ForContext("Section", "EFCORE ContentDb"))
             );
             options.UseLoggerFactory(databaseLoggerFactory);
-            
+
             optionsAction.Invoke(options);
         });
 
+        // Our UnitOfWork is integral to the correct execution of the repo pattern
         services.AddUnitOfWork<ContentDb>();
         services.AddUnitOfWork<ContentDb>("ContentDb");
-        
+
+        // These services are required for the db to work corretcly
         services.RegisterServicesFromInfiniLoreServerDatabase();
     }
 }

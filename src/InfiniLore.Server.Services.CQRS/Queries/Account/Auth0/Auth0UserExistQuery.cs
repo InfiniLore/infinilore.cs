@@ -4,10 +4,9 @@
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.Queries.Account.Auth0;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record Auth0UserExistQuery(
-    string Auth0UserId    
+    string Auth0UserId
 ) : IRequest<bool>;

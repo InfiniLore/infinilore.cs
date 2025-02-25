@@ -12,7 +12,7 @@ public interface IHasTryGetAllAsync<T> where T : BasicData {
     ValueTask<RepoResult<T[]>> TryGetAllWithAutoIncludeAsync(CancellationToken ct = default);
     ValueTask<RepoResult<T[]>> TryGetAllReverseAsync(CancellationToken ct = default);
     ValueTask<RepoResult<T[]>> TryGetAllReverseWithAutoIncludeAsync(CancellationToken ct = default);
-    
+
     ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, CancellationToken ct = default);
     ValueTask<PaginatedRepoResult<T>> TryGetAllWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default);
     ValueTask<PaginatedRepoResult<T>> TryGetAllReverseAsync(PaginationInfo pageInfo, CancellationToken ct = default);

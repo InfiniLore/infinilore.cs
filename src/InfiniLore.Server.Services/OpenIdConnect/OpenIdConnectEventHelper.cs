@@ -8,16 +8,15 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 namespace InfiniLore.Server.Services.OpenIdConnect;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+// This might look a little bit janky, but it solves some overhead when it comes to DI
 public static class OpenIdConnectEventHelper {
-
     [DebuggerStepThrough]
     public static Func<TContext, Task> HandleWith<TService, TContext>()
-            where TContext : BaseContext<OpenIdConnectOptions> 
-            where TService : IOpenIdConnectEventHelper<TContext> 
+        where TContext : BaseContext<OpenIdConnectOptions>
+        where TService : IOpenIdConnectEventHelper<TContext>
         => static context => {
             IServiceProvider serviceProvider = context.HttpContext.RequestServices;
             var handler = serviceProvider.GetRequiredService<TService>();

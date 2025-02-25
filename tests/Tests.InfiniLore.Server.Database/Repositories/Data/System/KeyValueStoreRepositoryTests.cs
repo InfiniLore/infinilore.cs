@@ -12,7 +12,6 @@ using Tests.InfiniLore.Server.Database.DataSources;
 using Tests.InfiniLore.Server.Database.Fakers;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -25,21 +24,21 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
     public async Task BoundToCorrectRepository() {
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
-        
+
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
 
         // Assert
         await Assert.That(repo).IsTypeOf<KeyValueStoreRepository>();
     }
-    
+
     [Test]
     public async Task TryAddAsync_ReturnsExpectedResult() {
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
-        
+
         var guid = Guid.NewGuid();
         const string key = "key-test";
         const string value = "value-test";
@@ -48,12 +47,12 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
             Key = key,
             Value = value
         };
-        
+
         // Act
         RepoResult result = await repo.TryAddAsync(model);
         dbContext.ChangeTracker.Clear();
         KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Id == guid);
-        
+
         // Assert
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(actual).IsNotNull()
@@ -80,5 +79,4 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
             .And.HasMember(m => m.AsFailure.IsUnknownFailure).EqualTo(false)
             .And.HasMember(m => m.AsFailure.AsKnownFailure).EqualTo(RepositoryFailures.ModelFailedUniqueConstraint);
     }
-
 }

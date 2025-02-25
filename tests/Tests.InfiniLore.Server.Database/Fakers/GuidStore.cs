@@ -1007,13 +1007,12 @@ public enum GuidStore {
     [Guid("402eba83-c823-4134-9b27-01c403f00692")] Entry996,
     [Guid("2a93d16d-3e3b-4fb4-9ec5-b3b634dc5049")] Entry997,
     [Guid("1caa8bf3-e835-40d0-bc9d-484f5da089f9")] Entry998,
-    [Guid("e1816014-082d-48f4-87b1-0882e1bd8fc3")] Entry999,
+    [Guid("e1816014-082d-48f4-87b1-0882e1bd8fc3")] Entry999
 }
 
 [AttributeUsage(AttributeTargets.Field)]
 public class GuidAttribute(string guid) : Attribute {
     public Guid Value { get; } = Guid.Parse(guid);
-
 }
 
 public static class EnumExtensions {

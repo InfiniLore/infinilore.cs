@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Tests.InfiniLore.Server.Database.DataSources;
 
 namespace Tests.InfiniLore.Server.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -33,9 +32,9 @@ public class DatabaseConnection(ContentDbInfrastructure infrastructure) {
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act
-        var allMigrations = dbContext.Database.GetMigrations().ToArray();
-        var appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToArray();
-        
+        string[]? allMigrations = dbContext.Database.GetMigrations().ToArray();
+        string[]? appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToArray();
+
         // Assert
         await Assert.That(allMigrations).IsNotEmpty();
         await Assert.That(appliedMigrations).IsNotEmpty();

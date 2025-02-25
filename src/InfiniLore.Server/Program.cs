@@ -33,8 +33,8 @@ public static class Program {
         //      And have proper application exception catching 
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.OverrideLoggingWithSerilog(config => config
-            .AsAnnaSasDevServerConsole(sectionMaxLength:24)
-            .WithTruncateSourceContextEnricher(maxLength:24)
+            .AsAnnaSasDevServerConsole(sectionMaxLength: 24)
+            .WithTruncateSourceContextEnricher(maxLength: 24)
         );
 
         try {
@@ -48,7 +48,7 @@ public static class Program {
             await Log.CloseAndFlushAsync();
         }
     }
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public static class Program {
         #region Auth
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOptions: options => {
                 options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
                 options.Audience = builder.Configuration["Auth0:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters {
@@ -78,19 +78,19 @@ public static class Program {
             });
 
         builder.Services.AddAuth0WebAppAuthentication(options => {
-                options.Domain = builder.Configuration["Auth0:Domain"]!;
-                options.ClientId = builder.Configuration["Auth0:ClientId"]!;
-                
-                // Add ClientSecret
-                // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
-                options.Scope = "openid profile email";
-                options.CallbackPath = "/auth/callback";
-                
-                options.OpenIdConnectEvents = new OpenIdConnectEvents {
-                    OnTokenValidated = OpenIdConnectEventHelper.HandleWith<OnTokenValidated, TokenValidatedContext>()
-                };
+            options.Domain = builder.Configuration["Auth0:Domain"]!;
+            options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+
+            // Add ClientSecret
+            // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
+            options.Scope = "openid profile email";
+            options.CallbackPath = "/auth/callback";
+
+            options.OpenIdConnectEvents = new OpenIdConnectEvents {
+                OnTokenValidated = OpenIdConnectEventHelper.HandleWith<OnTokenValidated, TokenValidatedContext>()
+            };
         });
-        
+
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
         #endregion
@@ -98,14 +98,14 @@ public static class Program {
         #region FastEndpoints
         builder.Services.AddFastEndpoints(options => {
             options.DisableAutoDiscovery = true;
-            
+
             options.Assemblies = [
                 typeof(IEntrypointInfiniLoreServerApi).Assembly
             ];
         });
         builder.Services.SwaggerDocument();
         #endregion
-        
+
         #region MediatR
         builder.Services.AddMediatR(config => {
             config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
@@ -119,10 +119,10 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
-        
+
         return builder.Build();
     }
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // App
     // -----------------------------------------------------------------------------------------------------------------
@@ -139,12 +139,12 @@ public static class Program {
 
         app.UseStaticFiles();
         app.UseAntiforgery();
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
-        
+
         #region Authentication Endpoints
-        app.MapGet("/account/login", async Task (HttpContext httpContext, string redirectUri = "/") => {
+        app.MapGet("/account/login", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
             AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
                 .WithRedirectUri(redirectUri)
                 .Build();
@@ -152,7 +152,7 @@ public static class Program {
             await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
         });
 
-        app.MapGet("/account/logout", async Task (HttpContext httpContext, string redirectUri = "/") => {
+        app.MapGet("/account/logout", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
             AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
                 .WithRedirectUri(redirectUri)
                 .Build();
@@ -161,7 +161,7 @@ public static class Program {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
         #endregion
-        
+
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
             config.Errors.UseProblemDetails();
@@ -169,7 +169,7 @@ public static class Program {
         app.UseSwaggerGen();
 
         app.MapStaticAssets();
-        
+
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()

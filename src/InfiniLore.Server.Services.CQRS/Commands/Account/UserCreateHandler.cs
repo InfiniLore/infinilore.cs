@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS.Commands.Account;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -28,16 +27,17 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
                 Username = request.UserName
             };
             if (request.Auth0UserId.StartsWith("google")) user.Auth0IdGoogle = request.Auth0UserId;
-            
+
             // Validate the user model
             // TODO Add Fluent Validation for InfiniLoreUser
-            
+
             // Save to Db
             RepoResult result = await userRepo.TryAddAsync(user, ct);
             if (result.IsFailure) return null;
-            
+
             RepoResult<InfiniLoreUser> userResult = await userRepo.TryGetByIdAsync(newUserId, ct);
             if (!userResult.TryGetAsSuccess(out InfiniLoreUser? userSuccess)) return null;
+
             return userSuccess;
 
         }

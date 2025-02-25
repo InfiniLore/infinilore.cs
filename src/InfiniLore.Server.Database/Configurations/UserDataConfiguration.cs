@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Database.Configurations;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -16,7 +15,7 @@ public class UserDataConfiguration : IEntityTypeConfiguration<UserData> {
             .WithMany()
             .HasForeignKey(x => x.OwnerId)
             .IsRequired();
-        
+
         builder.UseTptMappingStrategy();
     }
 }

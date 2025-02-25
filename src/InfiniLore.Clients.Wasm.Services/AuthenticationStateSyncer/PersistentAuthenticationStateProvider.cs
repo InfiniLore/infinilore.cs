@@ -26,7 +26,7 @@ public class PersistentAuthenticationStateProvider(PersistentComponentState pers
 
         var claimsIdentity = new ClaimsIdentity(
             claims,
-            authenticationType: nameof(PersistentAuthenticationStateProvider)
+            nameof(PersistentAuthenticationStateProvider)
         );
 
         return Task.FromResult(new AuthenticationState(new ClaimsPrincipal(claimsIdentity)));

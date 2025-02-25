@@ -4,11 +4,10 @@
 using InfiniLore.Server.Database.Models.Account;
 
 namespace InfiniLore.Server.Database.Models;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData{
+public class UserData : BasicData {
     public Guid OwnerId { get; set; } = Guid.Empty;
     public InfiniLoreUser Owner { get; set; } = null!;
 }

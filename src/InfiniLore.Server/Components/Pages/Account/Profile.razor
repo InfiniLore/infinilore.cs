@@ -1,13 +1,14 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Server.Components.Layout
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
+@using InfiniLore.Server.Components.Layout
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @rendermode InteractiveServer
 
 @attribute [Authorize]
@@ -24,7 +25,7 @@
 
             <div class="col-md-2">
                 <img src="@_picture"
-                     alt="" class="img-rounded img-responsive" style="display: block; margin: 0 auto;" />
+                     alt="" class="img-rounded img-responsive" style="display: block; margin: 0 auto;"/>
             </div>
             <div class="col-md-4">
                 <h3>@_username</h3>
@@ -41,7 +42,7 @@
                     <h3>You do not have access to this page.</h3>
                 </NotAuthorized>
             </AuthorizeView>
-            
+
         </div>
     </div>
 </div>
@@ -49,6 +50,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
@@ -61,7 +63,7 @@
 
         _username = state.User.Identity?.Name ?? string.Empty;
         _emailAddress = state.User.Claims
-            .Where(c => c.Type.Equals(System.Security.Claims.ClaimTypes.Email))
+            .Where(c => c.Type.Equals(ClaimTypes.Email))
             .Select(c => c.Value)
             .FirstOrDefault() ?? string.Empty;
 
@@ -72,5 +74,5 @@
 
         await base.OnInitializedAsync();
     }
-    
+
 }

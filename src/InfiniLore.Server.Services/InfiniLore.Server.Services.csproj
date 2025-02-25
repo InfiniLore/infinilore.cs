@@ -7,32 +7,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Components.Server">
-        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.12\Microsoft.AspNetCore.Components.Server.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.AspNetCore.Components.Server">
+            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.12\Microsoft.AspNetCore.Components.Server.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CodeOfChaos.Extensions" Version="0.40.1" />
-      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.40.1" />
-      <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.40.1" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.40.1"/>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.40.1"/>
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.40.1"/>
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.40.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-      <PackageReference Include="MediatR" Version="12.4.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
-      <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.2" />
-      <PackageReference Include="Serilog" Version="4.2.0" />
+        <PackageReference Include="MediatR" Version="12.4.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.2"/>
+        <PackageReference Include="Serilog" Version="4.2.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
     </ItemGroup>
 
 </Project>

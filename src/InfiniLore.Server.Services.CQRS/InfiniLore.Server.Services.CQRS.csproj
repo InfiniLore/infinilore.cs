@@ -7,22 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\Data\System\" />
-      <Folder Include="Commands\Data\User\" />
-      <Folder Include="Queries\Account\User\" />
-      <Folder Include="Queries\Data\Discovery\" />
-      <Folder Include="Queries\Data\System\" />
-      <Folder Include="Queries\Data\User\" />
+        <Folder Include="Commands\Data\System\"/>
+        <Folder Include="Commands\Data\User\"/>
+        <Folder Include="Queries\Account\User\"/>
+        <Folder Include="Queries\Data\Discovery\"/>
+        <Folder Include="Queries\Data\System\"/>
+        <Folder Include="Queries\Data\User\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CodeOfChaos.Extensions" Version="0.40.1" />
-      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.40.1" />
-      <PackageReference Include="MediatR" Version="12.4.1" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.40.1"/>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.40.1"/>
+        <PackageReference Include="MediatR" Version="12.4.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
     </ItemGroup>
 
 </Project>

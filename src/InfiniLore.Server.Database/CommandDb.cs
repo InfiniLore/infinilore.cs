@@ -4,10 +4,9 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class CommandDb : DbContext{
+public class CommandDb : DbContext {
     // will be used to store CQRS Commands
 }

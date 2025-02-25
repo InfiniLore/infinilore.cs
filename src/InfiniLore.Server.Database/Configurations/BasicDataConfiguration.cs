@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Database.Configurations;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -15,11 +14,11 @@ public abstract class BasicDataConfiguration : IEntityTypeConfiguration<BasicDat
     public void Configure(EntityTypeBuilder<BasicData> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Id).IsUnique();
-        
+
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
-        
+
         builder.Ignore(x => x.IsSoftDeleted);
-        
+
         builder.UseTptMappingStrategy();
     }
 }
