@@ -6,7 +6,6 @@ using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace InfiniLore.Server.Database.Repositories;
 
