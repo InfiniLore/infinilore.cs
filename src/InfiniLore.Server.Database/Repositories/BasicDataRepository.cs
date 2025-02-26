@@ -12,12 +12,23 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
+    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
+    
+    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
+        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
+        return result;
+    }
 
+    private ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
+        => IsNotUniqueAsync([originalModel], ct);
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -25,23 +36,23 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         model.UpdateLastModifiedDate();
 
-        // Build Query
+        // Query
         await dbSet.AddAsync(model, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T[] content = models as T[] ?? models.ToArray();
         if (await IsNotUniqueAsync(content, ct)) return RepoResult.FromFailure(RepositoryFailures.ModelFailedUniqueConstraint);
 
-        // Build Query
+        // Query
         foreach (T model in content) {
             model.UpdateLastModifiedDate();
         }
@@ -49,29 +60,29 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbSet.AddRangeAsync(content, ct);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing is null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         model.UpdateLastModifiedDate();
         dbContext.Entry(existing).CurrentValues.SetValues(model);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -80,7 +91,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         T[] existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToArrayAsync(ct);
         if (existingEntities.Length != modelArray.Length) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         foreach (T existingEntity in existingEntities) {
             T updatedModel = modelArray.First(m => m.Id == existingEntity.Id);
             existingEntity.UpdateLastModifiedDate();// Update individual properties
@@ -89,7 +100,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
@@ -132,209 +143,212 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
     }
 
     public async ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         existing.SoftDelete();
         dbContext.Entry(existing).CurrentValues.SetValues(existing);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data   
+        // Retrieve   
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryDeleteByIdAsync(Guid id, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([id], ct);
         if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         existing.SoftDelete();
         dbContext.Entry(existing).CurrentValues.SetValues(existing);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data   
+        // Retrieve   
         return RepoResult.Success;
 
     }
     public async ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         Guid[] ids = models.Select(model => model.Id).ToArray();
 
-        // Build Query
+        // Query
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicData.SoftDelete(s), ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryDeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicData.SoftDelete(s), ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
     public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         dbSet.Remove(existing);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryRemoveByIdAsync(Guid id, CancellationToken ct = default) {
-        // Define Access
+        // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([id], ct);
         if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
 
-        // Build Query
+        // Query
         dbSet.Remove(existing);
         await dbContext.SaveChangesAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         Guid[] ids = models.Select(model => model.Id).ToArray();
 
-        // Build Query
+        // Query
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteDeleteAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult> TryRemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         await dbSet
             .Where(model => ids.Contains(model.Id))
             .ExecuteDeleteAsync(ct);
 
-        // Retrieve Data
+        // Retrieve
         return RepoResult.Success;
     }
 
     public async ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         T? result = await dbSet.Where(ls => ls.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
-        // Retrieve Data
+        // Retrieve
         if (result is null) return RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
 
         return RepoResult<T>.FromSuccess(result);
     }
 
     public async ValueTask<RepoResult<T>> TryGetByIdWithAutoIncludeAsync(Guid id, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
-        IQueryable<T> query = dbSet.Where(ls => ls.Id == id);
-        query = AutoInclude(query);
+        // Query
+        IQueryable<T> query = dbSet
+            .Where(ls => ls.Id == id)
+            .With(AutoInclude);
+
+        // Retrieve
         T? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
-
-        // Retrieve Data
-        if (result is null) return RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
-
-        return RepoResult<T>.FromSuccess(result);
+        return result is not null 
+            ? RepoResult<T>.FromSuccess(result)
+            : RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query & Retrieve Data
+        // Query & Retrieve
         T[] data = await dbSet.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetAllWithAutoIncludeAsync(CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
-        IQueryable<T> query = dbSet;
+        // Query
+        IQueryable<T> query = dbSet
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
     public async ValueTask<RepoResult<T[]>> TryGetAllReverseAsync(CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
             .Reverse();
 
-        // Retrieve Data
+        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
 
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetAllReverseWithAutoIncludeAsync(CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
+            .With(AutoInclude)
             .Reverse();
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
 
     public async ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -343,7 +357,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
-        // Retrieve Data
+        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
@@ -353,20 +367,21 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         );
     }
     public async ValueTask<PaginatedRepoResult<T>> TryGetAllWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
+            .Take(pageInfo.PageSize)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
             totalCount,
@@ -376,10 +391,10 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
     }
 
     public async ValueTask<PaginatedRepoResult<T>> TryGetAllReverseAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -389,7 +404,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
-        // Retrieve Data
+        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
@@ -399,10 +414,10 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         );
     }
     public async ValueTask<PaginatedRepoResult<T>> TryGetAllReverseWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -410,10 +425,11 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .OrderByDescending(ls => ls.Id)
             .Reverse()
             .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
+            .Take(pageInfo.PageSize)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
             totalCount,
@@ -423,23 +439,11 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
     }
 
     public async ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        // Build Query & Retrieve Data
+        // Query & Retrieve
         int data = await dbSet.CountAsync(cancellationToken: ct);
         return RepoResult<int>.FromSuccess(data);
     }
-    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
-
-    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
-        // Debug.Assert(ids.Length > 0, "We should always have at least one ID to check for uniqueness");
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
-        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
-        return result;
-    }
-
-    protected ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
-        => IsNotUniqueAsync([originalModel], ct);
 }

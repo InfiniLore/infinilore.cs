@@ -18,10 +18,10 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
     public async ValueTask<RepoResult> IsUsernameTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
 
-        // Define Access
+        // Access
         DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
 
-        // Build Query
+        // Query
         IQueryable<InfiniLoreUser> query = dbSet
             .Where(ls => ls.Username == username)
             .ConditionalWhere(
@@ -29,7 +29,7 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
                 predicate: ls => ls.Id != skipUserId
             );
 
-        // Retrieve Data
+        // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
         return RepoResult.FromBool(!result);
     }
@@ -37,10 +37,10 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
     public async ValueTask<RepoResult> IsUsernameNotTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
 
-        // Define Access
+        // Access
         DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
 
-        // Build Query
+        // Query
         IQueryable<InfiniLoreUser> query = dbSet
             .Where(ls => ls.Username == username)
             .ConditionalWhere(
@@ -48,7 +48,7 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
                 predicate: ls => ls.Id != skipUserId
             );
 
-        // Retrieve Data
+        // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
         return RepoResult.FromBool(result);
     }

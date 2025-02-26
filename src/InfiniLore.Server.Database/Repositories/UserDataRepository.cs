@@ -12,65 +12,67 @@ namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
     public async ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         IQueryable<T> query = dbSet.Where(ls => ls.OwnerId == userId);
 
-        // Retrieve Data
+        // Retrieve
         T[] result = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(result);
-
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetByUserWithAutoIncludeAsync(Guid userId, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
-        IQueryable<T> query = dbSet.Where(ls => ls.OwnerId == userId);
+        // Query
+        IQueryable<T> query = dbSet
+            .Where(ls => ls.OwnerId == userId)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] result = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] result = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(result);
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetByUserReverseAsync(Guid userId, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
             .Reverse()
             .Where(ls => ls.OwnerId == userId);
 
-        // Retrieve Data
+        // Retrieve
         T[] result = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(result);
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetByUserReverseWithAutoIncludeAsync(Guid userId, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         IQueryable<T> query = dbSet
             .OrderByDescending(ls => ls.Id)
             .Reverse()
-            .Where(ls => ls.OwnerId == userId);
+            .Where(ls => ls.OwnerId == userId)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] result = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] result = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(result);
     }
 
     public async ValueTask<PaginatedRepoResult<T>> TryGetByUserAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -80,7 +82,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
-        // Retrieve Data
+        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
@@ -90,10 +92,10 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         );
     }
     public async ValueTask<PaginatedRepoResult<T>> TryGetByUserWithAutoIncludeAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -101,10 +103,11 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             .OrderByDescending(ls => ls.Id)
             .Where(ls => ls.OwnerId == userId)
             .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
+            .Take(pageInfo.PageSize)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
             totalCount,
@@ -113,10 +116,10 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         );
     }
     public async ValueTask<PaginatedRepoResult<T>> TryGetByUserReverseAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -127,7 +130,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
-        // Retrieve Data
+        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
@@ -138,10 +141,10 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
     }
 
     public async ValueTask<PaginatedRepoResult<T>> TryGetByUserReverseWithAutoIncludeAsync(Guid userId, PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Define Access
+        // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
-        // Build Query
+        // Query
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
@@ -149,10 +152,11 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             .OrderByDescending(ls => ls.Id)
             .Reverse()
             .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
+            .Take(pageInfo.PageSize)
+            .With(AutoInclude);
 
-        // Retrieve Data
-        T[] data = await AutoInclude(query).ToArrayAsync(cancellationToken: ct);
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedResult<T>(
             data,
             totalCount,
