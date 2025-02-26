@@ -44,7 +44,8 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
 
             RepoResult<InfiniLoreUser> userResult = await userRepo.TryGetByIdAsync(newUserId, ct);
             return !userResult.TryGetAsSuccess(out InfiniLoreUser? userSuccess) ? null : userSuccess;
-
+            
+            // TODO send out notifications for others to pick up that a new user has been created
         }
         catch (Exception e) {
             logger.Error(e, "An error occurred while trying to create a user");
