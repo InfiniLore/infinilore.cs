@@ -1,13 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
+using System.Security.Claims;
+
+namespace InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// ReSharper disable once ClassNeverInstantiated.Global
-public record UserInfo(
-    string UserId,
-    string Name,
-    string Email
-);
+public interface IClaimsPrincipalHelper {
+    IAuth0Information GetAuth0Information(ClaimsPrincipal principal);
+}

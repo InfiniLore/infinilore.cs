@@ -2,14 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -19,9 +18,9 @@ namespace InfiniLore.Server.Services.AuthenticationStateSyncer;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<AuthenticationStateProvider>(ServiceLifetime.Scoped)]
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider {
-    private readonly IdentityOptions _options;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly PersistentComponentState _state;
+    private readonly IClaimsPrincipalHelper _claimsPrincipalHelper;
 
     private readonly PersistingComponentStateSubscription _subscription;
 
@@ -34,12 +33,11 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         ILoggerFactory loggerFactory,
         IServiceScopeFactory scopeFactory,
         PersistentComponentState state,
-        IOptions<IdentityOptions> options
-    )
-        : base(loggerFactory) {
+        IClaimsPrincipalHelper claimsPrincipalHelper
+    ) : base(loggerFactory) {
         _scopeFactory = scopeFactory;
         _state = state;
-        _options = options.Value;
+        _claimsPrincipalHelper = claimsPrincipalHelper;
 
         AuthenticationStateChanged += OnAuthenticationStateChanged;
         _subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
@@ -68,17 +66,10 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         }
 
         AuthenticationState authenticationState = await _authenticationStateTask;
-        ClaimsPrincipal principal = authenticationState.User;
+        IAuth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
+        if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) return;
 
-        if (principal.Identity?.IsAuthenticated != true) return;
-
-        string? userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
-        string? name = principal.FindFirst("name")?.Value;
-        string? email = principal.FindFirst("email")?.Value;
-
-        if (userId is null || name is null || email is null) return;
-
-        _state.PersistAsJson(nameof(UserInfo), new UserInfo(userId, name, email));
+        _state.PersistAsJson(nameof(IAuth0Information), auth0Info);
     }
 
     protected override void Dispose(bool disposing) {

@@ -87,7 +87,7 @@ public static class Program {
             options.CallbackPath = "/auth/callback";
 
             options.OpenIdConnectEvents = new OpenIdConnectEvents {
-                OnTokenValidated = OpenIdConnectEventHelper.HandleWith<OnTokenValidated, TokenValidatedContext>()
+                OnTokenValidated = OpenIdConnectEventHelper.HandleWith<TokenValidatedContext>()
             };
         });
 
