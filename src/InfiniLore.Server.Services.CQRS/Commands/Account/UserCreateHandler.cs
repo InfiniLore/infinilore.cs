@@ -28,9 +28,15 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
                 Username = request.UserName
             };
             if (request.Auth0UserId.StartsWith("google")) user.Auth0IdGoogle = request.Auth0UserId;
+            if (request.Auth0UserId.StartsWith("github")) user.Auth0Github = request.Auth0UserId;
+            if (request.Auth0UserId.StartsWith("auth0")) user.Auth0MailPassword = request.Auth0UserId;
 
             // Validate the user model
-            if (!(await validator.ValidateAsync(user, ct)).IsValid) return null;
+            var validationResult = await validator.ValidateAsync(user, ct);
+            if (!validationResult.IsValid) {
+                logger.Warning("Validation failed: {Reason}", validationResult.Errors );
+                return null;
+            }
 
             // Save to Db
             RepoResult result = await userRepo.TryAddAsync(user, ct);

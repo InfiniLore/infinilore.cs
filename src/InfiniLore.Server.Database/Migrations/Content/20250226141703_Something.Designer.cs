@@ -4,6 +4,7 @@ using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Database.Migrations.Content
 {
     [DbContext(typeof(ContentDb))]
-    partial class ContentDbModelSnapshot : ModelSnapshot
+    [Migration("20250226141703_Something")]
+    partial class Something
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,10 +59,6 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Auth0MailPassword")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -72,10 +71,6 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.HasIndex("Auth0IdGoogle")
                         .IsUnique()
                         .HasFilter("[Auth0IdGoogle] IS NOT NULL");
-
-                    b.HasIndex("Auth0MailPassword")
-                        .IsUnique()
-                        .HasFilter("[Auth0MailPassword] IS NOT NULL");
 
                     b.HasIndex("Username")
                         .IsUnique()

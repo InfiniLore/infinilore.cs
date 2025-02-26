@@ -9,6 +9,7 @@ using InfiniLore.Clients.Wasm;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.OpenIdConnect;
@@ -77,8 +78,12 @@ public static class Program {
                 };
             });
 
+        builder.Services.AddOptions();
         builder.Services.AddAuth0WebAppAuthentication(options => {
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Domain"]);
             options.Domain = builder.Configuration["Auth0:Domain"]!;
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId"]);
             options.ClientId = builder.Configuration["Auth0:ClientId"]!;
 
             // Add ClientSecret
@@ -119,6 +124,15 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
+
+        #region DataSeeding
+        // Everything is handled by the DataSeeding project
+        //      This is to make sure we don't have any issues with the seeding process
+        //      And to make sure we've enabled overloading of the method
+        //      We also migrate the db in this step, if required.
+        //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
+        builder.RegisterDataSeedingServices(); 
+        #endregion
 
         return builder.Build();
     }
@@ -174,12 +188,7 @@ public static class Program {
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(IEntrypointInfiniLoreClientsWasm).Assembly);
-
-        await using (ContentDb db = await app.Services.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync()) {
-            await db.Database.MigrateAsync();
-            await db.SaveChangesAsync();
-        }
-
+        
         await app.RunAsync();
     }
 }

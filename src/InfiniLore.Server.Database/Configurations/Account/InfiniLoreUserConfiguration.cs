@@ -18,6 +18,9 @@ public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUs
         builder.HasIndex(x => x.Auth0Github).IsUnique();
         builder.Property(x => x.Auth0Github).HasMaxLength(InfiniLoreUser.Defaults.Auth0IdGithubMaxLength);
 
+        builder.HasIndex(x => x.Auth0MailPassword).IsUnique();
+        builder.Property(x => x.Auth0MailPassword).HasMaxLength(InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength);
+        
         builder.HasIndex(x => x.Username).IsUnique();
         builder.Property(x => x.Username).HasMaxLength(InfiniLoreUser.Defaults.UsernameMaxLength);
     }

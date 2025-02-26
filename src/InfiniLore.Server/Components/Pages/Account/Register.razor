@@ -62,6 +62,8 @@
         //      We should use our internal systems directly 
 
         InfiniLoreUser? result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
+        
+        // TODO dont throw but actually get a decent result
         ArgumentNullException.ThrowIfNull(result);
 
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
