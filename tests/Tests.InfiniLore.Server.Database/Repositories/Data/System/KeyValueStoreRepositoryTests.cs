@@ -2,21 +2,21 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using DataSources.InfiniLore.Server;
+using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Data.System;
 using InfiniLore.Server.Database.Repositories.Data.System;
 using Microsoft.EntityFrameworkCore;
-using Tests.InfiniLore.Server.Database.DataSources;
-using Tests.InfiniLore.Server.Database.Fakers;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker) {
+[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker,GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker, GuidStore guidStore) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
-        KeyValueStore modelWithSameId = faker.GetById(GuidStore.GetGuid(1));
+        KeyValueStore modelWithSameId = faker.GetById(guidStore.GetGuid(1));
 
         // Act
         RepoResult result = await repo.TryAddAsync(modelWithSameId);

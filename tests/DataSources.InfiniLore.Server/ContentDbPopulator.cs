@@ -2,15 +2,20 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using Microsoft.Extensions.DependencyInjection;
-using Tests.InfiniLore.Server.Database.Fakers;
 
-namespace Tests.InfiniLore.Server.Database.DataSources;
+namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ContentDbPopulator(IServiceProvider serviceProvider) {
+    private GuidStore GuidStore { get; } = new();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async Task PopulateAsync() {
         var keyValueStoreFaker = new KeyValueStoreFaker();
 

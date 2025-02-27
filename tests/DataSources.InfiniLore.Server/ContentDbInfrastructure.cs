@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Testcontainers.MsSql;
 using TUnit.Core.Interfaces;
 
-namespace Tests.InfiniLore.Server.Database.DataSources;
+namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -73,6 +73,12 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
         IUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         await unitOfWork.TryCreateTransactionAsync();
+        return unitOfWork;
+    }
+
+    public IReadonlyUnitOfWork GetReadonlyUnitOfWork() {
+        if (ServiceProvider is null) throw new InvalidOperationException("Service provider is not initialized.");
+        IReadonlyUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>().Create();
         return unitOfWork;
     }
 

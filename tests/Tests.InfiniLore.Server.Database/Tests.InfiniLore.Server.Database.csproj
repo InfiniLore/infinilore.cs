@@ -22,9 +22,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\DataSources.InfiniLore.Server\DataSources.InfiniLore.Server.csproj" />
+        <ProjectReference Include="..\Fakers.InfiniLore.Server\Fakers.InfiniLore.Server.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Configurations\" />
         <Folder Include="Repositories\Account\"/>
     </ItemGroup>
 

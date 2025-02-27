@@ -150,6 +150,7 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
 
         app.UseStaticFiles();
         app.UseAntiforgery();

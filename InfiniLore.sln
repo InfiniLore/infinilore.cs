@@ -1,9 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".dev-tools", ".dev-tools", "{EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}"
-	ProjectSection(SolutionItems) = preProject
-		generate-kiota_api_client.ps1 = generate-kiota_api_client.ps1
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7304F551-466C-4016-A729-CDA819CE9983}"
 EndProject
@@ -60,6 +57,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.CQRS", "src\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj", "{E8BF294A-B7A0-4834-A7D8-393BFC9190A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.DataSeeder", "src\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj", "{3D95910A-7BCC-4C94-9394-C0C76F267B4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Substitutes.InfiniLore.Server", "tests\Substitutes.InfiniLore.Server\Substitutes.InfiniLore.Server.csproj", "{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{810B9929-9230-42F8-BCF0-BCD039A8CD75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fakers.InfiniLore.Server", "tests\Fakers.InfiniLore.Server\Fakers.InfiniLore.Server.csproj", "{A7310182-46AF-46FA-8FA8-FF45A6B0841F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSources.InfiniLore.Server", "tests\DataSources.InfiniLore.Server\DataSources.InfiniLore.Server.csproj", "{9ECD56DC-A2B3-484B-8925-13CA25E2B723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +132,18 @@ Global
 		{3D95910A-7BCC-4C94-9394-C0C76F267B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D95910A-7BCC-4C94-9394-C0C76F267B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D95910A-7BCC-4C94-9394-C0C76F267B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7310182-46AF-46FA-8FA8-FF45A6B0841F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7310182-46AF-46FA-8FA8-FF45A6B0841F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7310182-46AF-46FA-8FA8-FF45A6B0841F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7310182-46AF-46FA-8FA8-FF45A6B0841F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -152,5 +169,9 @@ Global
 		{FA2AA209-3A25-4286-9976-75CD1630B911} = {384A7293-F528-45B4-9BCB-6BAB8995ACDF}
 		{E8BF294A-B7A0-4834-A7D8-393BFC9190A7} = {3CA4F8BC-45E5-4B9F-A178-FCCB396B15B1}
 		{3D95910A-7BCC-4C94-9394-C0C76F267B4E} = {EB00BE10-6020-4E39-A00F-C202A0165920}
+		{810B9929-9230-42F8-BCF0-BCD039A8CD75} = {56F59020-E2A2-4187-A847-5CF479A5BFD4}
+		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
+		{A7310182-46AF-46FA-8FA8-FF45A6B0841F} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
+		{9ECD56DC-A2B3-484B-8925-13CA25E2B723} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
 	EndGlobalSection
 EndGlobal

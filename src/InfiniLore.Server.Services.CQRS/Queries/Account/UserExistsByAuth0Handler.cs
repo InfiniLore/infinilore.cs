@@ -7,7 +7,7 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using MediatR;
 
-namespace InfiniLore.Server.Services.CQRS.Queries.Account.User;
+namespace InfiniLore.Server.Services.CQRS.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

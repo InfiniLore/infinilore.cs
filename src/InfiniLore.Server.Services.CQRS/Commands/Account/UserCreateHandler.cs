@@ -9,14 +9,27 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 
 namespace InfiniLore.Server.Services.CQRS.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<InfiniLoreUser> validator ) : IRequestHandler<UserCreateRequest, MediatorResponse<Guid>> {
+public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<InfiniLoreUser> validator ) : IRequestHandler<UserCreateRequest, MediatorResponse<Guid>> {
     private readonly ILogger logger = factory.CreateLogger("ACCOUNT CreateUser");
 
+    private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
+        { "google", (user, id) => user.Auth0IdGoogle = id },
+        { "github", (user, id) => user.Auth0Github = id },
+        { "auth0", (user, id) => user.Auth0MailPassword = id }
+    };
+
+    [GeneratedRegex("^(google|github|auth0)")]
+    private static partial Regex Auth0Regex { get; }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async Task<MediatorResponse<Guid>> Handle(UserCreateRequest request, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
@@ -27,9 +40,7 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
             Id = newUserId,
             Username = request.UserName
         };
-        if (request.Auth0UserId.StartsWith("google")) user.Auth0IdGoogle = request.Auth0UserId;
-        if (request.Auth0UserId.StartsWith("github")) user.Auth0Github = request.Auth0UserId;
-        if (request.Auth0UserId.StartsWith("auth0")) user.Auth0MailPassword = request.Auth0UserId;
+        SetAuth0Id(user, request.Auth0UserId);
 
         // Validate the user model
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
@@ -45,5 +56,15 @@ public class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFact
 
         // TODO send out notifications for others to pick up that a new user has been created
         return newUserId;
+    }
+    
+    internal void SetAuth0Id(InfiniLoreUser user, string auth0UserId) {
+        Match match = Auth0Regex.Match(auth0UserId.ToLowerInvariant());
+        if (!match.Success || !Auth0Handlers.TryGetValue(match.Groups[1].Value, out Action<InfiniLoreUser, string>? handler)) {
+            logger.Warning("Unknown auth0 id: {Auth0Id}", auth0UserId);
+            return;
+        }
+
+        handler(user, auth0UserId);
     }
 }

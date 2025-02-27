@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
-using Tests.InfiniLore.Server.Database.DataSources;
 
 namespace Tests.InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ public class DatabaseConnection(ContentDbInfrastructure infrastructure) {
     [Test]
     public async Task CanConnect() {
         // Arrange
-        await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
+        await using IReadonlyUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act
@@ -28,12 +28,12 @@ public class DatabaseConnection(ContentDbInfrastructure infrastructure) {
     [Test]
     public async Task IsMigratedCorrectly() {
         // Arrange
-        await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
+        await using IReadonlyUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act
-        string[]? allMigrations = dbContext.Database.GetMigrations().ToArray();
-        string[]? appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToArray();
+        string[] allMigrations = dbContext.Database.GetMigrations().ToArray();
+        string[] appliedMigrations = (await dbContext.Database.GetAppliedMigrationsAsync()).ToArray();
 
         // Assert
         await Assert.That(allMigrations).IsNotEmpty();

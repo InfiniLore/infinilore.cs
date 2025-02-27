@@ -4,8 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
-using InfiniLore.Server.Services.CQRS;
-using InfiniLore.Server.Services.CQRS.Queries.Account.User;
+using InfiniLore.Server.Services.CQRS.Queries.Account;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -39,15 +38,15 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
         }
 
         // Run all checks and return to new user page if needed
-        MediatorResponse<bool> result = await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId));
-        if (result.TryGetAsSuccess(out bool userExists) && userExists) {
-            _logger.Debug("User already exists, continuing...");
-            return;
-        }
-
-        if (result.TryGetAsErrorValue(out string? failure)) {
-            _logger.LogError("Error checking if user exists : {failure}", failure);
-            return;
+        switch (await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId))) {
+            case { IsSuccess: true, Value: true }: {
+                _logger.Debug("User already exists, continuing...");
+                return;
+            }
+            case { IsError: true, AsError.Value: {} failure }: {
+                _logger.LogError("Error checking if user exists : {failure}", failure);
+                return;
+            }
         }
 
         _logger.Information("User does not exist in ContentDb, redirecting to register new user...");

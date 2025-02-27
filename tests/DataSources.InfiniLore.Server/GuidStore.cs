@@ -5,26 +5,28 @@ using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Tests.InfiniLore.Server.Database.Fakers;
+namespace DataSources.InfiniLore.Server;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class GuidStore {
-    private static readonly ConcurrentDictionary<int, Guid> Guids = new();
+    private readonly ConcurrentDictionary<int, Guid> Guids = new();
     
-    public static Guid GetGuid(int? seed = null) {
-        // ReSharper disable once InvertIf
-        if (seed is null) {
-            seed = Random.Shared.Next();
-            while (Guids.ContainsKey(seed.Value)) {
-                seed = Random.Shared.Next();
-            }
-        }
+    public Guid GetGuid(string seed) =>  Guids.GetOrAdd(seed.GetHashCode(), ValueFactory);
+    public Guid GetGuid(int? seed = null) {
+        if (seed is not null) return Guids.GetOrAdd(seed.Value, ValueFactory);
         
-        return Guids.GetOrAdd(seed.Value, i => {
-            byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(i.ToString()));
-            return new Guid(hash.Take(16).ToArray());
-        });
+        seed = Random.Shared.Next();
+        while (Guids.ContainsKey(seed.Value)) {
+            seed = Random.Shared.Next();
+        }
+
+        return Guids.GetOrAdd(seed.Value, ValueFactory);
+    }
+    
+    private static Guid ValueFactory(int i) {
+        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(i.ToString()));
+        return new Guid(hash.AsSpan(0, 16));
     }
 }
