@@ -4,14 +4,13 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
-using InfiniLore.Server.Services.CQRS.Queries.Account.Auth0;
+using InfiniLore.Server.Services.CQRS;
+using InfiniLore.Server.Services.CQRS.Queries.Account.User;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,10 +18,8 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidated(IMediator mediator, IOptions<IdentityOptions> options, ILoggerFactory loggerFactory, IClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
-
-    private readonly IdentityOptions _options = options.Value;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -42,8 +39,14 @@ public class OnTokenValidated(IMediator mediator, IOptions<IdentityOptions> opti
         }
 
         // Run all checks and return to new user page if needed
-        if (await mediator.Send(new Auth0UserExistsQuery(auth0Info.UserId))) {
+        MediatorResponse<bool> result = await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId));
+        if (result.TryGetAsSuccess(out bool userExists) && userExists) {
             _logger.Debug("User already exists, continuing...");
+            return;
+        }
+
+        if (result.TryGetAsErrorValue(out string? failure)) {
+            _logger.LogError("Error checking if user exists : {failure}", failure);
             return;
         }
 

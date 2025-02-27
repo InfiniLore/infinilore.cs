@@ -7,6 +7,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/register"
 @using InfiniLore.Server.Database.Models.Account
+@using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Account
 @using MediatR
 @using System.ComponentModel.DataAnnotations
@@ -61,7 +62,7 @@
         // Because this page is in "InteractiveServer" rendermode, we don't need to use the JSON API to make all of this work
         //      We should use our internal systems directly 
 
-        InfiniLoreUser? result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
+        MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
         
         // TODO dont throw but actually get a decent result
         ArgumentNullException.ThrowIfNull(result);

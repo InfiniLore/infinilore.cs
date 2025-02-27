@@ -1,12 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using MediatR;
-
-namespace InfiniLore.Server.Services.CQRS.Queries.Account.Auth0;
+namespace InfiniLore.Server.Services.CQRS.Queries.Account.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record Auth0UserExistsQuery(
+public record UserExistsByAuth0Query(
     string Auth0UserId
-) : IRequest<bool>;
+) : MediatorRequest<bool>;

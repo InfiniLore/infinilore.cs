@@ -10,8 +10,8 @@ namespace Tests.InfiniLore.Server.Database.Fakers;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class KeyValueStoreFaker {
-
     private readonly ConcurrentDictionary<Guid, KeyValueStore> Entries = new();
+
     public Faker<KeyValueStore> Faker { get; } = new Faker<KeyValueStore>()
         .RuleFor(property: x => x.Id, setter: f => f.Random.Guid())
         .RuleFor(property: x => x.Key, setter: f => f.Random.AlphaNumeric(10))

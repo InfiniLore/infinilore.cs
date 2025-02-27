@@ -1,13 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
+using MediatR;
 
-namespace InfiniLore.Server.Services.CQRS.Commands.Account;
+namespace InfiniLore.Server.Services.CQRS;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserCreateRequest(
-    string Auth0UserId,
-    string UserName
-) : MediatorRequest<Guid>;
+public record MediatorRequest<TResponse> : IRequest<MediatorResponse<TResponse>>; 
