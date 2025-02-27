@@ -12,7 +12,7 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Account.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class Auth0UserExistsHandler(IUnitOfWorkFactory factory, ILoggerFactory loggerFactory) : IRequestHandler<Auth0UserExistsQuery, bool> {
+public class Auth0UserExistsHandler(IReadonlyUnitOfWorkFactory factory, ILoggerFactory loggerFactory) : IRequestHandler<Auth0UserExistsQuery, bool> {
     private readonly ILogger logger = loggerFactory.CreateLogger("ACCOUNT Auth0UserExist");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ public class Auth0UserExistsHandler(IUnitOfWorkFactory factory, ILoggerFactory l
         if (request.Auth0UserId.IsNullOrEmpty()) return false;
 
         try {
-            await using IUnitOfWork unitOfWork = factory.Create();
+            await using IReadonlyUnitOfWork unitOfWork = factory.Create();
             var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
             RepoResult<InfiniLoreUser> result = await userRepository.TryGetByAuth0IdAsync(request.Auth0UserId, ct);

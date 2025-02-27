@@ -66,7 +66,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
-        KeyValueStore modelWithSameId = faker.GetById(GuidStore.Entry001.ToGuid());
+        KeyValueStore modelWithSameId = faker.GetById(GuidStore.GetGuid(1));
 
         // Act
         RepoResult result = await repo.TryAddAsync(modelWithSameId);

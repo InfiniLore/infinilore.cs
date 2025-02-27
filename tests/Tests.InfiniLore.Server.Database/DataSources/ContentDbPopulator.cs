@@ -18,7 +18,7 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         await dbContext.KeyValueStores.AddRangeAsync(
-            keyValueStoreFaker.GetById(GuidStore.Entry001)
+            keyValueStoreFaker.GetById(GuidStore.GetGuid(1))
         );
 
         await unitOfWork.SaveChangesAsync();

@@ -15,8 +15,8 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.41.0" />
-      <PackageReference Include="CodeOfChaos.Types.DataSeeder" Version="0.22.0" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.22.0" />
+      <PackageReference Include="CodeOfChaos.Types.DataSeeder" Version="0.25.0" />
+      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.0" />
       <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.2" />
     </ItemGroup>

@@ -24,5 +24,4 @@ public class KeyValueStoreFaker {
     };
 
     public KeyValueStore GetById(Guid id) => Entries.GetOrAdd(id, EntryWithFixedId);
-    public KeyValueStore GetById(GuidStore id) => Entries.GetOrAdd(id.ToGuid(), EntryWithFixedId);
 }

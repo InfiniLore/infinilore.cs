@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Database.Models.Data.System;
@@ -10,8 +11,9 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// Not an IdentityDbContext due to Auth0 handling all of the auth & identity stuff
-public class ContentDb : DbContext {
+// Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
+public class ContentDb : DbContext , IReadonlyCapableDbContext{
+    public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -32,6 +34,25 @@ public class ContentDb : DbContext {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public void SetAsReadonly() {
+        if (IsReadonly) return; // Already readonly
+        IsReadonly = true;
+
+        // Since this is a DbContext, ensure it's configured to be read-only.
+        // Prevent any transaction or modification logic, e.g., disabling change tracking.
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+    }
+    
+    public override int SaveChanges() {
+        if (IsReadonly) throw new InvalidOperationException("The database context is in read-only mode.");
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) {
+        if (IsReadonly) throw new InvalidOperationException("The database context is in read-only mode.");
+        return base.SaveChangesAsync(cancellationToken);
+    }
+    
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
 
