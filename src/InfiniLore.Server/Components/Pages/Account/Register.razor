@@ -1,6 +1,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Account
 @using InfiniLore.Server.Services.CQRS.Queries.Account
@@ -31,6 +32,20 @@
         @if (!string.IsNullOrEmpty(_usernameValidationMessage)) {
             <span class="text-danger">@_usernameValidationMessage</span>
         }
+        @switch (_usernameStatus) {
+            case UsernameStatus.Checking:
+                <span class="text-warning">Checking...</span>
+                break;
+            case UsernameStatus.Taken:
+                <span class="text-danger">Username is already taken.</span>
+                break;
+            case UsernameStatus.Available:
+                <span class="text-success">Username is available!</span>
+                break;
+            case UsernameStatus.None: break;
+            default: throw new ArgumentOutOfRangeException();
+        }
+
     </div>
 
     <button type="submit" class="btn btn-primary" disabled="@_isFormDisabled">Register</button>
@@ -61,62 +76,81 @@
     private string _usernameValidationMessage = string.Empty;
     private bool _isFormDisabled;
     private readonly Stopwatch _debounceStopwatch = new();
-    private const int DebounceMilliseconds = 1000;
+    private const int DebounceMilliseconds = 500;
+    private UsernameStatus _usernameStatus = UsernameStatus.None;
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private void OnUsernameInputAsync(ChangeEventArgs e) {
+    private async Task OnUsernameInputAsync(ChangeEventArgs e) {
         if (!_debounceStopwatch.IsRunning) {
             _debounceStopwatch.Start();
         } else {
             _debounceStopwatch.Restart();
         }
 
-        // Wait for the debounce timer
-        _ = Task.Run(async () => {
-            // Check the elapsed time in a loop
-            while (_debounceStopwatch is { IsRunning: true, ElapsedMilliseconds: < DebounceMilliseconds }) {
-                await Task.Delay(100); // Small delay to lower CPU usage
-            }
+        // Set status to "Checking" while waiting for debounce
+        _usernameValidationMessage = string.Empty;
+        _usernameStatus = UsernameStatus.Checking;
+        await InvokeAsync(StateHasChanged);
 
-            // Stop the stopwatch and validate the input
-            if (_debounceStopwatch.IsRunning) {
-                _debounceStopwatch.Stop();
-                await ValidateUsernameAsync(userModel.Username); // Perform the validation
-            }
-        });
+        // Debounced validation logic
+        await Task.Delay(DebounceMilliseconds);
+        if (_debounceStopwatch.ElapsedMilliseconds >= DebounceMilliseconds) {
+            _debounceStopwatch.Stop();
+            await ValidateUsernameAsync(userModel.Username);
+        }
     }
 
     private async Task ValidateUsernameAsync(string username) {
         if (string.IsNullOrWhiteSpace(username)) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            StateHasChanged();
+            _usernameStatus = UsernameStatus.None;
+        
+            await InvokeAsync(StateHasChanged); // Ensure UI updates properly
             return;
         }
 
+        // Call the backend to check username availability
         MediatorResponse<bool> response = await Mediator.Send(new UsernameExistsQuery(username));
-        if (!response.TryGetAsSuccess(out bool isTaken)) return; 
-        _usernameValidationMessage = isTaken ? "Username is already taken." : string.Empty;
+        if (!response.TryGetAsSuccess(out bool isTaken)) return;
+
+        // Update the UI based on validation response
+        _usernameStatus = isTaken 
+            ? UsernameStatus.Taken 
+            : UsernameStatus.Available;
+        _usernameValidationMessage = string.Empty;
         _isFormDisabled = isTaken;
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged); // Ensure UI updates properly
     }
-
+    
     private async Task HandleValidSubmitAsync() {
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
         MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
+        if (result.TryGetAsError(out Error<string> errorMessage)) {
+            _usernameValidationMessage = errorMessage.Value;
+            _isFormDisabled = false; // Allow retry
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
         
-        ArgumentNullException.ThrowIfNull(result);
-
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
             ? ReturnUrl
             : "/";
 
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
         Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
+    }
+    
+    private enum UsernameStatus {
+        None,
+        Checking,
+        Taken,
+        Available
     }
 }
