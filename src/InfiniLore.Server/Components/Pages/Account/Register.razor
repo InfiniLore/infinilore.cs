@@ -1,19 +1,19 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@using InfiniLore.Server.Services.CQRS
+@using InfiniLore.Server.Services.CQRS.Commands.Account
+@using InfiniLore.Server.Services.CQRS.Queries.Account
+@using MediatR
+@using System.ComponentModel.DataAnnotations
+@using System.Diagnostics
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/register"
-@using InfiniLore.Server.Services.CQRS
-@using InfiniLore.Server.Services.CQRS.Commands.Account
-@using MediatR
-@using System.ComponentModel.DataAnnotations
 @inject NavigationManager Navigation
 @inject IMediator Mediator
 @rendermode InteractiveServer
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -26,12 +26,16 @@
 
     <div>
         <label for="username">Username:</label>
-        <InputText id="username" @bind-Value="userModel.Username" class="form-control"/>
+        <InputText id="username" @bind-Value="userModel.Username" @oninput="OnUsernameInputAsync" class="form-control"/>
         <ValidationMessage For="@(() => userModel.Username)"/>
+        @if (!string.IsNullOrEmpty(_usernameValidationMessage)) {
+            <span class="text-danger">@_usernameValidationMessage</span>
+        }
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary" disabled="@_isFormDisabled">Register</button>
 </EditForm>
+
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
@@ -54,16 +58,58 @@
         public string Username { get; set; } = string.Empty;
     }
 
+    private string _usernameValidationMessage = string.Empty;
+    private bool _isFormDisabled;
+    private readonly Stopwatch _debounceStopwatch = new();
+    private const int DebounceMilliseconds = 1000;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    private void OnUsernameInputAsync(ChangeEventArgs e) {
+        if (!_debounceStopwatch.IsRunning) {
+            _debounceStopwatch.Start();
+        } else {
+            _debounceStopwatch.Restart();
+        }
+
+        // Wait for the debounce timer
+        _ = Task.Run(async () => {
+            // Check the elapsed time in a loop
+            while (_debounceStopwatch is { IsRunning: true, ElapsedMilliseconds: < DebounceMilliseconds }) {
+                await Task.Delay(100); // Small delay to lower CPU usage
+            }
+
+            // Stop the stopwatch and validate the input
+            if (_debounceStopwatch.IsRunning) {
+                _debounceStopwatch.Stop();
+                await ValidateUsernameAsync(userModel.Username); // Perform the validation
+            }
+        });
+    }
+
+    private async Task ValidateUsernameAsync(string username) {
+        if (string.IsNullOrWhiteSpace(username)) {
+            _usernameValidationMessage = "Username cannot be empty.";
+            _isFormDisabled = true;
+            StateHasChanged();
+            return;
+        }
+
+        MediatorResponse<bool> response = await Mediator.Send(new UsernameExistsQuery(username));
+        if (!response.TryGetAsSuccess(out bool isTaken)) return; 
+        _usernameValidationMessage = isTaken ? "Username is already taken." : string.Empty;
+        _isFormDisabled = isTaken;
+
+        StateHasChanged();
+    }
+
     private async Task HandleValidSubmitAsync() {
-        // Because this page is in "InteractiveServer" rendermode, we don't need to use the JSON API to make all of this work
-        //      We should use our internal systems directly 
+        // Ensure username has passed asynchronous validation
+        if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
         MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
         
-        // TODO dont throw but actually get a decent result
         ArgumentNullException.ThrowIfNull(result);
 
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
