@@ -1,42 +1,30 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Imports
+@* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
+@* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+<!-- Sidebar -->
+<aside class="w-64 bg-gray-800 h-full p-4 flex flex-col space-y-4 fixed">
+    <!-- Top Left Logo -->
+    <a href="/" class="text-2xl font-bold text-white hover:text-gray-300 no-underline">InfiniLore</a>
 
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Html
-@* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWebApplication1</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="account/profile">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Profile
-            </NavLink>
-        </div>
+    <!-- Navigation -->
+    <nav class="flex flex-col space-y-2">
+        <NavLink href="/" Match="NavLinkMatch.All" class="block px-4 py-2 rounded hover:bg-gray-700">
+            Home
+        </NavLink>
+        <NavLink href="/account/profile" class="block px-4 py-2 rounded hover:bg-gray-700">
+            Profile
+        </NavLink>
     </nav>
-</div>
+</aside>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* Code
+@* Code *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 
 @code {
-
+    
 }

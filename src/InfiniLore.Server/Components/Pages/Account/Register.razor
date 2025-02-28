@@ -18,71 +18,58 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<h3>Register</h3>
-<p>User ID: @Auth0UserId</p>
-
-<EditForm Model="@userModel" OnValidSubmit="HandleValidSubmitAsync">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
-
-    <div>
-        <label for="username">Username:</label>
-        <InputText id="username" @bind-Value="userModel.Username" @oninput="OnUsernameInputAsync" class="form-control"/>
-        <ValidationMessage For="@(() => userModel.Username)"/>
-        @if (!string.IsNullOrEmpty(_usernameValidationMessage)) {
-            <span class="text-danger">@_usernameValidationMessage</span>
-        }
-        @switch (_usernameStatus) {
-            case UsernameStatus.Checking:
-                <span class="text-warning">Checking...</span>
-                break;
-            case UsernameStatus.Taken:
-                <span class="text-danger">Username is already taken.</span>
-                break;
-            case UsernameStatus.Available:
-                <span class="text-success">Username is available!</span>
-                break;
-            case UsernameStatus.None: break;
-            default: throw new ArgumentOutOfRangeException();
-        }
-
-    </div>
-
-    <button type="submit" class="btn btn-primary" disabled="@_isFormDisabled">Register</button>
-</EditForm>
-
 <section class="w-full bg-white tails-selected-element">
     <div class="mx-auto max-w-7xl">
         <div class="flex flex-col lg:flex-row justify-center">
             <div class="w-full bg-white lg:w-6/12 xl:w-5/12">
                 <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24">
                     <h4 class="w-full text-3xl font-bold">Finishing Signup</h4>
-                    <p class="text-lg text-zinc-500">We just need a little bit more information about you before you can start exploring</p>
+                    <p class="text-sm text-zinc-400">We just need a little bit more information about you before you can start exploring</p>
                     <div class="relative w-full mt-10 space-y-8">
                         <div class="relative">
                             <label class="font-medium text-zinc-900">Username</label>
                             <div class="relative">
-                                <input type="text" id="username" class="block w-full px-4 py-4 mt-2 text-xl placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer" placeholder="Enter Your Name">
+                                <input
+                                    @oninput="OnUsernameInputAsync"
+                                    value="@userModel.Username"
 
-                                <!-- Validation Message -->
-                                <span id="loading-spinner" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
-                                    <svg class="w-6 h-6 animate-spin text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0116 0 8 8 0 01-16 0z"></path>
-                                    </svg>
-                                </span>
+                                    type="text"
+                                    id="username"
+                                    class="block w-full px-4 py-4 mt-2 text-base placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer" 
+                                    placeholder="Enter Your Name"/>
 
-                                <span id="username-error" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 text-sm hidden">
-                                    Username taken
-                                </span>
-                                <span id="username-valid" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600 text-sm hidden">
-                                    Username available
-                                </span>
+                                <!-- Validation Message for taken username -->
+                                @switch (_usernameStatus) {
+                                    case UsernameStatus.Checking:
+                                        <span id="loading-spinner" class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span>
+                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
+                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
+                                        </span> 
+                                        break;
+                                    case UsernameStatus.Taken:
+                                        <span id="username-error" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">
+                                            Username taken
+                                        </span>
+                                        break;
+                                    case UsernameStatus.Available:
+                                        <span id="username-valid" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-emerald-500 text-sm">
+                                            Username available
+                                        </span>
+                                        break;
+                                    case UsernameStatus.None: break;
+                                    default: throw new ArgumentOutOfRangeException();
+                                }
                             </div>
                         </div>
 
                         <div class="relative">
-                            <a href="#_" class="inline-block w-full px-5 py-4 text-lg font-medium text-center text-white transition duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 ease" onclick="if (!window.__cfRLUnblockHandlers) return false; validateUsername()">Register</a>
+                            <button
+                                class="w-full px-5 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg transition transform duration-150 ease-in-out hover:bg-blue-700 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                @onclick="HandleValidSubmitAsync"
+                                disabled="@_isFormDisabled">
+                                Register
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -123,16 +110,19 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     private async Task OnUsernameInputAsync(ChangeEventArgs e) {
+        userModel.Username = e.Value?.ToString() ?? string.Empty;
+
         if (!_debounceStopwatch.IsRunning) {
             _debounceStopwatch.Start();
         } else {
             _debounceStopwatch.Restart();
         }
 
-        // Set status to "Checking" while waiting for debounce
+        // Correctly Set Status to "Checking"
         _usernameValidationMessage = string.Empty;
         _usernameStatus = UsernameStatus.Checking;
-        await InvokeAsync(StateHasChanged);
+        _isFormDisabled = true;
+        await InvokeAsync(StateHasChanged); // Trigger UI Refresh
 
         // Debounced validation logic
         await Task.Delay(DebounceMilliseconds);
@@ -146,24 +136,28 @@
         if (string.IsNullOrWhiteSpace(username)) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            _usernameStatus = UsernameStatus.None;
-        
-            await InvokeAsync(StateHasChanged); // Ensure UI updates properly
+            _usernameStatus = UsernameStatus.None; // Set to None for empty username
+            await InvokeAsync(StateHasChanged); // Refresh UI
             return;
         }
 
         // Call the backend to check username availability
         MediatorResponse<bool> response = await Mediator.Send(new UsernameExistsQuery(username));
-        if (!response.TryGetAsSuccess(out bool isTaken)) return;
+
+        if (!response.TryGetAsSuccess(out bool isTaken)) {
+            _usernameStatus = UsernameStatus.None; // Default/Fallback if the response doesn't return properly
+            await InvokeAsync(StateHasChanged); // Refresh UI
+            return;
+        }
 
         // Update the UI based on validation response
         _usernameStatus = isTaken 
             ? UsernameStatus.Taken 
             : UsernameStatus.Available;
-        _usernameValidationMessage = string.Empty;
-        _isFormDisabled = isTaken;
 
-        await InvokeAsync(StateHasChanged); // Ensure UI updates properly
+        _usernameValidationMessage = string.Empty; // Clear message
+        _isFormDisabled = isTaken; // Disable form if username is taken
+        await InvokeAsync(StateHasChanged); // Refresh UI
     }
     
     private async Task HandleValidSubmitAsync() {
