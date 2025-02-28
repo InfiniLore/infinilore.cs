@@ -51,6 +51,46 @@
     <button type="submit" class="btn btn-primary" disabled="@_isFormDisabled">Register</button>
 </EditForm>
 
+<section class="w-full bg-white tails-selected-element">
+    <div class="mx-auto max-w-7xl">
+        <div class="flex flex-col lg:flex-row justify-center">
+            <div class="w-full bg-white lg:w-6/12 xl:w-5/12">
+                <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24">
+                    <h4 class="w-full text-3xl font-bold">Finishing Signup</h4>
+                    <p class="text-lg text-zinc-500">We just need a little bit more information about you before you can start exploring</p>
+                    <div class="relative w-full mt-10 space-y-8">
+                        <div class="relative">
+                            <label class="font-medium text-zinc-900">Username</label>
+                            <div class="relative">
+                                <input type="text" id="username" class="block w-full px-4 py-4 mt-2 text-xl placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer" placeholder="Enter Your Name">
+
+                                <!-- Validation Message -->
+                                <span id="loading-spinner" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                    <svg class="w-6 h-6 animate-spin text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0116 0 8 8 0 01-16 0z"></path>
+                                    </svg>
+                                </span>
+
+                                <span id="username-error" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 text-sm hidden">
+                                    Username taken
+                                </span>
+                                <span id="username-valid" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600 text-sm hidden">
+                                    Username available
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <a href="#_" class="inline-block w-full px-5 py-4 text-lg font-medium text-center text-white transition duration-200 bg-blue-600 rounded-lg hover:bg-blue-700 ease" onclick="if (!window.__cfRLUnblockHandlers) return false; validateUsername()">Register</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
