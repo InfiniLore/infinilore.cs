@@ -9,7 +9,23 @@
 <!-- Sidebar -->
 <aside class="bg-gray-800 h-full p-4 flex flex-col space-y-4 fixed w-48">
     <!-- Top Left Logo -->
-    <a href="/" class="text-2xl font-bold text-white hover:text-gray-300 no-underline">InfiniLore</a>
+    <div class="flex items-center justify-between">
+        <a href="/" class="text-2xl font-bold text-white hover:text-gray-300 no-underline">
+            InfiniLore
+        </a>
+
+        <!-- Hamburger Menu -->
+        <button
+            class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none"
+            @onclick="ToggleMenu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu">
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
 
     <!-- Navigation -->
     <nav class="flex flex-col space-y-2">
@@ -70,4 +86,7 @@
         }
     }
 
+    private Task ToggleMenu() {
+        throw new NotImplementedException();
+    }
 }
