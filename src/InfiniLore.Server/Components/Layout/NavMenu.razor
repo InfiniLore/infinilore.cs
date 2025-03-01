@@ -3,18 +3,18 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+
+@rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<!-- Sidebar -->
-<aside class="bg-gray-800 h-full p-4 flex flex-col space-y-4 fixed w-48">
-    <!-- Top Left Logo -->
+<aside class="@($"bg-gray-800 h-full p-4 flex flex-col space-y-4 fixed {(IsMenuCollapsed ? "w-12" : "w-48")}") transition-all duration-300">
+    <!-- Top Logo and Hamburger -->
     <div class="flex items-center justify-between">
-        <a href="/" class="text-2xl font-bold text-white hover:text-gray-300 no-underline">
+        <a href="/" class="@(!IsMenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
             InfiniLore
         </a>
 
-        <!-- Hamburger Menu -->
         <button
             class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none"
             @onclick="ToggleMenu">
@@ -26,12 +26,21 @@
         </button>
     </div>
 
-
     <!-- Navigation -->
     <nav class="flex flex-col space-y-2">
-        @* <NavLink href="/" Match="NavLinkMatch.All" class="block px-4 py-2 rounded hover:bg-gray-700"> *@
-        @*     Home *@
-        @* </NavLink> *@
+        <NavLink href="/" class="flex items-center px-4 py-2 rounded hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l-4-4h16l-4 4m4 0V4m0 0l-4 4m4-4H4"></path>
+            </svg>
+            <span class="@(!IsMenuCollapsed ? "ml-2 text-white" : "hidden")">Home</span>
+        </NavLink>
+
+        <NavLink href="/about" class="flex items-center px-4 py-2 rounded hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16h8M8 12h4m-6 8a9 9 0 110-18 9 9 0 010 18z"></path>
+            </svg>
+            <span class="@(!IsMenuCollapsed ? "ml-2 text-white" : "hidden")">About</span>
+        </NavLink>
     </nav>
 
     <!-- Profile Section -->
@@ -39,11 +48,9 @@
         <AuthorizeView>
             <Authorized>
                 <div class="flex items-center space-x-4">
-                    <!-- Profile Icon/Avatar -->
                     <img src="@ProfileImage" alt="Profile" class="w-8 h-8 rounded-full">
-                    <!-- User Info -->
-                    <div class="text-white">
-                        <p class="font-semibold">@UserName</p>
+                    <div class="@(!IsMenuCollapsed ? "block" : "hidden")">
+                        <p class="font-semibold text-white">@UserName</p>
                         <a href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">Account Settings</a>
                     </div>
                 </div>
@@ -63,10 +70,13 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 
 @code {
+    // Cascading authentication state
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
+    // State for user details
     private string UserName { get; set; } = "Guest";
-    private string ProfileImage { get; set; } = "";// Fallback image
+    private string ProfileImage { get; set; } = ""; // Fallback image
+    private bool IsMenuCollapsed { get; set; } = false; // Tracks whether the menu is collapsed
 
     protected override async Task OnInitializedAsync() {
         if (AuthenticationStateTask is null) return;
@@ -74,7 +84,7 @@
         AuthenticationState authState = await AuthenticationStateTask;
         ClaimsPrincipal user = authState.User;
 
-        if (user.Identity != null && user.Identity.IsAuthenticated) {
+        if (user.Identity is { IsAuthenticated: true }) {
             // Retrieve claims
             string? nameClaim = user.FindFirst(c => c.Type == "name")?.Value ??
                 user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
@@ -86,7 +96,8 @@
         }
     }
 
-    private Task ToggleMenu() {
-        throw new NotImplementedException();
+    private async Task ToggleMenu() {
+        IsMenuCollapsed = !IsMenuCollapsed;
+        await InvokeAsync(StateHasChanged);
     }
 }
