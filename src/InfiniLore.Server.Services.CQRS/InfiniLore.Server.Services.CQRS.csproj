@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <Folder Include="Commands\Data\System\"/>
-        <Folder Include="Commands\Data\User\"/>
         <Folder Include="Queries\Data\Discovery\"/>
         <Folder Include="Queries\Data\System\"/>
         <Folder Include="Queries\Data\User\"/>
