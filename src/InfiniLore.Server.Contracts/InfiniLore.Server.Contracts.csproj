@@ -21,8 +21,4 @@
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Database\Repositories\Data\User\"/>
-    </ItemGroup>
-
 </Project>

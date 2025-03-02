@@ -58,8 +58,7 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
         ServiceProvider = services.BuildServiceProvider();
 
-        await using (IUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>().Create()) {
-            var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
+        await using (ContentDb dbContext = await ServiceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync()) {
             await dbContext.Database.MigrateAsync();
             await dbContext.SaveChangesAsync();
         }

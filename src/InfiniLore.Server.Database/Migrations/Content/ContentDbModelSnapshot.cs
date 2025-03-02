@@ -103,6 +103,9 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.ToTable("KeyValueStores");
                 });
 
