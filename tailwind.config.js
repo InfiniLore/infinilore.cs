@@ -53,15 +53,15 @@ module.exports = {
                         "border-width": "1px",
                         "border-color": colors[color],
                     };
-                } else {
-                    Object.keys(colors[color]).forEach(shade => {
-                        newUtilities[`.DEBUG-${e(color)}-${shade}`] = {
-                            "border-style": "solid",
-                            "border-width": "1px",
-                            "border-color": colors[color][shade],
-                        };
-                    });
+                    return;
                 }
+                Object.keys(colors[color]).forEach(shade => {
+                    newUtilities[`.DEBUG-${e(color)}-${shade}`] = {
+                        "border-style": "solid",
+                        "border-width": "1px",
+                        "border-color": colors[color][shade],
+                    };
+                });
             });
 
             addUtilities(newUtilities, ['responsive', 'hover']);

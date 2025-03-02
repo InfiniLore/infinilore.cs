@@ -9,27 +9,22 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="page">
-    <div class="sidebar">
+<div class="flex h-screen">
+    <div class="h-full transition-all duration-300">
         <NavMenu/>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <Login/>
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
+    <main class="flex-1 overflow-auto">
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
 
-<div id="blazor-error-ui">
+<div id="blazor-error-ui" class="hidden fixed bottom-0 left-0 w-full bg-yellow-100 shadow-md z-[1000] p-3 pl-5">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <a class="dismiss cursor-pointer absolute right-3 top-2">🗙</a>
 </div>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@

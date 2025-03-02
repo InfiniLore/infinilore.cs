@@ -1,42 +1,114 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Imports
+@* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
+@rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
+@* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+<aside
+    class="@($"flex-shrink-0 bg-gray-800 h-full flex flex-col space-y-4 transition-all duration-300 {(IsMenuCollapsed ? "w-14 p-1" : "w-48 p-4")}")">
+    <!-- Top Logo and Hamburger -->
+    <div class="flex items-center justify-center h-12 gap-x-4">
+        <!-- Logo -->
+        <a href="/"
+           class="@(!IsMenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
+            InfiniLore
+        </a>
 
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Html
-@* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorWebApplication1</a>
+        <!-- Hamburger Menu -->
+        <button
+            class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none justify-center"
+            @onclick="ToggleMenu">
+            <LucideIcon Name="menu" />
+        </button>
     </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+    <!-- Navigation -->
+    <nav class="flex flex-col space-y-2 mt-4">
+        <NavLink
+            href="/about"
+            class="@($"flex items-center rounded hover:bg-gray-700 transition-colors duration-300 p-2 {(IsMenuCollapsed ? "justify-center" : "justify-start")}")"
+        >
+            <!-- Icon -->
+            <LucideIcon class="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-white"
+                       Name="equal-approximately"/>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="account/profile">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Profile
-            </NavLink>
-        </div>
+            <!-- Text (hidden in collapsed mode) -->
+            <span class="@(!IsMenuCollapsed ? "ml-2 text-white" : "hidden")">
+        About
+    </span>
+        </NavLink>
     </nav>
-</div>
+
+    <!-- Profile Section -->
+    <div class="mt-auto border-t border-gray-600 pt-4 flex items-center pb-1">
+        <AuthorizeView>
+            <NotAuthorized>
+                <NavLink href="Account/Login?redirectUri=/">Log in</NavLink>
+            </NotAuthorized>
+
+            <Authorized>
+                <!-- Profile Icon -->
+                <NavLink href="/account/profile"
+                         class="@($"transition-all duration-300 {(IsMenuCollapsed ? "w-8 h-8 mx-auto" : "w-10 h-10")}")">
+                    @if (!string.IsNullOrEmpty(ProfileImage)) {
+                        <img src="@ProfileImage" alt="Profile" class="rounded-full">
+                    }else {
+                        <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
+                    }
+
+                </NavLink>
+                <!-- User Info -->
+                <div class="@(!IsMenuCollapsed ? "ml-4" : "hidden") text-white flex flex-col space-y-1">
+                    <p class="font-semibold">@UserName</p>
+
+                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings</NavLink>
+                    <NavLink href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
+    </div>
+</aside>
+
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* Code
+@* Code *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 
 @code {
+    // Cascading authentication state
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
+    // State for user details
+    private string UserName { get; set; } = "Guest";
+    private string ProfileImage { get; set; } = "";// Fallback image
+    private bool IsMenuCollapsed { get; set; } = false;// Tracks whether the menu is collapsed
+
+    protected override async Task OnInitializedAsync() {
+        if (AuthenticationStateTask is null) return;
+
+        AuthenticationState authState = await AuthenticationStateTask;
+        ClaimsPrincipal user = authState.User;
+
+        if (user.Identity is { IsAuthenticated: true }) {
+            // Retrieve claims
+            string? nameClaim = user.FindFirst(c => c.Type == "name")?.Value ??
+                user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            string? imageClaim = user.FindFirst(c => c.Type.Equals("picture"))?.Value;
+
+            // Set username and profile image
+            UserName = nameClaim ?? "User";
+            ProfileImage = imageClaim ?? "";// Fallback if no image is available
+        }
+    }
+
+    private async Task ToggleMenu() {
+        IsMenuCollapsed = !IsMenuCollapsed;
+        await InvokeAsync(StateHasChanged);
+    }
 }
