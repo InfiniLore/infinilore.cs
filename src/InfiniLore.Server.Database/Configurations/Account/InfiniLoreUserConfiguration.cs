@@ -2,16 +2,17 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Database.Models.Account;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Database.Configurations.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUserConfiguration : IEntityTypeConfiguration<InfiniLoreUser> {
+public class InfiniLoreUserConfiguration : BasicDataConfiguration<InfiniLoreUser> {
 
-    public void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
+    public override void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
+        base.Configure(builder);
+        
         builder.HasIndex(x => x.Auth0IdGoogle).IsUnique();
         builder.Property(x => x.Auth0IdGoogle).HasMaxLength(InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength);
 

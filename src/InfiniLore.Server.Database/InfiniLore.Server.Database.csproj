@@ -7,11 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Configurations\Data\User\"/>
-        <Folder Include="Repositories\Data\User\"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Auth0.AuthenticationApi" Version="7.34.0"/>
         <PackageReference Include="Auth0.ManagementApi" Version="7.34.0"/>
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.41.0" />

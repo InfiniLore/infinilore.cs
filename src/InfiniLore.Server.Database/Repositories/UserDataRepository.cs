@@ -11,6 +11,12 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
+    protected override IQueryable<T> AutoInclude(IQueryable<T> query) 
+        => query.Include(ls => ls.Owner);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoResult<T[]>> TryGetByUserAsync(Guid userId, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetDbSet<T>();

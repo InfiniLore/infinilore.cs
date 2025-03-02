@@ -5,6 +5,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Database.Models.Data.System;
+using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Database;
@@ -23,13 +24,10 @@ public class ContentDb : DbContext , IReadonlyCapableDbContext{
     // -----------------------------------------------------------------------------------------------------------------
     // DbSets
     // -----------------------------------------------------------------------------------------------------------------
-    public DbSet<BasicData> BasicData { get; set; } = null!;
-    public DbSet<UserData> UserData { get; set; } = null!;
-    public DbSet<SystemData> SystemData { get; set; } = null!;
-
     public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
 
     public DbSet<InfiniLoreUser> Users { get; set; } = null!;
+    public DbSet<LoreScope> LoreScopes { get; set; } = null!;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

@@ -22,31 +22,11 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.BasicData", b =>
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SoftDeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BasicData");
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", b =>
-                {
-                    b.HasBaseType("InfiniLore.Server.Database.Models.BasicData");
 
                     b.Property<string>("Auth0Github")
                         .HasMaxLength(256)
@@ -60,10 +40,21 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("Auth0Github")
                         .IsUnique()
@@ -77,65 +68,85 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .IsUnique()
                         .HasFilter("[Auth0MailPassword] IS NOT NULL");
 
+                    b.HasIndex("Id")
+                        .IsUnique();
+
                     b.HasIndex("Username")
-                        .IsUnique()
-                        .HasFilter("[Username] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.SystemData", b =>
-                {
-                    b.HasBaseType("InfiniLore.Server.Database.Models.BasicData");
-
-                    b.ToTable("SystemData");
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
-                {
-                    b.HasBaseType("InfiniLore.Server.Database.Models.BasicData");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("UserData");
-                });
-
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", b =>
                 {
-                    b.HasBaseType("InfiniLore.Server.Database.Models.SystemData");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Value")
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
+                    b.HasKey("Id");
+
                     b.ToTable("KeyValueStores");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.SystemData", b =>
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.User.LoreScope", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Database.Models.BasicData", null)
-                        .WithOne()
-                        .HasForeignKey("InfiniLore.Server.Database.Models.SystemData", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_OwnerId_Name_Unique");
+
+                    b.ToTable("LoreScopes");
+
+                    b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.UserData", b =>
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.User.LoreScope", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Database.Models.BasicData", null)
-                        .WithOne()
-                        .HasForeignKey("InfiniLore.Server.Database.Models.UserData", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("InfiniLore.Server.Database.Models.Account.InfiniLoreUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
@@ -143,15 +154,6 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", b =>
-                {
-                    b.HasOne("InfiniLore.Server.Database.Models.SystemData", null)
-                        .WithOne()
-                        .HasForeignKey("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
