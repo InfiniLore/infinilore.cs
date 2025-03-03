@@ -12,7 +12,7 @@ namespace InfiniLore.Server.Services.Auth0;
 public partial class RolesStore {
     public static partial string User { get; }
     public static string[] UserPermissions { get; } = [
-        PermissionsStore.LorescopeRead
+        PermissionsStore.LorescopeRead,
     ];
     
     public static partial string Consumer { get; }

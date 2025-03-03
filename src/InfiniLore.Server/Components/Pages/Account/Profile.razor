@@ -6,6 +6,11 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
 @using InfiniLore.Server.Components.Layout
+@using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper
+@using InfiniLore.Server.Services.CQRS
+@using InfiniLore.Server.Services.CQRS.Commands.Data.User
+@using InfiniLore.Server.Services.CQRS.Queries.Account
+@using MediatR
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -13,6 +18,9 @@
 
 @attribute [Authorize]
 @layout MainLayout
+@inject IMediator Mediator
+@inject IClaimsPrincipalHelper ClaimsPrincipalHelper
+@inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -30,12 +38,13 @@
             <div class="col-md-4">
                 <h3>@_username</h3>
                 <p>
-                    <i class="bi bi-envelope"></i> @_emailAddress
+                    @* <i class="bi bi-envelope"></i> @_emailAddress *@
                 </p>
             </div>
 
             <AuthorizeView Roles="Admin">
                 <Authorized>
+                    <button @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
                     <h3>Admin Dashboard</h3>
                 </Authorized>
                 <NotAuthorized>
@@ -50,7 +59,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
@@ -75,4 +83,23 @@
         await base.OnInitializedAsync();
     }
 
+    private async Task CreateLorescopeCallbackAsync(MouseEventArgs args) {
+        AuthenticationState state = await AuthenticationStateTask;
+        
+        IAuth0Information auth0Info = ClaimsPrincipalHelper.GetAuth0Information(state.User);
+        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.UserId));
+        if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
+            Logger.Warning("Something horribly went wrong");
+            return;
+        }
+
+        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
+        MediatorResponse<Guid> createResult = await Mediator.Send(request);
+        if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
+            Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);
+            return;
+        }
+        
+        Logger.Information("LORESCOPE created with id {Id}", lorescopeId);
+    }
 }

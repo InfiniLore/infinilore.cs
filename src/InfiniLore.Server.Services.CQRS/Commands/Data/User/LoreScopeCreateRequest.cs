@@ -6,7 +6,7 @@ namespace InfiniLore.Server.Services.CQRS.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeCreateRequest (
+public record LoreScopeCreateRequest(
     Guid OwnerId,
     string LoreScopeName,
     string? LoreScopeDescription = null

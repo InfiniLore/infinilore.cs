@@ -18,5 +18,6 @@ public interface IBasicDataRepository<T> :
     IHasTryRemoveAsync<T>,
     IHasTryGetByIdAsync<T>,
     IHasTryGetAllAsync<T>,
-    IHasCountAsync
+    IHasCountAsync,
+    IHasIsExistingIdAsync
     where T : BasicData;

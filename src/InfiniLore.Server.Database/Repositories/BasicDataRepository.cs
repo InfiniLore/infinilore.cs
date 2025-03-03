@@ -443,7 +443,18 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         // Query & Retrieve
-        int data = await dbSet.CountAsync(cancellationToken: ct);
+        int data = await dbSet.AsNoTracking()
+            .CountAsync(cancellationToken: ct);
         return RepoResult<int>.FromSuccess(data);
     }
+
+    public async ValueTask<RepoResult> IsExistingIdAsync(Guid id, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query & Retrieve
+        bool result = await dbSet.AsNoTracking()
+            .AnyAsync(ls => ls.Id == id, ct);
+        return RepoResult.FromBool(result);
+    } 
 }

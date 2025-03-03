@@ -1,17 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
+using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
-using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Database.Models.Data.User;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using ValidationResult=FluentValidation.Results.ValidationResult;
 
 namespace InfiniLore.Server.Services.CQRS.Commands.Data.User;
 
@@ -24,9 +22,12 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
     public async Task<MediatorResponse<Guid>> Handle(LoreScopeCreateRequest request, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
+        var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
         
         RepoResult loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(request.LoreScopeName, request.OwnerId, ct);
-        if (loreScopeNameTakenResult.IsSuccess) return MediatorResponse<Guid>.FromFailureString("LoreScope name already taken");
+        RepoResult userIdExistsResult = await userRepo.IsExistingIdAsync(request.OwnerId, ct);
+        if (loreScopeNameTakenResult.IsSuccess) return MediatorResponse<Guid>.FromFailureString("LoreScope name already taken for this user");
+        if (userIdExistsResult.IsFailure) return MediatorResponse<Guid>.FromFailureString("Owner id does not exist");
         
         // Create a new lorescope based on the request
         var loreScope = new LoreScope {
@@ -44,9 +45,8 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
 
         // Save to Db
         RepoResult result = await loreScopeRepo.TryAddAsync(loreScope, ct);
-        if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database");  ;
-
-
+        if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database"); 
+        
         // TODO send out notifications for others to pick up that a new user has been created
         return loreScope.Id;
     }
