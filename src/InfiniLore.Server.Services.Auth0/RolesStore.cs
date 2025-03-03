@@ -11,11 +11,15 @@ namespace InfiniLore.Server.Services.Auth0;
 [RolesStore]
 public partial class RolesStore {
     public static partial string User { get; }
-    public static string[] UserPermissions { get; } = [];
+    public static string[] UserPermissions { get; } = [
+        PermissionsStore.LorescopeRead
+    ];
     
     public static partial string Consumer { get; }
     public static string[] ConsumerPermissions { get; } = [
-        ..UserPermissions
+        ..UserPermissions,
+        PermissionsStore.LorescopeWrite,
+        PermissionsStore.LorescopeDelete
     ];
     
     public static partial string Producer { get; }
