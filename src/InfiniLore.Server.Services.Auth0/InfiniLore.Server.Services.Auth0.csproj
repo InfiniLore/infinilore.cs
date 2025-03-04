@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="InfiniLore.Credentials" Version="2.0.0-preview.2" />
-      <PackageReference Include="InfiniLore.Credentials.Generators" Version="2.0.0-preview.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="InfiniLore.Credentials" Version="2.0.0-preview.14" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.0.0-preview.14" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="2.0.0-preview.14" />
+        <PackageReference Include="InfiniLore.Credentials.Generators" Version="2.0.0-preview.14">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>
