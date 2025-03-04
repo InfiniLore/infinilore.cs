@@ -23,10 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="TokenStore\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj" />
     </ItemGroup>
 

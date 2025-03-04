@@ -6,10 +6,11 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
 @using InfiniLore.Server.Components.Layout
-@using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper
+@using InfiniLore.Server.Contracts.Services
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Data.User
 @using InfiniLore.Server.Services.CQRS.Queries.Account
+@using InfiniLore.ServerClient.Shared
 @using MediatR
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -19,7 +20,7 @@
 @attribute [Authorize]
 @layout MainLayout
 @inject IMediator Mediator
-@inject IClaimsPrincipalHelper ClaimsPrincipalHelper
+@inject IAuthenticationStateProviderClaimsPrincipalHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html

@@ -14,8 +14,10 @@ using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.Auth0.Encryption;
+using InfiniLore.Server.Services.Auth0.TokenStore;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.OpenIdConnect;
+using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -93,7 +95,7 @@ public static class Program {
             // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
             options.Scope = "openid profile email";
             options.CallbackPath = "/auth/callback";
-
+            
             options.OpenIdConnectEvents = new OpenIdConnectEvents {
                 OnTokenValidated = OpenIdConnectEventHelper.HandleWith<TokenValidatedContext>()
             };
@@ -135,6 +137,7 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
+        builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
 
         #region DataSeeding
         // Everything is handled by the DataSeeding project

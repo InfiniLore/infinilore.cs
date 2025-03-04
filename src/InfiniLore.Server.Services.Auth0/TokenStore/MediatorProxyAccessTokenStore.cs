@@ -10,7 +10,7 @@ using InfiniLore.Server.Services.CQRS.Queries.Data.System;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Server.Services.Auth0;
+namespace InfiniLore.Server.Services.Auth0.TokenStore;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

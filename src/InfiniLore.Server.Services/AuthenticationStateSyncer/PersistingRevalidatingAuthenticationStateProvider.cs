@@ -2,7 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
+using InfiniLore.Server.Contracts.Services;
+using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -20,7 +21,7 @@ namespace InfiniLore.Server.Services.AuthenticationStateSyncer;
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly PersistentComponentState _state;
-    private readonly IClaimsPrincipalHelper _claimsPrincipalHelper;
+    private readonly IAuthenticationStateProviderClaimsPrincipalHelper _claimsPrincipalHelper;
 
     private readonly PersistingComponentStateSubscription _subscription;
 
@@ -33,7 +34,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         ILoggerFactory loggerFactory,
         IServiceScopeFactory scopeFactory,
         PersistentComponentState state,
-        IClaimsPrincipalHelper claimsPrincipalHelper
+        IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper
     ) : base(loggerFactory) {
         _scopeFactory = scopeFactory;
         _state = state;
@@ -64,12 +65,12 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         if (_authenticationStateTask is null) {
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
         }
-
+        
         AuthenticationState authenticationState = await _authenticationStateTask;
-        IAuth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
+        Auth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) return;
 
-        _state.PersistAsJson(nameof(IAuth0Information), auth0Info);
+        _state.PersistAsJson(nameof(Auth0Information), auth0Info);
     }
 
     protected override void Dispose(bool disposing) {

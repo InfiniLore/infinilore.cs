@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
-using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
+using InfiniLore.ServerClient.Shared;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
