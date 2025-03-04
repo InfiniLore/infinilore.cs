@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Data.System;
+namespace InfiniLore.Server.Services.Auth0.Encryption;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IKeyValueStoreRepository : ISystemDataRepository<KeyValueStore> {
-    ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default);
+public class Auth0AccessTokenEncryptionServiceOptions {
+    public string SecretKey { get; set; } = DefaultSecretKey;
+    public const string DefaultSecretKey = "AnnaIsTrans4Ever!";
 }

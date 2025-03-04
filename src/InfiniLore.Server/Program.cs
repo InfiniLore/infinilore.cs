@@ -6,11 +6,14 @@ using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
+using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
+using InfiniLore.Server.Services.Auth0;
+using InfiniLore.Server.Services.Auth0.Encryption;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
@@ -98,6 +101,14 @@ public static class Program {
 
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
+        #endregion
+        
+        #region Auth0 Management Services
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
+        builder.AddAuth0ManagementApiServices(config => {
+            config.SetScopedTokenStore<MediatorProxyAccessTokenStore>();
+        });
+        builder.AddAuth0AccessTokenEncryptionOptions(); // Required to set options correctly
         #endregion
 
         #region FastEndpoints

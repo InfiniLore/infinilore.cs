@@ -12,6 +12,7 @@
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj"/>
@@ -22,6 +23,8 @@
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.42.3" />
         <PackageReference Include="FastEndpoints" Version="5.34.0"/>
         <PackageReference Include="FastEndpoints.Swagger" Version="5.34.0"/>
+        <PackageReference Include="InfiniLore.Credentials" Version="2.0.0-preview.14" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.0.0-preview.14" />
         <PackageReference Include="InfiniLore.Lucide" Version="0.12.477" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2"/>

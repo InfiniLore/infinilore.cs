@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.42.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.42.3">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="InfiniLore.Credentials" Version="2.0.0-preview.14" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.0.0-preview.14" />
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="2.0.0-preview.14" />
@@ -14,6 +19,15 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MediatR" Version="12.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="TokenStore\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj" />
     </ItemGroup>
 
 </Project>

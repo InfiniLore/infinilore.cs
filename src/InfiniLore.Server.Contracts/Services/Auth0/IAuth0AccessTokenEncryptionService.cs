@@ -1,12 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Data.System;
+namespace InfiniLore.Server.Contracts.Services.Auth0;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IKeyValueStoreRepository : ISystemDataRepository<KeyValueStore> {
-    ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default);
+public interface IAuth0AccessTokenEncryptionService {
+    string Encrypt(string plainText);
+    string Decrypt(string cipherText);
 }

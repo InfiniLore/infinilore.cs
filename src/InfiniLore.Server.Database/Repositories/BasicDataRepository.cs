@@ -273,7 +273,6 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         // Retrieve
         if (result is null) return RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
-
         return RepoResult<T>.FromSuccess(result);
     }
 

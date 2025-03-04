@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Database.Models.Data.System;
 using Microsoft.EntityFrameworkCore;
@@ -22,5 +23,19 @@ public class KeyValueStoreRepository : SystemDataRepository<KeyValueStore>, IKey
             .Where(foundModel => ids.Contains(foundModel.Id) || keys.Contains(foundModel.Key));// Avoids joins here
 
         return await query.AnyAsync(ct);
+    }
+    
+    public async ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
+        // Access
+        ContentDb dbContext = GetDbContext();
+
+        // Query
+        KeyValueStore? result = await dbContext.KeyValueStores.AsNoTracking()
+            .Where(ls => ls.Key == key)
+            .FirstOrDefaultAsync(cancellationToken: ct);
+
+        // Retrieve
+        if (result is null) return RepoResult<KeyValueStore>.FromFailure(RepositoryFailures.ModelNotFound);
+        return RepoResult<KeyValueStore>.FromSuccess(result);
     }
 }

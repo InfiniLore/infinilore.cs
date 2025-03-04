@@ -1,12 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Data.System;
+using InfiniLore.Credentials.Auth0;
 
-namespace InfiniLore.Server.Contracts.Database.Repositories.Data.System;
+namespace InfiniLore.Server.Services.CQRS.Commands.Data.System;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IKeyValueStoreRepository : ISystemDataRepository<KeyValueStore> {
-    ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default);
-}
+public record StoreAuth0AccessTokenRequest(IAuth0AccessToken Token) : MediatorRequest<bool>;
