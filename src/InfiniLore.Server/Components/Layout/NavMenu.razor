@@ -105,6 +105,7 @@
             UserName = nameClaim ?? "User";
             ProfileImage = imageClaim ?? "";// Fallback if no image is available
         }
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task ToggleMenu() {
