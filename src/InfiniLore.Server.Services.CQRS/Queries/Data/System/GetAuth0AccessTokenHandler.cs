@@ -29,7 +29,6 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         if (store.Value.IsNullOrEmpty()) return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Value is empty.");
         store.Value = encryptionService.Decrypt(store.Value);
         
-        // TODO value should be protected, so we need to decrypt it in some way.
         if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) 
             return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Json conversion failed.");
         
