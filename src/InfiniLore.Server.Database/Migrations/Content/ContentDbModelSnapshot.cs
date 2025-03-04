@@ -98,8 +98,8 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Value")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
+                        .HasMaxLength(4096)
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
