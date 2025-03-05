@@ -34,6 +34,7 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
         IAuth0Information auth0Info = claimsPrincipalHelper.GetAuth0Information(principal);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) {
             _logger.Debug("Information could not be found in claims, continuing...");
+            context.Response.Redirect("/account/logout?returnUrl=/");
             return;
         }
 
@@ -45,6 +46,7 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
             }
             case { IsError: true, AsError.Value: {} failure }: {
                 _logger.LogError("Error checking if user exists : {failure}", failure);
+                context.Response.Redirect("/account/logout?returnUrl=/");
                 return;
             }
         }

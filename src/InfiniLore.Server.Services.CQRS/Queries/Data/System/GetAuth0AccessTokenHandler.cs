@@ -17,22 +17,29 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger,  IAuth0AccessTokenEncryptionService encryptionService) : IRequestHandler<GetAuth0AccessTokenRequest, MediatorResponse<IAuth0AccessToken>> {
     
-    // TODO use logger
     public async Task<MediatorResponse<IAuth0AccessToken>> Handle(GetAuth0AccessTokenRequest request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
         
         RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        if (storeResult.IsFailure) return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Key not found.");
+        if (storeResult.IsFailure) {
+            logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
+            return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Key not found.");
+        }
         
         KeyValueStore store = storeResult.AsSuccess;
-        if (store.Value.IsNullOrEmpty()) return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Value is empty.");
+        if (store.Value.IsNullOrEmpty()) {
+            logger.Warning("Auth0 access token value is empty.");
+            return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Value is empty.");
+        }
         store.Value = encryptionService.Decrypt(store.Value);
-        
-        if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) 
+
+        if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
+            logger.Error("Failed to convert Auth0 access token JSON to object.");
             return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Json conversion failed.");
+        }
         
-        
+        logger.Information("Successfully retrieved and parsed Auth0 access token.");
         return dto;
     }
 }

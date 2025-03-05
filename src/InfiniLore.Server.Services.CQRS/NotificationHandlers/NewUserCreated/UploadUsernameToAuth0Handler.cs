@@ -1,24 +1,21 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Auth0.ManagementApi;
-using Auth0.ManagementApi.Models;
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Credentials.Auth0.Services;
+using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.CQRS.Notifications.Account;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace InfiniLore.Server.Services.CQRS.NotificationHandlers.NewUserCreated;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UploadUsernameToAuth0Handler(IAuth0ClientService clientService, IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger) : INotificationHandler<NewUserCreatedNotification> {
+public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : INotificationHandler<NewUserCreatedNotification> {
     public async Task Handle(NewUserCreatedNotification notification, CancellationToken ct) {
         Guid userId = notification.UserId;
         if (userId == Guid.Empty) return;
@@ -32,33 +29,14 @@ public class UploadUsernameToAuth0Handler(IAuth0ClientService clientService, IRe
             return;
         }
 
-        try {
-            IManagementApiClient client = await clientService.GetClientAsync(ct);
-            string[] ids = user.GetAuth0Ids();
-      
-            foreach (string t in ids) {
-                User? foundUserData = await client.Users.GetAsync(t, cancellationToken: ct);
-                if (foundUserData is null) continue; // User does not exist in auth0 ???
-
-                Dictionary<string, string> foundDict = foundUserData.AppMetadata switch {
-                    null => new Dictionary<string, string>(),
-                    string s => JsonSerializer.Deserialize<Dictionary<string, string>>(s) ?? new Dictionary<string, string>(),
-                    JsonElement j => JsonSerializer.Deserialize<Dictionary<string, string>>(j.GetRawText()) ?? new Dictionary<string, string>(),
-                    _ => new Dictionary<string, string>()
-                };
-                
-                foundDict.AddOrUpdate("username", user.Username);
-                
-                logger.LogInformation("Updating user in auth0: {@user}", foundUserData);
-                var request = new UserUpdateRequest {
-                    AppMetadata = foundDict
-                };
-                
-                await client.Users.UpdateAsync(t, request, ct);
+        foreach (string auth0UserId in user.GetAuth0Ids()) {
+            UtilityResult result = await auth0UserUtility.TryAddOrUpdateAppMetadataAsync(auth0UserId, "username", user.Username, ct);
+            if (result.TryGetAsFailureValue(out string? failureReason)) {
+                logger.Warning("Failed to update user in auth0: {Reason}", failureReason);
+                continue;
             }
-        }
-        catch (Exception e) {
-            logger.Error(e, "Failed to update user in auth0");
+            
+            logger.Information("Updated user {userId} in auth0: {Username}", user.Id, user.Username);
         }
     }
 }

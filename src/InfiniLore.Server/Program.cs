@@ -139,6 +139,8 @@ public static class Program {
         #region MediatR
         builder.Services.AddMediatR(config => {
             config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
+
+            config.AddBehavior(typeof(RequestExceptionHandler<,,>));
         });
         #endregion
 

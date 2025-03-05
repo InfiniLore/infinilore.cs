@@ -2,11 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Database.Models.Data.System;
 using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -58,4 +58,10 @@ public class ContentDb : DbContext , IReadonlyCapableDbContext{
         //      This is due to more extensibility and ease of use
         builder.ApplyConfigurationsFromAssembly(typeof(IInfiniLoreServerDatabaseEntrypoint).Assembly);
     }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+        optionsBuilder.ConfigureWarnings(warnings =>
+            warnings.Ignore(CoreEventId.PossibleIncorrectRequiredNavigationWithQueryFilterInteractionWarning));
+    }
+
 }

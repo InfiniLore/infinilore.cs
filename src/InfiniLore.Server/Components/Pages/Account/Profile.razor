@@ -90,7 +90,7 @@
         IAuth0Information auth0Info = ClaimsPrincipalHelper.GetAuth0Information(state.User);
         MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.UserId));
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
-            Logger.Warning("Something horribly went wrong");
+            Logger.Warning($"User could not be found with auth0Id {auth0Info.UserId}");
             return;
         }
 

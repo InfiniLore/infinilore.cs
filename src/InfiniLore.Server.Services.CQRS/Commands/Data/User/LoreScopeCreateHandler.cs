@@ -8,6 +8,7 @@ using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
+using InfiniLore.Server.Services.CQRS.Notifications.Data.User;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +17,7 @@ namespace InfiniLore.Server.Services.CQRS.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<LoreScope> validator ) : IRequestHandler<LoreScopeCreateRequest, MediatorResponse<Guid>> {
+public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<LoreScope> validator, IMediator mediator ) : IRequestHandler<LoreScopeCreateRequest, MediatorResponse<Guid>> {
     private readonly ILogger logger = factory.CreateLogger("LORESCOPE Create");
     
     public async Task<MediatorResponse<Guid>> Handle(LoreScopeCreateRequest request, CancellationToken ct) {
@@ -47,7 +48,8 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         RepoResult result = await loreScopeRepo.TryAddAsync(loreScope, ct);
         if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database"); 
         
-        // TODO send out notifications for others to pick up that a new user has been created
+        await mediator.Publish(new NewLoreScopeCreatedNotification(loreScope.Id), ct);
+        logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }
 }
