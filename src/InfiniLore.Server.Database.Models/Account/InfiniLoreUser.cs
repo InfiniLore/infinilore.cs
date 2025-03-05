@@ -19,4 +19,9 @@ public class InfiniLoreUser : BasicData {
         public const int Auth0MailPasswordMaxLength = 256;
         public const int UsernameMaxLength = 64;
     }
+
+    // I have no clue why I didnt do this with a list
+    public string[] GetAuth0Ids() => new[] { Auth0IdGoogle, Auth0Github, Auth0MailPassword }
+            .Where(id => id is not null)!
+            .ToArray<string>();
 }

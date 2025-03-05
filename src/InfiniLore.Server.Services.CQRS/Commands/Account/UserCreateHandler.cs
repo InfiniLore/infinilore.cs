@@ -7,6 +7,7 @@ using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Services.CQRS.Notifications.Account;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace InfiniLore.Server.Services.CQRS.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<InfiniLoreUser> validator ) : IRequestHandler<UserCreateRequest, MediatorResponse<Guid>> {
+public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<InfiniLoreUser> validator, IMediator mediator) : IRequestHandler<UserCreateRequest, MediatorResponse<Guid>> {
     private readonly ILogger logger = factory.CreateLogger("ACCOUNT CreateUser");
 
     private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
@@ -53,8 +54,9 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         RepoResult result = await userRepo.TryAddAsync(user, ct);
         if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database");  ;
 
-
-        // TODO send out notifications for others to pick up that a new user has been created
+        var notification = new NewUserCreatedNotification(user.Id);
+        await mediator.Publish(notification, ct);
+        
         return newUserId;
     }
     

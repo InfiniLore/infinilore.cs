@@ -31,8 +31,7 @@ public class KeyValueStoreRepository : SystemDataRepository<KeyValueStore>, IKey
 
         // Query
         KeyValueStore? result = await dbContext.KeyValueStores.AsNoTracking()
-            .Where(ls => ls.Key == key)
-            .FirstOrDefaultAsync(cancellationToken: ct);
+            .FirstOrDefaultAsync(ls => ls.Key == key, cancellationToken: ct);
 
         // Retrieve
         if (result is null) return RepoResult<KeyValueStore>.FromFailure(RepositoryFailures.ModelNotFound);

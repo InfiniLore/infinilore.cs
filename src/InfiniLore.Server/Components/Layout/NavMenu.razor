@@ -97,8 +97,10 @@
 
         if (user.Identity is { IsAuthenticated: true }) {
             // Retrieve claims
-            string? nameClaim = user.FindFirst(c => c.Type == "name")?.Value ??
-                user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            string? nameClaim = user.FindFirst(c => c.Type == "infinilore.user.username")?.Value 
+                ?? user.FindFirst(c => c.Type == "name")?.Value
+                ?? user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            
             string? imageClaim = user.FindFirst(c => c.Type.Equals("picture"))?.Value;
 
             // Set username and profile image

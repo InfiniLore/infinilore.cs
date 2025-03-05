@@ -21,7 +21,11 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(request.Token);
-        var store = new KeyValueStore { Key = "Auth0AccessToken" };
+        
+        RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore) 
+            ? foundStore 
+            : new KeyValueStore { Key = "Auth0AccessToken" };
         
         if (!store.CanSetObjectAsValueJson(token) || !store.TrySetbOjectAsJsonValue(token)) return MediatorResponse<bool>.FromFailureString("Cannot store auth0 access token. Json conversion failed.");
         

@@ -15,7 +15,7 @@ public class KeyValueStore : SystemData {
 
     public static class Defaults {
         public const int KeyMaxLength = 256;
-        public const int ValueMaxLength = 4096;
+        public const int ValueMaxLength = int.MaxValue - 1;
     }
 
     public bool TryGetConvertJsonValueToObject<TJsonObject>([NotNullWhen(true)] out TJsonObject? obj) where TJsonObject : class {
@@ -47,7 +47,8 @@ public class KeyValueStore : SystemData {
         try {
             string json = JsonSerializer.Serialize(obj); 
             return json.Length <= Defaults.ValueMaxLength;
-        } catch {
+        } catch (Exception ex) {
+            Console.WriteLine(ex);
             return false;
         }
     }

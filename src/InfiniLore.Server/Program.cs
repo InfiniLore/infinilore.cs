@@ -88,8 +88,11 @@ public static class Program {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Domain"]);
             options.Domain = builder.Configuration["Auth0:Domain"]!;
 
-            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId"]);
-            options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId-WebApp"]);
+            options.ClientId = builder.Configuration["Auth0:ClientId-WebApp"]!;
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-WebApp"]);
+            options.ClientSecret = builder.Configuration["Auth0:ClientSecret-WebApp"]!;
 
             // Add ClientSecret
             // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
@@ -106,10 +109,19 @@ public static class Program {
         #endregion
         
         #region Auth0 Management Services
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
         builder.AddAuth0ManagementApiServices(config => {
             config.SetScopedTokenStore<MediatorProxyAccessTokenStore>();
+            
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Domain"]);
+            config.Auth0Options.Domain = builder.Configuration["Auth0:Domain"]!;
+            
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId-Management"]);
+            config.Auth0Options.ClientId = builder.Configuration["Auth0:ClientId-Management"]!;
+            
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-Management"]);
+            config.Auth0Options.ClientSecret = builder.Configuration["Auth0:ClientSecret-Management"]!;
         });
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
         builder.AddAuth0AccessTokenEncryptionOptions(); // Required to set options correctly
         #endregion
 
