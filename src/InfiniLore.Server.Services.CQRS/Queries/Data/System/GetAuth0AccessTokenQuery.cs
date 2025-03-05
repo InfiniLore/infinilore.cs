@@ -8,4 +8,4 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public  record GetAuth0AccessTokenRequest : MediatorRequest<IAuth0AccessToken>;
+public  record GetAuth0AccessTokenQuery : MediatorRequest<IAuth0AccessToken>;

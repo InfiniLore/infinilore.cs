@@ -10,4 +10,8 @@
         <PackageReference Include="FastEndpoints" Version="5.35.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj" />
+    </ItemGroup>
+
 </Project>

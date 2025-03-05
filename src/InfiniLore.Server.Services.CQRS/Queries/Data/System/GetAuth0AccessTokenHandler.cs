@@ -15,9 +15,9 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger,  IAuth0AccessTokenEncryptionService encryptionService) : IRequestHandler<GetAuth0AccessTokenRequest, MediatorResponse<IAuth0AccessToken>> {
+public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger,  IAuth0AccessTokenEncryptionService encryptionService) : IRequestHandler<GetAuth0AccessTokenQuery, MediatorResponse<IAuth0AccessToken>> {
     
-    public async Task<MediatorResponse<IAuth0AccessToken>> Handle(GetAuth0AccessTokenRequest request, CancellationToken ct) {
+    public async Task<MediatorResponse<IAuth0AccessToken>> Handle(GetAuth0AccessTokenQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
         

@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <Folder Include="Queries\Data\Discovery\"/>
-        <Folder Include="Queries\Data\User\"/>
     </ItemGroup>
 
     <ItemGroup>
