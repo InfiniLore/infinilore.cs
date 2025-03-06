@@ -23,8 +23,8 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         RepoResult<LoreScope> response = request switch {
-            { AutoInclude: false, LorescopeId: var lorescopeId } => await loreScopeRepository.TryGetByIdAsync(lorescopeId, ct),
-            { AutoInclude: true, LorescopeId: var lorescopeId } => await loreScopeRepository.TryGetByIdWithAutoIncludeAsync(lorescopeId, ct),
+            { AutoInclude: false, LorescopeId: var lorescopeId } => await loreScopeRepository.GetByIdAsync(lorescopeId, ct),
+            { AutoInclude: true, LorescopeId: var lorescopeId } => await loreScopeRepository.GetByIdWithAutoIncludeAsync(lorescopeId, ct),
             _ => RepoResult<LoreScope>.FromError("Invalid query")
         };
 

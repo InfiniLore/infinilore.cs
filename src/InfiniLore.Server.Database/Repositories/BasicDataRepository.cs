@@ -27,7 +27,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<RepoResult> TryAddAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> AddAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -44,7 +44,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> AddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -64,7 +64,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> UpdateAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -81,7 +81,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> UpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -104,14 +104,14 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
-        if (model.Id == Guid.Empty) return await TryAddAsync(model, ct);// If no ID, always add
-        if (await IsNotUniqueAsync(model, ct)) return await TryUpdateAsync(model, ct);// If ID exists, update
+    public async ValueTask<RepoResult> AddOrUpdateAsync(T model, CancellationToken ct = default) {
+        if (model.Id == Guid.Empty) return await AddAsync(model, ct);// If no ID, always add
+        if (await IsNotUniqueAsync(model, ct)) return await UpdateAsync(model, ct);// If ID exists, update
 
-        return await TryAddAsync(model, ct);
+        return await AddAsync(model, ct);
     }
 
-    public async ValueTask<RepoResult> TryAddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> AddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -142,7 +142,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> DeleteAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -159,7 +159,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryDeleteByIdAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> DeleteByIdAsync(Guid id, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -176,7 +176,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
 
     }
-    public async ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -191,7 +191,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryDeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> DeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -203,7 +203,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Retrieve
         return true;
     }
-    public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> RemoveAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -219,7 +219,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryRemoveByIdAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> RemoveByIdAsync(Guid id, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -235,7 +235,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> RemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -250,7 +250,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult> TryRemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> RemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -263,7 +263,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
 
-    public async ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T>> GetByIdAsync(Guid id, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -276,7 +276,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return RepoResult<T>.FromSuccess(result);
     }
 
-    public async ValueTask<RepoResult<T>> TryGetByIdWithAutoIncludeAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T>> GetByIdWithAutoIncludeAsync(Guid id, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -292,7 +292,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             : RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
     }
 
-    public async ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T[]>> GetAllAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -301,7 +301,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return RepoResult<T[]>.FromSuccess(data);
     }
 
-    public async ValueTask<RepoResult<T[]>> TryGetAllWithAutoIncludeAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T[]>> GetAllWithAutoIncludeAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -313,7 +313,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
-    public async ValueTask<RepoResult<T[]>> TryGetAllReverseAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T[]>> GetAllReverseAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -328,7 +328,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
     }
 
-    public async ValueTask<RepoResult<T[]>> TryGetAllReverseWithAutoIncludeAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T[]>> GetAllReverseWithAutoIncludeAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -343,7 +343,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return RepoResult<T[]>.FromSuccess(data);
     }
 
-    public async ValueTask<PaginatedRepoResult<T>> TryGetAllAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoResult<T>> GetAllAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -365,7 +365,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
-    public async ValueTask<PaginatedRepoResult<T>> TryGetAllWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoResult<T>> GetAllWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -389,7 +389,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         );
     }
 
-    public async ValueTask<PaginatedRepoResult<T>> TryGetAllReverseAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoResult<T>> GetAllReverseAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -412,7 +412,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
-    public async ValueTask<PaginatedRepoResult<T>> TryGetAllReverseWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoResult<T>> GetAllReverseWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -437,7 +437,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         );
     }
 
-    public async ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -447,7 +447,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return RepoResult<int>.FromSuccess(data);
     }
 
-    public async ValueTask<RepoResult> IsExistingIdAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult> IsIdTakenAsync(Guid id, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -456,5 +456,8 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .AnyAsync(ls => ls.Id == id, ct);
         
         return RepoResult.FromState(result);
-    } 
+    }
+
+    public async ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default) 
+        => !await IsIdTakenAsync(id, ct);
 }

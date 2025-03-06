@@ -23,7 +23,7 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
         
-        RepoResult<InfiniLoreUser> userResult = await userRepo.TryGetByIdAsync(userId, ct);
+        RepoResult<InfiniLoreUser> userResult = await userRepo.GetByIdAsync(userId, ct);
         if (!userResult.TryGetAsSuccess(out InfiniLoreUser? user)) {
             logger.Warning("Could not find user with id {UserId} in database.", userId);
             return;

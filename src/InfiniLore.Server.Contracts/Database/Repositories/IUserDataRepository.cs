@@ -10,5 +10,5 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IUserDataRepository<T> :
     IBasicDataRepository<T>,
-    IHasTryGetByUserAsync<T>
+    IHasGetByUserAsync<T>
     where T : UserData;

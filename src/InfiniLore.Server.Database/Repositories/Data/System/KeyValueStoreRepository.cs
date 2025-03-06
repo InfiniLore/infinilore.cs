@@ -42,7 +42,7 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         return RepoResult<KeyValueStore>.FromSuccess(result);
     }
 
-    public async ValueTask<RepoResult<int>> TryCountAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<KeyValueStore> dbSet = dbContext.KeyValueStores;
