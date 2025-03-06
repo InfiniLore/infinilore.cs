@@ -27,8 +27,8 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         
         RepoResult loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(request.LoreScopeName, request.OwnerId, ct);
         RepoResult userIdExistsResult = await userRepo.IsIdTakenAsync(request.OwnerId, ct);
-        if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MediatorResponse<Guid>.FromFailureString("LoreScope name already taken for this user");
-        if (userIdExistsResult.IsError) return MediatorResponse<Guid>.FromFailureString("Owner id does not exist");
+        if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MediatorResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
+        if (userIdExistsResult.IsError) return MediatorResponse<Guid>.FromErrorString("Owner id does not exist");
         
         // Create a new lorescope based on the request
         var loreScope = new LoreScope {
@@ -41,12 +41,12 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         ValidationResult validationResult = await validator.ValidateAsync(loreScope, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors );
-            return MediatorResponse<Guid>.FromFailureString("Validation failed");
+            return MediatorResponse<Guid>.FromErrorString("Validation failed");
         }
 
         // Save to Db
         RepoResult result = await loreScopeRepo.AddAsync(loreScope, ct);
-        if (result.IsError) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database"); 
+        if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database"); 
         
         await mediator.Publish(new NewLoreScopeCreatedNotification(loreScope.Id), ct);
         logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);

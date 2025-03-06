@@ -1,13 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Database;
+
+namespace InfiniLore.Server.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly record struct PaginationInfo(int PageNumber, int PageSize) {
+public readonly record struct PaginationInfo(int PageNumber, int PageSize = 64) {
     public int SkipAmount => (PageNumber - 1) * PageSize;
-
+    public static PaginationInfo Empty => new(0, 64);
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public bool IsValid(out string error) {
         switch (this) {
             case { PageNumber: < 1 }: {

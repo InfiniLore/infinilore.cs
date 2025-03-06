@@ -21,7 +21,7 @@ public class RequestExceptionHandler<TRequest, TException, T>(
     // -----------------------------------------------------------------------------------------------------------------
     public Task Handle(TRequest request, TException exception, RequestExceptionHandlerState<MediatorResponse<T>> state, CancellationToken cancellationToken) {
         logger.Error(exception, $"Exception caught in request handler for request type {typeof(TRequest).Name}: {exception.Message}");
-        state.SetHandled(MediatorResponse<T>.FromFailureString(exception.Message));
+        state.SetHandled(MediatorResponse<T>.FromErrorString(exception.Message));
         return Task.CompletedTask;
     }
 }

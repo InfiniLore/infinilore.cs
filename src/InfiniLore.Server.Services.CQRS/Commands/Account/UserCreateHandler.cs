@@ -47,12 +47,12 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors );
-            return MediatorResponse<Guid>.FromFailureString("Validation failed");
+            return MediatorResponse<Guid>.FromErrorString("Validation failed");
         }
 
         // Save to Db
         RepoResult result = await userRepo.AddAsync(user, ct);
-        if (result.IsError) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database");  ;
+        if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");  ;
 
         var notification = new NewUserCreatedNotification(user.Id);
         await mediator.Publish(notification, ct);

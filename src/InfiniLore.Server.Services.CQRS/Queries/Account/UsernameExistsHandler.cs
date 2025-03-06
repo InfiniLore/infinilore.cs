@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Account;
 public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<UsernameExistsQuery, MediatorResponse>  {
 
     public async Task<MediatorResponse> Handle(UsernameExistsQuery request, CancellationToken ct) {
-        if (request.Username.IsNullOrWhiteSpace()) return MediatorResponse.FromFailureString("Cannot check for username existence. Username is empty.");
+        if (request.Username.IsNullOrWhiteSpace()) return MediatorResponse.FromErrorString("Cannot check for username existence. Username is empty.");
         
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);

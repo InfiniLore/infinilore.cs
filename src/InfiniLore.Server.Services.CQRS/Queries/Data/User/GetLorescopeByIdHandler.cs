@@ -30,13 +30,13 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
 
         if (!response.TryGetAsSuccess(out LoreScope? value)) {
             logger.Warning("Failed to get lorescope");
-            return MediatorResponse<LoreScope>.FromFailureString("Failed to get lorescope");
+            return MediatorResponse<LoreScope>.FromErrorString("Failed to get lorescope");
         }
 
         // ReSharper disable once InvertIf
         if (!request.IsLoreScopeOnly && value.OwnerId != request.UserId) {
             logger.Warning("User does not own this lorescope");
-            return MediatorResponse<LoreScope>.FromFailureString("User does not own this lorescope");
+            return MediatorResponse<LoreScope>.FromErrorString("User does not own this lorescope");
         }
         
         return MediatorResponse<LoreScope>.FromSuccess(value);

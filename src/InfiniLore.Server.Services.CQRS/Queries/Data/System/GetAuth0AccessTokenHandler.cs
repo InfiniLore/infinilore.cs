@@ -24,19 +24,19 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
-            return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Key not found.");
+            return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Key not found.");
         }
         
         KeyValueStore store = storeResult.AsSuccess;
         if (store.Value.IsNullOrEmpty()) {
             logger.Warning("Auth0 access token value is empty.");
-            return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Value is empty.");
+            return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Value is empty.");
         }
         store.Value = encryptionService.Decrypt(store.Value);
 
         if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
             logger.Error("Failed to convert Auth0 access token JSON to object.");
-            return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Json conversion failed.");
+            return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Json conversion failed.");
         }
         
         logger.Information("Successfully retrieved and parsed Auth0 access token.");

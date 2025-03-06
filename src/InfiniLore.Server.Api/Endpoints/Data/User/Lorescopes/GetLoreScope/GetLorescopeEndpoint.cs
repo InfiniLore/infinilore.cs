@@ -17,12 +17,12 @@ namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLoreScope;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 using Response = Results<
-    Ok<GetLorescopeResponse>,
+    Ok<LoreScopeResponse>,
     NotFound,
     ProblemDetails
 >;
 
-public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoint> logger) : EndpointWithMapping<GetLorescopeRequest, Response, LoreScope> {
+public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoint> logger) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
     public override void Configure() { 
         Get("/data/user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
@@ -32,27 +32,15 @@ public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoi
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
-        MediatorResponse<LoreScope> response = await mediator.Send(new GetLorescopeByIdQuery(req.LoreScopeId, req.UserId, false), ct);
-        if (!response.TryGetAsSuccess(out LoreScope? loreScope)) {
-            logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, response.AsError.Value);
+        MediatorResponse<LoreScope> result = await mediator.Send(new GetLorescopeByIdQuery(req.LoreScopeId, req.UserId, false), ct);
+        if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {
+            logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }
         
         logger.Information("Successfully retrieved lorescope with id {id}", req.LoreScopeId);
-        return MapFromEntity(loreScope);
-    }
-
-    public override Response MapFromEntity(LoreScope loreScope) {
-        var response = new GetLorescopeResponse(
-            loreScope.Name,
-            loreScope.ShortDescription
-        ) {
-            Id = loreScope.Id,
-            CreatedDate = loreScope.CreatedDate,
-            LastModifiedDate = loreScope.LastModifiedDate,
-            OwnerId = loreScope.OwnerId
-        };
         
+        LoreScopeResponse response = Map.FromEntity(loreScope);
         return TypedResults.Ok(response);
     }
 }
