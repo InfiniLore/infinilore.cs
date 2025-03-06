@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[PermissionsStore]
+[PermissionsStore(PermissionsGeneratorFlags.ParsePrefix | PermissionsGeneratorFlags.GenerateAllPermissionsMethod)]
 public static partial class PermissionsStore {
     private const string Account = "Account";
     private const string Data = "Data";
