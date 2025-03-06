@@ -17,7 +17,7 @@
         <PackageReference Include="Testcontainers.MsSql" Version="4.3.0"/>
         <PackageReference Include="Bogus" Version="35.6.2"/>
         <PackageReference Include="JetBrains.Annotations" Version="2024.3.0"/>
-        <PackageReference Include="TUnit" Version="0.16.13" />
+        <PackageReference Include="TUnit" Version="0.16.23" />
     </ItemGroup>
 
     <ItemGroup>

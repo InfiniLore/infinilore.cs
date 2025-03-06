@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.6.0"/>
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.6.0">
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.7.0" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.7.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
