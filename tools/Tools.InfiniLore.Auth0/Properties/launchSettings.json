@@ -1,0 +1,9 @@
+﻿{
+  "profiles": {
+    "Auth 0 Sync : Permissions": {
+      "_readme": "tries and sync the permissions at auth0",
+      "commandName": "Project",
+      "commandLineArgs": "sync-permission"
+    }
+  }
+}
