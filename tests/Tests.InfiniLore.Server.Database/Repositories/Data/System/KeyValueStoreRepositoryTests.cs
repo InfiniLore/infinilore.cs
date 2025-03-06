@@ -39,12 +39,9 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        const string key = "key-test";
-        const string value = "value-test";
-        var model = new KeyValueStore {
-            Key = key,
-            Value = value
-        };
+        KeyValueStore model = faker.Faker.Generate();
+        string key = model.Key;
+        string? value = model.Value;
 
         // Act
         RepoResult result = await repo.TryAddOrUpdateAsync(model);
