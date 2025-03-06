@@ -28,17 +28,18 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         await dbContext.SaveChangesAsync(ct);
         return true;
     }
-    
+
     public async ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
         // Access
         DbSet<KeyValueStore> dbSet = GetDbContext().KeyValueStores;
 
         // Query
         KeyValueStore? result = await dbSet.AsNoTracking()
-            .FirstOrDefaultAsync(ls => ls.Key == key, cancellationToken: ct);
+            .FirstOrDefaultAsync(predicate: ls => ls.Key == key, ct);
 
         // Retrieve
         if (result is null) return RepoResult<KeyValueStore>.FromError(RepositoryFailures.ModelNotFound);
+
         return RepoResult<KeyValueStore>.FromSuccess(result);
     }
 

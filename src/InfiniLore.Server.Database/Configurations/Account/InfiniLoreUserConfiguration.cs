@@ -12,7 +12,7 @@ public class InfiniLoreUserConfiguration : BasicDataConfiguration<InfiniLoreUser
 
     public override void Configure(EntityTypeBuilder<InfiniLoreUser> builder) {
         base.Configure(builder);
-        
+
         builder.HasIndex(x => x.Auth0IdGoogle).IsUnique();
         builder.Property(x => x.Auth0IdGoogle).HasMaxLength(InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength);
 
@@ -21,7 +21,7 @@ public class InfiniLoreUserConfiguration : BasicDataConfiguration<InfiniLoreUser
 
         builder.HasIndex(x => x.Auth0MailPassword).IsUnique();
         builder.Property(x => x.Auth0MailPassword).HasMaxLength(InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength);
-        
+
         builder.HasIndex(x => x.Username).IsUnique();
         builder.Property(x => x.Username).HasMaxLength(InfiniLoreUser.Defaults.UsernameMaxLength);
     }

@@ -7,7 +7,6 @@ using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Database.Configurations.Data.User;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

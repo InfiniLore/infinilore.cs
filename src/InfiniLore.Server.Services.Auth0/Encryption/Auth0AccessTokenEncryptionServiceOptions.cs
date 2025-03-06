@@ -2,11 +2,10 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace InfiniLore.Server.Services.Auth0.Encryption;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class Auth0AccessTokenEncryptionServiceOptions {
-    public string SecretKey { get; set; } = DefaultSecretKey;
     public const string DefaultSecretKey = "AnnaIsTrans4Ever!";
+    public string SecretKey { get; set; } = DefaultSecretKey;
 }

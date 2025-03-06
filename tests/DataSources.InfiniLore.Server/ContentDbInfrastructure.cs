@@ -77,6 +77,7 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
     public IReadonlyUnitOfWork GetReadonlyUnitOfWork() {
         if (ServiceProvider is null) throw new InvalidOperationException("Service provider is not initialized.");
+
         IReadonlyUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>().Create();
         return unitOfWork;
     }

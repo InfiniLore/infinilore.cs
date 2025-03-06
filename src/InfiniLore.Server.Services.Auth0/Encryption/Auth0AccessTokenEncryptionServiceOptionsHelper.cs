@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Services.Auth0.Encryption;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,5 +26,4 @@ public static class WebApplicationBuilderExtensions {
             options.SecretKey = Auth0AccessTokenEncryptionServiceOptions.DefaultSecretKey;
         });
     }
-
 }

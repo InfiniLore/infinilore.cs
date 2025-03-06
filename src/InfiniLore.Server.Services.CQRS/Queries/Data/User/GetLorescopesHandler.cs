@@ -10,22 +10,21 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS.Queries.Data.User;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetLorescopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopesHandler> logger): IRequestHandler<GetLorescopesQuery, MediatorResponse<PaginatedResult<LoreScope>>>  {
+public class GetLorescopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopesHandler> logger) : IRequestHandler<GetLorescopesQuery, MediatorResponse<PaginatedResult<LoreScope>>> {
 
     public async Task<MediatorResponse<PaginatedResult<LoreScope>>> Handle(GetLorescopesQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         PaginatedRepoResult<LoreScope> response = request switch {
-            {Reverse: false, AutoInclude: false } => await loreScopeRepository.GetByUserAsync(request.UserId, request.PaginationInfo, ct),
-            {Reverse: false, AutoInclude: true } => await loreScopeRepository.GetByUserWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
-            
-            {Reverse: true, AutoInclude: false } => await loreScopeRepository.GetByUserReverseAsync(request.UserId, request.PaginationInfo, ct),
-            {Reverse: true, AutoInclude: true } => await loreScopeRepository.GetByUserReverseWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
+            { Reverse: false, AutoInclude: false } => await loreScopeRepository.GetByUserAsync(request.UserId, request.PaginationInfo, ct),
+            { Reverse: false, AutoInclude: true } => await loreScopeRepository.GetByUserWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
+
+            { Reverse: true, AutoInclude: false } => await loreScopeRepository.GetByUserReverseAsync(request.UserId, request.PaginationInfo, ct),
+            { Reverse: true, AutoInclude: true } => await loreScopeRepository.GetByUserReverseWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
 
             _ => PaginatedRepoResult<LoreScope>.FromError("Invalid query")
         };
@@ -34,7 +33,7 @@ public class GetLorescopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
             logger.Warning("Failed to get lorescopes");
             return MediatorResponse<PaginatedResult<LoreScope>>.FromErrorString("Failed to get lorescopes");
         }
-        
+
         return MediatorResponse<PaginatedResult<LoreScope>>.FromSuccess(paginatedResult);
     }
 }

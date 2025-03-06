@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Contracts.Services;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -19,9 +18,9 @@ namespace InfiniLore.Server.Services.AuthenticationStateSyncer;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<AuthenticationStateProvider>(ServiceLifetime.Scoped)]
 public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider {
+    private readonly IAuthenticationStateProviderClaimsPrincipalHelper _claimsPrincipalHelper;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly PersistentComponentState _state;
-    private readonly IAuthenticationStateProviderClaimsPrincipalHelper _claimsPrincipalHelper;
 
     private readonly PersistingComponentStateSubscription _subscription;
 
@@ -65,7 +64,7 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         if (_authenticationStateTask is null) {
             throw new UnreachableException($"Authentication state not set in {nameof(RevalidatingServerAuthenticationStateProvider)}.{nameof(OnPersistingAsync)}().");
         }
-        
+
         AuthenticationState authenticationState = await _authenticationStateTask;
         Auth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) return;

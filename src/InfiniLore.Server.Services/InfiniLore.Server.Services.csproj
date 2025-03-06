@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.42.3" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3" />
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.42.3" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.42.3"/>
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.42.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

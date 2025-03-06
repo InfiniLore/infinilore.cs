@@ -2,13 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace InfiniLore.Server.Api.Response;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract record PaginatedResponse<T> {
-    public T[] Items {get; init;}
+    public required T[] Items { get; init; }
     public int TotalCount { get; init; }
     public int CurrentPage { get; init; }
     public int TotalPages { get; init; }
-};
+}

@@ -10,7 +10,6 @@ using InfiniLore.Server.Database.Models.Data.System;
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.Commands.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,18 +20,18 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(request.Token);
-        
+
         RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore) 
-            ? foundStore 
+        KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore)
+            ? foundStore
             : new KeyValueStore { Key = "Auth0AccessToken" };
-        
+
         if (!store.CanSetObjectAsValueJson(token) || !store.TrySetbOjectAsJsonValue(token)) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Json conversion failed.");
-        
+
         store.Value = encryptionService.Encrypt(store.Value);
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
-        
-        
+
+
         RepoResult result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
         return result.IsState;
     }

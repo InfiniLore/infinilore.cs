@@ -12,14 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Auth0.TokenStore;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuth0AccessTokenStore>(ServiceLifetime.Scoped)]
 public class MediatorProxyAccessTokenStore(IMediator mediator, ILogger<MediatorProxyAccessTokenStore> logger) : IAuth0AccessTokenStore {
     private readonly GetAuth0AccessTokenQuery _request = new();
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,15 +30,17 @@ public class MediatorProxyAccessTokenStore(IMediator mediator, ILogger<MediatorP
             logger.Warning(error);
             return Auth0AccessToken.Empty;
         }
+
         return token;
     }
-    
+
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
         MediatorResponse<bool> response = await mediator.Send(new StoreAuth0AccessTokenRequest(token), ct);
-        if (!response.TryGetAsSuccess(out bool success) ) {
+        if (!response.TryGetAsSuccess(out bool success)) {
             string error = response.AsError.Value;
             throw new Exception(error);
         }
+
         if (!success) throw new Exception("Failed to store access token");
     }
 }

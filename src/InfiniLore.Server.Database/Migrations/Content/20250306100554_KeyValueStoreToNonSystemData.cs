@@ -1,100 +1,94 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
-
-namespace InfiniLore.Server.Database.Migrations.Content
-{
+namespace InfiniLore.Server.Database.Migrations.Content;
+/// <inheritdoc />
+public partial class KeyValueStoreToNonSystemData : Migration {
     /// <inheritdoc />
-    public partial class KeyValueStoreToNonSystemData : Migration
-    {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_KeyValueStores",
-                table: "KeyValueStores");
+    protected override void Up(MigrationBuilder migrationBuilder) {
+        migrationBuilder.DropPrimaryKey(
+            "PK_KeyValueStores",
+            "KeyValueStores");
 
-            migrationBuilder.DropIndex(
-                name: "IX_KeyValueStores_Id",
-                table: "KeyValueStores");
+        migrationBuilder.DropIndex(
+            "IX_KeyValueStores_Id",
+            "KeyValueStores");
 
-            migrationBuilder.DropColumn(
-                name: "Id",
-                table: "KeyValueStores");
+        migrationBuilder.DropColumn(
+            "Id",
+            "KeyValueStores");
 
-            migrationBuilder.DropColumn(
-                name: "CreatedDate",
-                table: "KeyValueStores");
+        migrationBuilder.DropColumn(
+            "CreatedDate",
+            "KeyValueStores");
 
-            migrationBuilder.DropColumn(
-                name: "LastModifiedDate",
-                table: "KeyValueStores");
+        migrationBuilder.DropColumn(
+            "LastModifiedDate",
+            "KeyValueStores");
 
-            migrationBuilder.DropColumn(
-                name: "SoftDeleteDate",
-                table: "KeyValueStores");
+        migrationBuilder.DropColumn(
+            "SoftDeleteDate",
+            "KeyValueStores");
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_KeyValueStores",
-                table: "KeyValueStores",
-                column: "Key");
+        migrationBuilder.AddPrimaryKey(
+            "PK_KeyValueStores",
+            "KeyValueStores",
+            "Key");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_KeyValueStores_Key",
-                table: "KeyValueStores",
-                column: "Key",
-                unique: true);
-        }
+        migrationBuilder.CreateIndex(
+            "IX_KeyValueStores_Key",
+            "KeyValueStores",
+            "Key",
+            unique: true);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_KeyValueStores",
-                table: "KeyValueStores");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder) {
+        migrationBuilder.DropPrimaryKey(
+            "PK_KeyValueStores",
+            "KeyValueStores");
 
-            migrationBuilder.DropIndex(
-                name: "IX_KeyValueStores_Key",
-                table: "KeyValueStores");
+        migrationBuilder.DropIndex(
+            "IX_KeyValueStores_Key",
+            "KeyValueStores");
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "Id",
-                table: "KeyValueStores",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+        migrationBuilder.AddColumn<Guid>(
+            "Id",
+            "KeyValueStores",
+            "uniqueidentifier",
+            nullable: false,
+            defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedDate",
-                table: "KeyValueStores",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+        migrationBuilder.AddColumn<DateTime>(
+            "CreatedDate",
+            "KeyValueStores",
+            "datetime2",
+            nullable: false,
+            defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LastModifiedDate",
-                table: "KeyValueStores",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+        migrationBuilder.AddColumn<DateTime>(
+            "LastModifiedDate",
+            "KeyValueStores",
+            "datetime2",
+            nullable: false,
+            defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "SoftDeleteDate",
-                table: "KeyValueStores",
-                type: "datetime2",
-                nullable: true);
+        migrationBuilder.AddColumn<DateTime>(
+            "SoftDeleteDate",
+            "KeyValueStores",
+            "datetime2",
+            nullable: true);
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_KeyValueStores",
-                table: "KeyValueStores",
-                column: "Id");
+        migrationBuilder.AddPrimaryKey(
+            "PK_KeyValueStores",
+            "KeyValueStores",
+            "Id");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_KeyValueStores_Id",
-                table: "KeyValueStores",
-                column: "Id",
-                unique: true);
-        }
+        migrationBuilder.CreateIndex(
+            "IX_KeyValueStores_Id",
+            "KeyValueStores",
+            "Id",
+            unique: true);
     }
 }

@@ -11,17 +11,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="AterraEngine.Unions" Version="3.12.0" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="AterraEngine.Unions" Version="3.12.0"/>
         <PackageReference Include="AterraEngine.Unions.Generators" Version="3.12.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.42.3" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3" />
-        <PackageReference Include="FluentValidation" Version="12.0.0-preview1" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="2.1.0-preview.2" />
+
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3"/>
+        <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="2.1.0-preview.2"/>
         <PackageReference Include="MediatR" Version="12.4.1"/>
     </ItemGroup>
 

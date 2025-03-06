@@ -15,7 +15,7 @@ namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker,GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker, GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
 public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker, GuidStore guidStore) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods

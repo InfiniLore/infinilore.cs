@@ -4,11 +4,10 @@
 using InfiniLore.Server.Api.Response;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record LoreScopeResponse : UserDataResponse {
     public required string Name { get; init; }
     public string? Description { get; init; }
-};
+}

@@ -2,12 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace InfiniLore.Server.Api.Response;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract record BasicDataResponse {
-    public required Guid Id {get; init;}
-    public required DateTime CreatedDate {get; init;}
-    public required DateTime LastModifiedDate {get; init;}
+    public required Guid Id { get; init; }
+    public required DateTime CreatedDate { get; init; }
+    public required DateTime LastModifiedDate { get; init; }
 }

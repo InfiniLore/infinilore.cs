@@ -10,26 +10,15 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace InfiniLore.Server.Services.Auth0.Encryption;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuth0AccessTokenEncryptionService>(ServiceLifetime.Singleton)]
-public class Auth0AccessTokenEncryptionService(IOptions<Auth0AccessTokenEncryptionServiceOptions> options, ILogger<Auth0AccessTokenEncryptionService> logger) : IAuth0AccessTokenEncryptionService{
-    private byte[] Key { get; } = GetKey(options.Value, logger);
-    
-    private byte[] _ivCache = [];
-    private byte[] Iv => _ivCache.Length == 0 ? _ivCache = Key[..16] : _ivCache;
+public class Auth0AccessTokenEncryptionService(IOptions<Auth0AccessTokenEncryptionServiceOptions> options, ILogger<Auth0AccessTokenEncryptionService> logger) : IAuth0AccessTokenEncryptionService {
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    private static byte[] GetKey(Auth0AccessTokenEncryptionServiceOptions options, ILogger logger) {
-        if (options.SecretKey == Auth0AccessTokenEncryptionServiceOptions.DefaultSecretKey) {
-            logger.Warning("Using default secret key for Auth0 access token encryption. This is not recommended for production.");
-        }
-        return SHA256.HashData(Encoding.UTF8.GetBytes(options.SecretKey));
-    }
+    private byte[] _ivCache = [];
+    private byte[] Key { get; } = GetKey(options.Value, logger);
+    private byte[] Iv => _ivCache.Length == 0 ? _ivCache = Key[..16] : _ivCache;
 
     public string Encrypt(string plainText) {
         using var aes = Aes.Create();
@@ -53,5 +42,16 @@ public class Auth0AccessTokenEncryptionService(IOptions<Auth0AccessTokenEncrypti
         byte[] plainTextBytes = decryptor.TransformFinalBlock(cipherTextBytes, 0, cipherTextBytes.Length);
 
         return Encoding.UTF8.GetString(plainTextBytes);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private static byte[] GetKey(Auth0AccessTokenEncryptionServiceOptions options, ILogger logger) {
+        if (options.SecretKey == Auth0AccessTokenEncryptionServiceOptions.DefaultSecretKey) {
+            logger.Warning("Using default secret key for Auth0 access token encryption. This is not recommended for production.");
+        }
+
+        return SHA256.HashData(Encoding.UTF8.GetBytes(options.SecretKey));
     }
 }

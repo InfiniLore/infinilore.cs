@@ -8,6 +8,6 @@ namespace Tools.InfiniLore.Auth0.Commands.SyncPermissions;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record PermissionDto(
-    string PermissionName, 
-    string Description 
+    string PermissionName,
+    string Description
 ) : IPermissionDto;

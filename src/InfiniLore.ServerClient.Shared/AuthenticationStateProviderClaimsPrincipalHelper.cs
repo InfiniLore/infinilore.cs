@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace InfiniLore.ServerClient.Shared;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,7 +20,7 @@ public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityO
         string? userId = principal.FindFirst(options.Value.ClaimsIdentity.UserIdClaimType)?.Value;
         string? name = principal.FindFirst("name")?.Value;
         string? email = principal.FindFirst("email")?.Value;
-        
+
         return new Auth0Information(
             userId ?? string.Empty,
             name ?? string.Empty,
@@ -33,9 +32,9 @@ public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityO
         Claim[] claims = [
             new(options.Value.ClaimsIdentity.UserIdClaimType, auth0Information.UserId),
             new("name", auth0Information.Name),
-            new("email", auth0Information.Email),
+            new("email", auth0Information.Email)
         ];
-        
+
         return new ClaimsPrincipal(new ClaimsIdentity(claims, nameof(TAuthProvider)));
     }
 }

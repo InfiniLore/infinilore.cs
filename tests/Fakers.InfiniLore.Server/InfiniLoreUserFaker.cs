@@ -10,9 +10,9 @@ namespace Fakers.InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class InfiniLoreUserFaker {
-    private readonly ConcurrentDictionary<Guid, InfiniLoreUser> Entries = new();
     private static readonly ConcurrentBag<string> UsedUsernames = [];
     private static readonly ConcurrentBag<string> UsedAuth0MailPasswords = [];
+    private readonly ConcurrentDictionary<Guid, InfiniLoreUser> Entries = new();
 
     private static Faker<InfiniLoreUser> Faker { get; } = new Faker<InfiniLoreUser>()
         .RuleFor(property: x => x.Id, setter: f => f.Random.Guid())
@@ -43,7 +43,7 @@ public class InfiniLoreUserFaker {
     private static InfiniLoreUser EntryWithFixedId(Guid fixedId) => new() {
         Id = fixedId,
         Username = Faker.Generate().Username,
-        Auth0MailPassword = Faker.Generate().Auth0MailPassword,
+        Auth0MailPassword = Faker.Generate().Auth0MailPassword
     };
 
     public InfiniLoreUser GetById(Guid id) => Entries.GetOrAdd(

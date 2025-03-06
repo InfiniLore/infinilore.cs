@@ -7,23 +7,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        
-      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.42.3" />
-      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.42.3">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3" />
-      <PackageReference Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1" />
-      <PackageReference Include="MediatR" Version="12.4.1" />
-      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.2" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.42.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1"/>
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1"/>
+        <PackageReference Include="MediatR" Version="12.4.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
-      <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
     </ItemGroup>
 
 </Project>

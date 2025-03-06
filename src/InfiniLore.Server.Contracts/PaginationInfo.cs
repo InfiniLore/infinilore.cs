@@ -9,8 +9,8 @@ namespace InfiniLore.Server.Contracts;
 // ---------------------------------------------------------------------------------------------------------------------
 public readonly record struct PaginationInfo(int PageNumber, int PageSize = 64) {
     public int SkipAmount => (PageNumber - 1) * PageSize;
-    public static PaginationInfo Empty => new(0, 64);
-    
+    public static PaginationInfo Empty => new(0);
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

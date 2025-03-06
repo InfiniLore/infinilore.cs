@@ -4,8 +4,7 @@
 using InfiniLore.Credentials.Auth0;
 
 namespace InfiniLore.Server.Services.CQRS.Queries.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public  record GetAuth0AccessTokenQuery : MediatorRequest<IAuth0AccessToken>;
+public record GetAuth0AccessTokenQuery : MediatorRequest<IAuth0AccessToken>;

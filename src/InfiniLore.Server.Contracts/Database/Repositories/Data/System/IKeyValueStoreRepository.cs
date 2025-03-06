@@ -11,8 +11,7 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IKeyValueStoreRepository :
     IUnitOfWorkRepository,
-    IHasGetCountAsync
-{
+    IHasGetCountAsync {
     ValueTask<RepoResult> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default);
     ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default);
 }

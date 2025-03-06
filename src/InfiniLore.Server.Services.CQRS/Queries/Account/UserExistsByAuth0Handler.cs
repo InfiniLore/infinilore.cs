@@ -16,7 +16,7 @@ public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : IReq
     // -----------------------------------------------------------------------------------------------------------------
     public async Task<MediatorResponse> Handle(UserExistsByAuth0Query request, CancellationToken ct) {
         if (request.Auth0UserId.IsNullOrEmpty()) return false;
-        
+
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 

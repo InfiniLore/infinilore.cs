@@ -5,17 +5,15 @@ using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class RequestExceptionHandler<TRequest, TException, T>(
     ILogger logger
-) : IRequestExceptionHandler<TRequest, MediatorResponse<T>, TException> 
-    where TRequest : notnull 
-    where TException : Exception
-{
-    
+) : IRequestExceptionHandler<TRequest, MediatorResponse<T>, TException>
+    where TRequest : notnull
+    where TException : Exception {
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

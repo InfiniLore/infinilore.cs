@@ -12,8 +12,6 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
-    protected override IQueryable<T> AutoInclude(IQueryable<T> query) 
-        => query.Include(ls => ls.Owner);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -171,4 +169,6 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
+    protected override IQueryable<T> AutoInclude(IQueryable<T> query)
+        => query.Include(ls => ls.Owner);
 }

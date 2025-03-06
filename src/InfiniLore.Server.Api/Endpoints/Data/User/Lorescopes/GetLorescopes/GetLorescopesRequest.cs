@@ -6,7 +6,6 @@ using InfiniLore.Server.Contracts;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLorescopes;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -44,6 +44,7 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
                 _logger.Debug("User already exists, continuing...");
                 return;
             }
+
             case { IsError: true, AsError.Value: {} failure }: {
                 _logger.LogError("Error checking if user exists : {failure}", failure);
                 context.Response.Redirect("/account/logout?returnUrl=/");

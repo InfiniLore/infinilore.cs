@@ -13,18 +13,7 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
-    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
-    
-    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
-        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
-        return result;
-    }
 
-    private ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
-        => IsNotUniqueAsync([originalModel], ct);
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -274,6 +263,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         // Retrieve
         if (result is null) return RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
+
         return RepoResult<T>.FromSuccess(result);
     }
 
@@ -288,7 +278,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         // Retrieve
         T? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
-        return result is not null 
+        return result is not null
             ? RepoResult<T>.FromSuccess(result)
             : RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
     }
@@ -454,11 +444,22 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
 
         // Query & Retrieve
         bool result = await dbSet.AsNoTracking()
-            .AnyAsync(ls => ls.Id == id, ct);
-        
+            .AnyAsync(predicate: ls => ls.Id == id, ct);
+
         return RepoResult.FromState(result);
     }
 
-    public async ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default) 
+    public async ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default)
         => !await IsIdTakenAsync(id, ct);
+    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
+
+    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
+        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
+        return result;
+    }
+
+    private ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
+        => IsNotUniqueAsync([originalModel], ct);
 }

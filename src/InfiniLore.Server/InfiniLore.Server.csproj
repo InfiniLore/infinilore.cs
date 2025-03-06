@@ -11,22 +11,22 @@
         <ProjectReference Include="..\InfiniLore.Server.Api\InfiniLore.Server.Api.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>        
-        <PackageReference Include="AterraEngine.Unions" Version="3.12.0" />        
+    <ItemGroup>
+        <PackageReference Include="AterraEngine.Unions" Version="3.12.0"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1"/>
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.42.3" />
-        <PackageReference Include="FastEndpoints" Version="5.35.0" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.35.0" />
-        <PackageReference Include="InfiniLore.Credentials" Version="2.1.0-preview.2" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.1.0-preview.2" />
-        <PackageReference Include="InfiniLore.Lucide" Version="0.12.477" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.42.3"/>
+        <PackageReference Include="FastEndpoints" Version="5.35.0"/>
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.35.0"/>
+        <PackageReference Include="InfiniLore.Credentials" Version="2.1.0-preview.2"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.1.0-preview.2"/>
+        <PackageReference Include="InfiniLore.Lucide" Version="0.12.477"/>
         <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.2"/>
@@ -37,23 +37,23 @@
         <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor"/>
         <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor"/>
         <_ContentIncludedByDefault Remove="wwwroot\images\auth0-dotnet-ebook.png"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.Development.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\BlazorDebugProxy\BrowserDebugHost.runtimeconfig.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.endpoints.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.runtime.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.deps.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.runtimeconfig.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.endpoints.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.runtime.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\InfiniLore.Server.sourcelink.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.endpoints.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.development.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.pack.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json" />
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json" />
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.Development.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\BlazorDebugProxy\BrowserDebugHost.runtimeconfig.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.endpoints.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.runtime.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.deps.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.runtimeconfig.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.endpoints.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.runtime.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\InfiniLore.Server.sourcelink.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.endpoints.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.development.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.pack.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json"/>
+        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
     </ItemGroup>
 
 </Project>

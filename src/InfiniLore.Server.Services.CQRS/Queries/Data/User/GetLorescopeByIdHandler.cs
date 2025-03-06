@@ -9,11 +9,10 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS.Queries.Data.User;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopeByIdHandler> logger): IRequestHandler<GetLorescopeByIdQuery, MediatorResponse<LoreScope>>  {
+public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopeByIdHandler> logger) : IRequestHandler<GetLorescopeByIdQuery, MediatorResponse<LoreScope>> {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -38,7 +37,7 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
             logger.Warning("User does not own this lorescope");
             return MediatorResponse<LoreScope>.FromErrorString("User does not own this lorescope");
         }
-        
+
         return MediatorResponse<LoreScope>.FromSuccess(value);
     }
 }

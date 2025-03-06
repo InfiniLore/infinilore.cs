@@ -11,7 +11,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.CQRS.NotificationHandlers.NewUserCreated;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,10 +18,10 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
     public async Task Handle(NewUserCreatedNotification notification, CancellationToken ct) {
         Guid userId = notification.UserId;
         if (userId == Guid.Empty) return;
-        
+
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
-        
+
         RepoResult<InfiniLoreUser> userResult = await userRepo.GetByIdAsync(userId, ct);
         if (!userResult.TryGetAsSuccess(out InfiniLoreUser? user)) {
             logger.Warning("Could not find user with id {UserId} in database.", userId);
@@ -35,7 +34,7 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
                 logger.Warning("Failed to update user in auth0: {Reason}", failureReason);
                 continue;
             }
-            
+
             logger.Information("Updated user {userId} in auth0: {Username}", user.Id, user.Username);
         }
     }

@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLoreScope;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Auth0;
@@ -18,14 +17,14 @@ namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLorescopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response = Results<
+using Response=Results<
     Ok<LoreScopesResponse>,
     NotFound,
     ProblemDetails
 >;
 
 public class GetLorescopesEndpoint(IMediator mediator, ILogger<GetLorescopesEndpoint> logger) : Endpoint<GetLorescopesRequest, Response, LoreScopesMapper> {
-    public override void Configure() { 
+    public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope");
         Permissions(PermissionsStore.LorescopeRead);
     }
@@ -39,11 +38,10 @@ public class GetLorescopesEndpoint(IMediator mediator, ILogger<GetLorescopesEndp
             logger.Warning("Failed to get lorescopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
             return TypedResults.NotFound();
         }
-        
-        logger.Information("Successfully retrieved lorescopes for userId {id}", req.UserId );
-        
+
+        logger.Information("Successfully retrieved lorescopes for userId {id}", req.UserId);
+
         LoreScopesResponse response = Map.FromEntity(paginatedResult);
         return TypedResults.Ok(response);
     }
-
 }
