@@ -4,11 +4,11 @@
 using InfiniLore.Server.Api.Response;
 using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes;
+namespace InfiniLore.Server.Api.Endpoints.Account;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeResponse : UserDataResponse {
-    public required string Name { [UsedImplicitly] get; init; }
-    public string? Description { [UsedImplicitly] get; init; }
+public record UserProfileResponse : BasicDataResponse {
+    public required string Username { [UsedImplicitly] get; init; }
 }
