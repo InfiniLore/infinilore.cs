@@ -22,7 +22,7 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
         
         RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        if (storeResult.IsFailure) {
+        if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return MediatorResponse<IAuth0AccessToken>.FromFailureString("Cannot get auth0 access token. Key not found.");
         }

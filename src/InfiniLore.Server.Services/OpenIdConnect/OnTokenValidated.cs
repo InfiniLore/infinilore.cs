@@ -40,7 +40,7 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
 
         // Run all checks and return to new user page if needed
         switch (await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId))) {
-            case { IsSuccess: true, Value: true }: {
+            case { IsState: true, State: true }: {
                 _logger.Debug("User already exists, continuing...");
                 return;
             }

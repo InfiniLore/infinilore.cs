@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Contracts.Database;
 public readonly record struct PaginationInfo(int PageNumber, int PageSize) {
     public int SkipAmount => (PageNumber - 1) * PageSize;
 
-    public bool IsValid(out RepoResultFailure error) {
+    public bool IsValid(out string error) {
         switch (this) {
             case { PageNumber: < 1 }: {
                 error = RepositoryFailures.PaginationInvalidPageNumber;
@@ -27,5 +27,5 @@ public readonly record struct PaginationInfo(int PageNumber, int PageSize) {
         }
     }
 
-    public bool IsNotValid(out RepoResultFailure error) => !IsValid(out error);
+    public bool IsNotValid(out string error) => !IsValid(out error);
 }

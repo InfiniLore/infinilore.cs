@@ -8,4 +8,6 @@ namespace InfiniLore.Server.Services.CQRS;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+public record MediatorRequest : IRequest<MediatorResponse>;
+
 public record MediatorRequest<TResponse> : IRequest<MediatorResponse<TResponse>>; 

@@ -7,30 +7,20 @@ namespace InfiniLore.Server.Contracts.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UnionAliases("Success", "Failure")]
+[UnionAliases("State", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct RepoResult() : IUnion<Success, RepoResultFailure> {
-    public static implicit operator bool(RepoResult value) => value.IsSuccess;
+public readonly partial struct RepoResult() : IUnion<bool, Error<string>> {
+    public bool State => AsState;
+    public bool TryGetState(out bool state) => TryGetAsState(out state);
+    
+    public static implicit operator bool(RepoResult value) => value.IsState;
 
-    public static readonly RepoResult Success = FromSuccess(new Success());
-
-    public static RepoResult FromBool(bool value) => value ? Success : FromFailure(RepositoryFailures.Unknown);
-
-    public static RepoResult FromFailure(RepositoryFailures failure) => FromFailure(RepoResultFailure.FromKnownFailure(failure));
-    public static RepoResult FromFailure(Failure<string> failure) => FromFailure(RepoResultFailure.FromUnknownFailure(failure));
-    public static RepoResult FromFailure(string failure) => FromFailure(RepoResultFailure.FromUnknownFailure(new Failure<string>(failure)));
+    public static RepoResult FromError(string failure) => FromError(new Error<string>(failure));
 }
 
-[UnionAliases("Success", "Failure")]
+[UnionAliases("Success", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct RepoResult<T>() : IUnion<T, RepoResultFailure> {
+public readonly partial struct RepoResult<T>() : IUnion<T, Error<string>> {
     public static implicit operator bool(RepoResult<T> value) => value.IsSuccess;
-
-    public static RepoResult<T> FromFailure(RepositoryFailures failure) => FromFailure(RepoResultFailure.FromKnownFailure(failure));
-    public static RepoResult<T> FromFailure(Failure<string> failure) => FromFailure(RepoResultFailure.FromUnknownFailure(failure));
-    public static RepoResult<T> FromFailure(string failure) => FromFailure(RepoResultFailure.FromUnknownFailure(new Failure<string>(failure)));
-}
-
-[UnionAliases("KnownFailure", "UnknownFailure")]
-[UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct RepoResultFailure() : IUnion<RepositoryFailures, Failure<string>>;
+    public static RepoResult<T> FromError(string failure) => FromError(new Error<string>(failure));
+};

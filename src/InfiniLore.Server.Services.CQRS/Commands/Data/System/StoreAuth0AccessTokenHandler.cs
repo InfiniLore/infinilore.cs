@@ -34,6 +34,6 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
         
         
         RepoResult result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
-        return result.IsSuccess;
+        return result.IsState;
     }
 }

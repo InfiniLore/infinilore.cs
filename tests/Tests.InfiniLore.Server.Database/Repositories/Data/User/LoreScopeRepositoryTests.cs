@@ -38,10 +38,10 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
 
         // Act
         RepoResult result = await repo.IsLoreScopeNameTakenAsync(name, guidStore.GetGuid(userIdSeed));
-        bool isTaken = result.IsSuccess;
+        bool isTaken = result.IsState;
         
         // Assert
-        await Assert.That(result.TryGetAsSuccess(out _)).IsEqualTo(expected);
+        await Assert.That(result.TryGetState(out _)).IsEqualTo(expected);
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 
@@ -56,10 +56,10 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
 
         // Act
         RepoResult result = await repo.IsLoreScopeNameNotTakenAsync(name, guidStore.GetGuid(userIdSeed));
-        bool isTaken = result.IsSuccess;
+        bool isTaken = result.IsState;
         
         // Assert
-        await Assert.That(result.TryGetAsSuccess(out _)).IsEqualTo(expected);
+        await Assert.That(result.TryGetState(out _)).IsEqualTo(expected);
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 }

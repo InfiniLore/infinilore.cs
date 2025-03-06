@@ -142,9 +142,9 @@
         }
 
         // Call the backend to check username availability
-        MediatorResponse<bool> response = await Mediator.Send(new UsernameExistsQuery(username));
+        MediatorResponse response = await Mediator.Send(new UsernameExistsQuery(username));
 
-        if (!response.TryGetAsSuccess(out bool isTaken)) {
+        if (!response.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None; // Default/Fallback if the response doesn't return properly
             await InvokeAsync(StateHasChanged); // Refresh UI
             return;

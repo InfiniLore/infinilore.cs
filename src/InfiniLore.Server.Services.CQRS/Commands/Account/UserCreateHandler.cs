@@ -52,7 +52,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
 
         // Save to Db
         RepoResult result = await userRepo.TryAddAsync(user, ct);
-        if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database");  ;
+        if (result.IsError) return MediatorResponse<Guid>.FromFailureString("Failed to save user to database");  ;
 
         var notification = new NewUserCreatedNotification(user.Id);
         await mediator.Publish(notification, ct);

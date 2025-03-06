@@ -18,8 +18,8 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
 
     public async ValueTask<RepoResult> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
+        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
+        if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
         
         // Access
         ContentDb dbContext = GetDbContext();
@@ -32,12 +32,12 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoResult.FromBool(result);
+        return RepoResult.FromState(result);
         
     }
     public async ValueTask<RepoResult> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return RepoResult.FromFailure(RepositoryFailures.ModelFailedValidation);
+        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
+        if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
         
         // Access
         ContentDb dbContext = GetDbContext();
@@ -50,7 +50,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoResult.FromBool(!result);
+        return RepoResult.FromState(!result);
         
     }
 }

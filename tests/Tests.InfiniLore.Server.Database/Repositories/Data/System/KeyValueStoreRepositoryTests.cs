@@ -54,7 +54,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Id == guid);
 
         // Assert
-        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.IsState).IsTrue();
         await Assert.That(actual).IsNotNull()
             .And.HasMember(m => m!.Id).EqualTo(guid)
             .And.HasMember(m => m!.Key).EqualTo(key)
@@ -73,10 +73,9 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
 
         // Assert
         await Assert.That(result)
-            .HasMember(m => m.IsFailure).EqualTo(true)
-            .And.HasMember(m => m.IsSuccess).EqualTo(false)
-            .And.HasMember(m => m.AsFailure.IsKnownFailure).EqualTo(true)
-            .And.HasMember(m => m.AsFailure.IsUnknownFailure).EqualTo(false)
-            .And.HasMember(m => m.AsFailure.AsKnownFailure).EqualTo(RepositoryFailures.ModelFailedUniqueConstraint);
+            .HasMember(m => m.IsError).EqualTo(true)
+            .And.HasMember(m => m.IsState).EqualTo(false)
+            .And.HasMember(m => m.IsError).EqualTo(true)
+            .And.HasMember(m => m.AsError.Value).EqualTo(RepositoryFailures.ModelFailedUniqueConstraint);
     }
 }

@@ -32,7 +32,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         ContentDb dbContext = GetDbContext();
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
-        if (await IsNotUniqueAsync(model, ct)) return RepoResult.FromFailure(RepositoryFailures.ModelFailedUniqueConstraint);
+        if (await IsNotUniqueAsync(model, ct)) return RepoResult.FromError(RepositoryFailures.ModelFailedUniqueConstraint);
 
         model.UpdateLastModifiedDate();
 
@@ -41,7 +41,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryAddRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
@@ -50,7 +50,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T[] content = models as T[] ?? models.ToArray();
-        if (await IsNotUniqueAsync(content, ct)) return RepoResult.FromFailure(RepositoryFailures.ModelFailedUniqueConstraint);
+        if (await IsNotUniqueAsync(content, ct)) return RepoResult.FromError(RepositoryFailures.ModelFailedUniqueConstraint);
 
         // Query
         foreach (T model in content) {
@@ -61,7 +61,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryUpdateAsync(T model, CancellationToken ct = default) {
@@ -70,7 +70,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
-        if (existing is null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existing is null) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         model.UpdateLastModifiedDate();
@@ -78,7 +78,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
@@ -89,7 +89,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         T[] modelArray = models as T[] ?? models.ToArray();
         Guid[] idsToUpdate = modelArray.Select(m => m.Id).ToArray();
         T[] existingEntities = await dbSet.Where(m => idsToUpdate.Contains(m.Id)).ToArrayAsync(ct);
-        if (existingEntities.Length != modelArray.Length) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existingEntities.Length != modelArray.Length) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         foreach (T existingEntity in existingEntities) {
@@ -101,7 +101,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryAddOrUpdateAsync(T model, CancellationToken ct = default) {
@@ -139,7 +139,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Save all changes
         await dbContext.SaveChangesAsync(ct);
 
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryDeleteAsync(T model, CancellationToken ct = default) {
@@ -148,7 +148,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
-        if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existing == null) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         existing.SoftDelete();
@@ -156,7 +156,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve   
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryDeleteByIdAsync(Guid id, CancellationToken ct = default) {
@@ -165,7 +165,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([id], ct);
-        if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existing == null) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         existing.SoftDelete();
@@ -173,7 +173,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve   
-        return RepoResult.Success;
+        return true;
 
     }
     public async ValueTask<RepoResult> TryDeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
@@ -188,7 +188,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicData.SoftDelete(s), ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryDeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
@@ -201,7 +201,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicData.SoftDelete(s), ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
     public async ValueTask<RepoResult> TryRemoveAsync(T model, CancellationToken ct = default) {
         // Access
@@ -209,14 +209,14 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([model.Id], ct);
-        if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existing == null) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         dbSet.Remove(existing);
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryRemoveByIdAsync(Guid id, CancellationToken ct = default) {
@@ -225,14 +225,14 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         T? existing = await dbSet.FindAsync([id], ct);
-        if (existing == null) return RepoResult.FromFailure(RepositoryFailures.ModelNotFound);
+        if (existing == null) return RepoResult.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
         dbSet.Remove(existing);
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryRemoveRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
@@ -247,7 +247,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .ExecuteDeleteAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult> TryRemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
@@ -260,7 +260,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .ExecuteDeleteAsync(ct);
 
         // Retrieve
-        return RepoResult.Success;
+        return true;
     }
 
     public async ValueTask<RepoResult<T>> TryGetByIdAsync(Guid id, CancellationToken ct = default) {
@@ -272,7 +272,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve
-        if (result is null) return RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
+        if (result is null) return RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
         return RepoResult<T>.FromSuccess(result);
     }
 
@@ -289,7 +289,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         T? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
         return result is not null 
             ? RepoResult<T>.FromSuccess(result)
-            : RepoResult<T>.FromFailure(RepositoryFailures.ModelNotFound);
+            : RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
     }
 
     public async ValueTask<RepoResult<T[]>> TryGetAllAsync(CancellationToken ct = default) {
@@ -454,6 +454,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Query & Retrieve
         bool result = await dbSet.AsNoTracking()
             .AnyAsync(ls => ls.Id == id, ct);
-        return RepoResult.FromBool(result);
+        
+        return RepoResult.FromState(result);
     } 
 }

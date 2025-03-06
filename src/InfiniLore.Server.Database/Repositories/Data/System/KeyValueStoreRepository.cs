@@ -34,7 +34,7 @@ public class KeyValueStoreRepository : SystemDataRepository<KeyValueStore>, IKey
             .FirstOrDefaultAsync(ls => ls.Key == key, cancellationToken: ct);
 
         // Retrieve
-        if (result is null) return RepoResult<KeyValueStore>.FromFailure(RepositoryFailures.ModelNotFound);
+        if (result is null) return RepoResult<KeyValueStore>.FromError(RepositoryFailures.ModelNotFound);
         return RepoResult<KeyValueStore>.FromSuccess(result);
     }
 }

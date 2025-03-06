@@ -39,7 +39,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IUnitOfWorkFactory unit
 
         bool shouldSeed = result switch {
             // No users that are supposed to be seeded are present, meaning we have to seed all of them
-            { IsFailure: true, AsFailure.AsKnownFailure: RepositoryFailures.ModelsNotFound } => true,
+            { IsError: true, AsError.Value: RepositoryFailures.ModelsNotFound } => true,
             // Some users are found but all of them
             { IsSuccess: true, AsSuccess: var foundUsers } when foundUsers.Length < _totalUsersToSeed => true,
             // All is already seeded
@@ -58,7 +58,6 @@ public class UserSeeder(IOptions<SeedingConfig> options, IUnitOfWorkFactory unit
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var repo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
         
-        var mediatorTasks = new List<Task>();
         foreach (SeedingUser userToBeSeeded in _options.Data.Users ) {
             // Only seed those which dont exist yet
             if (await repo.TryGetByAuth0IdAsync(userToBeSeeded.Auth0Id, ct) is { IsSuccess: true }) {
@@ -66,21 +65,8 @@ public class UserSeeder(IOptions<SeedingConfig> options, IUnitOfWorkFactory unit
                 continue;
             }
             
-            // Some complicated task to send out the original reauest to create a user
+            // Some complicated task to send out the original request to create a user
             await mediator.Send(new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
-            
-            // Task<InfiniLoreUser?> task = 
-            //     .ContinueWith(t => {
-            //         if (t.IsFaulted) logger.Error(t.Exception, "Error creating user {Auth0Id}", userToBeSeeded.Auth0Id);
-            //         if (t.IsCanceled) logger.Warning("User creation for {Auth0Id} was cancelled", userToBeSeeded.Auth0Id);
-            //         
-            //         InfiniLoreUser? result = t.Result;
-            //         if (result is null) logger.Warning("User creation for {Auth0Id} failed", userToBeSeeded.Auth0Id);
-            //         return t.Result;
-            //     }, ct);
-            // mediatorTasks.Add(task);
         }
-        
-        // await Task.WhenAll(mediatorTasks);
     }
 }

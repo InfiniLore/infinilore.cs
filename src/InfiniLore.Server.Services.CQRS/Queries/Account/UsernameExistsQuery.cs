@@ -8,4 +8,4 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public record UsernameExistsQuery (
     string Username
-) : MediatorRequest<bool>;
+) : MediatorRequest;

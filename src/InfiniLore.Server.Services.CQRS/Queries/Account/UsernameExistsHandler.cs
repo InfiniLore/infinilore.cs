@@ -11,15 +11,15 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<UsernameExistsQuery, MediatorResponse<bool>>  {
+public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<UsernameExistsQuery, MediatorResponse>  {
 
-    public async Task<MediatorResponse<bool>> Handle(UsernameExistsQuery request, CancellationToken ct) {
-        if (request.Username.IsNullOrWhiteSpace()) return MediatorResponse<bool>.FromFailureString("Cannot check for username existence. Username is empty.");
+    public async Task<MediatorResponse> Handle(UsernameExistsQuery request, CancellationToken ct) {
+        if (request.Username.IsNullOrWhiteSpace()) return MediatorResponse.FromFailureString("Cannot check for username existence. Username is empty.");
         
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
         RepoResult result = await userRepository.IsUsernameTakenAsync(request.Username, ct: ct);
-        return result.IsSuccess;
+        return result.IsState;
     }
 }

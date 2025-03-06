@@ -20,7 +20,7 @@ public class GetUserIdByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : IRe
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
         RepoResult<Guid> result = await userRepository.TryGetIdByAuth0IdAsync(request.Auth0Id, ct);
-        if (result.IsFailure) return MediatorResponse<Guid>.FromFailureString("Cannot get user id by auth0 id. Auth0 id not found.");
+        if (result.IsError) return MediatorResponse<Guid>.FromFailureString("Cannot get user id by auth0 id. Auth0 id not found.");
         return result.AsSuccess;
     }
 }
