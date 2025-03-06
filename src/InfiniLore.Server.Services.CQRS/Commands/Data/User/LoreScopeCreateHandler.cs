@@ -27,7 +27,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         
         RepoResult loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(request.LoreScopeName, request.OwnerId, ct);
         RepoResult userIdExistsResult = await userRepo.IsExistingIdAsync(request.OwnerId, ct);
-        if (loreScopeNameTakenResult.IsState) return MediatorResponse<Guid>.FromFailureString("LoreScope name already taken for this user");
+        if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MediatorResponse<Guid>.FromFailureString("LoreScope name already taken for this user");
         if (userIdExistsResult.IsError) return MediatorResponse<Guid>.FromFailureString("Owner id does not exist");
         
         // Create a new lorescope based on the request

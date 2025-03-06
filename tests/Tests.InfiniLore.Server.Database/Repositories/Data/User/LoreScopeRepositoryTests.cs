@@ -31,17 +31,16 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
     [Arguments("KNOWN NAME", 2, true)]
     [Arguments("unknown", 2, false)]
     [Arguments("KNOWN NAME", 1, false)] // Same name, but different user
-    public async Task IsLoreScopeNameTakenAsync_SHouldReturbExpected(string name, int userIdSeed, bool expected) {
+    public async Task IsLoreScopeNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
         await using IUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
         RepoResult result = await repo.IsLoreScopeNameTakenAsync(name, guidStore.GetGuid(userIdSeed));
-        bool isTaken = result.IsState;
         
         // Assert
-        await Assert.That(result.TryGetState(out _)).IsEqualTo(expected);
+        await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 
@@ -49,17 +48,16 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
     [Arguments("KNOWN NAME", 2, false)]
     [Arguments("unknown", 2, true)]
     [Arguments("KNOWN NAME", 1, true)] // Same name, but different user
-    public async Task IsLoreScopeNotNameTakenAsync_SHouldReturbExpected(string name, int userIdSeed, bool expected) {
+    public async Task IsLoreScopeNotNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
         await using IUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
         RepoResult result = await repo.IsLoreScopeNameNotTakenAsync(name, guidStore.GetGuid(userIdSeed));
-        bool isTaken = result.IsState;
         
         // Assert
-        await Assert.That(result.TryGetState(out _)).IsEqualTo(expected);
+        await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 }
