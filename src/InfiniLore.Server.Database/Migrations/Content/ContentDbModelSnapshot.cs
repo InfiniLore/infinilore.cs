@@ -79,31 +79,17 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueStore", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Key")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SoftDeleteDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Value")
                         .HasMaxLength(2147483646)
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Key");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Key")
                         .IsUnique();
 
                     b.ToTable("KeyValueStores");

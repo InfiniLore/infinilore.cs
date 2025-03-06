@@ -26,10 +26,6 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        await dbContext.KeyValueStores.AddRangeAsync(
-            KeyValueStoreFaker.GetById(GuidStore.GetGuid(1))
-        );
-
         InfiniLoreUser owner = InfiniLoreUserFaker.GetById(GuidStore.GetGuid(2));
         await dbContext.Users.AddRangeAsync(
             owner
