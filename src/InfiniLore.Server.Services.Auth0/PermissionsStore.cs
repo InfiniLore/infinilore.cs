@@ -29,5 +29,5 @@ public static partial class PermissionsStore {
     [Prefix(DataUser)] public static partial string LorescopeWrite { get; }
     [Prefix(DataUser)] public static partial string LorescopeDelete { get; }
     
-    [Prefix(Data)] public static partial string UserProfileRead { get; }
+    [Prefix(DataUser)] public static partial string ProfileRead { get; }
 }

@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 [RolesStore(RolesGeneratorFlags.ParsePrefix | RolesGeneratorFlags.GenerateAllRolesMethod)]
 public static partial class RolesStore {
-    public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(() => new Dictionary<string, string[]> {
+    public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(static () => new Dictionary<string, string[]> {
         [User] = UserPermissions.Value,
         [Consumer] = ConsumerPermissions.Value,
         [Producer] = ProducerPermissions.Value,
