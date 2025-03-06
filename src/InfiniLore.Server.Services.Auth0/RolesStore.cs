@@ -10,6 +10,8 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 [RolesStore(RolesGeneratorFlags.ParsePrefix | RolesGeneratorFlags.GenerateAllRolesMethod)]
 public static partial class RolesStore {
+    
+    #pragma warning disable CS8602 // Dereference of a possibly null reference.
     public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(static () => new Dictionary<string, string[]> {
         [User] = UserPermissions.Value,
         [Consumer] = ConsumerPermissions.Value,
@@ -17,6 +19,7 @@ public static partial class RolesStore {
         [InfiniloreAdmin] = InfiniloreAdminPermissions.Value,
         [InfiniloreDeveloper] = InfiniloreDeveloperPermissions.Value
     }.ToFrozenDictionary());
+    #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
     // -----------------------------------------------------------------------------------------------------------------
     // Assignments

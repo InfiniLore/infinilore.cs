@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
@@ -13,7 +12,7 @@ namespace InfiniLore.ServerClient.Shared;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuthenticationStateProviderClaimsPrincipalHelper>(ServiceLifetime.Singleton)]
-public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityOptions> options, ILogger<AuthenticationStateProviderClaimsPrincipalHelper> logger) : IAuthenticationStateProviderClaimsPrincipalHelper {
+public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityOptions> options) : IAuthenticationStateProviderClaimsPrincipalHelper {
     public Auth0Information GetAuth0Information(ClaimsPrincipal principal) {
         if (principal.Identity?.IsAuthenticated != true) return Auth0Information.Empty;
 
