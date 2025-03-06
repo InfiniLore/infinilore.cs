@@ -10,16 +10,24 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 [PermissionsStore(PermissionsGeneratorFlags.ParsePrefix | PermissionsGeneratorFlags.GenerateAllPermissionsMethod)]
 public static partial class PermissionsStore {
-    private const string Account = "Account";
-    private const string Data = "Data";
-    private const string System = "System";
-    private const string User = "User";
+    private const string Account = nameof(Account);
+    private const string Data = nameof(Data);
+    private const string System = nameof(System);
+    private const string User = nameof(User);
     
-    private const string DataSystem = Data+System;
-    [Prefix(DataSystem)] public static partial string SystemRead { get; }
+    private const string DataUser = nameof(DataUser);
+    private const string DataSystem = nameof(DataSystem);
     
-    private const string DataUser = Data+User;
+    public static partial string AccountRead { get; }
+    public static partial string AccountWrite { get; }
+    public static partial string AccountDelete { get; }
+
+    [Prefix(Data)] public static partial string SystemRead { get; }
+    [Prefix(Data)] public static partial string SystemWrite { get; }
+
     [Prefix(DataUser)] public static partial string LorescopeRead { get; }
     [Prefix(DataUser)] public static partial string LorescopeWrite { get; }
     [Prefix(DataUser)] public static partial string LorescopeDelete { get; }
+    
+    [Prefix(Data)] public static partial string UserProfileRead { get; }
 }
