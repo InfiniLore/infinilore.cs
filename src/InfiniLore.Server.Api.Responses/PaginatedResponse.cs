@@ -1,19 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using InfiniLore.Server.Database.Models.Account;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Api.Endpoints.Account;
-
+namespace InfiniLore.Server.Api.Responses;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreUser> {
-    public override UserProfileResponse FromEntity(InfiniLoreUser entity) => new() {
-        Username = entity.Username,
-        Id = entity.Id,
-        CreatedDate = entity.CreatedDate,
-        LastModifiedDate = entity.LastModifiedDate
-    };
+public abstract record PaginatedResponse<T> {
+    public required T[] Items { [UsedImplicitly] get; init; }
+    public int TotalCount { [UsedImplicitly] get; init; }
+    public int CurrentPage { [UsedImplicitly] get; init; }
+    public int TotalPages { [UsedImplicitly] get; init; }
 }

@@ -5,7 +5,7 @@ using FastEndpoints;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Database.Models.Data.User;
 
-namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes;
+namespace InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

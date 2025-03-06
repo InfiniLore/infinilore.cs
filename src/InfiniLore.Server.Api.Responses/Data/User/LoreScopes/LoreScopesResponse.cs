@@ -1,14 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Api.Response;
-using JetBrains.Annotations;
-
-namespace InfiniLore.Server.Api.Endpoints.Account;
-
+namespace InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserProfileResponse : BasicDataResponse {
-    public required string Username { [UsedImplicitly] get; init; }
-}
+public record LoreScopesResponse : PaginatedResponse<LoreScopeResponse>;

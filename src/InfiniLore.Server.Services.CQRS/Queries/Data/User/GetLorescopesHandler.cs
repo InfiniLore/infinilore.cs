@@ -13,9 +13,9 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetLorescopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopesHandler> logger) : IRequestHandler<GetLorescopesQuery, MediatorResponse<PaginatedResult<LoreScope>>> {
+public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLoreScopesHandler> logger) : IRequestHandler<GetLoreScopesQuery, MediatorResponse<PaginatedResult<LoreScope>>> {
 
-    public async Task<MediatorResponse<PaginatedResult<LoreScope>>> Handle(GetLorescopesQuery request, CancellationToken ct) {
+    public async Task<MediatorResponse<PaginatedResult<LoreScope>>> Handle(GetLoreScopesQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
@@ -30,8 +30,8 @@ public class GetLorescopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
         };
 
         if (!response.TryGetAsSuccess(out PaginatedResult<LoreScope> paginatedResult)) {
-            logger.Warning("Failed to get lorescopes");
-            return MediatorResponse<PaginatedResult<LoreScope>>.FromErrorString("Failed to get lorescopes");
+            logger.Warning("Failed to get LoreScopes");
+            return MediatorResponse<PaginatedResult<LoreScope>>.FromErrorString("Failed to get LoreScopes");
         }
 
         return MediatorResponse<PaginatedResult<LoreScope>>.FromSuccess(paginatedResult);

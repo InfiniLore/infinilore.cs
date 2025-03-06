@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Server.Contracts;
+using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS;
@@ -12,36 +12,36 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLorescopes;
+namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScope;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
-    Ok<LoreScopesResponse>,
+    Ok<LoreScopeResponse>,
     NotFound,
     ProblemDetails
 >;
 
-public class GetLorescopesEndpoint(IMediator mediator, ILogger<GetLorescopesEndpoint> logger) : Endpoint<GetLorescopesRequest, Response, LoreScopesMapper> {
+public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoint> logger) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
     public override void Configure() {
-        Get("/data/user/{UserId:guid}/lorescope");
+        Get("/data/user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLorescopesRequest req, CancellationToken ct) {
-        MediatorResponse<PaginatedResult<LoreScope>> result = await mediator.Send(new GetLorescopesQuery(req.UserId, false, req.PaginationInfo), ct);
-        if (!result.TryGetAsSuccess(out PaginatedResult<LoreScope> paginatedResult)) {
-            logger.Warning("Failed to get lorescopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
+    public override async Task<Response> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
+        MediatorResponse<LoreScope> result = await mediator.Send(new GetLorescopeByIdQuery(req.LoreScopeId, req.UserId), ct);
+        if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {
+            logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }
 
-        logger.Information("Successfully retrieved lorescopes for userId {id}", req.UserId);
+        logger.Information("Successfully retrieved lorescope with id {id}", req.LoreScopeId);
 
-        LoreScopesResponse response = Map.FromEntity(paginatedResult);
+        LoreScopeResponse response = Map.FromEntity(loreScope);
         return TypedResults.Ok(response);
     }
 }

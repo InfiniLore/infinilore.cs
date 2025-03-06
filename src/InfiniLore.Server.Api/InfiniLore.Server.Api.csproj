@@ -11,7 +11,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Endpoints\Discovery\LoreScopes\" />
     </ItemGroup>
 
 </Project>

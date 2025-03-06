@@ -15,7 +15,7 @@ namespace InfiniLore.Clients.Kiota.Api.V1.DataUser.Item
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class WithUserItemRequestBuilder : BaseRequestBuilder
     {
-        /// <summary>The loreScopes property</summary>
+        /// <summary>The LoreScopes property</summary>
         public global::InfiniLore.Clients.Kiota.Api.V1.DataUser.Item.LoreScopes.LoreScopesRequestBuilder LoreScopes
         {
             get => new global::InfiniLore.Clients.Kiota.Api.V1.DataUser.Item.LoreScopes.LoreScopesRequestBuilder(PathParameters, RequestAdapter);

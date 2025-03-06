@@ -2,19 +2,18 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Server.Database.Models.Data.User;
+using InfiniLore.Server.Database.Models.Account;
 
-namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes;
+namespace InfiniLore.Server.Api.Responses.Account;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, LoreScope> {
-    public override LoreScopeResponse FromEntity(LoreScope loreScope) => new() {
-        Name = loreScope.Name,
-        Description = loreScope.ShortDescription,
-        Id = loreScope.Id,
-        CreatedDate = loreScope.CreatedDate,
-        LastModifiedDate = loreScope.LastModifiedDate,
-        OwnerId = loreScope.OwnerId
+public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreUser> {
+    public override UserProfileResponse FromEntity(InfiniLoreUser entity) => new() {
+        Username = entity.Username,
+        Id = entity.Id,
+        CreatedDate = entity.CreatedDate,
+        LastModifiedDate = entity.LastModifiedDate
     };
 }

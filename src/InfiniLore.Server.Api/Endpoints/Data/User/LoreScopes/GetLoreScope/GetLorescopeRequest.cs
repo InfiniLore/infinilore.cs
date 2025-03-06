@@ -1,17 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using InfiniLore.Server.Contracts;
 using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Api.Endpoints.Data.User.Lorescopes.GetLorescopes;
+namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScope;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record GetLorescopesRequest(
+public record GetLorescopeRequest(
     Guid UserId,
-    [property: FromBody] PaginationInfo PaginationInfo = default,
-    [property: FromBody] bool Reverse = false
+    Guid LoreScopeId
 );
