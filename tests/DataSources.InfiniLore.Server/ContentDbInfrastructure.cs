@@ -58,8 +58,7 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
         ServiceProvider = services.BuildServiceProvider();
 
-        await using (IUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>().Create()) {
-            var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
+        await using (ContentDb dbContext = await ServiceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync()) {
             await dbContext.Database.MigrateAsync();
             await dbContext.SaveChangesAsync();
         }
@@ -78,6 +77,7 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
     public IReadonlyUnitOfWork GetReadonlyUnitOfWork() {
         if (ServiceProvider is null) throw new InvalidOperationException("Service provider is not initialized.");
+
         IReadonlyUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>().Create();
         return unitOfWork;
     }

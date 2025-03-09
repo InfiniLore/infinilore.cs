@@ -9,7 +9,7 @@ namespace InfiniLore.Clients.Kiota.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class InfiniLoreServerAPIControllersDataUserLorescopesCreateLorescopeCreateLorescopeRequest : IParsable
+    public partial class InfiniLoreServerAPIControllersDataUserLoreScopesCreateLorescopeCreateLorescopeRequest : IParsable
     #pragma warning restore CS1591
     {
         /// <summary>The description property</summary>
@@ -31,12 +31,12 @@ namespace InfiniLore.Clients.Kiota.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="InfiniLoreServerAPIControllersDataUserLorescopesCreateLorescopeCreateLorescopeRequest"/></returns>
+        /// <returns>A <see cref="InfiniLoreServerAPIControllersDataUserLoreScopesCreateLorescopeCreateLorescopeRequest"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::InfiniLore.Clients.Kiota.Models.InfiniLoreServerAPIControllersDataUserLorescopesCreateLorescopeCreateLorescopeRequest CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::InfiniLore.Clients.Kiota.Models.InfiniLoreServerAPIControllersDataUserLoreScopesCreateLorescopeCreateLorescopeRequest CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.Clients.Kiota.Models.InfiniLoreServerAPIControllersDataUserLorescopesCreateLorescopeCreateLorescopeRequest();
+            return new global::InfiniLore.Clients.Kiota.Models.InfiniLoreServerAPIControllersDataUserLoreScopesCreateLorescopeCreateLorescopeRequest();
         }
         /// <summary>
         /// The deserialization information for the current model

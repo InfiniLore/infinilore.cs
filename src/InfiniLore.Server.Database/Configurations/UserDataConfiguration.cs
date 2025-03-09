@@ -9,8 +9,8 @@ namespace InfiniLore.Server.Database.Configurations;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserDataConfiguration : IEntityTypeConfiguration<UserData> {
-    public void Configure(EntityTypeBuilder<UserData> builder) {
+public class UserDataConfiguration<TModel> : IEntityTypeConfiguration<TModel> where TModel : UserData {
+    public virtual void Configure(EntityTypeBuilder<TModel> builder) {
         builder.HasOne(x => x.Owner)
             .WithMany()
             .HasForeignKey(x => x.OwnerId)

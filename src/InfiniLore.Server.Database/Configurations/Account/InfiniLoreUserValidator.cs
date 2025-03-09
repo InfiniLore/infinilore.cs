@@ -33,7 +33,7 @@ public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
 
                 context.AddFailure("At least one of Auth0IdGoogle, Auth0Github, or Auth0MailPassword must be provided.");
             });
-        
+
         RuleFor(x => x.Auth0IdGoogle)
             .NotEmpty().When(x => x.Auth0IdGoogle is not null).WithMessage("Auth0 ID Google is required")
             .MaximumLength(InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength).WithMessage($"Auth0 ID Google must be less than {InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength} characters");
@@ -45,7 +45,7 @@ public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
         RuleFor(x => x.Auth0MailPassword)
             .NotEmpty().When(x => x.Auth0MailPassword is not null).WithMessage("Auth0 Mail Password is required")
             .MaximumLength(InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength).WithMessage($"Auth0 Mail Password must be less than {InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength} characters");
-        
+
         RuleFor(x => x.Username)
             .MustAsync(CheckValidUsernameAuth0).WithMessage("Username already exists")
             .NotEmpty().WithMessage("Username is required")

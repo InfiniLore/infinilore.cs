@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.CQRS.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public record UserExistsByAuth0Query(
     string Auth0UserId
-) : MediatorRequest<bool>;
+) : MediatorRequest;

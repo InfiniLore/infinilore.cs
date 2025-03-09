@@ -11,12 +11,13 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IBasicDataRepository<T> :
     IUnitOfWorkRepository,
-    IHasTryAddAsync<T>,
-    IHasTryUpdateAsync<T>,
-    IHasTryAddOrUpdateAsync<T>,
-    IHasTryDeleteAsync<T>,
-    IHasTryRemoveAsync<T>,
-    IHasTryGetByIdAsync<T>,
-    IHasTryGetAllAsync<T>,
-    IHasCountAsync
+    IHasAddAsync<T>,
+    IHasUpdateAsync<T>,
+    IHasAddOrUpdateAsync<T>,
+    IHasDeleteAsync<T>,
+    IHasRemoveAsync<T>,
+    IHasGetByIdAsync<T>,
+    IHasGetAllAsync<T>,
+    IHasGetCountAsync,
+    IHasIsIdTakenAsync
     where T : BasicData;

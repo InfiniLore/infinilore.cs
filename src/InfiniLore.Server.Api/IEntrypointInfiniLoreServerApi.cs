@@ -5,5 +5,4 @@ namespace InfiniLore.Server.Api;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IEntrypointInfiniLoreServerApi {
-}
+public interface IEntrypointInfiniLoreServerApi;

@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
-using InfiniLore.Server.Contracts.Services.ClaimsPrincipalHelper;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
+using InfiniLore.ServerClient.Shared;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IClaimsPrincipalHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -34,17 +34,20 @@ public class OnTokenValidated(IMediator mediator, ILoggerFactory loggerFactory, 
         IAuth0Information auth0Info = claimsPrincipalHelper.GetAuth0Information(principal);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) {
             _logger.Debug("Information could not be found in claims, continuing...");
+            context.Response.Redirect("/account/logout?returnUrl=/");
             return;
         }
 
         // Run all checks and return to new user page if needed
         switch (await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId))) {
-            case { IsSuccess: true, Value: true }: {
+            case { IsState: true, State: true }: {
                 _logger.Debug("User already exists, continuing...");
                 return;
             }
+
             case { IsError: true, AsError.Value: {} failure }: {
                 _logger.LogError("Error checking if user exists : {failure}", failure);
+                context.Response.Redirect("/account/logout?returnUrl=/");
                 return;
             }
         }

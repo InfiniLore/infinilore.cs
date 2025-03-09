@@ -7,22 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="3.11.0"/>
-        <PackageReference Include="AterraEngine.Unions.Generators" Version="3.11.0">
+        <PackageReference Include="AterraEngine.Unions" Version="3.12.0"/>
+        <PackageReference Include="AterraEngine.Unions.Generators" Version="3.12.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.41.0" />
-        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.42.3"/>
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="2.1.0-preview.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Database\Repositories\Data\User\"/>
+        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>
 
 </Project>

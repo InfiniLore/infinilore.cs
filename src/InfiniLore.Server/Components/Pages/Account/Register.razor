@@ -1,6 +1,10 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/register"
 @using AterraEngine.Unions
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Account
@@ -8,10 +12,6 @@
 @using MediatR
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/register"
 @inject NavigationManager Navigation
 @inject IMediator Mediator
 @rendermode InteractiveServer
@@ -24,7 +24,8 @@
             <div class="w-full bg-white lg:w-6/12 xl:w-5/12">
                 <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24">
                     <h4 class="w-full text-3xl font-bold">Finishing Signup</h4>
-                    <p class="text-sm text-zinc-400">We just need a little bit more information about you before you can start exploring</p>
+                    <p class="text-sm text-zinc-400">We just need a little bit more information about you before you can
+                        start exploring</p>
                     <div class="relative w-full mt-10 space-y-8">
                         <div class="relative">
                             <label class="font-medium text-zinc-900">Username</label>
@@ -35,25 +36,30 @@
 
                                     type="text"
                                     id="username"
-                                    class="block w-full px-4 py-4 mt-2 text-base placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer" 
+                                    class="block w-full px-4 py-4 mt-2 text-base placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer"
                                     placeholder="Enter Your Name"/>
 
                                 <!-- Validation Message for taken username -->
                                 @switch (_usernameStatus) {
                                     case UsernameStatus.Checking:
-                                        <span id="loading-spinner" class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                                        <span id="loading-spinner"
+                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                                             <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span>
-                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
-                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
-                                        </span> 
+                                            <span
+                                                class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
+                                            <span
+                                                class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
+                                        </span>
                                         break;
                                     case UsernameStatus.Taken:
-                                        <span id="username-error" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">
+                                        <span id="username-error"
+                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">
                                             Username taken
                                         </span>
                                         break;
                                     case UsernameStatus.Available:
-                                        <span id="username-valid" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-emerald-500 text-sm">
+                                        <span id="username-valid"
+                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-emerald-500 text-sm">
                                             Username available
                                         </span>
                                         break;
@@ -105,7 +111,7 @@
     private readonly Stopwatch _debounceStopwatch = new();
     private const int DebounceMilliseconds = 500;
     private UsernameStatus _usernameStatus = UsernameStatus.None;
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -114,7 +120,8 @@
 
         if (!_debounceStopwatch.IsRunning) {
             _debounceStopwatch.Start();
-        } else {
+        }
+        else {
             _debounceStopwatch.Restart();
         }
 
@@ -122,7 +129,7 @@
         _usernameValidationMessage = string.Empty;
         _usernameStatus = UsernameStatus.Checking;
         _isFormDisabled = true;
-        await InvokeAsync(StateHasChanged); // Trigger UI Refresh
+        await InvokeAsync(StateHasChanged);// Trigger UI Refresh
 
         // Debounced validation logic
         await Task.Delay(DebounceMilliseconds);
@@ -136,30 +143,30 @@
         if (string.IsNullOrWhiteSpace(username)) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            _usernameStatus = UsernameStatus.None; // Set to None for empty username
-            await InvokeAsync(StateHasChanged); // Refresh UI
+            _usernameStatus = UsernameStatus.None;// Set to None for empty username
+            await InvokeAsync(StateHasChanged);// Refresh UI
             return;
         }
 
         // Call the backend to check username availability
-        MediatorResponse<bool> response = await Mediator.Send(new UsernameExistsQuery(username));
+        MediatorResponse response = await Mediator.Send(new UsernameExistsQuery(username));
 
-        if (!response.TryGetAsSuccess(out bool isTaken)) {
-            _usernameStatus = UsernameStatus.None; // Default/Fallback if the response doesn't return properly
-            await InvokeAsync(StateHasChanged); // Refresh UI
+        if (!response.TryGetState(out bool isTaken)) {
+            _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
+            await InvokeAsync(StateHasChanged);// Refresh UI
             return;
         }
 
         // Update the UI based on validation response
-        _usernameStatus = isTaken 
-            ? UsernameStatus.Taken 
+        _usernameStatus = isTaken
+            ? UsernameStatus.Taken
             : UsernameStatus.Available;
 
-        _usernameValidationMessage = string.Empty; // Clear message
-        _isFormDisabled = isTaken; // Disable form if username is taken
-        await InvokeAsync(StateHasChanged); // Refresh UI
+        _usernameValidationMessage = string.Empty;// Clear message
+        _isFormDisabled = isTaken;// Disable form if username is taken
+        await InvokeAsync(StateHasChanged);// Refresh UI
     }
-    
+
     private async Task HandleValidSubmitAsync() {
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
@@ -167,11 +174,11 @@
         MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
         if (result.TryGetAsError(out Error<string> errorMessage)) {
             _usernameValidationMessage = errorMessage.Value;
-            _isFormDisabled = false; // Allow retry
+            _isFormDisabled = false;// Allow retry
             await InvokeAsync(StateHasChanged);
             return;
         }
-        
+
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
             ? ReturnUrl
             : "/";
@@ -179,11 +186,12 @@
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
         Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
     }
-    
+
     private enum UsernameStatus {
         None,
         Checking,
         Taken,
         Available
     }
+
 }

@@ -6,13 +6,18 @@ using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
+using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
+using InfiniLore.Server.Services.Auth0;
+using InfiniLore.Server.Services.Auth0.Encryption;
+using InfiniLore.Server.Services.Auth0.TokenStore;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.OpenIdConnect;
+using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -83,8 +88,11 @@ public static class Program {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Domain"]);
             options.Domain = builder.Configuration["Auth0:Domain"]!;
 
-            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId"]);
-            options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId-WebApp"]);
+            options.ClientId = builder.Configuration["Auth0:ClientId-WebApp"]!;
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-WebApp"]);
+            options.ClientSecret = builder.Configuration["Auth0:ClientSecret-WebApp"]!;
 
             // Add ClientSecret
             // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
@@ -98,6 +106,23 @@ public static class Program {
 
         builder.Services.AddAuthorization();
         builder.Services.AddCascadingAuthenticationState();
+        #endregion
+
+        #region Auth0 Management Services
+        builder.AddAuth0ManagementApiServices(config => {
+            config.SetScopedTokenStore<MediatorProxyAccessTokenStore>();
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Domain"]);
+            config.Auth0Options.Domain = builder.Configuration["Auth0:Domain"]!;
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientId-Management"]);
+            config.Auth0Options.ClientId = builder.Configuration["Auth0:ClientId-Management"]!;
+
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-Management"]);
+            config.Auth0Options.ClientSecret = builder.Configuration["Auth0:ClientSecret-Management"]!;
+        });
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
+        builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
         #endregion
 
         #region FastEndpoints
@@ -114,6 +139,8 @@ public static class Program {
         #region MediatR
         builder.Services.AddMediatR(config => {
             config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
+
+            // config.AddBehavior(typeof(RequestExceptionHandler<,,>));
         });
         #endregion
 
@@ -124,6 +151,7 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
+        builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
 
         #region DataSeeding
         // Everything is handled by the DataSeeding project
@@ -131,7 +159,7 @@ public static class Program {
         //      And to make sure we've enabled overloading of the method
         //      We also migrate the db in this step, if required.
         //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
-        builder.RegisterDataSeedingServices(); 
+        builder.RegisterDataSeedingServices();
         #endregion
 
         return builder.Build();
@@ -189,7 +217,7 @@ public static class Program {
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(IEntrypointInfiniLoreClientsWasm).Assembly);
-        
+
         await app.RunAsync();
     }
 }

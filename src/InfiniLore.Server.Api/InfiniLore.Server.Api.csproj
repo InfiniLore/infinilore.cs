@@ -7,7 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" Version="5.34.0"/>
+        <PackageReference Include="FastEndpoints" Version="5.35.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Endpoints\Discovery\LoreScopes\" />
     </ItemGroup>
 
 </Project>

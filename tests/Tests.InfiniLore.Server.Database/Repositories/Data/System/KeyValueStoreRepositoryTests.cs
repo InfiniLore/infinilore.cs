@@ -15,8 +15,8 @@ namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker,GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker, GuidStore guidStore) {
+[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -33,50 +33,25 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
     }
 
     [Test]
-    public async Task TryAddAsync_ReturnsExpectedResult() {
+    public async Task TryAddOrUpdateAsync_ReturnsExpectedResult() {
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        var guid = Guid.NewGuid();
-        const string key = "key-test";
-        const string value = "value-test";
-        var model = new KeyValueStore {
-            Id = guid,
-            Key = key,
-            Value = value
-        };
+        KeyValueStore model = faker.Faker.Generate();
+        string key = model.Key;
+        string? value = model.Value;
 
         // Act
-        RepoResult result = await repo.TryAddAsync(model);
+        RepoResult result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Id == guid);
+        KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
-        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.IsState).IsTrue();
         await Assert.That(actual).IsNotNull()
-            .And.HasMember(m => m!.Id).EqualTo(guid)
             .And.HasMember(m => m!.Key).EqualTo(key)
             .And.HasMember(m => m!.Value).EqualTo(value);
-    }
-
-    [Test]
-    public async Task TryAddAsync_ReturnsFailure() {
-        // Arrange
-        await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
-        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
-        KeyValueStore modelWithSameId = faker.GetById(guidStore.GetGuid(1));
-
-        // Act
-        RepoResult result = await repo.TryAddAsync(modelWithSameId);
-
-        // Assert
-        await Assert.That(result)
-            .HasMember(m => m.IsFailure).EqualTo(true)
-            .And.HasMember(m => m.IsSuccess).EqualTo(false)
-            .And.HasMember(m => m.AsFailure.IsKnownFailure).EqualTo(true)
-            .And.HasMember(m => m.AsFailure.IsUnknownFailure).EqualTo(false)
-            .And.HasMember(m => m.AsFailure.AsKnownFailure).EqualTo(RepositoryFailures.ModelFailedUniqueConstraint);
     }
 }

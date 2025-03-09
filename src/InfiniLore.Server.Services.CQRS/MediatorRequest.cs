@@ -4,8 +4,9 @@
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record MediatorRequest<TResponse> : IRequest<MediatorResponse<TResponse>>; 
+public record MediatorRequest : IRequest<MediatorResponse>;
+
+public record MediatorRequest<TResponse> : IRequest<MediatorResponse<TResponse>>;

@@ -2,6 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
+using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Database.Models.Data.System;
 using Microsoft.EntityFrameworkCore;
@@ -12,15 +14,44 @@ namespace InfiniLore.Server.Database.Repositories.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IKeyValueStoreRepository>(ServiceLifetime.Scoped)]
-public class KeyValueStoreRepository : SystemDataRepository<KeyValueStore>, IKeyValueStoreRepository {
-    protected override async ValueTask<bool> IsNotUniqueAsync(KeyValueStore[] modelsToValidate, CancellationToken ct = default) {
-        HashSet<Guid> ids = modelsToValidate.Select(m => m.Id).ToHashSet();
-        HashSet<string> keys = modelsToValidate.Select(m => m.Key).ToHashSet();
+public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValueStoreRepository {
+    public async ValueTask<RepoResult> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default) {
+        // Access
+        ContentDb dbContext = GetDbContext();
+        DbSet<KeyValueStore> dbSet = dbContext.KeyValueStores;
 
-        IQueryable<KeyValueStore> query = GetDbContext().KeyValueStores
-            .AsNoTracking()
-            .Where(foundModel => ids.Contains(foundModel.Id) || keys.Contains(foundModel.Key));// Avoids joins here
+        // Query & Retrieve
+        KeyValueStore? existing = await dbSet.FindAsync([model.Key], ct);
+        if (existing is null) dbSet.Add(model);
+        else dbContext.Entry(existing).CurrentValues.SetValues(model);
 
-        return await query.AnyAsync(ct);
+        await dbContext.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
+        // Access
+        DbSet<KeyValueStore> dbSet = GetDbContext().KeyValueStores;
+
+        // Query
+        KeyValueStore? result = await dbSet.AsNoTracking()
+            .FirstOrDefaultAsync(predicate: ls => ls.Key == key, ct);
+
+        // Retrieve
+        if (result is null) return RepoResult<KeyValueStore>.FromError(RepositoryFailures.ModelNotFound);
+
+        return RepoResult<KeyValueStore>.FromSuccess(result);
+    }
+
+    public async ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default) {
+        // Access
+        ContentDb dbContext = GetDbContext();
+        DbSet<KeyValueStore> dbSet = dbContext.KeyValueStores;
+
+        // Query
+        int result = await dbSet.CountAsync(cancellationToken: ct);
+
+        // Retrieve
+        return RepoResult<int>.FromSuccess(result);
     }
 }

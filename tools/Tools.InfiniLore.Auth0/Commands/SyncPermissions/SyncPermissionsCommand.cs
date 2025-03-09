@@ -1,0 +1,39 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.CliArgsParser;
+using InfiniLore.Credentials.Auth0.Services;
+using InfiniLore.Server.Services.Auth0;
+using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Tools.InfiniLore.Auth0.Setup;
+
+namespace Tools.InfiniLore.Auth0.Commands.SyncPermissions;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
+[CliArgsCommand("sync-permission")]
+public partial class SyncPermissionsCommand : ICommand<SyncPermissionsParameters> {
+    private IServiceProvider Provider { get; } = CommandEnvironmentFactory.Create();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public async Task ExecuteAsync(SyncPermissionsParameters parameters) {
+        var auth0PermissionService = Provider.GetRequiredService<IAuth0PermissionService>();
+        var logger = Provider.GetRequiredService<ILogger<SyncPermissionsCommand>>();
+
+        IEnumerable<string>? permissions = PermissionsStore.GetAllPermissions();
+        if (permissions is null) {
+            logger.Error("Permissions store is null");
+            throw new Exception("Permissions store is null");
+        }
+
+        IEnumerable<PermissionDto> permissionsDtos = permissions
+            .Select(permission => new PermissionDto(permission, string.Empty));
+
+        await auth0PermissionService.SyncApiPermissionsAsync(parameters.ApiIdentifier, permissionsDtos);
+    }
+}
