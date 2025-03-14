@@ -142,6 +142,7 @@ public static class Program {
 
             // config.AddBehavior(typeof(RequestExceptionHandler<,,>));
         });
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();
         #endregion
 
         builder.Services.AddHttpClient();
