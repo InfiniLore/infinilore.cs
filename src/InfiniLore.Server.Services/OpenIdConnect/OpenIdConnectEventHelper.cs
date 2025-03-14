@@ -13,12 +13,15 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 // This might look a little bit janky, but it solves some overhead when it comes to DI
 public static class OpenIdConnectEventHelper {
+    public static readonly Func<TokenValidatedContext, Task> OnTokenValidated = HandleWith<TokenValidatedContext>();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     [DebuggerStepThrough]
-    public static Func<TContext, Task> HandleWith<TContext>()
+    private static Func<TContext, Task> HandleWith<TContext>()
         where TContext : BaseContext<OpenIdConnectOptions>
-        => static context => {
-            IServiceProvider serviceProvider = context.HttpContext.RequestServices;
-            var handler = serviceProvider.GetRequiredService<IOpenIdConnectEventHelper<TContext>>();
-            return handler.HandleAsync(context).AsTask();
-        };
+        => static context => context.HttpContext.RequestServices
+            .GetRequiredService<IOpenIdConnectEventHelper<TContext>>()
+            .HandleAsync(context);
 }

@@ -9,5 +9,5 @@ namespace InfiniLore.Server.Contracts.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IOpenIdConnectEventHelper<in TContext> where TContext : BaseContext<OpenIdConnectOptions> {
-    ValueTask HandleAsync(TContext context);
+    Task HandleAsync(TContext context);
 }

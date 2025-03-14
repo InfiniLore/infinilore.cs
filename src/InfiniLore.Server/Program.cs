@@ -26,7 +26,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
-using TokenValidatedContext=Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -94,7 +93,7 @@ public static class Program {
             options.CallbackPath = "/auth/callback";
 
             options.OpenIdConnectEvents = new OpenIdConnectEvents {
-                OnTokenValidated = OpenIdConnectEventHelper.HandleWith<TokenValidatedContext>()
+                OnTokenValidated = OpenIdConnectEventHelper.OnTokenValidated
             };
         });
 
