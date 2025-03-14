@@ -14,14 +14,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.42.3"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Microsoft.Extensions.Identity.Core">
-            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.2\Microsoft.Extensions.Identity.Core.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3" />
     </ItemGroup>
 
 </Project>

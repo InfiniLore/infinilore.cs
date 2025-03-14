@@ -24,9 +24,9 @@
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.42.3"/>
         <PackageReference Include="FastEndpoints" Version="5.35.0"/>
         <PackageReference Include="FastEndpoints.Swagger" Version="5.35.0"/>
-        <PackageReference Include="InfiniLore.Credentials" Version="2.1.0-preview.2"/>
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.1.0-preview.2"/>
-        <PackageReference Include="InfiniLore.Lucide" Version="0.12.477"/>
+        <PackageReference Include="InfiniLore.Credentials" Version="2.1.0-preview.3" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="2.1.0-preview.3" />
+        <PackageReference Include="InfiniLore.Lucide" Version="0.13.477-preview.3" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
