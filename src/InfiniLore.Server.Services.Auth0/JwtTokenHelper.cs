@@ -17,22 +17,22 @@ namespace InfiniLore.Server.Services.Auth0;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenHelper>(ServiceLifetime.Scoped)]
-public class JwtTokenHelper(HttpContext context, IMediator mediator) : IJwtTokenHelper {
-    private readonly ClaimsPrincipal _user = context.User;
+public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMediator mediator) : IJwtTokenHelper {
+    private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
-    public bool IsAuthenticated => _user.Identity?.IsAuthenticated == true;
-    public bool IsNotAuthenticated => _user.Identity?.IsAuthenticated == false;
+    public bool IsAuthenticated => _user?.Identity?.IsAuthenticated == true;
+    public bool IsNotAuthenticated => _user?.Identity?.IsAuthenticated == false;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public bool TryGetUserId([NotNullWhen(true)] out string? userId) {
-        userId = _user.FindFirstValue(ClaimTypes.NameIdentifier);
+        userId = _user?.FindFirstValue(ClaimTypes.NameIdentifier);
         return userId.IsNotNullOrWhiteSpace();
     }
 
     public bool TryGetAuthenticatedUser([NotNullWhen(true)] out ClaimsPrincipal? user) {
-        if (_user.Identity is not { IsAuthenticated: true }) {
+        if (_user?.Identity is not { IsAuthenticated: true }) {
             user = null;
             return false;
         }
@@ -52,12 +52,13 @@ public class JwtTokenHelper(HttpContext context, IMediator mediator) : IJwtToken
     }
 
     public Dictionary<string, List<string>> GetAllClaimsAsDictionary() 
-        => _user.Claims
+        => _user?.Claims
             .GroupBy(claim => claim.Type)
-            .ToDictionary(group => group.Key, group => group.Select(claim => claim.Value).ToList());
+            .ToDictionary(group => group.Key, group => group.Select(claim => claim.Value).ToList()) 
+            ?? [];
 
     public async ValueTask<Guid> TryGetUserIdFromClaimsAsync(CancellationToken ct = default) {
-        string? auth0UserId = _user.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? auth0UserId = _user?.FindFirstValue(ClaimTypes.NameIdentifier);
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         // TODO maybe not use mediator here? I dont know
@@ -68,7 +69,7 @@ public class JwtTokenHelper(HttpContext context, IMediator mediator) : IJwtToken
             : Guid.Empty;
     }
     
-    public string[] GetRoles() => _user.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray();
+    public string[] GetRoles() => _user?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];
     
-    public string[] GetPermissions() => _user.FindAll("permissions").Select(claim => claim.Value).ToArray();
+    public string[] GetPermissions() => _user?.FindAll("permissions").Select(claim => claim.Value).ToArray() ?? [];
 }

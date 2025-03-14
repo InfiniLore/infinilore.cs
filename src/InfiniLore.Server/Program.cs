@@ -34,25 +34,19 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
-        // Builder is set up here first
-        //      This is so we can override the logging configuration
-        //      And have proper application exception catching 
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.OverrideLoggingWithSerilog(config => config
-            .AsAnnaSasDevServerConsole(sectionMaxLength: 24)
-            .WithTruncateSourceContextEnricher(maxLength: 24)
-        );
+        await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
+            // Builder is set up here first
+            //      This is so we can override the logging configuration
+            //      And have proper application exception catching 
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            builder.OverrideLoggingWithSerilog(config => config
+                .AsAnnaSasDevServerConsole(sectionMaxLength: 24)
+                .WithTruncateSourceContextEnricher(maxLength: 24)
+            );
 
-        try {
             WebApplication app = await BuildApp(builder);
             await Start(app);
-        }
-        catch (Exception ex) {
-            Log.Logger.Fatal(ex, "Host terminated unexpectedly: {Message} \n {Trace}", ex.Message, ex.StackTrace);
-        }
-        finally {
-            await Log.CloseAndFlushAsync();
-        }
+        });
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -144,7 +138,8 @@ public static class Program {
         });
         builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();
         #endregion
-
+        
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
         builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()

@@ -36,7 +36,7 @@ public static class ContentDbFactory {
         ILogger logger = EmptyLoggerFactory.CreateLogger("DOCKER mssql");
 
         MsSqlContainer container = new MsSqlBuilder()
-            .WithPortBinding(60426, MsSqlBuilder.MsSqlPort)
+            .WithPortBinding(40626, MsSqlBuilder.MsSqlPort)
             .WithLogger(logger)
             .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
             .WithPassword("AnnaIsTrans4Ever!")
