@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="4.0.0" />
+        <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
         <PackageReference Include="Auth0.AuthenticationApi" Version="7.34.0"/>
         <PackageReference Include="Auth0.ManagementApi" Version="7.34.0"/>
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.43.0" />
