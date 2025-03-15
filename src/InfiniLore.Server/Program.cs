@@ -137,6 +137,15 @@ public static class Program {
         });
         builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();
         #endregion
+
+        #region DataSeeding
+        // Everything is handled by the DataSeeding project
+        //      This is to make sure we don't have any issues with the seeding process
+        //      And to make sure we've enabled overloading of the method
+        //      We also migrate the db in this step, if required.
+        //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
+        builder.RegisterDataSeedingServices();
+        #endregion
         
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
@@ -147,15 +156,6 @@ public static class Program {
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
-
-        #region DataSeeding
-        // Everything is handled by the DataSeeding project
-        //      This is to make sure we don't have any issues with the seeding process
-        //      And to make sure we've enabled overloading of the method
-        //      We also migrate the db in this step, if required.
-        //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
-        builder.RegisterDataSeedingServices();
-        #endregion
 
         return builder.Build();
     }

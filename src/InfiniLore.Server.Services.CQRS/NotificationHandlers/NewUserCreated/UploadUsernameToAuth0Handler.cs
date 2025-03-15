@@ -35,7 +35,7 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
                 continue;
             }
 
-            logger.Information("Updated user {userId} in auth0: {Username}", user.Id, user.Username);
+            logger.Information("Updated user {userId} in auth0 with new username: {Username}", user.Id, user.Username);
         }
     }
 }

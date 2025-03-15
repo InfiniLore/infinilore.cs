@@ -40,8 +40,8 @@ public static partial class GlobalExceptionHandler {
             switch (innerException) {
                 // Example handling for dependency injection-related InvalidOperationException
                 case InvalidOperationException { Source: "Microsoft.Extensions.DependencyInjection" } invalidOperationException: {
-                    HandleInvalidOperationException(invalidOperationException);
-                    break;
+                    if (TryHandleInvalidOperationException(invalidOperationException)) break;
+                    goto default;
                 }
 
                 default: {
@@ -53,19 +53,24 @@ public static partial class GlobalExceptionHandler {
         }
     }
 
-    private static void HandleInvalidOperationException(InvalidOperationException exception) {
+    private static bool TryHandleInvalidOperationException(InvalidOperationException exception) {
         Match match = InvalidOperationExceptionForServiceNotImplementedRegex.Match(exception.Message);
-        if (match.Groups is { Count: > 0 } groups) {
-            string serviceType = groups[1].Value;
-            string lifetime = groups[2].Value;
-            string implementationType = groups[3].Value;
-            string notFoundService = groups[4].Value;
+        if (match.Groups is not { Count: > 0 } groups) return false;
+
+        string serviceType = groups[1].Value;
+        string lifetime = groups[2].Value;
+        string implementationType = groups[3].Value;
+        string notFoundService = groups[4].Value;
             
-            Log.Logger.Fatal(exception, "Dependent service {NotFoundService} not found for ServiceType: {ServiceType} [{Lifetime}] with ImplementationType: {ImplementationType}",
-                notFoundService, serviceType, lifetime, implementationType);
-        }
-        else {
-            Log.Logger.Fatal(exception, "Invalid operation exception occurred: {Message}", exception.Message);
-        }
+        Log.Logger.Fatal(
+            exception,
+            "Dependent service {NotFoundService} not found for ServiceType: {ServiceType} [{Lifetime}] with ImplementationType: {ImplementationType}",
+            notFoundService,
+            serviceType,
+            lifetime,
+            implementationType
+        );
+
+        return true;
     }
 }
