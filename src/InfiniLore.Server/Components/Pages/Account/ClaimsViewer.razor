@@ -1,6 +1,8 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Server.Services.Clipboard
+@using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -9,38 +11,82 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/claims-viewer"
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ClipboardService ClipboardService
+@inject ILogger<ClaimsViewer> Logger
 @attribute [Authorize]
+@rendermode InteractiveServer
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<h3>Claims Viewer</h3>
+<h3 class="text-2xl font-bold text-gray-800 mb-4">Claims Viewer</h3>
 
 @if (_user != null) {
-    <p><strong>Authenticated User:</strong> @_user.Identity?.Name</p>
+    <p class="text-lg">
+        <strong>Authenticated User:</strong> @_user.Identity?.Name
+    </p>
 
-    <table class="table">
+    <table class="table-auto border-collapse border border-gray-200 w-full mt-4">
         <thead>
-        <tr>
-            <th>Claim Type</th>
-            <th>Claim Value</th>
+        <tr class="bg-gray-100 text-gray-800">
+            <th class="border border-gray-200 px-4 py-2 text-left">Claim Type</th>
+            <th class="border border-gray-200 px-4 py-2 text-left">Claim Value</th>
+            <th class="border border-gray-200 px-4 py-2">Actions</th>
         </tr>
         </thead>
         <tbody>
         @foreach (Claim? claim in _user.Claims) {
             <tr>
-                <td>@claim.Type</td>
-                <td>@claim.Value</td>
+                <td class="border border-gray-200 px-4 py-2">@claim.Type</td>
+                <td class="border border-gray-200 px-4 py-2">@claim.Value</td>
+                <td class="border border-gray-200 px-4 py-2 text-center">
+                    <button
+                        @key=claim.Value
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded shadow transition duration-200"
+                        @onclick="async () => await CopyToClipboardAsync(claim.Value)">
+                        Copy
+                    </button>
+                </td>
             </tr>
         }
         </tbody>
     </table>
+
+    <br>
+    <h4 class="text-xl font-semibold text-gray-800 mb-2">Access Token Viewer</h4>
+    <div class="flex flex-row space-x-4 items-start">
+        <!-- Access Token Section -->
+        <div class="w-1/2">
+            <h5 class="text-lg font-medium text-gray-700 mb-2">Original JWT</h5>
+            <p class="bg-gray-100 border border-gray-300 rounded px-4 py-2 break-words whitespace-pre-wrap h-72 overflow-hidden">@_accessToken</p>
+            <div class="flex justify-center mt-2">
+                <button
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded outline outline-2 outline-green-700 shadow transition duration-200"
+                    @onclick="async () => await CopyToClipboardAsync(_accessToken)">
+                    Copy Access Token
+                </button>
+            </div>
+        </div>
+
+        <!-- JWT Viewer Section -->
+        <div class="w-1/2">
+            <h5 class="text-lg font-medium text-gray-700 mb-2">Decoded JWT</h5>
+            @if (_decodedJwt != null) {
+                <div class="bg-gray-50 border border-gray-200 text-sm rounded p-4 overflow-auto max-w-full">
+                    <pre>@_decodedJwt</pre>
+                </div>
+            }
+            else if (!string.IsNullOrWhiteSpace(_accessToken)) {
+                <p class="text-gray-600 italic">Unable to decode token. Ensure it's a valid JWT.</p>
+            }
+        </div>
+    </div>
+
 }
 else {
-    <p>Loading user information...</p>
+    <p class="text-gray-600">Loading user information...</p>
 }
-
-
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
@@ -48,9 +94,51 @@ else {
 
 @code {
     private ClaimsPrincipal? _user;
+    private string? _accessToken;
+    private string? _decodedJwt;
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
         AuthenticationState authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         _user = authenticationState.User;
+
+        if (HttpContextAccessor.HttpContext != null) {
+            _accessToken = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            if (!string.IsNullOrWhiteSpace(_accessToken)) {
+                _decodedJwt = DecodeJwt(_accessToken);
+            }
+        }
     }
+
+    private async Task CopyToClipboardAsync(string? value) {
+        if (!string.IsNullOrWhiteSpace(value)) {
+            await ClipboardService.WriteTextAsync(value);
+        }
+    }
+    
+    private string? DecodeJwt(string token) {
+        try {
+            string[] parts = token.Split('.');
+            if (parts.Length != 3) return null; // Not a valid JWT
+
+            string payload = parts[1];
+            byte[] json = Convert.FromBase64String(PadBase64(payload));
+            return System.Text.Json.JsonSerializer.Serialize(
+                System.Text.Json.JsonDocument.Parse(json).RootElement,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+        catch (Exception ex) {
+            Logger.LogError(ex, "Failed to decode JWT");
+            return null;
+        }
+    }
+    
+    private static string PadBase64(string base64)
+        => (base64.Length % 4) switch {
+            2 => base64 + "==",
+            3 => base64 + "=",
+            _ => base64
+        };
 }

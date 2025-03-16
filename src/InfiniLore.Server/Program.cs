@@ -86,7 +86,7 @@ public static class Program {
 
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-WebApp"]);
             options.ClientSecret = builder.Configuration["Auth0:ClientSecret-WebApp"]!;
-
+            
             // Add ClientSecret
             // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
             options.Scope = "openid profile email";
@@ -95,6 +95,10 @@ public static class Program {
             options.OpenIdConnectEvents = new OpenIdConnectEvents {
                 OnTokenValidated = OpenIdConnectEventHelper.OnTokenValidated
             };
+        }).WithAccessToken(options => {
+            
+            ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Audience"]);
+            options.Audience = builder.Configuration["Auth0:Audience"]!;
         });
 
         builder.Services.AddAuthorization();
