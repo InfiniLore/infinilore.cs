@@ -787,6 +787,16 @@
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
   }
+  .active\:bg-blue-700 {
+    &:active {
+      background-color: var(--color-blue-700);
+    }
+  }
+  .active\:bg-green-700 {
+    &:active {
+      background-color: var(--color-green-700);
+    }
+  }
   .disabled\:cursor-not-allowed {
     &:disabled {
       cursor: not-allowed;
