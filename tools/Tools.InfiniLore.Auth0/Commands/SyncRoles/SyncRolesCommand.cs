@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.ManagementApi.Models;
 using CodeOfChaos.CliArgsParser;
+using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Services.Auth0;
 using JetBrains.Annotations;
@@ -50,17 +51,21 @@ public partial class SyncRolesCommand : ICommand<SyncRolesParameters> {
         // Sync Permissions to Roles
         List<Role> auth0Roles = await auth0Utility.Roles.GetAllRolesAsync();
         IEnumerable<(string Id, string[] permissions)> mappedRolesToPermissions = auth0Roles.Select(static role => {
-            string[] permissions = RolesStore.PermissionsPerRoles.Value[role.Id];
+            string[] permissions = RolesStore.PermissionsPerRoles.Value[role.Name];
             return (role.Id, permissions);
         });
         
-        foreach ((string roleId, string[] permissionIds) in mappedRolesToPermissions) {
-            List<PermissionIdentity> permissions = permissionIds.Select(p => new PermissionIdentity() {
-                Identifier = parameters.ApiIdentifier,
-                Name = p
-            }).ToList();
-            await auth0Utility.Roles.SyncRolePermissionsAsync(roleId, permissions);
-            
+        // Todo increase batch size when we have more roles
+        foreach ((string Id, string[] permissions)[] batch in mappedRolesToPermissions.Chunk(1)) { // Batch size of 1
+            await RateLimitHelper.RetryWithRateLimit(async () => {
+                foreach ((string roleId, string[] permissionIds) in batch) {
+                    List<PermissionIdentity> permissions = permissionIds.Select(p => new PermissionIdentity {
+                        Identifier = parameters.ApiIdentifier,
+                        Name = p
+                    }).ToList();
+                    await auth0Utility.Roles.SyncRolePermissionsAsync(roleId, permissions);
+                }
+            }, logger: logger);
         }
     }
 }

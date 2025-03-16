@@ -29,7 +29,7 @@ public static class ServiceProviderFactory {
         // Add Serilog to the services
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Information()
             .CreateLogger();
         services.AddLogging(static loggingBuilder =>
             loggingBuilder.AddSerilog(Log.Logger, true));
