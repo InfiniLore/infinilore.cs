@@ -1,0 +1,68 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<CascadingValue Value="IsMenuCollapsed">
+    <aside
+        class="@($"flex-shrink-0 bg-gray-800 h-full flex flex-col space-y-4 transition-all duration-300 {(IsMenuCollapsed ? "w-14 p-1" : "w-48 p-4")}")">
+        <!-- Top Logo and Hamburger -->
+        <div class="flex items-center justify-center h-12 gap-x-4">
+            @Header
+
+            <!-- Hamburger Menu -->
+            <button
+                class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none justify-center"
+                @onclick="ToggleMenu">
+                <LucideIcon Name="menu"/>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex flex-col space-y-2 mt-4">
+            @NavigationMenu
+        </nav>
+
+        <!-- Profile Section -->
+        <div class="mt-auto border-t border-gray-600 pt-4 flex items-center pb-1">
+            @Footer
+        </div>
+    </aside>
+</CascadingValue>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private bool _isMenuCollapsed;
+    [Parameter] public bool IsMenuCollapsed {
+        get => _isMenuCollapsed;
+        set {
+            if (_isMenuCollapsed == value) return;
+            _isMenuCollapsed = value;
+            IsMenuCollapsedChanged.InvokeAsync(value);
+        }
+    }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? NavigationMenu { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+
+
+    [Parameter] public EventCallback<bool> IsMenuCollapsedChanged { get; set; }
+
+
+
+    private async Task ToggleMenu() {
+        IsMenuCollapsed = !IsMenuCollapsed;// Toggle the collapsed state
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

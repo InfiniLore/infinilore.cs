@@ -1,0 +1,56 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/claims-viewer"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<h3>Claims Viewer</h3>
+
+@if (_user != null) {
+    <p><strong>Authenticated User:</strong> @_user.Identity?.Name</p>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Claim Type</th>
+            <th>Claim Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Claim? claim in _user.Claims) {
+            <tr>
+                <td>@claim.Type</td>
+                <td>@claim.Value</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else {
+    <p>Loading user information...</p>
+}
+
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private ClaimsPrincipal? _user;
+
+    protected override async Task OnInitializedAsync() {
+        AuthenticationState authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _user = authenticationState.User;
+    }
+}

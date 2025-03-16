@@ -3,6 +3,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using InfiniLore.Server.Components.ComponentLibrary
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -10,43 +11,27 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<aside
-    class="@($"flex-shrink-0 bg-gray-800 h-full flex flex-col space-y-4 transition-all duration-300 {(IsMenuCollapsed ? "w-14 p-1" : "w-48 p-4")}")">
-    <!-- Top Logo and Hamburger -->
-    <div class="flex items-center justify-center h-12 gap-x-4">
-        <!-- Logo -->
+<CollapsibleMenu @bind-IsMenuCollapsed="@IsMenuCollapsed">
+    <Header>
         <a href="/"
            class="@(!IsMenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
             InfiniLore
         </a>
+    </Header>
+    
+    <NavigationMenu>
+        <CollapsibleMenuButton Href="/about" LucideIcon="equal-approximately">About</CollapsibleMenuButton>
 
-        <!-- Hamburger Menu -->
-        <button
-            class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none justify-center"
-            @onclick="ToggleMenu">
-            <LucideIcon Name="menu"/>
-        </button>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="flex flex-col space-y-2 mt-4">
-        <NavLink
-            href="/about"
-            class="@($"flex items-center rounded hover:bg-gray-700 transition-colors duration-300 p-2 {(IsMenuCollapsed ? "justify-center" : "justify-start")}")"
-        >
-            <!-- Icon -->
-            <LucideIcon class="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-white"
-                        Name="equal-approximately"/>
-
-            <!-- Text (hidden in collapsed mode) -->
-            <span class="@(!IsMenuCollapsed ? "ml-2 text-white" : "hidden")">
-                About
-            </span>
-        </NavLink>
-    </nav>
-
-    <!-- Profile Section -->
-    <div class="mt-auto border-t border-gray-600 pt-4 flex items-center pb-1">
+        <AuthorizeView>
+            <NotAuthorized></NotAuthorized>
+            <Authorized>
+                <CollapsibleMenuButton Href="/claims-viewer" LucideIcon="view">Claims</CollapsibleMenuButton>
+            </Authorized>
+        </AuthorizeView>
+        
+    </NavigationMenu>
+    
+    <Footer>
         <AuthorizeView>
             <NotAuthorized>
                 <NavLink href="Account/Login?redirectUri=/">Log in</NavLink>
@@ -74,10 +59,8 @@
                 </div>
             </Authorized>
         </AuthorizeView>
-
-    </div>
-</aside>
-
+    </Footer>
+</CollapsibleMenu>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code *@
@@ -112,11 +95,6 @@
             ProfileImage = imageClaim ?? "";// Fallback if no image is available
         }
         
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task ToggleMenu() {
-        IsMenuCollapsed = !IsMenuCollapsed;
         await InvokeAsync(StateHasChanged);
     }
 }

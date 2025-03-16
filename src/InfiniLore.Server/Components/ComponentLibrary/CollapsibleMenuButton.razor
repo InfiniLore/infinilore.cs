@@ -1,0 +1,38 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@inherits ComponentBase
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<NavLink
+    href="@Href"
+    class="@($"flex items-center rounded hover:bg-gray-700 transition-colors duration-300 p-2 {(IsMenuCollapsed ? "justify-center" : "justify-start")}")"
+>
+    <!-- Icon -->
+    <LucideIcon class="w-6 h-6 text-gray-400 transition-colors duration-300 group-hover:text-white"
+                Name="@LucideIcon"/>
+
+    <!-- Text (hidden in collapsed mode) -->
+    <span class="@(!IsMenuCollapsed ? "ml-2 text-white" : "hidden")">
+        @ChildContent
+    </span>
+</NavLink>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    [CascadingParameter] public bool IsMenuCollapsed { get; set; }
+    [Parameter] public required string Href { get; init; }
+    [Parameter] public required string LucideIcon { get; init; }
+    
+    // Child content (text, markup, or other components) passed to this component
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+}
