@@ -4,6 +4,11 @@
       "_readme": "tries and sync the permissions at auth0",
       "commandName": "Project",
       "commandLineArgs": "sync-permission"
+    },
+    "Sync: Roles": {
+      "_readme": "tries and sync the roles at auth0",
+      "commandName": "Project",
+      "commandLineArgs": "sync-roles"
     }
   }
 }
