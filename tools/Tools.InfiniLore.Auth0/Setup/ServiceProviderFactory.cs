@@ -24,6 +24,9 @@ public static class ServiceProviderFactory {
 
             ArgumentNullException.ThrowIfNull(configuration["Auth0:ClientSecret-Management"]);
             config.Auth0Options.ClientSecret = configuration["Auth0:ClientSecret-Management"]!;
+
+            config.SetScopedTokenStore<NetUserSecretAuth0AccessTokenStore>();
+            config.Auth0Options.AccessToken = configuration["Auth0:AccessToken"];
         });
 
         // Add Serilog to the services

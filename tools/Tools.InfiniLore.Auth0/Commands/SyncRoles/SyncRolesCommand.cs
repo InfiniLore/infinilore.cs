@@ -4,6 +4,7 @@
 using Auth0.ManagementApi.Models;
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0;
+using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Services.Auth0;
 using JetBrains.Annotations;
@@ -27,6 +28,7 @@ public partial class SyncRolesCommand : ICommand<SyncRolesParameters> {
     public async Task ExecuteAsync(SyncRolesParameters parameters) {
         var auth0Utility = Provider.GetRequiredService<IAuth0Utility>();
         var logger = Provider.GetRequiredService<ILogger<SyncRolesCommand>>();
+        var rateLimiter = Provider.GetRequiredService<IRateLimiterService>();
         
         FrozenDictionary<string, string[]> rolesAndPermissions = RolesStore.PermissionsPerRoles.Value;
         HashSet<string> allPermissions = rolesAndPermissions.SelectMany(role => role.Value).ToHashSet();
@@ -57,7 +59,7 @@ public partial class SyncRolesCommand : ICommand<SyncRolesParameters> {
         
         // Todo increase batch size when we have more roles
         foreach ((string Id, string[] permissions)[] batch in mappedRolesToPermissions.Chunk(1)) { // Batch size of 1
-            await RateLimitHelper.RetryWithRateLimit(async () => {
+            await rateLimiter.RetryWithRateLimit(async () => {
                 foreach ((string roleId, string[] permissionIds) in batch) {
                     List<PermissionIdentity> permissions = permissionIds.Select(p => new PermissionIdentity {
                         Identifier = parameters.ApiIdentifier,
@@ -65,7 +67,7 @@ public partial class SyncRolesCommand : ICommand<SyncRolesParameters> {
                     }).ToList();
                     await auth0Utility.Roles.SyncRolePermissionsAsync(roleId, permissions);
                 }
-            }, logger: logger);
+            });
         }
     }
 }
