@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Credentials.Auth0;
-using InfiniLore.Credentials.Auth0.TokenStores;
+using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Commands.Data.System;
 using InfiniLore.Server.Services.CQRS.Queries.Data.System;

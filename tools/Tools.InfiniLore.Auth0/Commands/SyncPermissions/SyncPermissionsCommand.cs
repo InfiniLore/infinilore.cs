@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0.Services;
+using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Services.Auth0;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,10 +23,10 @@ public partial class SyncPermissionsCommand : ICommand<SyncPermissionsParameters
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task ExecuteAsync(SyncPermissionsParameters parameters) {
-        var auth0PermissionService = Provider.GetRequiredService<IAuth0PermissionService>();
+        var auth0PermissionService = Provider.GetRequiredService<IAuth0PermissionsUtility>();
         var logger = Provider.GetRequiredService<ILogger<SyncPermissionsCommand>>();
 
-        IEnumerable<string>? permissions = PermissionsStore.GetAllPermissions();
+        IEnumerable<string>? permissions = PermissionsStore.IterateValues();
         if (permissions is null) {
             logger.Error("Permissions store is null");
             throw new Exception("Permissions store is null");

@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[RolesStore(RolesGeneratorFlags.ParsePrefix | RolesGeneratorFlags.GenerateAllRolesMethod)]
+[CredentialsStore(CredentialsFlags.PeriodSeperated | CredentialsFlags.IterateValues, true)]
 public static partial class RolesStore {
     
     #pragma warning disable CS8602 // Dereference of a possibly null reference.
