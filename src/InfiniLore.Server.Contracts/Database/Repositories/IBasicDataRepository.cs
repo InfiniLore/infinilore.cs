@@ -10,12 +10,15 @@ namespace InfiniLore.Server.Contracts.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IBasicDataRepository<T> :
+    #region CRUD opertations
     IUnitOfWorkRepository,
     IHasAddAsync<T>,
     IHasUpdateAsync<T>,
     IHasAddOrUpdateAsync<T>,
     IHasDeleteAsync<T>,
     IHasRemoveAsync<T>,
+    #endregion
+    
     IHasGetByIdAsync<T>,
     IHasGetAllAsync<T>,
     IHasGetCountAsync,
