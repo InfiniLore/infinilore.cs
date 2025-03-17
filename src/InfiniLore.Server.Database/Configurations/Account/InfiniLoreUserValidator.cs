@@ -16,20 +16,20 @@ namespace InfiniLore.Server.Database.Configurations.Account;
 [InjectableService<IValidator<InfiniLoreUser>>(ServiceLifetime.Scoped)]
 public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
     private readonly ILogger _logger;
-    private readonly IUnitOfWorkFactory _unitOfWorkFactory;
+    private readonly IReadonlyUnitOfWorkFactory _unitOfWorkFactory;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public InfiniLoreUserValidator(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory) {
+    public InfiniLoreUserValidator(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory) {
         _unitOfWorkFactory = unitOfWorkFactory;
         _logger = factory.CreateLogger("VALIDATE InfiniLoreUser");
 
         RuleFor(x => x)
             .Custom((user, context) => {
-                if (!user.Auth0IdGoogle.IsNullOrWhiteSpace()
-                    || !user.Auth0Github.IsNullOrWhiteSpace()
-                    || !user.Auth0MailPassword.IsNullOrWhiteSpace()) return;
+                if (!user.Auth0IdGoogle.IsNullOrWhiteSpace()) return;
+                if (!user.Auth0Github.IsNullOrWhiteSpace()) return;
+                if (!user.Auth0MailPassword.IsNullOrWhiteSpace()) return;
 
                 context.AddFailure("At least one of Auth0IdGoogle, Auth0Github, or Auth0MailPassword must be provided.");
             });
@@ -54,7 +54,7 @@ public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
 
     private async Task<bool> CheckValidUsernameAuth0(InfiniLoreUser user, string userName, CancellationToken ct) {
         try {
-            await using IUnitOfWork unitOfWork = _unitOfWorkFactory.Create();
+            await using IReadonlyUnitOfWork unitOfWork = _unitOfWorkFactory.Create();
             var repo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
             return await repo.IsUsernameNotTakenAsync(userName, user.Id, ct);
         }

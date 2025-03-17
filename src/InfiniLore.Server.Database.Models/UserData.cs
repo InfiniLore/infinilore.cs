@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Database.Models.Account;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Server.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -9,5 +10,5 @@ namespace InfiniLore.Server.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 public class UserData : BasicData {
     public Guid OwnerId { get; set; } = Guid.Empty;
-    public InfiniLoreUser Owner { get; set; } = null!;
+    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
 }

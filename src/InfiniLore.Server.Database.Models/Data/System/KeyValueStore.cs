@@ -28,10 +28,10 @@ public class KeyValueStore {
     }
 
     [MemberNotNullWhen(true, nameof(Value))]
-    public bool TrySetbOjectAsJsonValue<TJsonObject>(TJsonObject obj) where TJsonObject : class {
+    public bool TrySetObjectAsJsonValue<TJsonObject>(TJsonObject obj) where TJsonObject : class {
         try {
             string json = JsonSerializer.Serialize(obj);
-            if (json.Length > Defaults.ValueMaxLength) { return false; }
+            if (json.Length > Defaults.ValueMaxLength) return false;
 
             Value = json;
             return true;

@@ -36,33 +36,22 @@
     </aside>
 </CascadingValue>
 
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
-    private bool _isMenuCollapsed;
-    [Parameter] public bool IsMenuCollapsed {
-        get => _isMenuCollapsed;
-        set {
-            if (_isMenuCollapsed == value) return;
-            _isMenuCollapsed = value;
-            IsMenuCollapsedChanged.InvokeAsync(value);
-        }
-    }
+    [Parameter] public bool IsMenuCollapsed { get; set; }
+
     [Parameter] public RenderFragment? Header { get; set; }
     [Parameter] public RenderFragment? NavigationMenu { get; set; }
     [Parameter] public RenderFragment? Footer { get; set; }
 
-
     [Parameter] public EventCallback<bool> IsMenuCollapsedChanged { get; set; }
 
-
-
-    private async Task ToggleMenu() {
-        IsMenuCollapsed = !IsMenuCollapsed;// Toggle the collapsed state
+    private async Task ToggleMenu()
+    {
+        IsMenuCollapsed = !IsMenuCollapsed; // Toggle the collapsed state
+        await IsMenuCollapsedChanged.InvokeAsync(IsMenuCollapsed); // Notify parent component about the change
         await InvokeAsync(StateHasChanged);
     }
-
 }
