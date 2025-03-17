@@ -1,11 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Database.Repositories;
-using InfiniLore.Server.Database.Models;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Database.Repositories;
+namespace InfiniLore.ServerClient.Shared.JwtToken;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<T> : BasicDataRepository<T>, ISystemDataRepository<T> where T : SystemData;
+[UsedImplicitly] public class JsTokenRecord {
+    [UsedImplicitly] public string Id { get; set; } = null!;
+    [UsedImplicitly] public string? Value { get; set; }
+    [UsedImplicitly] public string? ExpiresAt { get; set; } // ISO 8601 formatted expiration timestamp
+}

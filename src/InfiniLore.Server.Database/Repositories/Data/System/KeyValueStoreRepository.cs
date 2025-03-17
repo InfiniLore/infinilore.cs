@@ -18,7 +18,7 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
     public async ValueTask<RepoResult> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
-        DbSet<KeyValueStore> dbSet = dbContext.KeyValueStores;
+        DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
 
         // Query & Retrieve
         KeyValueStore? existing = await dbSet.FindAsync([model.Key], ct);
@@ -31,7 +31,7 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
 
     public async ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
         // Access
-        DbSet<KeyValueStore> dbSet = GetDbContext().KeyValueStores;
+        DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
 
         // Query
         KeyValueStore? result = await dbSet.AsNoTracking()
@@ -45,8 +45,7 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
 
     public async ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
-        ContentDb dbContext = GetDbContext();
-        DbSet<KeyValueStore> dbSet = dbContext.KeyValueStores;
+        DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
 
         // Query
         int result = await dbSet.CountAsync(cancellationToken: ct);

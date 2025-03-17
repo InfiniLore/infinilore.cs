@@ -1,11 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Database.Repositories;
-using InfiniLore.Server.Database.Models;
+using Microsoft.AspNetCore.Components.Web;
 
-namespace InfiniLore.Server.Database.Repositories;
+namespace InfiniLore.Clients.Wasm;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<T> : BasicDataRepository<T>, ISystemDataRepository<T> where T : SystemData;
+public static class RenderModes {
+    public static InteractiveWebAssemblyRenderMode WebAssemblyOnly = new InteractiveWebAssemblyRenderMode(false);
+}

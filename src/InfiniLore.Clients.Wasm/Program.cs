@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.ServerClient.Shared;
+using InfiniLore.ServerClient.Shared.JwtToken;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
@@ -36,7 +37,6 @@ public static class Program {
 
         builder.Logging.AddSerilog();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
-
 
         // -------------------------------------------------------------------------------------------------------------
         // App

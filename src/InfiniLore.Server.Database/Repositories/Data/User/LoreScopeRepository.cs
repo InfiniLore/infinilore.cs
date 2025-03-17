@@ -15,16 +15,18 @@ namespace InfiniLore.Server.Database.Repositories.Data.User;
 [InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
 public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepository {
 
-
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoResult> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
         if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
         if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        ContentDb dbContext = GetDbContext();
+        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
 
         // Query
-        IQueryable<LoreScope> query = dbContext.LoreScopes.Where(l =>
+        IQueryable<LoreScope> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
         );
@@ -39,10 +41,10 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
         if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        ContentDb dbContext = GetDbContext();
+        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
 
         // Query
-        IQueryable<LoreScope> query = dbContext.LoreScopes.Where(l =>
+        IQueryable<LoreScope> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
         );

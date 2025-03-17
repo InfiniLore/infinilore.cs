@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using Microsoft.EntityFrameworkCore;
@@ -85,15 +86,20 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
     }
 
 
-    public async ValueTask<RepoResult<InfiniLoreUser[]>> TryGetAllByAuth0IdsAsync(CancellationToken ct = default, params HashSet<string> authIds) {
+    public async ValueTask<RepoResult<InfiniLoreUser[]>> TryGetAllByAuth0IdsAsync(QueryConfig config = default, CancellationToken ct = default, params HashSet<string> authIds) {
         // Access
         DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
 
         // Query
-        IQueryable<InfiniLoreUser> query = dbSet.Where(model =>
-            model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
-            || model.Auth0Github != null && authIds.Contains(model.Auth0Github)
-        );
+        IQueryable<InfiniLoreUser> query = dbSet
+            .AsNoTracking()
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
+            .Where(model =>
+                model.Auth0MailPassword != null && authIds.Contains(model.Auth0MailPassword)
+                || model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
+                || model.Auth0Github != null && authIds.Contains(model.Auth0Github)
+            );
 
         // Retrieve
         InfiniLoreUser[] result = await query.ToArrayAsync(cancellationToken: ct);
@@ -110,12 +116,15 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
             || ls.Auth0MailPassword != null && ls.Auth0MailPassword == auth0Id
         );
 
-    public async ValueTask<RepoResult<InfiniLoreUser>> TryGetByAuth0IdAsync(string auth0Id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<InfiniLoreUser>> TryGetByAuth0IdAsync(string auth0Id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
 
         // Query
-        IQueryable<InfiniLoreUser> query = dbSet.With(ByAuth0IdQuery, auth0Id);
+        IQueryable<InfiniLoreUser> query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .With(ByAuth0IdQuery, auth0Id);
+        
         InfiniLoreUser? result = await query
             .SingleOrDefaultAsync(cancellationToken: ct);
 
@@ -125,14 +134,16 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
         return RepoResult<InfiniLoreUser>.FromSuccess(result);
     }
 
-    public async ValueTask<RepoResult<InfiniLoreUser>> TryGetByAuth0IdWithAutoIncludeAsync(string auth0Id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<InfiniLoreUser>> TryGetByAuth0IdWithAutoIncludeAsync(string auth0Id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<InfiniLoreUser> dbSet = GetCachedDbSet<InfiniLoreUser>();
 
         // Query
         IQueryable<InfiniLoreUser> query = dbSet
-            .With(ByAuth0IdQuery, auth0Id)
-            .With(AutoInclude);
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
+            .With(ByAuth0IdQuery, auth0Id);
+        
         InfiniLoreUser? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve

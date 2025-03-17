@@ -1,11 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Database.Repositories;
-using InfiniLore.Server.Database.Models;
+namespace InfiniLore.ServerClient.Shared.JwtToken;
 
-namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<T> : BasicDataRepository<T>, ISystemDataRepository<T> where T : SystemData;
+public class TokenResponse {
+    public string Token { get; init; } = null!;
+    public DateTime ExpiresAt { get; init; }
+}

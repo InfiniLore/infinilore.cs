@@ -26,7 +26,7 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
             ? foundStore
             : new KeyValueStore { Key = "Auth0AccessToken" };
 
-        if (!store.CanSetObjectAsValueJson(token) || !store.TrySetbOjectAsJsonValue(token)) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Json conversion failed.");
+        if (!store.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Json conversion failed.");
 
         store.Value = encryptionService.Encrypt(store.Value);
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
