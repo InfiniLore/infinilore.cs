@@ -213,11 +213,24 @@ public static class Program {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
         
-        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor) => {
-            if (httpContextAccessor.HttpContext is null) return string.Empty;
+        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor, JwtTokenEncoder tokenEncoder) => {
+            if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
+                return Results.Unauthorized();
+
+            // Retrieve the token using the access_token property (Auth0 integration)
             string? accessToken = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            return accessToken ?? string.Empty;
+            if (string.IsNullOrEmpty(accessToken)) return Results.Unauthorized();
+
+            // Token expiration logic (Auth0 provides token expiration info)
+            DateTime expiresAt = tokenEncoder.GetTokenExpiry(accessToken);
+            if (expiresAt == DateTime.MinValue) return Results.Unauthorized();
+
+            return Results.Json(new {
+                token = accessToken,
+                expiresAt = expiresAt.ToString("o") // ISO 8601 format for JS Date parsing
+            });
         }).RequireAuthorization();
+
         
         #endregion
 

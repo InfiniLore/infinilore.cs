@@ -2,6 +2,7 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using InfiniLore.Server.Services.Clipboard
+@using InfiniLore.ServerClient.Shared
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -16,6 +17,7 @@
 @inject ILogger<ClaimsViewer> Logger
 @attribute [Authorize]
 @rendermode InteractiveServer
+@inject JwtTokenEncoder JwtTokenEncoder
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -106,7 +108,7 @@ else {
         if (HttpContextAccessor.HttpContext != null) {
             _accessToken = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
             if (!string.IsNullOrWhiteSpace(_accessToken)) {
-                _decodedJwt = DecodeJwt(_accessToken);
+                _decodedJwt = JwtTokenEncoder.DecodeJwt(_accessToken);
             }
         }
     }
@@ -116,28 +118,4 @@ else {
             await ClipboardService.WriteTextAsync(value);
         }
     }
-    
-    private string? DecodeJwt(string token) {
-        try {
-            string[] parts = token.Split('.');
-            if (parts.Length != 3) return null; // Not a valid JWT
-
-            string payload = parts[1];
-            byte[] json = Convert.FromBase64String(PadBase64(payload));
-            return System.Text.Json.JsonSerializer.Serialize(
-                System.Text.Json.JsonDocument.Parse(json).RootElement,
-                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-        }
-        catch (Exception ex) {
-            Logger.LogError(ex, "Failed to decode JWT");
-            return null;
-        }
-    }
-    
-    private static string PadBase64(string base64)
-        => (base64.Length % 4) switch {
-            2 => base64 + "==",
-            3 => base64 + "=",
-            _ => base64
-        };
 }

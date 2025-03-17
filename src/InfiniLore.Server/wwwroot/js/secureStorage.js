@@ -2,7 +2,7 @@ window.secureStorage = {
     // Open (or create) the IndexedDB database with version 2 to ensure upgrade and creation of "tokens"
     _openDatabase: async () => {
         return new Promise((resolve, reject) => {
-            const request = indexedDB.open("JwtStorage", 2); // Use version 2 to force onupgradeneeded if needed
+            const request = indexedDB.open("JwtStorage", 3);
 
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
@@ -54,21 +54,21 @@ window.secureStorage = {
         });
     },
 
-    // Save a token into the "tokens" object store
-    saveToken: async (key, value) => {
+    // Save the token with expiration info
+    saveToken: async (key, value, expiresAt) => {
         return await window.secureStorage._executeTransaction("tokens", "readwrite", (store) =>
-            store.put({ id: key, value: value })
+            store.put({ id: key, value: value, expiresAt: expiresAt })
         );
     },
 
-    // Retrieve a token from the "tokens" object store
+    // Retrieve the token, including expiration info
     getToken: async (key) => {
         return await window.secureStorage._executeTransaction("tokens", "readonly", (store) =>
             store.get(key)
         );
     },
 
-    // Remove a token from the "tokens" object store
+    // Remove the token
     removeToken: async (key) => {
         return await window.secureStorage._executeTransaction("tokens", "readwrite", (store) =>
             store.delete(key)
