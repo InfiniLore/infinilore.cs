@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Contracts.Database;
+using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
 using MediatR;
@@ -18,16 +19,9 @@ public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
     public async Task<MediatorResponse<PaginatedResult<LoreScope>>> Handle(GetLoreScopesQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-
-        PaginatedRepoResult<LoreScope> response = request switch {
-            { Reverse: false, AutoInclude: false } => await loreScopeRepository.GetByUserAsync(request.UserId, request.PaginationInfo, ct),
-            { Reverse: false, AutoInclude: true } => await loreScopeRepository.GetByUserWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
-
-            { Reverse: true, AutoInclude: false } => await loreScopeRepository.GetByUserReverseAsync(request.UserId, request.PaginationInfo, ct),
-            { Reverse: true, AutoInclude: true } => await loreScopeRepository.GetByUserReverseWithAutoIncludeAsync(request.UserId, request.PaginationInfo, ct),
-
-            _ => PaginatedRepoResult<LoreScope>.FromError("Invalid query")
-        };
+        
+        var queryConfig = new QueryConfig(AutoInclude: request.AutoInclude, Reverse: request.Reverse);
+        PaginatedRepoResult<LoreScope> response = await loreScopeRepository.GetByUserAsync(request.UserId,request.PaginationInfo, queryConfig, ct);
 
         if (!response.TryGetAsSuccess(out PaginatedResult<LoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes");

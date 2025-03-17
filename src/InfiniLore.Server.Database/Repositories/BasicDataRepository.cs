@@ -13,10 +13,13 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
+    
+    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
+    #region CRUD Operations
     public async ValueTask<RepoResult> AddAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
@@ -166,6 +169,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
 
     }
+    
     public async ValueTask<RepoResult> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -193,6 +197,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Retrieve
         return true;
     }
+    
     public async ValueTask<RepoResult> RemoveAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
@@ -252,13 +257,16 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Retrieve
         return true;
     }
-
-    public async ValueTask<RepoResult<T>> GetByIdAsync(Guid id, CancellationToken ct = default) {
+    #endregion
+    
+    public async ValueTask<RepoResult<T>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         // Query
-        T? result = await dbSet.Where(ls => ls.Id == id)
+        T? result = await dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .Where(ls => ls.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve
@@ -267,74 +275,22 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return RepoResult<T>.FromSuccess(result);
     }
 
-    public async ValueTask<RepoResult<T>> GetByIdWithAutoIncludeAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoResult<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
-
+        
         // Query
-        IQueryable<T> query = dbSet
-            .Where(ls => ls.Id == id)
-            .With(AutoInclude);
-
-        // Retrieve
-        T? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
-        return result is not null
-            ? RepoResult<T>.FromSuccess(result)
-            : RepoResult<T>.FromError(RepositoryFailures.ModelNotFound);
-    }
-
-    public async ValueTask<RepoResult<T[]>> GetAllAsync(CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
+        var query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
+            .OrderByDescending(ls => ls.Id);
 
         // Query & Retrieve
-        T[] data = await dbSet.ToArrayAsync(cancellationToken: ct);
-        return RepoResult<T[]>.FromSuccess(data);
-    }
-
-    public async ValueTask<RepoResult<T[]>> GetAllWithAutoIncludeAsync(CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        IQueryable<T> query = dbSet
-            .With(AutoInclude);
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return RepoResult<T[]>.FromSuccess(data);
-    }
-    public async ValueTask<RepoResult<T[]>> GetAllReverseAsync(CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        IQueryable<T> query = dbSet
-            .OrderByDescending(ls => ls.Id)
-            .Reverse();
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return RepoResult<T[]>.FromSuccess(data);
-
-    }
-
-    public async ValueTask<RepoResult<T[]>> GetAllReverseWithAutoIncludeAsync(CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        IQueryable<T> query = dbSet
-            .OrderByDescending(ls => ls.Id)
-            .With(AutoInclude)
-            .Reverse();
-
-        // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
         return RepoResult<T[]>.FromSuccess(data);
     }
 
-    public async ValueTask<PaginatedRepoResult<T>> GetAllAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoResult<T>> GetAllAsync(PaginationInfo pageInfo, QueryConfig config = default,  CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
@@ -343,80 +299,11 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
         IQueryable<T> query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedResult<T>(
-            data,
-            totalCount,
-            pageInfo.PageNumber,
-            (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
-        );
-    }
-    public async ValueTask<PaginatedRepoResult<T>> GetAllWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        int totalCount = await dbSet.CountAsync(ct);
-        if (totalCount == 0) return PaginatedResult<T>.Empty;
-
-        IQueryable<T> query = dbSet
-            .OrderByDescending(ls => ls.Id)
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize)
-            .With(AutoInclude);
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedResult<T>(
-            data,
-            totalCount,
-            pageInfo.PageNumber,
-            (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
-        );
-    }
-
-    public async ValueTask<PaginatedRepoResult<T>> GetAllReverseAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        int totalCount = await dbSet.CountAsync(ct);
-        if (totalCount == 0) return PaginatedResult<T>.Empty;
-
-        IQueryable<T> query = dbSet
-            .OrderByDescending(ls => ls.Id)
-            .Reverse()
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedResult<T>(
-            data,
-            totalCount,
-            pageInfo.PageNumber,
-            (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
-        );
-    }
-    public async ValueTask<PaginatedRepoResult<T>> GetAllReverseWithAutoIncludeAsync(PaginationInfo pageInfo, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        int totalCount = await dbSet.CountAsync(ct);
-        if (totalCount == 0) return PaginatedResult<T>.Empty;
-
-        IQueryable<T> query = dbSet
-            .OrderByDescending(ls => ls.Id)
-            .Reverse()
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize)
-            .With(AutoInclude);
 
         // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
@@ -433,7 +320,8 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         // Query & Retrieve
-        int data = await dbSet.AsNoTracking()
+        int data = await dbSet
+            .AsNoTracking()
             .CountAsync(cancellationToken: ct);
         return RepoResult<int>.FromSuccess(data);
     }
@@ -443,15 +331,24 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         DbSet<T> dbSet = GetCachedDbSet<T>();
 
         // Query & Retrieve
-        bool result = await dbSet.AsNoTracking()
+        bool result = await dbSet
+            .AsNoTracking()
             .AnyAsync(predicate: ls => ls.Id == id, ct);
 
         return RepoResult.FromState(result);
     }
 
-    public async ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default)
-        => !await IsIdTakenAsync(id, ct);
-    protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
+    public async ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default){
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query & Retrieve
+        bool result = await dbSet
+            .AsNoTracking()
+            .AnyAsync(predicate: ls => ls.Id == id, ct);
+
+        return RepoResult.FromState(!result);
+    }
 
     protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
         DbSet<T> dbSet = GetCachedDbSet<T>();

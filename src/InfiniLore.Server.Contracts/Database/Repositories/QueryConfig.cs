@@ -1,11 +1,24 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Database.Repositories;
-using InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Contracts.Database.Repositories;
 
-namespace InfiniLore.Server.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<T> : BasicDataRepository<T>, ISystemDataRepository<T> where T : SystemData;
+public readonly record struct QueryConfig(
+    bool AutoInclude = false,
+    bool Reverse = false
+);
+
+// public readonly record struct QueryConfig<T>(
+//     bool AutoInclude = false,
+//     bool Reverse = false,
+//     IQueryable<T>? Query = null
+// ) {
+//     public static implicit operator QueryConfig<T>(QueryConfig value) => new(
+//         value.AutoInclude,
+//         value.Reverse
+//     );
+// }
+

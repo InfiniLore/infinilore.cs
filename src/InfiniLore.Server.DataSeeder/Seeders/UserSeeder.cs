@@ -35,7 +35,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IUnitOfWorkFactory unit
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult<InfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(ct, users.Select(u => u.Auth0Id).ToHashSet());
+        RepoResult<InfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
 
         bool shouldSeed = result switch {
             // No users that are supposed to be seeded are present, meaning we have to seed all of them
@@ -61,7 +61,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IUnitOfWorkFactory unit
 
         foreach (SeedingUser userToBeSeeded in _options.Data.Users) {
             // Only seed those which dont exist yet
-            if (await repo.TryGetByAuth0IdAsync(userToBeSeeded.Auth0Id, ct) is { IsSuccess: true }) {
+            if (await repo.TryGetByAuth0IdAsync(userToBeSeeded.Auth0Id, ct:ct) is { IsSuccess: true }) {
                 logger.Information("User {Auth0Id} already exists, skipping", userToBeSeeded.Auth0Id);
                 continue;
             }
