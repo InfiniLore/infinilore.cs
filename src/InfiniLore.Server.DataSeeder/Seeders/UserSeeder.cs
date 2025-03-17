@@ -11,8 +11,8 @@ using InfiniLore.Server.DataSeeder.Options;
 using InfiniLore.Server.Services.CQRS.Commands.Account;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Serilog;
 using System.Collections.Concurrent;
 
 namespace InfiniLore.Server.DataSeeder.Seeders;
@@ -20,7 +20,7 @@ namespace InfiniLore.Server.DataSeeder.Seeders;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger logger, IMediator mediator) : Seeder {
+public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, IMediator mediator) : Seeder {
     private readonly SeedingConfig _options = options.Value;
     private readonly ConcurrentQueue<SeedingUser> _usersToSeed = new();
 
