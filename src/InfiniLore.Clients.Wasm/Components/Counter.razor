@@ -1,0 +1,75 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/counter"
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Headers
+@attribute [Authorize]
+@rendermode InteractiveWebAssembly
+@inject HttpClient Client
+@inject ILogger<Counter> Logger
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p>Hello @_username!</p>
+<p role="status">Current count: @_currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<!-- 👇 new code -->
+<div>
+    <p>&nbsp;</p>
+    <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
+    <p>@_apiResponse</p>
+</div>
+
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private int _currentCount;
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    private string _username = "";
+    private string _apiResponse = "";//👈 new code
+
+    protected override async Task OnInitializedAsync() {
+        if (AuthenticationState is not null) {
+            AuthenticationState state = await AuthenticationState;
+            _username = state.User.Identity?.Name ?? string.Empty;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private void IncrementCount() {
+        _currentCount++;
+    }
+
+    //👇 new code
+    private async Task CallInternalApi() {
+        const string userId = "0195963e-8448-7383-b697-1499eb217459";
+        
+        string token = await Client.GetStringAsync("account/token");
+        Logger.Information(token);
+        
+        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        HttpResponseMessage result = await Client.SendAsync(request);
+        
+        _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";
+    }
+    //👆 new code
+}

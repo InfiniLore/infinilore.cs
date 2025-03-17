@@ -202,6 +202,13 @@ public static class Program {
             await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
+        
+        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor) => {
+            if (httpContextAccessor.HttpContext is null) return string.Empty;
+            string? accessToken = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+            return accessToken ?? string.Empty;
+        }).RequireAuthorization();
+        
         #endregion
 
         app.UseFastEndpoints(config => {

@@ -27,7 +27,7 @@ using Response=Results<
 public class GetLoreScopesEndpoint(IMediator mediator, ILogger<GetLoreScopesEndpoint> logger) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope");
-        Permissions(PermissionsStore.LorescopeRead);
+        Permissions(PermissionsStoreConstants.LorescopeRead);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
