@@ -14,9 +14,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.44.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
+        <PackageReference Include="Microsoft.JSInterop" Version="9.0.3" />
     </ItemGroup>
 
 </Project>

@@ -19,6 +19,7 @@ using InfiniLore.Server.Services.Auth0.TokenStore;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.OpenIdConnect;
 using InfiniLore.ServerClient.Shared;
+using InfiniLore.ServerClient.Shared.JwtToken;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -223,7 +224,10 @@ public static class Program {
 
             // Token expiration logic (Auth0 provides token expiration info)
             DateTime expiresAt = tokenEncoder.GetTokenExpiry(accessToken);
-            if (expiresAt == DateTime.MinValue) return Results.Unauthorized();
+            if (DateTime.UtcNow >= expiresAt) {
+                // TODO refresh the token with Auth0
+                return Results.Unauthorized();
+            }
 
             return Results.Json(new {
                 token = accessToken,

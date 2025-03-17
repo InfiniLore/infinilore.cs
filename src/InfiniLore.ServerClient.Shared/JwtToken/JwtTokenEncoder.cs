@@ -6,12 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace InfiniLore.ServerClient.Shared;
+namespace InfiniLore.ServerClient.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<JwtTokenEncoder>(ServiceLifetime.Singleton)]
 public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) {
+    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
     public string? DecodeJwt(string token) {
         try {
             string[] parts = token.Split('.');
@@ -19,9 +20,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) {
 
             string payload = parts[1];
             byte[] json = Convert.FromBase64String(PadBase64(payload));
-            return JsonSerializer.Serialize(
-                JsonDocument.Parse(json).RootElement,
-                new JsonSerializerOptions { WriteIndented = true });
+            return JsonSerializer.Serialize(JsonDocument.Parse(json).RootElement, Options);
         }
         catch (Exception ex) {
             logger.Error(ex, "Failed to decode JWT");
@@ -32,7 +31,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) {
     public DateTime GetTokenExpiry(string token) {
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return DateTime.MinValue;// Not a valid JWT
+            if (parts.Length != 3) return DateTime.MinValue; // Not a valid JWT
 
             string payload = parts[1];
             byte[] json = Convert.FromBase64String(PadBase64(payload));
@@ -57,8 +56,8 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) {
 
     private static string PadBase64(string base64)
         => (base64.Length % 4) switch {
-            2 => base64 + "==",
-            3 => base64 + "=",
+            2 => $"{base64}==",
+            3 => $"{base64}=",
             _ => base64
         };
 }

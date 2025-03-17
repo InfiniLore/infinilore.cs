@@ -1,25 +1,25 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.ServerClient.Shared;
-using JetBrains.Annotations;
+using CodeOfChaos.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace InfiniLore.Clients.Wasm.Services.JwtToken;
+namespace InfiniLore.ServerClient.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[InjectableService<JwtTokenProvider>(ServiceLifetime.Scoped)]
 public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenProvider> logger, JwtTokenEncoder encoder) {
     private const string StorageKey = "jwt_token";
 
     /// <summary>
     /// Save the JWT token securely along with its expiration timestamp.
     /// </summary>
-    public async Task SaveTokenAsync(string token, DateTime expiresAt) {
-        await jsRuntime.InvokeVoidAsync("secureStorage.saveToken", StorageKey, token, expiresAt.ToString("o"));
-    }
+    public async Task SaveTokenAsync(string token, DateTime expiresAt) 
+        => await jsRuntime.InvokeVoidAsync("secureStorage.saveToken", StorageKey, token, expiresAt.ToString("o"));
 
     /// <summary>
     /// Retrieve the JWT token securely and check for validity.
@@ -48,9 +48,7 @@ public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFac
             // Fetch a new token from the server if no valid token is found
             using HttpClient client = clientFactory.CreateClient("ServerAPI");
             string responseJson = await client.GetStringAsync("account/token");
-            var response = JsonSerializer.Deserialize<TokenResponse>(responseJson);
-
-            if (response is null) return null;
+            if (JsonSerializer.Deserialize<TokenResponse>(responseJson) is not {} response) return null;
 
             await SaveTokenAsync(response.Token, response.ExpiresAt);
             return response.Token;
@@ -65,19 +63,11 @@ public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFac
     /// Remove the JWT token securely (e.g., during logout).
     /// </summary>
     public async Task RemoveTokenAsync() {
-        await jsRuntime.InvokeVoidAsync("secureStorage.removeToken", StorageKey);
-    }
-    
-    // Store token and its expiration info
-    [UsedImplicitly] private class JsTokenRecord {
-        [UsedImplicitly] public string Id { get; set; } = null!;
-        [UsedImplicitly] public string? Value { get; set; }
-        [UsedImplicitly] public string? ExpiresAt { get; set; } // ISO 8601 formatted expiration timestamp
-    }
-
-    // Server response format
-    private class TokenResponse {
-        public string Token { get; init; } = null!;
-        public DateTime ExpiresAt { get; init; }
+        try {
+            await jsRuntime.InvokeVoidAsync("secureStorage.removeToken", StorageKey);
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to remove token from secureStorage");
+        }
     }
 }
