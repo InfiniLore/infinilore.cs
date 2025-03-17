@@ -11,7 +11,7 @@ namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record GetLoreScopesRequest(
-    Guid UserId,
-    [property: FromBody] PaginationInfo PaginationInfo = default,
-    [property: FromBody] bool Reverse = false
+    Guid UserId
+    // PaginationInfo PaginationInfo = default,
+    // bool Reverse = false
 );

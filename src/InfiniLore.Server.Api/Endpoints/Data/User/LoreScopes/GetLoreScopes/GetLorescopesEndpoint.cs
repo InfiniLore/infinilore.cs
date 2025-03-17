@@ -9,6 +9,8 @@ using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Queries.Data.User;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -28,13 +30,15 @@ public class GetLoreScopesEndpoint(IMediator mediator, ILogger<GetLoreScopesEndp
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
+        Policies("APIAccess");
+        // AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLoreScopesRequest req, CancellationToken ct) {
-        MediatorResponse<PaginatedResult<LoreScope>> result = await mediator.Send(new GetLoreScopesQuery(req.UserId, false, req.PaginationInfo), ct);
+        MediatorResponse<PaginatedResult<LoreScope>> result = await mediator.Send(new GetLoreScopesQuery(req.UserId, false, new PaginationInfo(1)), ct);
         if (!result.TryGetAsSuccess(out PaginatedResult<LoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
             return TypedResults.NotFound();

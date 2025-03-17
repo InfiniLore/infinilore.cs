@@ -61,12 +61,19 @@
     //👇 new code
     private async Task CallInternalApi() {
         const string userId = "0195963e-8448-7383-b697-1499eb217459";
+        // var paginationInfo = new {
+        //     PageNumber = 1,
+        //     PageSize = 10,
+        //     SkipAmount = 0
+        // };
+
         
         string token = await Client.GetStringAsync("account/token");
         Logger.Information(token);
         
         var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        
         HttpResponseMessage result = await Client.SendAsync(request);
         
         _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";

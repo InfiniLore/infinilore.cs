@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.43.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="FastEndpoints" Version="5.35.0" />
       <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
     </ItemGroup>

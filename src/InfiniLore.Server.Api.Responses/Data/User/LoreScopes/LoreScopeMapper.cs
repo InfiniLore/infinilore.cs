@@ -1,13 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Database.Models.Data.User;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[InjectableService<LoreScopeMapper>(ServiceLifetime.Singleton)]
 public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, LoreScope> {
     public override LoreScopeResponse FromEntity(LoreScope loreScope) => new() {
         Name = loreScope.Name,

@@ -6,6 +6,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
 @using InfiniLore.Server.Components.Layout
+@using InfiniLore.Server.Services.Auth0
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Data.User
 @using InfiniLore.Server.Services.CQRS.Queries.Account
@@ -42,7 +43,7 @@
                 </p>
             </div>
 
-            <AuthorizeView Roles="Admin">
+            <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
                 <Authorized>
                     <button @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
                     <h3>Admin Dashboard</h3>

@@ -8,6 +8,7 @@ using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.Server.Api;
+using InfiniLore.Server.Api.Responses;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
@@ -72,6 +73,10 @@ public static class Program {
                 options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}/";
                 options.Audience = builder.Configuration["Auth0:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     NameClaimType = ClaimTypes.NameIdentifier
                 };
             });
@@ -87,8 +92,6 @@ public static class Program {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-WebApp"]);
             options.ClientSecret = builder.Configuration["Auth0:ClientSecret-WebApp"]!;
             
-            // Add ClientSecret
-            // options.ClientSecret = builder.Configuration["Auth0:ClientSecret"]!;
             options.Scope = "openid profile email";
             options.CallbackPath = "/auth/callback";
 
@@ -96,12 +99,17 @@ public static class Program {
                 OnTokenValidated = OpenIdConnectEventHelper.OnTokenValidated
             };
         }).WithAccessToken(options => {
-            
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Audience"]);
             options.Audience = builder.Configuration["Auth0:Audience"]!;
         });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("APIAccess", policy =>
+            {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser(); // Enforce authentication
+            });
+
         builder.Services.AddCascadingAuthenticationState();
         #endregion
 
@@ -127,7 +135,8 @@ public static class Program {
             options.DisableAutoDiscovery = true;
 
             options.Assemblies = [
-                typeof(IEntrypointInfiniLoreServerApi).Assembly
+                typeof(IEntrypointInfiniLoreServerApi).Assembly,
+                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly,
             ];
         });
         builder.Services.SwaggerDocument();
@@ -160,6 +169,7 @@ public static class Program {
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
+        builder.Services.RegisterServicesFromInfiniLoreServerApiResponses();
 
         return builder.Build();
     }
@@ -214,6 +224,9 @@ public static class Program {
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
             config.Errors.UseProblemDetails();
+            
+            config.Security.PermissionsClaimType = "permissions";
+            config.Security.NameClaimType = ClaimTypes.NameIdentifier;
         });
         app.UseSwaggerGen();
 
