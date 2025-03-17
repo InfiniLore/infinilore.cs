@@ -92,10 +92,12 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
 
         // Query
         IQueryable<InfiniLoreUser> query = dbSet
+            .AsNoTracking()
             .ConditionalWith(config.AutoInclude, AutoInclude)
             .ConditionalReverse(config.Reverse)
             .Where(model =>
-                model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
+                model.Auth0MailPassword != null && authIds.Contains(model.Auth0MailPassword)
+                || model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
                 || model.Auth0Github != null && authIds.Contains(model.Auth0Github)
             );
 
