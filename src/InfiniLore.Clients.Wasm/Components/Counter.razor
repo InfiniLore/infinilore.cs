@@ -6,12 +6,13 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/counter"
+@using InfiniLore.Clients.Wasm.Services.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Net.Http.Headers
 @attribute [Authorize]
-@rendermode InteractiveWebAssembly
-@inject HttpClient Client
-@inject ILogger<Counter> Logger
+@rendermode RenderModes.WebAssemblyOnly
+@inject IHttpClientFactory ClientFactory
+@inject JwtTokenProvider TokenProvider
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -20,14 +21,15 @@
 
 <h1>Counter</h1>
 
-<p>Hello @_username!</p>
+<p>Hello @(_isLoading ? "Loading..." : Username)!</p>
+
 <p role="status">Current count: @_currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 <!-- 👇 new code -->
 <div>
-    <p>&nbsp;</p>
+    <br>
     <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
     <p>@_apiResponse</p>
 </div>
@@ -36,47 +38,50 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     private int _currentCount;
+    
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private string _username = "";
     private string _apiResponse = "";//👈 new code
 
+    private bool _isLoading = true; // Flag to track loading state
+    private string? Username { get; set; } = "some name";
+
     protected override async Task OnInitializedAsync() {
-        if (AuthenticationState is not null) {
+        if (AuthenticationState != null) {
             AuthenticationState state = await AuthenticationState;
-            _username = state.User.Identity?.Name ?? string.Empty;
+            Username = state.User.Identity?.Name;
+            _currentCount += 1;
         }
-
-        await base.OnInitializedAsync();
+        _isLoading = false; // Set flag to false after loading is complete
     }
-
+    
     private void IncrementCount() {
         _currentCount++;
     }
 
-    //👇 new code
     private async Task CallInternalApi() {
         const string userId = "0195a3f1-7826-7cfe-9346-b787375377c8";
-        // var paginationInfo = new {
-        //     PageNumber = 1,
-        //     PageSize = 10,
-        //     SkipAmount = 0
-        // };
 
         
-        string token = await Client.GetStringAsync("account/token");
-        Logger.Information(token);
+        string? token = await TokenProvider.GetTokenAsync();
+        if (token.IsNullOrWhiteSpace()) {
+            _apiResponse = "TOKEN NOT FOUND";
+        }
+
+        try {
+            using HttpClient client = ClientFactory.CreateClient("ServerAPI");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         
-        var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpResponseMessage result = await client.SendAsync(request);
         
-        HttpResponseMessage result = await Client.SendAsync(request);
-        
-        _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";
+            _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";
+        }
+        catch (Exception e) {
+            _apiResponse = e.Message;
+        }
     }
-    //👆 new code
 }

@@ -31,6 +31,8 @@ public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityO
         Claim[] claims = [
             new(options.Value.ClaimsIdentity.UserIdClaimType, auth0Information.UserId),
             new("name", auth0Information.Name),
+            new(ClaimTypes.Name, auth0Information.Name),
+            new(ClaimTypes.Email, auth0Information.Email),
             new("email", auth0Information.Email)
         ];
 

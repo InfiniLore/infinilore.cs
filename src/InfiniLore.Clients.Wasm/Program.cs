@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
+using InfiniLore.Clients.Wasm.Services.JwtToken;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,6 +29,7 @@ public static class Program {
             .CreateClient("ServerAPI"));
 
         builder.Services.AddHttpClient();
+        builder.Services.AddScoped<JwtTokenProvider>();
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()// You can adjust this to Information, Warning, Error, etc.
@@ -36,7 +38,6 @@ public static class Program {
 
         builder.Logging.AddSerilog();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
-
 
         // -------------------------------------------------------------------------------------------------------------
         // App
