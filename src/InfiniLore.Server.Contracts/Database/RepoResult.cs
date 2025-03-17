@@ -13,7 +13,7 @@ public readonly partial struct RepoResult() : IUnion<bool, Error<string>> {
     public bool State => AsState;
     public bool TryGetState(out bool state) => TryGetAsState(out state);
 
-    public static implicit operator bool(RepoResult value) => value.IsState;
+    public static implicit operator bool(RepoResult value) => value.AsState;
 
     public static RepoResult FromError(string failure) => FromError(new Error<string>(failure));
 }

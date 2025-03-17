@@ -19,6 +19,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IReques
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
         RepoResult result = await userRepository.IsUsernameTakenAsync(request.Username, ct: ct);
-        return result.IsState;
+        if (!result.TryGetState(out bool state)) return result.AsError;
+        return state;
     }
 }

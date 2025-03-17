@@ -16,11 +16,14 @@ public class LoreScopesMapper : ResponseMapper<LoreScopesResponse, PaginatedResu
     public override LoreScopesResponse FromEntity(PaginatedResult<LoreScope> entities) {
         var singleMapper = Resolve<LoreScopeMapper>();
 
-        return new LoreScopesResponse {
-            Items = entities.Items.Select(singleMapper.FromEntity).ToArray(),
+        var items = entities.Items.Select(singleMapper.FromEntity).ToArray();
+        var response =  new LoreScopesResponse {
+            Items = items,
             TotalCount = entities.TotalCount,
             TotalPages = entities.TotalPages,
             CurrentPage = entities.CurrentPage
         };
+        
+        return response;
     }
 }

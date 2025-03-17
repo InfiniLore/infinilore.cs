@@ -6,20 +6,15 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/register"
 @using AterraEngine.Unions
-@using InfiniLore.Server.Services.Auth0
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Account
 @using InfiniLore.Server.Services.CQRS.Queries.Account
 @using MediatR
-@using Microsoft.AspNetCore.Authorization
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
 @inject NavigationManager Navigation
 @inject IMediator Mediator
 @rendermode InteractiveServer
-
-@attribute [Authorize(Roles = RolesStoreConstants.User)]
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@

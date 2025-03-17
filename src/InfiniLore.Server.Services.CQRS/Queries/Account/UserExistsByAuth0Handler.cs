@@ -21,6 +21,7 @@ public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : IReq
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
         RepoResult result = await userRepository.IsExistingAuth0Id(request.Auth0UserId, ct);
-        return result.IsState;
+        if (!result.TryGetState(out bool state)) return result.AsError;
+        return state;
     }
 }
