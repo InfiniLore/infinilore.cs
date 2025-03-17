@@ -12,7 +12,7 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
-
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -78,12 +78,12 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         DbSet<T> dbSet = GetDbSet<T>();
 
         // Query
-        int totalCount = await dbSet.CountAsync(ct);
+        var baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
+        int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
-        IQueryable<T> query = dbSet
+        IQueryable<T> query = baseQuery
             .OrderByDescending(ls => ls.Id)
-            .Where(ls => ls.OwnerId == userId)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
@@ -101,12 +101,12 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         DbSet<T> dbSet = GetDbSet<T>();
 
         // Query
+        var baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
-        IQueryable<T> query = dbSet
+        IQueryable<T> query = baseQuery
             .OrderByDescending(ls => ls.Id)
-            .Where(ls => ls.OwnerId == userId)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize)
             .With(AutoInclude);
@@ -125,12 +125,12 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         DbSet<T> dbSet = GetDbSet<T>();
 
         // Query
-        int totalCount = await dbSet.CountAsync(ct);
+        var baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
+        int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
-        IQueryable<T> query = dbSet
+        IQueryable<T> query = baseQuery
             .OrderByDescending(ls => ls.Id)
-            .Where(ls => ls.OwnerId == userId)
             .Reverse()
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
@@ -150,10 +150,11 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         DbSet<T> dbSet = GetDbSet<T>();
 
         // Query
-        int totalCount = await dbSet.CountAsync(ct);
+        var baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
+        int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedResult<T>.Empty;
 
-        IQueryable<T> query = dbSet
+        IQueryable<T> query = baseQuery
             .OrderByDescending(ls => ls.Id)
             .Reverse()
             .Skip(pageInfo.SkipAmount)
