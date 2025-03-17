@@ -13,6 +13,7 @@
 @rendermode RenderModes.WebAssemblyOnly
 @inject IHttpClientFactory ClientFactory
 @inject JwtTokenProvider TokenProvider
+@inject ILogger<Counter> Logger
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -27,7 +28,6 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-<!-- 👇 new code -->
 <div>
     <br>
     <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
@@ -63,19 +63,22 @@
     }
 
     private async Task CallInternalApi() {
-        const string userId = "0195a3f1-7826-7cfe-9346-b787375377c8";
-
+        // const string userId = "0195a3f1-7826-7cfe-9346-b787375377c8";
+        const string userId = "0195a53f-ff2f-7f2f-9fbe-bd9b986b956d";
         
         string? token = await TokenProvider.GetTokenAsync();
         if (token.IsNullOrWhiteSpace()) {
             _apiResponse = "TOKEN NOT FOUND";
+            return;
         }
+        Logger.Warning($"{token}", token);
 
         try {
             using HttpClient client = ClientFactory.CreateClient("ServerAPI");
             var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        
+            
+            
             HttpResponseMessage result = await client.SendAsync(request);
         
             _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";

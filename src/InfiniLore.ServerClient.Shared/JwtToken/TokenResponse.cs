@@ -1,12 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.Text.Json.Serialization;
+
 namespace InfiniLore.ServerClient.Shared.JwtToken;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class TokenResponse {
-    public string Token { get; init; } = null!;
-    public DateTime ExpiresAt { get; init; }
+    [JsonPropertyName("token")] public string Token { get; set; } = string.Empty;
+    [JsonPropertyName("expiresAt")] public string ExpiresAt { get; set; } = string.Empty;
 }

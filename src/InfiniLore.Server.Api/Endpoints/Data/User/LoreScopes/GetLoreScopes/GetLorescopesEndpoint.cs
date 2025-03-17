@@ -31,7 +31,6 @@ public class GetLoreScopesEndpoint(IMediator mediator, ILogger<GetLoreScopesEndp
         Get("/data/user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
         Policies("APIAccess");
-        // AuthSchemes(JwtBearerDefaults.AuthenticationScheme);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
