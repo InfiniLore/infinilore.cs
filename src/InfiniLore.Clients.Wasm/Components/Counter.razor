@@ -1,14 +1,13 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@using InfiniLore.ServerClient.Shared.JwtToken
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Headers
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/counter"
-@using InfiniLore.ServerClient.Shared.JwtToken
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Net.Http.Headers
 @attribute [Authorize]
 @rendermode RenderModes.WebAssemblyOnly
 @inject IHttpClientFactory ClientFactory
