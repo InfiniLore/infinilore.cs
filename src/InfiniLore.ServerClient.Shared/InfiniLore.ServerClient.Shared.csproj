@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.ServerClient.Shared.Contracts\InfiniLore.ServerClient.Shared.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

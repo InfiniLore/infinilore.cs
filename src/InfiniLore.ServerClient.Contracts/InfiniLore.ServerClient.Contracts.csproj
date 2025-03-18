@@ -5,7 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
-        <RootNamespace>InfiniLore.ServerClient.Shared</RootNamespace>
+        <RootNamespace>InfiniLore.ServerClient</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\" />
+      <Folder Include="Shared\" />
+    </ItemGroup>
 
 </Project>

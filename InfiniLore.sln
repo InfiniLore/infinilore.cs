@@ -76,7 +76,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore.Auth0", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Api.Responses", "src\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj", "{5A30B6DF-B297-4D63-949A-A0E226515839}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Shared.Contracts", "src\InfiniLore.ServerClient.Shared.Contracts\InfiniLore.ServerClient.Shared.Contracts.csproj", "{DC28BF56-9489-40DD-876A-47FEA935369D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Contracts", "src\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj", "{DC28BF56-9489-40DD-876A-47FEA935369D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
