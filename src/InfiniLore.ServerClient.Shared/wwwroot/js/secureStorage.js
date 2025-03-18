@@ -1,12 +1,13 @@
+// noinspection JSUnusedGlobalSymbols
 window.secureStorage = {
     // Open (or create) the IndexedDB database with version 2 to ensure upgrade and creation of "tokens"
-    _openDatabase: async () => {
+    _openDatabaseAsync: async () => {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open("JwtStorage", 3);
 
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
-                console.log("Upgrading database (v2). Existing object stores:", db.objectStoreNames);
+                console.log("Upgrading database (v3). Existing object stores:", db.objectStoreNames);
                 if (!db.objectStoreNames.contains("tokens")) {
                     console.log("Creating object store 'tokens'");
                     db.createObjectStore("tokens", { keyPath: "id" });
@@ -29,8 +30,8 @@ window.secureStorage = {
     },
 
     // Helper to execute a transaction on a specified store
-    _executeTransaction: async (storeName, mode, executeCallback) => {
-        const db = await window.secureStorage._openDatabase();
+    _executeTransactionAsync: async (storeName, mode, executeCallback) => {
+        const db = await window.secureStorage._openDatabaseAsync();
 
         if (!db.objectStoreNames.contains(storeName)) {
             console.error(`Object store '${storeName}' not found.`);
@@ -53,24 +54,23 @@ window.secureStorage = {
             };
         });
     },
-
     // Save the token with expiration info
-    saveToken: async (key, value, expiresAt) => {
-        return await window.secureStorage._executeTransaction("tokens", "readwrite", (store) =>
+    saveTokenAsync: async (key, value, expiresAt) => {
+        return await window.secureStorage._executeTransactionAsync("tokens", "readwrite", (store) =>
             store.put({ id: key, value: value, expiresAt: expiresAt })
         );
     },
 
     // Retrieve the token, including expiration info
-    getToken: async (key) => {
-        return await window.secureStorage._executeTransaction("tokens", "readonly", (store) =>
+    getTokenAsync: async (key) => {
+        return await window.secureStorage._executeTransactionAsync("tokens", "readonly", (store) =>
             store.get(key)
         );
     },
 
     // Remove the token
-    removeToken: async (key) => {
-        return await window.secureStorage._executeTransaction("tokens", "readwrite", (store) =>
+    removeTokenAsync: async (key) => {
+        return await window.secureStorage._executeTransactionAsync("tokens", "readwrite", (store) =>
             store.delete(key)
         );
     },

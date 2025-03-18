@@ -14,6 +14,10 @@ namespace InfiniLore.ServerClient.Shared.JwtToken;
 [InjectableService<IJsSecureStorageJwtTokenProvider>(ServiceLifetime.Scoped)]
 public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JsSecureStorageJwtTokenProvider> logger, IJwtTokenEncoder encoder) : IJsSecureStorageJwtTokenProvider {
     private const string StorageKey = "jwt_token";
+    
+    private const string JsSaveTokenAsync = "secureStorage.saveTokenAsync";
+    private const string JsGetTokenAsync = "secureStorage.getTokenAsync";
+    private const string JsRemoveTokenAsync = "secureStorage.removeTokenAsync";
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -23,7 +27,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     /// </summary>
     public async Task SaveTokenAsync(string token, DateTime expiresAt, CancellationToken ct = default) {
         try {
-            await jsRuntime.InvokeVoidAsync("secureStorage.saveToken", ct, StorageKey, token, expiresAt.ToString("o"));
+            await jsRuntime.InvokeVoidAsync(JsSaveTokenAsync, ct, StorageKey, token, expiresAt.ToString("o"));
         }
         catch (Exception e) {
             logger.Error(e, "Failed to save token to secureStorage");
@@ -36,7 +40,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     public async Task<string?> GetTokenAsync(CancellationToken ct = default) {
         try {
             // Retrieve token record from IndexedDB
-            var tokenRecord = await jsRuntime.InvokeAsync<JsTokenRecord?>("secureStorage.getToken", ct, StorageKey);
+            var tokenRecord = await jsRuntime.InvokeAsync<JsTokenRecord?>(JsGetTokenAsync, ct, StorageKey);
             if (tokenRecord?.Value is null) {
                 logger.LogInformation("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
@@ -73,7 +77,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     /// </summary>
     public async Task RemoveTokenAsync(CancellationToken ct = default) {
         try {
-            await jsRuntime.InvokeVoidAsync("secureStorage.removeToken", ct, StorageKey);
+            await jsRuntime.InvokeVoidAsync(JsRemoveTokenAsync, ct, StorageKey);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to remove token from secureStorage");
