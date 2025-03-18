@@ -5,10 +5,12 @@
 @using System.Security.Claims
 @using InfiniLore.Server.Components.ComponentLibrary
 @using InfiniLore.Server.Services.Auth0
+@using InfiniLore.ServerClient.Shared.JwtToken
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @rendermode InteractiveServer
+@inject IJsSecureStorageJwtTokenProvider JsTokenProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -55,11 +57,10 @@
                 <div class="@(!IsMenuCollapsed ? "ml-4" : "hidden") text-white flex flex-col space-y-1">
                     <p class="font-semibold">@UserName</p>
 
-                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings
-                    </NavLink>
+                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings</NavLink>
                     
                     @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
-                    <NavLink href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
+                    <NavLink @onclick="LogoutCallbackAsync" href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
@@ -100,5 +101,9 @@
         }
         
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task LogoutCallbackAsync() {
+        await JsTokenProvider.RemoveTokenAsync();
     }
 }

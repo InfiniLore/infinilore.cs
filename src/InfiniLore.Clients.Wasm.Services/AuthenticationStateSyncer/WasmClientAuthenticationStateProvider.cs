@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -20,7 +19,7 @@ public class WasmClientAuthenticationStateProvider(PersistentComponentState pers
     // -----------------------------------------------------------------------------------------------------------------
     public override Task<AuthenticationState> GetAuthenticationStateAsync() {
         if (!persistentState.TryTakeFromJson(nameof(IClaimsDto), out ClaimsDto? userInfo) || userInfo is null) {
-            logger.Information("No Auth0 information found in persistent state.");
+            logger.Warning("No Auth0 information found in persistent state.");
             return UnauthenticatedTask;
         }
 

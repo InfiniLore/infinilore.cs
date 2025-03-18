@@ -65,18 +65,12 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
     private string _username = string.Empty;
-    private string _emailAddress = string.Empty;
     private string _picture = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
 
         _username = state.User.Identity?.Name ?? string.Empty;
-        _emailAddress = state.User.Claims
-            .Where(c => c.Type.Equals(ClaimTypes.Email))
-            .Select(c => c.Value)
-            .FirstOrDefault() ?? string.Empty;
-
         _picture = state.User.Claims
             .Where(c => c.Type.Equals("picture"))
             .Select(c => c.Value)

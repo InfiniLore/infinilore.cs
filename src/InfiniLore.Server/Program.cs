@@ -2,13 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
-using Auth0.ManagementApi.Models.RefreshTokens;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
-using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Api.Responses;
 using InfiniLore.Server.Components;
@@ -233,7 +231,7 @@ public static class Program {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
 
-        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder, IAuth0ClientService clientService) => {
+        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
             if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
                 return Results.Unauthorized();
 

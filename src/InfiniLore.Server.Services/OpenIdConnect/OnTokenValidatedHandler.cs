@@ -1,9 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Services.Auth0;
+using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;
 using JetBrains.Annotations;
@@ -28,6 +30,8 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
     public async Task HandleAsync(TokenValidatedContext context) {
         if (context.Principal is not {} principal) {
             _logger.Debug("Principal not found, continuing...");
+            context.Response.Redirect("/account/logout?returnUrl=/");
+            context.HandleResponse();
             return;
         }
 
@@ -37,12 +41,19 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) {
             _logger.Debug("Information could not be found in claims, continuing...");
             context.Response.Redirect("/account/logout?returnUrl=/");
+            context.HandleResponse();
             return;
         }
 
         // Run all checks and return to new user page if needed
-        switch (await mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId))) {
-            case { IsSuccess: true, AsSuccess: var userId }: {
+        Task<MediatorResponse> userExistsTask = mediator.Send(new UserExistsByAuth0Query(auth0Info.Auth0UserId));
+        Task<MediatorResponse<Guid>> userIdTask = mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
+        
+        (MediatorResponse userExistsResponse, MediatorResponse<Guid> userIdResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userIdTask);
+        
+        switch (userExistsResponse, userIdResponse) {
+            // User Exists and have a userId
+            case ({IsState:true, State: true}, {IsSuccess: true, AsSuccess: var userId }): {
                 _logger.Debug("User already exists, continuing...");
                 
                 principal.AddIdentity(new ClaimsIdentity(new[] {
@@ -51,13 +62,33 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
                 return;
             }
 
-            case { IsError: true, AsError.Value: {} failure }: {
-                _logger.LogError("Error checking if user exists : {failure}", failure);
-                context.Response.Redirect("/account/logout?returnUrl=/");
+            // User does not exist, redirect to registration page
+            case ({ IsState: true, State: true }, { IsSuccess: false }):
+            case ({ IsState: true, State: false }, _): {
+                RedirectToUserRegistration(context, auth0Info);
                 return;
             }
-        }
 
+            // Something else happend, which means an error
+            default: {
+                if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
+                else if (userIdResponse.TryGetAsErrorValue(out failure)) {}
+                else {failure = "Unknown error";}
+                
+                RedirectToLogout(context, failure);
+                return;
+
+            }
+        }
+    }
+
+    private void RedirectToLogout(TokenValidatedContext context, string? failure) {
+        _logger.LogError("Error checking if user exists : {failure}", failure);
+        context.Response.Redirect("/account/logout?returnUrl=/");
+        context.HandleResponse();
+    }
+
+    private void RedirectToUserRegistration(TokenValidatedContext context, IClaimsDto auth0Info) {
         _logger.Information("User does not exist in ContentDb, redirecting to register new user...");
 
         string? returnUrl = context.Request.Query["returnUrl"];

@@ -29,6 +29,7 @@ public record ClaimsDto(
     public bool IsEmpty =>
         Auth0UserId.IsNotNullOrWhiteSpace() 
         && InfiniLoreUserId.IsNotNullOrWhiteSpace() 
+        && InfiniloreUserName.IsNotNullOrWhiteSpace() 
         && Name.IsNotNullOrWhiteSpace() 
         && Email.IsNotNullOrWhiteSpace()
         && Roles.IsEmpty()    

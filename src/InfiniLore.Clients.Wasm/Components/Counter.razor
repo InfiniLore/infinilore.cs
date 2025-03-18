@@ -4,6 +4,7 @@
 @using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Net.Http.Headers
+@using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -12,64 +13,44 @@
 @rendermode InteractiveWebAssembly
 @inject IHttpClientFactory ClientFactory
 @inject IJsSecureStorageJwtTokenProvider TokenProvider
-@inject ILogger<Counter> Logger
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<PageTitle>Counter</PageTitle>
-
-<h1>Counter</h1>
-
-<p>Hello @(_isLoading ? "Loading..." : Username)!</p>
-
-<p role="status">Current count: @_currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-
+<PageTitle>API TEST</PageTitle>
 <div>
     <br>
     <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
     <p>@_apiResponse</p>
 </div>
 
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    private int _currentCount;
-    
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     private string _apiResponse = "";
 
-    private bool _isLoading = true; 
-    private string? Username { get; set; } = "some name";
-
-    protected override async Task OnInitializedAsync() {
-        if (AuthenticationState != null) {
-            AuthenticationState state = await AuthenticationState;
-            Username = state.User.Identity?.Name;
-        }
-        _isLoading = false; 
-    }
-    
-    private void IncrementCount() {
-        _currentCount++;
-    }
-
     private async Task CallInternalApi() {
-        const string userId = "0195a3f1-7826-7cfe-9346-b787375377c8";
-        // const string userId = "0195a53f-ff2f-7f2f-9fbe-bd9b986b956d";
+        if (AuthenticationState is null) {
+            _apiResponse = "NOT AUTHENTICATED";
+            return;
+        }
+        
+        AuthenticationState state = await AuthenticationState;
+        string? userId = state.User.FindFirstValue("infinilore.user.id");
+        
+        if (userId.IsNullOrWhiteSpace()) {
+            _apiResponse = "User Id Not Found";
+            return;
+        }
         
         string? token = await TokenProvider.GetTokenAsync();
         if (token.IsNullOrWhiteSpace()) {
             _apiResponse = "TOKEN NOT FOUND";
             return;
         }
-        Logger.Warning($"{token}", token);
 
         try {
             using HttpClient client = ClientFactory.CreateClient("ServerAPI");

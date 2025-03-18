@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Services.Auth0;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,8 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
     public IClaimsDto GetClaimsDto(ClaimsPrincipal principal) {
         if (principal.Identity?.IsAuthenticated != true) return ClaimsDto.Empty;
 
+        // Yes I know you could easily store the entire object as json and then just map over all the claims.
+        //      But we don't want to send over all the claims to the "unsecure" client 
         string? auth0UserId = principal.FindFirstValue(options.Value.ClaimsIdentity.UserIdClaimType);
         string? infiniloreUserId = principal.FindFirstValue(ClaimsStoreConstants.InfiniloreUserId);
         string? infiniloreUserName = principal.FindFirstValue(ClaimsStoreConstants.InfiniloreUserName);
@@ -35,18 +38,16 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
     }
 
     public ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(IClaimsDto claimsDto) {
-        Claim[] claims = [
-            new(options.Value.ClaimsIdentity.UserIdClaimType, claimsDto.Auth0UserId),
-            new("name", claimsDto.Name),
-            new(ClaimTypes.Name, claimsDto.Name),
-            new(ClaimTypes.Email, claimsDto.Email),
-            new("email", claimsDto.Email)
-        ];
+        ClaimsIdentity identity = new ClaimsIdentity(nameof(TAuthProvider))
+            .AddClaim(options.Value.ClaimsIdentity.UserIdClaimType, claimsDto.Auth0UserId)
+            .AddClaim("name", claimsDto.Name)
+            .AddClaim(ClaimTypes.Name, claimsDto.Name)
+            .AddClaim(ClaimTypes.Email, claimsDto.Email)
+            .AddClaim(ClaimsStoreConstants.InfiniloreUserId, claimsDto.InfiniLoreUserId)
+            .AddClaim(ClaimsStoreConstants.InfiniloreUserName, claimsDto.InfiniloreUserName)
+            .AddClaim("email", claimsDto.Email);
         
-        var identity = new ClaimsIdentity(claims, nameof(TAuthProvider));
-        foreach (string roleName in claimsDto.Roles) {
-            identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
-        }
+        identity.AddClaims(claimsDto.Roles.Select(roleName => new Claim(ClaimTypes.Role, roleName)));
         
         return new ClaimsPrincipal(identity);
     }
