@@ -20,6 +20,7 @@ public class GetProfileEndpoint : Endpoint<GetProfileRequest, Response, UserProf
     public override void Configure() {
         Get("/account/profile/{UserId:guid}");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
+        Policies(ApiPolicies.JwtProtected);
     }
 
     public override Task<Response> ExecuteAsync(GetProfileRequest req, CancellationToken ct) {
