@@ -21,4 +21,8 @@
         <PackageReference Include="Microsoft.JSInterop" Version="9.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.ServerClient.Shared.Contracts\InfiniLore.ServerClient.Shared.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

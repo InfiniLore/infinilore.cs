@@ -7,13 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace InfiniLore.ServerClient.Shared;
+namespace InfiniLore.ServerClient.Shared.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuthenticationStateProviderClaimsPrincipalHelper>(ServiceLifetime.Singleton)]
 public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityOptions> options) : IAuthenticationStateProviderClaimsPrincipalHelper {
-    public Auth0Information GetAuth0Information(ClaimsPrincipal principal) {
+    public IAuth0Information GetAuth0Information(ClaimsPrincipal principal) {
         if (principal.Identity?.IsAuthenticated != true) return Auth0Information.Empty;
 
         string? userId = principal.FindFirst(options.Value.ClaimsIdentity.UserIdClaimType)?.Value;
@@ -27,7 +27,7 @@ public class AuthenticationStateProviderClaimsPrincipalHelper(IOptions<IdentityO
         );
     }
 
-    public ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(Auth0Information auth0Information) {
+    public ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(IAuth0Information auth0Information) {
         Claim[] claims = [
             new(options.Value.ClaimsIdentity.UserIdClaimType, auth0Information.UserId),
             new("name", auth0Information.Name),

@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.ServerClient.Shared;
+using InfiniLore.ServerClient.Shared.Auth0;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -66,10 +66,10 @@ public class PersistingRevalidatingAuthenticationStateProvider : RevalidatingSer
         }
 
         AuthenticationState authenticationState = await _authenticationStateTask;
-        Auth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
+        IAuth0Information auth0Info = _claimsPrincipalHelper.GetAuth0Information(authenticationState.User);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) return;
 
-        _state.PersistAsJson(nameof(Auth0Information), auth0Info);
+        _state.PersistAsJson(nameof(IAuth0Information), auth0Info);
     }
 
     protected override void Dispose(bool disposing) {

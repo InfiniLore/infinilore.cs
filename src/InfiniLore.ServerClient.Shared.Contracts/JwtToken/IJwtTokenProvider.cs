@@ -1,13 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Security.Claims;
+namespace InfiniLore.ServerClient.Shared.JwtToken;
 
-namespace InfiniLore.ServerClient.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuthenticationStateProviderClaimsPrincipalHelper {
-    Auth0Information GetAuth0Information(ClaimsPrincipal principal);
-    ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(Auth0Information auth0Information);
+public interface IJwtTokenProvider {
+    Task SaveTokenAsync(string token, DateTime expiresAt, CancellationToken ct = default);
+    Task<string?> GetTokenAsync(CancellationToken ct = default);
+    Task RemoveTokenAsync(CancellationToken ct = default);
 }

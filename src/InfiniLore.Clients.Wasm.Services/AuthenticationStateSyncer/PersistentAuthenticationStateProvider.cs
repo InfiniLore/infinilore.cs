@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.ServerClient.Shared;
+using InfiniLore.ServerClient.Shared.Auth0;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ public class PersistentAuthenticationStateProvider(PersistentComponentState pers
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override Task<AuthenticationState> GetAuthenticationStateAsync() {
-        if (!persistentState.TryTakeFromJson(nameof(Auth0Information), out Auth0Information? userInfo) || userInfo is null) {
+        if (!persistentState.TryTakeFromJson(nameof(IAuth0Information), out Auth0Information? userInfo) || userInfo is null) {
             logger.Information("No Auth0 information found in persistent state.");
             return UnauthenticatedTask;
         }

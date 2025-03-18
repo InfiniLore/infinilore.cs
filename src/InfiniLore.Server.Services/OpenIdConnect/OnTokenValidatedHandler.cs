@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
 using InfiniLore.ServerClient.Shared;
+using InfiniLore.ServerClient.Shared.Auth0;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;

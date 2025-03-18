@@ -11,10 +11,13 @@ namespace InfiniLore.ServerClient.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<JwtTokenProvider>(ServiceLifetime.Scoped)]
-public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenProvider> logger, JwtTokenEncoder encoder) {
+[InjectableService<IJwtTokenProvider>(ServiceLifetime.Scoped)]
+public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenProvider> logger, IJwtTokenEncoder encoder) : IJwtTokenProvider {
     private const string StorageKey = "jwt_token";
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     /// <summary>
     /// Save the JWT token securely along with its expiration timestamp.
     /// </summary>
@@ -33,8 +36,8 @@ public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFac
     public async Task<string?> GetTokenAsync(CancellationToken ct = default) {
         try {
             // Retrieve token record from IndexedDB
-            var tokenRecord = await jsRuntime.InvokeAsync<JsTokenRecord>("secureStorage.getToken", ct, StorageKey);
-            if (tokenRecord.Value is null) {
+            var tokenRecord = await jsRuntime.InvokeAsync<JsTokenRecord?>("secureStorage.getToken", ct, StorageKey);
+            if (tokenRecord?.Value is null) {
                 logger.LogInformation("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
             }
@@ -43,11 +46,15 @@ public class JwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFac
             //      If no ExpiresAt, decode the token and extract expiration
             if (!DateTime.TryParse(tokenRecord.ExpiresAt, out DateTime expiresAt)) {
                 logger.LogInformation("No token expiry found in storage, decoding token to extract expiry.");
-                expiresAt = encoder.GetTokenExpiry(tokenRecord.Value);
+                if (!encoder.TryGetTokenUtcExpiry(tokenRecord.Value, out expiresAt)) {
+                    logger.LogInformation("Failed to extract token expiry from token, fetching a new token.");
+                    return await RetrieveAndStoreTokenAsync(ct);
+                }
+
                 await SaveTokenAsync(tokenRecord.Value, expiresAt, ct);
             }
 
-            // Validate token expiration
+            // ReSharper disable once InvertIf
             if (DateTime.UtcNow >= expiresAt) {
                 logger.LogInformation("Token expired at {ExpiresAt}, fetching a new token.", expiresAt);
                 return await RetrieveAndStoreTokenAsync(ct);

@@ -214,7 +214,7 @@ public static class Program {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
         
-        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor, JwtTokenEncoder tokenEncoder) => {
+        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
             if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
                 return Results.Unauthorized();
 
@@ -223,7 +223,7 @@ public static class Program {
             if (accessToken.IsNullOrEmpty()) return Results.Unauthorized();
 
             // Token expiration logic (Auth0 provides token expiration info)
-            DateTime expiresAt = tokenEncoder.GetTokenExpiry(accessToken);
+            if (!tokenEncoder.TryGetTokenUtcExpiry(accessToken, out DateTime expiresAt)) return Results.Unauthorized();
             if (DateTime.UtcNow >= expiresAt) {
                 // TODO refresh the token with Auth0
                 return Results.Unauthorized();
