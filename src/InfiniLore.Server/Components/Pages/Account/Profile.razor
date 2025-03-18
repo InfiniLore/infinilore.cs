@@ -37,14 +37,11 @@
             </div>
             <div class="col-md-4">
                 <h3>@_username</h3>
-                <p>
-                    @* <i class="bi bi-envelope"></i> @_emailAddress *@
-                </p>
             </div>
 
             <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
                 <Authorized>
-                    <button @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
+                    <button class="btn btn-primary" @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
                     <h3>Admin Dashboard</h3>
                 </Authorized>
                 <NotAuthorized>

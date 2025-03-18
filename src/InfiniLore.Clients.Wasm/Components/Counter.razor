@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Net.Http.Headers
 @using System.Security.Claims
+@using System.Text.Json
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -20,7 +21,7 @@
 <div>
     <br>
     <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
-    <p>@_apiResponse</p>
+    <pre>@_apiResponse</pre>
 </div>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -31,6 +32,8 @@
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     private string _apiResponse = "";
+    
+    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     private async Task CallInternalApi() {
         if (AuthenticationState is null) {
@@ -39,7 +42,7 @@
         }
         
         AuthenticationState state = await AuthenticationState;
-        string? userId = state.User.FindFirstValue("infinilore.user.id");
+        string? userId = state.User.FindFirstValue("infinilore_user_id");
         
         if (userId.IsNullOrWhiteSpace()) {
             _apiResponse = "User Id Not Found";
@@ -58,8 +61,9 @@
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
             HttpResponseMessage result = await client.SendAsync(request);
+            string json = JsonSerializer.Serialize(JsonDocument.Parse(await result.Content.ReadAsStringAsync()).RootElement, Options);
         
-            _apiResponse = $"This data comes from an internal API: {string.Join(",", await result.Content.ReadAsStringAsync())}";
+            _apiResponse = $"This data comes from an internal API: {Environment.NewLine} {json}";
         }
         catch (Exception e) {
             _apiResponse = e.Message;
