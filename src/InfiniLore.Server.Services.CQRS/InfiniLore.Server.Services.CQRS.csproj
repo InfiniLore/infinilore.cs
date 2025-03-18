@@ -26,7 +26,7 @@
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.48.0" />
         <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
-        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="3.6.1" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="3.7.0" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
     </ItemGroup>
 
