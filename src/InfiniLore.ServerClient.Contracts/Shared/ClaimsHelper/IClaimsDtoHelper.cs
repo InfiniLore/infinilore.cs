@@ -3,11 +3,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using System.Security.Claims;
 
-namespace InfiniLore.ServerClient.Shared.Auth0;
+namespace InfiniLore.ServerClient.Shared.ClaimsHelper;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuthenticationStateProviderClaimsPrincipalHelper {
-    IAuth0Information GetAuth0Information(ClaimsPrincipal principal);
-    ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(IAuth0Information auth0Information);
+public interface IClaimsDtoHelper {
+    IClaimsDto GetClaimsDto(ClaimsPrincipal principal);
+    ClaimsPrincipal GetClaimsPrincipal<TAuthProvider>(IClaimsDto claimsDto);
 }

@@ -33,4 +33,10 @@
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="InfiniLore.Server.Services.Auth0">
+        <HintPath>..\InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.Services.Auth0.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

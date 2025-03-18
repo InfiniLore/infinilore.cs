@@ -2,11 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
+using Auth0.ManagementApi.Models.RefreshTokens;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Clients.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
+using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Api.Responses;
 using InfiniLore.Server.Components;
@@ -106,6 +108,7 @@ public static class Program {
         }).WithAccessToken(options => {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Audience"]);
             options.Audience = builder.Configuration["Auth0:Audience"]!;
+            options.UseRefreshTokens = true;
         });
 
         builder.Services.AddAuthorizationBuilder()
@@ -230,7 +233,7 @@ public static class Program {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
 
-        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
+        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder, IAuth0ClientService clientService) => {
             if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
                 return Results.Unauthorized();
 
@@ -241,10 +244,8 @@ public static class Program {
             // Token expiration logic (Auth0 provides token expiration info)
             if (!tokenEncoder.TryGetTokenUtcExpiry(accessToken, out DateTime expiresAt)) return Results.Unauthorized();
 
-            if (DateTime.UtcNow >= expiresAt) {
-                // TODO refresh the token with Auth0
-                return Results.Unauthorized();
-            }
+            // Refresh is handled by Auth0 middleware
+            if (DateTime.UtcNow >= expiresAt) return Results.Unauthorized();
 
             return Results.Json(new TokenResponse {
                 Token = accessToken,

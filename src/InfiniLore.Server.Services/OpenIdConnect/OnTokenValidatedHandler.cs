@@ -3,13 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
+using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
-using InfiniLore.ServerClient.Shared.Auth0;
+using InfiniLore.ServerClient.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +19,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFactory, IAuthenticationStateProviderClaimsPrincipalHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,7 +33,7 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
 
         // Check if we find a userId within the claims
         //      This should always be present if the Token is validated, but you never know something might happen
-        IAuth0Information auth0Info = claimsPrincipalHelper.GetAuth0Information(principal);
+        IClaimsDto auth0Info = claimsPrincipalHelper.GetClaimsDto(principal);
         if (!auth0Info.IsAuthenticated || auth0Info.IsEmpty) {
             _logger.Debug("Information could not be found in claims, continuing...");
             context.Response.Redirect("/account/logout?returnUrl=/");
@@ -39,9 +41,13 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         }
 
         // Run all checks and return to new user page if needed
-        switch (await mediator.Send(new UserExistsByAuth0Query(auth0Info.UserId))) {
-            case { IsState: true, State: true }: {
+        switch (await mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId))) {
+            case { IsSuccess: true, AsSuccess: var userId }: {
                 _logger.Debug("User already exists, continuing...");
+                
+                principal.AddIdentity(new ClaimsIdentity(new[] {
+                    new Claim(ClaimsStore.InfiniloreUserId, userId.ToString())
+                }));
                 return;
             }
 
@@ -55,7 +61,7 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         _logger.Information("User does not exist in ContentDb, redirecting to register new user...");
 
         string? returnUrl = context.Request.Query["returnUrl"];
-        string encodedUserId = Uri.EscapeDataString(auth0Info.UserId);
+        string encodedUserId = Uri.EscapeDataString(auth0Info.Auth0UserId);
         string encodedReturnUrl = Uri.EscapeDataString(returnUrl ?? "/");
 
         context.Response.Redirect($"/account/register?auth0UserId={encodedUserId}&returnUrl={encodedReturnUrl}");

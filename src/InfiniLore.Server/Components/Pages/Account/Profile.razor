@@ -10,7 +10,7 @@
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Data.User
 @using InfiniLore.Server.Services.CQRS.Queries.Account
-@using InfiniLore.ServerClient.Shared.Auth0
+@using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using MediatR
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -20,7 +20,7 @@
 @attribute [Authorize]
 @layout MainLayout
 @inject IMediator Mediator
-@inject IAuthenticationStateProviderClaimsPrincipalHelper ClaimsPrincipalHelper
+@inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -88,10 +88,10 @@
     private async Task CreateLorescopeCallbackAsync(MouseEventArgs args) {
         AuthenticationState state = await AuthenticationStateTask;
 
-        IAuth0Information auth0Info = ClaimsPrincipalHelper.GetAuth0Information(state.User);
-        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.UserId));
+        IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
+        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
-            Logger.Warning($"User could not be found with auth0Id {auth0Info.UserId}");
+            Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 

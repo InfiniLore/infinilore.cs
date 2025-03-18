@@ -43,19 +43,17 @@
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    private string _apiResponse = "";//👈 new code
+    private string _apiResponse = "";
 
-    private bool _isLoading = true; // Flag to track loading state
+    private bool _isLoading = true; 
     private string? Username { get; set; } = "some name";
 
     protected override async Task OnInitializedAsync() {
         if (AuthenticationState != null) {
             AuthenticationState state = await AuthenticationState;
             Username = state.User.Identity?.Name;
-            _currentCount += 1;
         }
-        _isLoading = false; // Set flag to false after loading is complete
-        await Task.Delay(1000);
+        _isLoading = false; 
     }
     
     private void IncrementCount() {
@@ -77,7 +75,6 @@
             using HttpClient client = ClientFactory.CreateClient("ServerAPI");
             var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
             
             HttpResponseMessage result = await client.SendAsync(request);
         

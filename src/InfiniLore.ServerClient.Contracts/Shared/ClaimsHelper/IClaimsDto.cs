@@ -1,14 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.ServerClient.Shared.Auth0;
+namespace InfiniLore.ServerClient.Shared.ClaimsHelper;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAuth0Information {
-    string UserId { get; }
+public interface IClaimsDto {
+    string Auth0UserId { get; }
+    string InfiniLoreUserId { get; }
     string Name { get; }
     string Email { get; }
+    string[] Roles { get; }
+    
     bool IsAuthenticated { get; }
     bool IsEmpty { get; }
 }
