@@ -42,7 +42,10 @@ public static class Program {
             //      And have proper application exception catching 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.OverrideLoggingWithSerilog(config => config
-                .AsAnnaSasDevServerConsole(sectionMaxLength: 24)
+                .AsAnnaSasDevServerConsole(
+                    sectionMaxLength: 24,
+                    configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true // Needed for nice DotnetWatch console output    
+                )
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
 
@@ -164,6 +167,8 @@ public static class Program {
         
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient("ServerAPI");
+        
         builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()

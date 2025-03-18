@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.ManagementApi.Models;
 using CodeOfChaos.CliArgsParser;
-using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Services.Auth0;

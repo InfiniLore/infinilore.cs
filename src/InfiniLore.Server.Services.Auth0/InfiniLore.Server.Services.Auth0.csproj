@@ -8,8 +8,8 @@
 
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.44.0">
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.45.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.45.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

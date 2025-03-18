@@ -9,7 +9,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/counter"
 @attribute [Authorize]
-@rendermode RenderModes.WebAssemblyOnly
+@rendermode InteractiveWebAssembly
 @inject IHttpClientFactory ClientFactory
 @inject IJsSecureStorageJwtTokenProvider TokenProvider
 @inject ILogger<Counter> Logger
@@ -55,6 +55,7 @@
             _currentCount += 1;
         }
         _isLoading = false; // Set flag to false after loading is complete
+        await Task.Delay(1000);
     }
     
     private void IncrementCount() {

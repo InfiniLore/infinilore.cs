@@ -12,7 +12,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.44.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.45.0" />
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="3.6.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.3" />

@@ -23,9 +23,6 @@ public static class Program {
 
         builder.Services.AddHttpClient("ServerAPI", 
             client => client.BaseAddress = new Uri("https://localhost:7059/"));
-        
-        builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-            .CreateClient("ServerAPI"));
 
         builder.Services.AddHttpClient();
 
