@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="wwwroot\**\*" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="CodeOfChaos.Extensions" Version="0.44.0" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.44.0" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.44.0">
@@ -23,6 +27,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>

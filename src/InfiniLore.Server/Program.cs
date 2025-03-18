@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
@@ -188,7 +189,19 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        
+        // Reference the library containing the static files
+        var embeddedProvider = new EmbeddedFileProvider(
+            typeof(IEntryPointInfiniLoreServerClientShared).Assembly, // Replace with a type from the external library
+            "InfiniLore.ServerClient.Shared.wwwroot" // The root path defined in the library
+        );
+
+        app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = embeddedProvider,
+                RequestPath = ""
+            }
+        );
 
         app.UseStaticFiles();
         app.UseAntiforgery();

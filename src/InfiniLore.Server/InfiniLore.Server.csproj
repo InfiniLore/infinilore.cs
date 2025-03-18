@@ -56,8 +56,4 @@
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <None Include="wwwroot\js\secureStorage.js" />
-    </ItemGroup>
-
 </Project>
