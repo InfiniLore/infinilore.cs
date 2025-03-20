@@ -21,7 +21,7 @@ namespace InfiniLore.Clients.Kiota.Api
             get => new global::InfiniLore.Clients.Kiota.Api.V1.V1RequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
-        /// Instantiates a new <see cref="ApiRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Clients.Kiota.Api.ApiRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -29,7 +29,7 @@ namespace InfiniLore.Clients.Kiota.Api
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="ApiRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Clients.Kiota.Api.ApiRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
