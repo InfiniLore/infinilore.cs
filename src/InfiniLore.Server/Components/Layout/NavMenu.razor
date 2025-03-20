@@ -89,7 +89,7 @@
 
         if (user.Identity is { IsAuthenticated: true }) {
             // Retrieve claims
-            string? nameClaim = user.FindFirst(c => c.Type == InfiniLoreClaimsStore.UserName)?.Value
+            string? nameClaim = user.FindFirst(c => c.Type == InfiniLoreClaimsStoreConstants.UserName)?.Value
                 ?? user.FindFirst(c => c.Type == "name")?.Value
                 ?? user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
 

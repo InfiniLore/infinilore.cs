@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Server.Services.Auth0
 @using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Net.Http.Headers
@@ -42,7 +43,7 @@
         }
         
         AuthenticationState state = await AuthenticationState;
-        string? userId = state.User.FindFirstValue("infinilore_user_id");
+        string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
         
         if (userId.IsNullOrWhiteSpace()) {
             _apiResponse = "User Id Not Found";
