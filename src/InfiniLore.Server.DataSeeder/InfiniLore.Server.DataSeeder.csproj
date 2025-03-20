@@ -9,12 +9,12 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.48.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.48.0">
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.50.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.50.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.48.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.50.0" />
         <PackageReference Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1"/>
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1"/>
         <PackageReference Include="MediatR" Version="12.4.1"/>
