@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
+using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Queries.Account;
@@ -47,17 +48,18 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
 
         // Run all checks and return to new user page if needed
         Task<MediatorResponse> userExistsTask = mediator.Send(new UserExistsByAuth0Query(auth0Info.Auth0UserId));
-        Task<MediatorResponse<Guid>> userIdTask = mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
+        Task<MediatorResponse<InfiniLoreUser>> userTask = mediator.Send(new GetUserByAuth0IdQuery(auth0Info.Auth0UserId));
         
-        (MediatorResponse userExistsResponse, MediatorResponse<Guid> userIdResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userIdTask);
+        (MediatorResponse userExistsResponse, MediatorResponse<InfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
         
-        switch (userExistsResponse, userIdResponse) {
+        switch (userExistsResponse, userResponse) {
             // User Exists and have a userId
-            case ({IsState:true, State: true}, {IsSuccess: true, AsSuccess: var userId }): {
+            case ({IsState:true, State: true}, {IsSuccess: true, AsSuccess: var user }): {
                 _logger.Debug("User already exists, continuing...");
                 
                 principal.AddIdentity(new ClaimsIdentity(new[] {
-                    new Claim(ClaimsStore.InfiniloreUserId, userId.ToString())
+                    new Claim(InfiniLoreClaimsStore.UserId, user.Id.ToString()),
+                    new Claim(InfiniLoreClaimsStore.UserName, user.Username)
                 }));
                 return;
             }
@@ -72,7 +74,7 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
             // Something else happend, which means an error
             default: {
                 if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
-                else if (userIdResponse.TryGetAsErrorValue(out failure)) {}
+                else if (userResponse.TryGetAsErrorValue(out failure)) {}
                 else {failure = "Unknown error";}
                 
                 RedirectToLogout(context, failure);

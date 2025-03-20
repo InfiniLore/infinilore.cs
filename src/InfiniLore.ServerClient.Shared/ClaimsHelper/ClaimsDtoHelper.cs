@@ -21,8 +21,8 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
         // Yes I know you could easily store the entire object as json and then just map over all the claims.
         //      But we don't want to send over all the claims to the "unsecure" client 
         string? auth0UserId = principal.FindFirstValue(options.Value.ClaimsIdentity.UserIdClaimType);
-        string? infiniloreUserId = principal.FindFirstValue(ClaimsStoreConstants.InfiniloreUserId);
-        string? infiniloreUserName = principal.FindFirstValue(ClaimsStoreConstants.InfiniloreUserName);
+        string? infiniloreUserId = principal.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+        string? infiniloreUserName = principal.FindFirstValue(InfiniLoreClaimsStoreConstants.UserName);
         string? name = principal.FindFirstValue("name");
         string? email = principal.FindFirstValue("email");
         string[] roles = principal.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray();
@@ -43,8 +43,8 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
             .AddClaim("name", claimsDto.Name)
             .AddClaim(ClaimTypes.Name, claimsDto.Name)
             .AddClaim(ClaimTypes.Email, claimsDto.Email)
-            .AddClaim(ClaimsStoreConstants.InfiniloreUserId, claimsDto.InfiniLoreUserId)
-            .AddClaim(ClaimsStoreConstants.InfiniloreUserName, claimsDto.InfiniloreUserName)
+            .AddClaim(InfiniLoreClaimsStoreConstants.UserId, claimsDto.InfiniLoreUserId)
+            .AddClaim(InfiniLoreClaimsStoreConstants.UserName, claimsDto.InfiniloreUserName)
             .AddClaim("email", claimsDto.Email);
         
         identity.AddClaims(claimsDto.Roles.Select(roleName => new Claim(ClaimTypes.Role, roleName)));

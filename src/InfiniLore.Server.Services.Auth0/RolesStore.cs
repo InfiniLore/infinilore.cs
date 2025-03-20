@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CredentialsStore(CredentialsFlags.PeriodSeperated | CredentialsFlags.IterateValues, true)]
+[CredentialsStore(CredentialsFlags.IterateValues, true, ".")]
 public static partial class RolesStore {
     
     public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(static () => new Dictionary<string, string[]> {

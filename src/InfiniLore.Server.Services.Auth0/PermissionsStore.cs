@@ -7,7 +7,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CredentialsStore(CredentialsFlags.PermissionsStore, true)]
+[CredentialsStore(CredentialsFlags.PermissionsStore, true, ":")]
 public static partial class PermissionsStore {
     private const string Account = nameof(Account);
     private const string Data = nameof(Data);
