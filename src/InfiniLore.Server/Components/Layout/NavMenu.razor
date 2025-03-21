@@ -23,13 +23,22 @@
     </Header>
     
     <NavigationMenu>
-        <CollapsibleMenuButton Href="/about" LucideIcon="equal-approximately">About</CollapsibleMenuButton>
-        <CollapsibleMenuButton Href="/counter" LucideIcon="plus">counter</CollapsibleMenuButton>
+        <CollapsibleMenuButton Href="/about">
+            <Icon><LiEqualApproximately/></Icon>
+            <Text>About</Text>
+        </CollapsibleMenuButton>
+        <CollapsibleMenuButton Href="/counter">
+            <Icon><LiPlus/></Icon>
+            <Text>Counter</Text>
+        </CollapsibleMenuButton>
 
         <AuthorizeView>
             <NotAuthorized></NotAuthorized>
             <Authorized>
-                <CollapsibleMenuButton Href="/claims-viewer" LucideIcon="view">Claims</CollapsibleMenuButton>
+                <CollapsibleMenuButton Href="/claims-viewer">
+                    <Icon><LiView/></Icon>
+                    <Text>Claims</Text>
+                </CollapsibleMenuButton>
             </Authorized>
         </AuthorizeView>
         

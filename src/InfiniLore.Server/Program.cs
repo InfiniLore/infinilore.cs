@@ -177,6 +177,8 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
         builder.Services.RegisterServicesFromInfiniLoreServerApiResponses();
+        
+        builder.Services.AddLucideIcons();
 
         return builder.Build();
     }
