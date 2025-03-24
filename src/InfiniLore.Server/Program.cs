@@ -17,9 +17,11 @@ using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.Auth0.Encryption;
 using InfiniLore.Server.Services.Auth0.TokenStore;
 using InfiniLore.Server.Services.CQRS;
+using InfiniLore.Server.Services.CQRS.PipelineBehaviours;
 using InfiniLore.Server.Services.OpenIdConnect;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.JwtToken;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -149,8 +151,8 @@ public static class Program {
         #region MediatR
         builder.Services.AddMediatR(config => {
             config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
-
-            // config.AddBehavior(typeof(RequestExceptionHandler<,,>));
+            
+            config.AddOpenBehavior(typeof(ValidateRequestBehaviour<,>));
         });
 
         builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();

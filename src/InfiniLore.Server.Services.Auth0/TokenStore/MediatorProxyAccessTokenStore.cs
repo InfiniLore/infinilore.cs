@@ -26,8 +26,8 @@ public class MediatorProxyAccessTokenStore(IMediator mediator, ILogger<MediatorP
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
         MediatorResponse<IAuth0AccessToken> mediatorResponse = await mediator.Send(_request, ct);
         if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken token)) {
-            string error = mediatorResponse.AsError.Value;
-            logger.Warning(error);
+            ICollection<string> errors = mediatorResponse.AsError.Value;
+            logger.Warning("Failed to retrieve access token. Errors: {Errors}", errors);
             return Auth0AccessToken.Empty;
         }
 
@@ -37,8 +37,9 @@ public class MediatorProxyAccessTokenStore(IMediator mediator, ILogger<MediatorP
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
         MediatorResponse<bool> response = await mediator.Send(new StoreAuth0AccessTokenRequest(token), ct);
         if (!response.TryGetAsSuccess(out bool success)) {
-            string error = response.AsError.Value;
-            throw new Exception(error);
+            ICollection<string> errors = response.AsError.Value;
+            logger.Critical("Failed to retrieve access token. Errors: {Errors}", errors);
+            throw new ApplicationException(errors.ToString());
         }
 
         if (!success) throw new Exception("Failed to store access token");

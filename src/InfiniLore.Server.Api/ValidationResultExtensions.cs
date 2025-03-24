@@ -28,6 +28,5 @@ public static class ValidationResultExtensions {
         };
 
         return problemDetails;
-
     }
 }

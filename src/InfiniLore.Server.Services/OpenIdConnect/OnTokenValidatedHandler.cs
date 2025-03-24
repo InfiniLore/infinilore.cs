@@ -73,9 +73,9 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
 
             // Something else happend, which means an error
             default: {
-                if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
+                if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
-                else {failure = "Unknown error";}
+                else {failure = new[]{"Unknown error"};}
                 
                 RedirectToLogout(context, failure);
                 return;
@@ -84,8 +84,8 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         }
     }
 
-    private void RedirectToLogout(TokenValidatedContext context, string? failure) {
-        _logger.LogError("Error checking if user exists : {failure}", failure);
+    private void RedirectToLogout(TokenValidatedContext context, ICollection<string> failure) {
+        _logger.LogError("Error checking if user exists : {@failure}", failure);
         context.Response.Redirect("/account/logout?returnUrl=/");
         context.HandleResponse();
     }

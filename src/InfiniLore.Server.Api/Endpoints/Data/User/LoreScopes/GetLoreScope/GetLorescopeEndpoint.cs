@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using FluentValidation;
-using FluentValidation.Results;
 using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts.Services.Auth0;
@@ -28,7 +27,11 @@ using Response=Results<
     ProblemDetails
 >;
 
-public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoint> logger, IJwtTokenHelper jwtTokenHelper, IValidator<GetLorescopeByIdQuery> queryValidator) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
+public class GetLorescopeEndpoint(
+    IMediator mediator,
+    ILogger<GetLorescopeEndpoint> logger,
+    IJwtTokenHelper jwtTokenHelper
+) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
@@ -48,10 +51,6 @@ public class GetLorescopeEndpoint(IMediator mediator, ILogger<GetLorescopeEndpoi
         ) {
             AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
         };
-        
-        // Validate Query
-        ValidationResult validationResult = await queryValidator.ValidateAsync(query, ct);
-        if (!validationResult.IsValid) return validationResult.ToProblemDetails();
         
         // Execute Query
         MediatorResponse<LoreScope> result = await mediator.Send(query, ct);

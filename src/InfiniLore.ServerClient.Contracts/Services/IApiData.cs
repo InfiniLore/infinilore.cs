@@ -9,6 +9,6 @@ namespace InfiniLore.ServerClient.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IApiAccess {
-    public ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(Guid userId, CancellationToken ct = default);
+public interface IApiData {
+    ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(Guid userId, CancellationToken ct = default);
 }

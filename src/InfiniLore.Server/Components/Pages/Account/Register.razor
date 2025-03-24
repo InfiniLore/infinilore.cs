@@ -6,6 +6,7 @@
 @using InfiniLore.Server.Services.CQRS.Commands.Account
 @using InfiniLore.Server.Services.CQRS.Queries.Account
 @using MediatR
+@using System.Collections
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -174,8 +175,8 @@
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
         MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
-        if (result.TryGetAsError(out Error<string> errorMessage)) {
-            _usernameValidationMessage = errorMessage.Value;
+        if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
+            _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry
             await InvokeAsync(StateHasChanged);
             return;
