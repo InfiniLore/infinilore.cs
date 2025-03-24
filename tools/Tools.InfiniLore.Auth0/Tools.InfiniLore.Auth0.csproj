@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Auth0.ManagementApi" Version="7.34.0"/>
+        <PackageReference Include="Auth0.ManagementApi" Version="7.35.0" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" Version="4.9.0" />
         <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.9.0">
             <PrivateAssets>all</PrivateAssets>
