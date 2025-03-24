@@ -10,11 +10,12 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/counter"
+@page "/api-test"
 @attribute [Authorize]
 @rendermode InteractiveWebAssembly
 @inject IHttpClientFactory ClientFactory
 @inject IJsSecureStorageJwtTokenProvider TokenProvider
+@inject ILogger<ApiTest> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -33,7 +34,7 @@
     private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     private string _apiResponse = "";
-    
+
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     private async Task CallInternalApi() {
@@ -41,15 +42,17 @@
             _apiResponse = "NOT AUTHENTICATED";
             return;
         }
-        
+
         AuthenticationState state = await AuthenticationState;
         string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
-        
+
         if (userId.IsNullOrWhiteSpace()) {
+            Logger.Information("user: {@user}", state.User);
+            
             _apiResponse = "User Id Not Found";
             return;
         }
-        
+
         string? token = await TokenProvider.GetTokenAsync();
         if (token.IsNullOrWhiteSpace()) {
             _apiResponse = "TOKEN NOT FOUND";
@@ -60,10 +63,10 @@
             using HttpClient client = ClientFactory.CreateClient("ServerAPI");
             var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
+
             HttpResponseMessage result = await client.SendAsync(request);
             string json = JsonSerializer.Serialize(JsonDocument.Parse(await result.Content.ReadAsStringAsync()).RootElement, Options);
-        
+
             _apiResponse = $"This data comes from an internal API: {Environment.NewLine} {json}";
         }
         catch (Exception e) {

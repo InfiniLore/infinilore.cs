@@ -28,12 +28,12 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
         string[] roles = principal.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray();
 
         return new ClaimsDto(
-            auth0UserId ?? string.Empty,
-            infiniloreUserId ?? string.Empty,
-            infiniloreUserName ?? string.Empty,
-            name ?? string.Empty,
-            email ?? string.Empty,
-            roles
+            Auth0UserId: auth0UserId ?? string.Empty,
+            InfiniLoreUserId: infiniloreUserId ?? string.Empty,
+            InfiniloreUserName: infiniloreUserName ?? string.Empty,
+            Name: name ?? string.Empty,
+            Email: email ?? string.Empty,
+            Roles: roles
         );
     }
 
