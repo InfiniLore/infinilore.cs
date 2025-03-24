@@ -16,6 +16,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.3"/>
@@ -29,8 +30,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Api\InfiniLore.Server.Api.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj" />
         <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj"/>
         <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>

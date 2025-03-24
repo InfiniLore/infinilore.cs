@@ -23,7 +23,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj" />
     </ItemGroup>
 
 </Project>

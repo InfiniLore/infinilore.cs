@@ -8,7 +8,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Services.CQRS.Commands.Account;
+using InfiniLore.Server.Services.Mediator.Commands.Account;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -57,7 +57,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] = mediator.Send(new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
+            tasks[i++] = mediator.Send(new UserCreateMediatorRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
         }
 
         await Task.WhenAny(tasks);

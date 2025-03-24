@@ -25,6 +25,9 @@ public class InteractiveApiAccessWasmSide(
 ) : IInteractiveApiAccess {
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         string? token = await tokenProvider.GetTokenAsync(ct);
         if (token.IsNullOrWhiteSpace()) return Result<LoreScopesResponse>.FromError("JwtToken Not Found in JsSecureStorage");
@@ -33,7 +36,7 @@ public class InteractiveApiAccessWasmSide(
         try {
             var requestBuilder = apiClient.Api.V1.Data.User[userId].Lorescope;
             var result = await requestBuilder
-                .GetAsync(requestConfiguration: configuration => configuration.AddJwtToken(token), ct);
+                .GetAsync(configuration => configuration.AddJwtToken(token), ct);
 
             if (result is null) return Result<LoreScopesResponse>.FromError("Could not get data from API");
 
