@@ -1,0 +1,45 @@
+@using System.Text.RegularExpressions
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@inject ILogger<MarkdownEditor> Logger
+@rendermode InteractiveAuto
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+<input type="text" class="w-full h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText"></input>
+
+<div class="w-full h-16 p-4 border-2 border-gray-300 rounded-lg">@MarkdownOutput</div>
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private string _markdownText = string.Empty;
+    public string MarkdownText {
+        get => _markdownText;
+        set {
+            _markdownText = value;
+
+            var boldRegex = new Regex(@"\*\*(.+?)\*\*", RegexOptions.RightToLeft);
+            var italicsRegex = new Regex(@"\*(.+?)\*", RegexOptions.RightToLeft);
+            string editedText = boldRegex.Replace(_markdownText, "<b>$1</b>");
+            editedText = italicsRegex.Replace(editedText, "<i>$1</i>");
+
+            Logger.LogInformation("Current MarkdownText: {Text}", MarkdownText);
+            Logger.LogInformation("Generated EditedText: {Text}", editedText);
+
+            // Update the MarkupString with the generated HTML
+            MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
+        }
+    }
+    
+    public MarkupString MarkdownOutput { get; set; } = new();
+}
