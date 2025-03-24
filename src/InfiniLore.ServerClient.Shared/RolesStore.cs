@@ -4,7 +4,7 @@
 using InfiniLore.Credentials;
 using System.Collections.Frozen;
 
-namespace InfiniLore.Server.Services.Auth0;
+namespace InfiniLore.ServerClient.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

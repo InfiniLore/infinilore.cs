@@ -1,6 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Clients.Kiota;
+using InfiniLore.Clients.Kiota.Extensions;
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -21,9 +23,6 @@ public static class Program {
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddSingleton<AuthenticationStateProvider, WasmClientAuthenticationStateProvider>();
 
-        builder.Services.AddHttpClient("ServerAPI", 
-            client => client.BaseAddress = new Uri("https://localhost:7059/"));
-
         builder.Services.AddHttpClient();
 
         Log.Logger = new LoggerConfiguration()
@@ -33,6 +32,13 @@ public static class Program {
 
         builder.Logging.AddSerilog();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
+        
+        builder.Services.AddKiotaHandlers();
+        builder.Services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI", 
+            static client => client.BaseAddress = new Uri("https://localhost:7059/")
+        ).AttachKiotaHandlers();
+        
+        builder.Services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
 
         // -------------------------------------------------------------------------------------------------------------
         // App

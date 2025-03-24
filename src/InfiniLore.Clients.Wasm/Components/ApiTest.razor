@@ -1,19 +1,21 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Server.Services.Auth0
+@using InfiniLore.Clients.Kiota
+@using InfiniLore.Clients.Kiota.Models
+@using InfiniLore.ServerClient.Shared
 @using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
-@using System.Net.Http.Headers
+@using Microsoft.Kiota.Abstractions
+@using Microsoft.Kiota.Serialization
 @using System.Security.Claims
-@using System.Text.Json
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/api-test"
 @attribute [Authorize]
-@rendermode InteractiveWebAssembly
-@inject IHttpClientFactory ClientFactory
+@rendermode RenderModes.WebAssemblyOnly
+@inject InfiniLoreApiClient ApiClient
 @inject IJsSecureStorageJwtTokenProvider TokenProvider
 @inject ILogger<ApiTest> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -32,10 +34,7 @@
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
-
     private string _apiResponse = "";
-
-    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     private async Task CallInternalApi() {
         if (AuthenticationState is null) {
@@ -60,13 +59,14 @@
         }
 
         try {
-            using HttpClient client = ClientFactory.CreateClient("ServerAPI");
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage result = await client.SendAsync(request);
-            string json = JsonSerializer.Serialize(JsonDocument.Parse(await result.Content.ReadAsStringAsync()).RootElement, Options);
-
+            InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse? result = await ApiClient.Api.V1.Data.User[userId].Lorescope
+                .GetAsync(configuration => configuration.AddJwtToken(token));
+            if (result is null) {
+                _apiResponse = "Could not get data from API";
+                return;
+            }
+            
+            string json = await result.SerializeAsJsonStringAsync();
             _apiResponse = $"This data comes from an internal API: {Environment.NewLine} {json}";
         }
         catch (Exception e) {

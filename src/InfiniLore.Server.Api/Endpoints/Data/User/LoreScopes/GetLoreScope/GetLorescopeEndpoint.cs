@@ -7,13 +7,13 @@ using FluentValidation.Results;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.User;
-using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Queries.Data.User;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using PermissionsStore=InfiniLore.ServerClient.Shared.PermissionsStore;
 using ProblemDetails=FastEndpoints.ProblemDetails;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScope;

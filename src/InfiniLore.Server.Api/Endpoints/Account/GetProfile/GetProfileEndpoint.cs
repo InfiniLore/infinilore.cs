@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Server.Api.Responses.Account;
-using InfiniLore.Server.Services.Auth0;
 using Microsoft.AspNetCore.Http.HttpResults;
+using PermissionsStore=InfiniLore.ServerClient.Shared.PermissionsStore;
 
 namespace InfiniLore.Server.Api.Endpoints.Account.GetProfile;
 // ---------------------------------------------------------------------------------------------------------------------

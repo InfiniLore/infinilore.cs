@@ -1,17 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Credentials;
-
-namespace InfiniLore.ServerClient.Shared;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.Kiota.Abstractions;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CredentialsStore(CredentialsFlags.ToLowerCaseInvariant, true, "/")]
-public static partial class InfiniLoreClaimsStore {
-    private const string UrlPrefix = "https://claims.infinilore.dev";
-    
-    [Prefix(UrlPrefix)] public static partial string UserId { get; }
-    [Prefix(UrlPrefix)] public static partial string UserName { get; }
+public static class RequestConfigurationExtensions {
+    public static RequestConfiguration<T> AddJwtToken<T>(this RequestConfiguration<T> requestConfiguration, string token) where T : class, new() {
+        
+        requestConfiguration.Headers.Add("Authorization", $"Bearer {token}");
+        
+        return requestConfiguration;
+    }
 }

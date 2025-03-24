@@ -1,17 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Credentials;
+using Microsoft.AspNetCore.Components.Web;
 
-namespace InfiniLore.ServerClient.Shared;
+namespace InfiniLore.Clients.Wasm;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CredentialsStore(CredentialsFlags.ToLowerCaseInvariant, true, "/")]
-public static partial class InfiniLoreClaimsStore {
-    private const string UrlPrefix = "https://claims.infinilore.dev";
-    
-    [Prefix(UrlPrefix)] public static partial string UserId { get; }
-    [Prefix(UrlPrefix)] public static partial string UserName { get; }
+public static class RenderModes {
+    public static readonly InteractiveWebAssemblyRenderMode WebAssemblyOnly = new(prerender:false);
 }

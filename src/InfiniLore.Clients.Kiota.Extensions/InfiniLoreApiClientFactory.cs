@@ -1,17 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Credentials;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Http.HttpClientLibrary;
 
-namespace InfiniLore.ServerClient.Shared;
+namespace InfiniLore.Clients.Kiota.Extensions;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CredentialsStore(CredentialsFlags.ToLowerCaseInvariant, true, "/")]
-public static partial class InfiniLoreClaimsStore {
-    private const string UrlPrefix = "https://claims.infinilore.dev";
-    
-    [Prefix(UrlPrefix)] public static partial string UserId { get; }
-    [Prefix(UrlPrefix)] public static partial string UserName { get; }
+public class InfiniLoreApiClientFactory(HttpClient httpClient) {
+    private readonly IAuthenticationProvider _authenticationProvider = new AnonymousAuthenticationProvider();
+
+    public InfiniLoreApiClient GetClient() 
+        => new(new HttpClientRequestAdapter(_authenticationProvider, httpClient: httpClient));
 }

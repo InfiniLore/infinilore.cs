@@ -5,12 +5,12 @@ using Auth0.ManagementApi.Models;
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Credentials.Auth0.Utility;
-using InfiniLore.Server.Services.Auth0;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Frozen;
 using Tools.InfiniLore.Auth0.Setup;
+using RolesStore=InfiniLore.ServerClient.Shared.RolesStore;
 
 namespace Tools.InfiniLore.Auth0.Commands.SyncRoles;
 // ---------------------------------------------------------------------------------------------------------------------
