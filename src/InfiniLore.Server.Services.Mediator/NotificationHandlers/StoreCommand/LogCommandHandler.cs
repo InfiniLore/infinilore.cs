@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Services.Cqrs;
+using InfiniLore.Server.Contracts.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Notifications.Data.System;
 using MediatR;
 using Microsoft.Extensions.Logging;

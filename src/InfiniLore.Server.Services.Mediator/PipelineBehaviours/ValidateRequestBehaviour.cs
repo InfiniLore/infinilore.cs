@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FluentValidation;
 using FluentValidation.Results;
-using InfiniLore.Server.Contracts.Services.Cqrs;
+using InfiniLore.Server.Contracts.Services.Mediator;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

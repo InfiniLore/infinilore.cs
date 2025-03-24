@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using InfiniLore.Server.Contracts.Services.Auth0;
-using InfiniLore.Server.Contracts.Services.Cqrs;
+using InfiniLore.Server.Contracts.Services.Mediator;
 using InfiniLore.ServerClient.Shared;
 using Newtonsoft.Json;
 using System.Security.Claims;

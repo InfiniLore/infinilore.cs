@@ -1,11 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts.Services.Mediator;
-using MediatR;
+namespace InfiniLore.Server.Contracts.Services.Mediator;
 
-namespace InfiniLore.Server.Services.Mediator.Notifications.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record StoreCommandNotification(IMediatorRequest Request) : INotification;
+public interface ICommonRequestData {
+    IAccessData AccessData { get; } 
+    DateTime CreatedAt { get; }
+}

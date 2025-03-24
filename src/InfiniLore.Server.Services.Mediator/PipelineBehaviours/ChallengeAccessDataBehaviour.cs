@@ -3,17 +3,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Services.Mediator;
 using MediatR;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Services.Mediator;
+namespace InfiniLore.Server.Services.Mediator.PipelineBehaviours;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record CommonRequestData : ICommonRequestData {
-    [JsonProperty("access_data")] public IAccessData AccessData { get; init; } = RequestAccessData.Empty;
-    [JsonProperty("created_at")] public DateTime CreatedAt { get; } = DateTime.UtcNow;
+public class ChallengeAccessDataBehaviour<TRequest, TResponse>(
+    ILogger<ChallengeAccessDataBehaviour<TRequest, TResponse>> logger
+)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IMediatorRequest {
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct) {
+        logger.LogWarning("Challenge access data not implemented");
+        return await next();
+    }
 }
-
-public record MediatorRequest : CommonRequestData, IRequest<MediatorResponse>;
-
-public record MediatorRequest<TResponse> : CommonRequestData, IRequest<MediatorResponse<TResponse>>;
