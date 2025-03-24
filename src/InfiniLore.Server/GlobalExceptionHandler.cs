@@ -10,7 +10,7 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static partial class GlobalExceptionHandler {
-    
+
     [GeneratedRegex(@"ServiceType:\s([^\s]+)\sLifetime:\s([^\s]+)\sImplementationType:\s([^\s]+)'(?:.*)type\s'([^\s]+)'")]
     private static partial Regex InvalidOperationExceptionForServiceNotImplementedRegex { get; }
 
@@ -41,12 +41,14 @@ public static partial class GlobalExceptionHandler {
                 // Example handling for dependency injection-related InvalidOperationException
                 case InvalidOperationException { Source: "Microsoft.Extensions.DependencyInjection" } invalidOperationException: {
                     if (TryHandleInvalidOperationException(invalidOperationException)) break;
+
                     goto default;
                 }
 
                 default: {
                     Log.Logger.Fatal(innerException, "Host terminated unexpectedly \"{ExceptionType}\": {Message}",
                         innerException.GetType(), innerException.Message);
+
                     break;
                 }
             }
@@ -61,7 +63,7 @@ public static partial class GlobalExceptionHandler {
         string lifetime = groups[2].Value;
         string implementationType = groups[3].Value;
         string notFoundService = groups[4].Value;
-            
+
         Log.Logger.Fatal(
             exception,
             "Dependent service {NotFoundService} not found for ServiceType: {ServiceType} [{Lifetime}] with ImplementationType: {ImplementationType}",

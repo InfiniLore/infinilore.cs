@@ -18,7 +18,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public bool TryDecodeJwt(string token,[NotNullWhen(true)] out string? payload) {
+    public bool TryDecodeJwt(string token, [NotNullWhen(true)] out string? payload) {
         payload = null;
         try {
             string[] parts = token.Split('.');
@@ -39,7 +39,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
         expiry = DateTime.MinValue;
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return false; // Not a valid JWT
+            if (parts.Length != 3) return false;// Not a valid JWT
 
             string payload = parts[1];
             byte[] json = Convert.FromBase64String(PadBase64(payload));

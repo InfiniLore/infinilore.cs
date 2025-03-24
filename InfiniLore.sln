@@ -52,7 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Wasm.Services", "src\InfiniLore.Clients.Wasm.Services\InfiniLore.Clients.Wasm.Services.csproj", "{FA2AA209-3A25-4286-9976-75CD1630B911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.CQRS", "src\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj", "{E8BF294A-B7A0-4834-A7D8-393BFC9190A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.Mediator", "src\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj", "{E8BF294A-B7A0-4834-A7D8-393BFC9190A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.DataSeeder", "src\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj", "{3D95910A-7BCC-4C94-9394-C0C76F267B4E}"
 EndProject
@@ -64,8 +64,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fakers.InfiniLore.Server", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSources.InfiniLore.Server", "tests\DataSources.InfiniLore.Server\DataSources.InfiniLore.Server.csproj", "{9ECD56DC-A2B3-484B-8925-13CA25E2B723}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.Auth0", "src\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj", "{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{73AF94AD-722A-4B4F-8425-00AFB9FBE866}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Shared", "src\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj", "{327648F4-E7BA-4185-9E77-4CA1E48CC895}"
@@ -75,6 +73,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Api.Responses", "src\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj", "{5A30B6DF-B297-4D63-949A-A0E226515839}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Contracts", "src\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj", "{DC28BF56-9489-40DD-876A-47FEA935369D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota.Extensions", "src\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj", "{8D707686-342B-495D-A85D-F577B1AB6800}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -154,10 +154,6 @@ Global
 		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ECD56DC-A2B3-484B-8925-13CA25E2B723}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{327648F4-E7BA-4185-9E77-4CA1E48CC895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{327648F4-E7BA-4185-9E77-4CA1E48CC895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{327648F4-E7BA-4185-9E77-4CA1E48CC895}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -174,6 +170,10 @@ Global
 		{DC28BF56-9489-40DD-876A-47FEA935369D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC28BF56-9489-40DD-876A-47FEA935369D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC28BF56-9489-40DD-876A-47FEA935369D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D707686-342B-495D-A85D-F577B1AB6800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D707686-342B-495D-A85D-F577B1AB6800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D707686-342B-495D-A85D-F577B1AB6800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D707686-342B-495D-A85D-F577B1AB6800}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -202,12 +202,12 @@ Global
 		{6F28D5FC-A9D9-4081-9F30-16C4A99B0DE9} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
 		{A7310182-46AF-46FA-8FA8-FF45A6B0841F} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
 		{9ECD56DC-A2B3-484B-8925-13CA25E2B723} = {810B9929-9230-42F8-BCF0-BCD039A8CD75}
-		{5F1FE4F4-65DB-47C8-9983-1E0C67BA375B} = {3CA4F8BC-45E5-4B9F-A178-FCCB396B15B1}
 		{73AF94AD-722A-4B4F-8425-00AFB9FBE866} = {7304F551-466C-4016-A729-CDA819CE9983}
 		{327648F4-E7BA-4185-9E77-4CA1E48CC895} = {73AF94AD-722A-4B4F-8425-00AFB9FBE866}
 		{5A30B6DF-B297-4D63-949A-A0E226515839} = {2B9A51AA-F035-4FED-8AAA-3A3EA2C1E04D}
 		{DC28BF56-9489-40DD-876A-47FEA935369D} = {73AF94AD-722A-4B4F-8425-00AFB9FBE866}
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{859E6C9D-2EEB-485C-9735-9A3CA484A3DA} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
+		{8D707686-342B-495D-A85D-F577B1AB6800} = {B7C12299-7FB3-488E-89FB-B30DDB7480B3}
 	EndGlobalSection
 EndGlobal

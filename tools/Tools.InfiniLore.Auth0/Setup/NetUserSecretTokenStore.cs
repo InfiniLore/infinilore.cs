@@ -54,7 +54,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
-            WorkingDirectory = @"C:\Data\Dev\infinilore.cs\tools\Tools.InfiniLore.Auth0" // Path to the directory containing the .csproj file
+            WorkingDirectory = @"C:\Data\Dev\infinilore.cs\tools\Tools.InfiniLore.Auth0"// Path to the directory containing the .csproj file
         };
 
         using Process? process = Process.Start(processStartInfo);
@@ -62,6 +62,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
             logger.LogError("Failed to start process to run dotnet user-secrets.");
             return;
         }
+
         await process.WaitForExitAsync();
 
         if (process.ExitCode != 0) {

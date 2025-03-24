@@ -7,21 +7,27 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.53.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj"/>
         <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Http">
-        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.Extensions.Http.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.JSInterop">
-        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.JSInterop.dll</HintPath>
-      </Reference>
+        <Reference Include="Microsoft.Extensions.Http">
+            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.Extensions.Http.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.JSInterop">
+            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.3\Microsoft.JSInterop.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

@@ -1,17 +1,17 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
-@using InfiniLore.Server.Services.CQRS
-@using InfiniLore.Server.Services.CQRS.Commands.Account
-@using InfiniLore.Server.Services.CQRS.Queries.Account
-@using MediatR
-@using System.ComponentModel.DataAnnotations
-@using System.Diagnostics
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/register"
+@using AterraEngine.Unions
+@using InfiniLore.Server.Services.Mediator
+@using InfiniLore.Server.Services.Mediator.Commands.Account
+@using InfiniLore.Server.Services.Mediator.Queries.Account
+@using MediatR
+@using System.ComponentModel.DataAnnotations
+@using System.Diagnostics
 @inject NavigationManager Navigation
 @inject IMediator Mediator
 @rendermode InteractiveServer
@@ -50,8 +50,10 @@
                                         <span id="loading-spinner"
                                               class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                                             <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span>
-                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
-                                            <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
+                                            <span
+                                                class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
+                                            <span
+                                                class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
                                         </span>
                                         break;
                                     case UsernameStatus.Taken:
@@ -90,6 +92,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [Parameter]
     [SupplyParameterFromQuery(Name = "auth0UserId")]
@@ -121,8 +124,7 @@
 
         if (!_debounceStopwatch.IsRunning) {
             _debounceStopwatch.Start();
-        }
-        else {
+        } else {
             _debounceStopwatch.Restart();
         }
 
@@ -150,9 +152,9 @@
         }
 
         // Call the backend to check username availability
-        MediatorResponse response = await Mediator.Send(new UsernameExistsQuery(username));
+        MediatorResponse mediatorResponse = await Mediator.Send(new UsernameExistsQuery(username));
 
-        if (!response.TryGetState(out bool isTaken)) {
+        if (!mediatorResponse.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
             _isFormDisabled = true;
             await InvokeAsync(StateHasChanged);// Refresh UI
@@ -160,8 +162,8 @@
         }
 
         // Update the UI based on validation response
-        _usernameStatus = isTaken 
-            ? UsernameStatus.Taken 
+        _usernameStatus = isTaken
+            ? UsernameStatus.Taken
             : UsernameStatus.Available;
 
         _usernameValidationMessage = string.Empty;// Clear message
@@ -173,9 +175,9 @@
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MediatorResponse<Guid> result = await Mediator.Send(new UserCreateRequest(Auth0UserId, userModel.Username));
-        if (result.TryGetAsError(out Error<string> errorMessage)) {
-            _usernameValidationMessage = errorMessage.Value;
+        MediatorResponse<Guid> result = await Mediator.Send(new UserCreateMediatorRequest(Auth0UserId, userModel.Username));
+        if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
+            _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry
             await InvokeAsync(StateHasChanged);
             return;
@@ -183,7 +185,7 @@
 
         string returnUl = ReturnUrl.IsNotNullOrEmpty()
             ? ReturnUrl
-            : "/" ;
+            : "/";
 
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
         Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
@@ -195,5 +197,4 @@
         Taken,
         Available
     }
-
 }

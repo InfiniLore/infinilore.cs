@@ -13,10 +13,10 @@ using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
-using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.Auth0.Encryption;
 using InfiniLore.Server.Services.Auth0.TokenStore;
-using InfiniLore.Server.Services.CQRS;
+using InfiniLore.Server.Services.Mediator;
+using InfiniLore.Server.Services.Mediator.PipelineBehaviours;
 using InfiniLore.Server.Services.OpenIdConnect;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.JwtToken;
@@ -128,8 +128,7 @@ public static class Program {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-Management"]);
             config.Auth0Options.ClientSecret = builder.Configuration["Auth0:ClientSecret-Management"]!;
         });
-
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
+        
         builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
         #endregion
 
@@ -150,10 +149,10 @@ public static class Program {
         builder.Services.AddMediatR(config => {
             config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
 
-            // config.AddBehavior(typeof(RequestExceptionHandler<,,>));
+            config.AddOpenBehavior(typeof(ValidateRequestBehaviour<,>));
         });
 
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesMediator();
         #endregion
 
         #region DataSeeding
@@ -176,8 +175,8 @@ public static class Program {
 
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
-        builder.Services.RegisterServicesFromInfiniLoreServerApiResponses();
-        
+        builder.Services.RegisterServicesFromInfiniLoreServerApi();
+
         builder.Services.AddLucideIcons();
 
         return builder.Build();

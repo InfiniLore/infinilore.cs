@@ -26,6 +26,7 @@ public static class Program {
             "Old.InfiniLore.Server.Types",
             "Old.InfiniLore.Contracts"
         );
+
         string oneLineArgs = InputHelper.ToOneLine(args).Replace("%PROJECTS%", projects);
 
         // Finally start executing

@@ -1,10 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
+
 namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasGetCountAsync {
-    ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default);
+    ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default);
 }

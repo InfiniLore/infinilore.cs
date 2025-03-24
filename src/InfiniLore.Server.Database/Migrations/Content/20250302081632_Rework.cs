@@ -182,6 +182,7 @@ public partial class Rework : Migration {
                     "BasicData",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
+
                 table.ForeignKey(
                     "FK_UserData_Users_OwnerId",
                     column: x => x.OwnerId,

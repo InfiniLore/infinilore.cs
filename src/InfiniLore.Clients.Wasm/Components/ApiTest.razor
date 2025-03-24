@@ -1,21 +1,21 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Server.Services.Auth0
-@using InfiniLore.ServerClient.Shared.JwtToken
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Net.Http.Headers
-@using System.Security.Claims
-@using System.Text.Json
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/api-test"
+@using AterraEngine.Unions
+@using InfiniLore.Server.Api.Responses.Data.User.LoreScopes
+@using InfiniLore.ServerClient.Services
+@using InfiniLore.ServerClient.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using System.Text.Json
 @attribute [Authorize]
-@rendermode InteractiveWebAssembly
-@inject IHttpClientFactory ClientFactory
-@inject IJsSecureStorageJwtTokenProvider TokenProvider
+@rendermode InteractiveAuto
 @inject ILogger<ApiTest> Logger
+@inject IInteractiveApiAccess InteractiveApiAccess
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -29,13 +29,11 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
-
     private string _apiResponse = "";
-
-    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     private async Task CallInternalApi() {
         if (AuthenticationState is null) {
@@ -48,29 +46,16 @@
 
         if (userId.IsNullOrWhiteSpace()) {
             Logger.Information("user: {@user}", state.User);
-            
             _apiResponse = "User Id Not Found";
             return;
         }
 
-        string? token = await TokenProvider.GetTokenAsync();
-        if (token.IsNullOrWhiteSpace()) {
-            _apiResponse = "TOKEN NOT FOUND";
-            return;
+        Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
+        if (result.TryGetAsErrorValue(out string? value)) {
+            _apiResponse = value;
         }
 
-        try {
-            using HttpClient client = ClientFactory.CreateClient("ServerAPI");
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/data/user/{userId}/lorescope");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            HttpResponseMessage result = await client.SendAsync(request);
-            string json = JsonSerializer.Serialize(JsonDocument.Parse(await result.Content.ReadAsStringAsync()).RootElement, Options);
-
-            _apiResponse = $"This data comes from an internal API: {Environment.NewLine} {json}";
-        }
-        catch (Exception e) {
-            _apiResponse = e.Message;
-        }
+        string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
+        _apiResponse = dataAsJson;
     }
 }

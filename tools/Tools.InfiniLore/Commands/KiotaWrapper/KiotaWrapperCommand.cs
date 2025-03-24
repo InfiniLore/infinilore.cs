@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using JetBrains.Annotations;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Tools.InfiniLore.Commands.KiotaWrapper;
@@ -86,7 +87,7 @@ public partial class KiotaWrapperCommand : ICommand<KiotaWrapperParameters> {
 
             await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }
-        catch (System.ComponentModel.Win32Exception ex) {
+        catch (Win32Exception ex) {
             Console.WriteLine("Failed to run Kiota, this is most likely due to a missing kiota as a global tool.");
             Console.WriteLine("To install Kiota, run the following command:");
             Console.WriteLine("dotnet tool install --global Microsoft.OpenApi.Kiota");

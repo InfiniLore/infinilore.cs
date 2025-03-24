@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
@@ -18,12 +19,12 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<RepoResult> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
+    public async ValueTask<Result> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
+        if (loreScopeName.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
+        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
 
         // Query
         IQueryable<LoreScope> query = dbSet.Where(l =>
@@ -33,15 +34,15 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoResult.FromState(result);
+        return Result.FromState(result);
 
     }
-    public async ValueTask<RepoResult> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return RepoResult.FromError(RepositoryFailures.ModelFailedValidation);
+    public async ValueTask<Result> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
+        if (loreScopeName.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
+        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
 
         // Query
         IQueryable<LoreScope> query = dbSet.Where(l =>
@@ -51,7 +52,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoResult.FromState(!result);
+        return Result.FromState(!result);
 
     }
 }

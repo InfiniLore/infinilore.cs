@@ -1,19 +1,19 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Server.Components.Layout
-@using InfiniLore.Server.Services.Auth0
-@using InfiniLore.Server.Services.CQRS
-@using InfiniLore.Server.Services.CQRS.Commands.Data.User
-@using InfiniLore.Server.Services.CQRS.Queries.Account
-@using InfiniLore.ServerClient.Shared.ClaimsHelper
-@using MediatR
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
+@using InfiniLore.Server.Components.Layout
+@using InfiniLore.Server.Services.Mediator
+@using InfiniLore.Server.Services.Mediator.Commands.Data.User
+@using InfiniLore.Server.Services.Mediator.Queries.Account
+@using InfiniLore.ServerClient.Shared
+@using InfiniLore.ServerClient.Shared.ClaimsHelper
+@using MediatR
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
 
 @attribute [Authorize]
@@ -85,7 +85,7 @@
             return;
         }
 
-        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
+        var request = new LoreScopeCreateMediatorRequest(userId, Guid.NewGuid().ToString());
         MediatorResponse<Guid> createResult = await Mediator.Send(request);
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);

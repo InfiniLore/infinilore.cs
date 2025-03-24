@@ -3,11 +3,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0.Utility;
-using InfiniLore.Server.Services.Auth0;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Tools.InfiniLore.Auth0.Setup;
+using PermissionsStore=InfiniLore.ServerClient.Shared.PermissionsStore;
 
 namespace Tools.InfiniLore.Auth0.Commands.SyncPermissions;
 // ---------------------------------------------------------------------------------------------------------------------

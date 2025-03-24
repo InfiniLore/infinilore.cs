@@ -9,8 +9,8 @@ namespace InfiniLore.Server.Contracts.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("Success", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct PaginatedRepoResult<T>() : IUnion<PaginatedResult<T>, Error<string>> {
-    public static implicit operator bool(PaginatedRepoResult<T> value) => value.IsSuccess;
+public readonly partial struct PaginatedResult<T>() : IUnion<PaginatedData<T>, Error<string>> {
+    public static implicit operator bool(PaginatedResult<T> value) => value.IsSuccess;
 
-    public static PaginatedRepoResult<T> FromError(string failure) => FromError(new Error<string>(failure));
+    public static PaginatedResult<T> FromError(string failure) => FromError(new Error<string>(failure));
 }

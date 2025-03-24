@@ -10,7 +10,7 @@ window.secureStorage = {
                 console.log("Upgrading database (v3). Existing object stores:", db.objectStoreNames);
                 if (!db.objectStoreNames.contains("tokens")) {
                     console.log("Creating object store 'tokens'");
-                    db.createObjectStore("tokens", { keyPath: "id" });
+                    db.createObjectStore("tokens", {keyPath: "id"});
                 }
             };
 
@@ -57,7 +57,7 @@ window.secureStorage = {
     // Save the token with expiration info
     saveTokenAsync: async (key, value, expiresAt) => {
         return await window.secureStorage._executeTransactionAsync("tokens", "readwrite", (store) =>
-            store.put({ id: key, value: value, expiresAt: expiresAt })
+            store.put({id: key, value: value, expiresAt: expiresAt})
         );
     },
 

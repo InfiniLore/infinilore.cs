@@ -14,7 +14,7 @@ namespace InfiniLore.Server.DataSeeder.Seeders;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<DatabaseMigrator>(ServiceLifetime.Scoped)]
-public class DatabaseMigrator(IUnitOfWorkFactory factory,IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<DatabaseMigrator> logger) : Seeder {
+public class DatabaseMigrator(IUnitOfWorkFactory factory, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<DatabaseMigrator> logger) : Seeder {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -26,10 +26,11 @@ public class DatabaseMigrator(IUnitOfWorkFactory factory,IReadonlyUnitOfWorkFact
         try {
             IEnumerable<string> pendingMigrations = await db.Database.GetPendingMigrationsAsync(ct);
             bool shouldSeed = pendingMigrations.Any();
-        
+
             logger.Information("Database Migration state is {State}", shouldSeed);
             return shouldSeed;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // If a complicated error happens, this is usually due to the db not having any migrations yet
             logger.Error(e, "Error while checking database migration state");
             return true;

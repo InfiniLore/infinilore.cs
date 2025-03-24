@@ -63,6 +63,7 @@ public static class ContentDbFactory {
             ILoggerFactory databaseLoggerFactory = LoggerFactory.Create(builder =>
                 builder.AddSerilog(Log.Logger.ForContext("Section", "EFCORE ContentDb"))
             );
+
             options.UseLoggerFactory(databaseLoggerFactory);
 
             optionsAction.Invoke(options);

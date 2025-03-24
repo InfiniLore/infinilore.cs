@@ -2,8 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Server.Api.Mappers.Account;
 using InfiniLore.Server.Api.Responses.Account;
-using InfiniLore.Server.Services.Auth0;
+using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InfiniLore.Server.Api.Endpoints.Account.GetProfile;
@@ -23,10 +24,8 @@ public class GetProfileEndpoint : Endpoint<GetProfileRequest, Response, UserProf
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override Task<Response> ExecuteAsync(GetProfileRequest req, CancellationToken ct) {
+    public override Task<Response> ExecuteAsync(GetProfileRequest req, CancellationToken ct) => throw
         // TODO check the user for more than just the permissions
         //      We need to validate if the user is an admin, accessing themselves if they are just a user, etc...
-        
-        throw new NotImplementedException();
-    }
+        new NotImplementedException();
 }

@@ -4,13 +4,13 @@
 using InfiniLore.Credentials;
 using System.Collections.Frozen;
 
-namespace InfiniLore.Server.Services.Auth0;
+namespace InfiniLore.ServerClient.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [CredentialsStore(CredentialsFlags.IterateValues, true, ".")]
 public static partial class RolesStore {
-    
+
     public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(static () => new Dictionary<string, string[]> {
         [User] = UserPermissions.Value,
         [Consumer] = ConsumerPermissions.Value,

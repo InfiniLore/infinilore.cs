@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="Queries\Data\Discovery\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="AterraEngine.Unions" Version="4.1.0"/>
+        <PackageReference Include="AterraEngine.Unions.Generators" Version="4.1.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0"/>
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.53.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0"/>
+        <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0"/>
+        <PackageReference Include="MediatR" Version="12.4.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
+        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
+    </ItemGroup>
+
+</Project>

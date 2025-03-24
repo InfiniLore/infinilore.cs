@@ -5,9 +5,9 @@ using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Database.Models.Account;
-using InfiniLore.Server.Services.Auth0;
-using InfiniLore.Server.Services.CQRS;
-using InfiniLore.Server.Services.CQRS.Queries.Account;
+using InfiniLore.Server.Services.Mediator;
+using InfiniLore.Server.Services.Mediator.Queries.Account;
+using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using MediatR;
@@ -49,18 +49,19 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         // Run all checks and return to new user page if needed
         Task<MediatorResponse> userExistsTask = mediator.Send(new UserExistsByAuth0Query(auth0Info.Auth0UserId));
         Task<MediatorResponse<InfiniLoreUser>> userTask = mediator.Send(new GetUserByAuth0IdQuery(auth0Info.Auth0UserId));
-        
+
         (MediatorResponse userExistsResponse, MediatorResponse<InfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
-        
+
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId
-            case ({IsState:true, State: true}, {IsSuccess: true, AsSuccess: var user }): {
+            case ({ IsState: true, State: true }, { IsSuccess: true, AsSuccess: var user }): {
                 _logger.Debug("User already exists, continuing...");
-                
+
                 principal.AddIdentity(new ClaimsIdentity(new[] {
                     new Claim(InfiniLoreClaimsStoreConstants.UserId, user.Id.ToString()),
                     new Claim(InfiniLoreClaimsStoreConstants.UserName, user.Username)
                 }));
+
                 return;
             }
 
@@ -73,10 +74,10 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
 
             // Something else happend, which means an error
             default: {
-                if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
+                if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
-                else {failure = "Unknown error";}
-                
+                else { failure = new[] { "Unknown error" }; }
+
                 RedirectToLogout(context, failure);
                 return;
 
@@ -84,8 +85,8 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         }
     }
 
-    private void RedirectToLogout(TokenValidatedContext context, string? failure) {
-        _logger.LogError("Error checking if user exists : {failure}", failure);
+    private void RedirectToLogout(TokenValidatedContext context, ICollection<string> failure) {
+        _logger.LogError("Error checking if user exists : {@failure}", failure);
         context.Response.Redirect("/account/logout?returnUrl=/");
         context.HandleResponse();
     }

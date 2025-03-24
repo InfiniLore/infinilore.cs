@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database;
@@ -15,7 +16,7 @@ namespace InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IKeyValueStoreRepository>(ServiceLifetime.Scoped)]
 public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValueStoreRepository {
-    public async ValueTask<RepoResult> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default) {
+    public async ValueTask<Result> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
@@ -29,7 +30,7 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         return true;
     }
 
-    public async ValueTask<RepoResult<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
+    public async ValueTask<Result<KeyValueStore>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
         // Access
         DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
 
@@ -38,12 +39,12 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
             .FirstOrDefaultAsync(predicate: ls => ls.Key == key, ct);
 
         // Retrieve
-        if (result is null) return RepoResult<KeyValueStore>.FromError(RepositoryFailures.ModelNotFound);
+        if (result is null) return Result<KeyValueStore>.FromError(RepositoryFailures.ModelNotFound);
 
-        return RepoResult<KeyValueStore>.FromSuccess(result);
+        return Result<KeyValueStore>.FromSuccess(result);
     }
 
-    public async ValueTask<RepoResult<int>> GetCountAsync(CancellationToken ct = default) {
+    public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
 
@@ -51,6 +52,6 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         int result = await dbSet.CountAsync(cancellationToken: ct);
 
         // Retrieve
-        return RepoResult<int>.FromSuccess(result);
+        return Result<int>.FromSuccess(result);
     }
 }

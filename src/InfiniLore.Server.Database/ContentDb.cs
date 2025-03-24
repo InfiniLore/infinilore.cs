@@ -14,7 +14,6 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
 public class ContentDb : DbContext, IReadonlyCapableDbContext {
-    public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -28,17 +27,19 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
 
     public DbSet<InfiniLoreUser> Users { get; set; } = null!;
     public DbSet<LoreScope> LoreScopes { get; set; } = null!;
+    public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void SetAsReadonly() {
         if (IsReadonly) return;
+
         IsReadonly = true;
 
         // Since this is a DbContext, ensure it's configured to be read-only.
         // Prevent any transaction or modification logic, e.g., disabling change tracking.
-        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking ;
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         ChangeTracker.AutoDetectChangesEnabled = false;
     }
 

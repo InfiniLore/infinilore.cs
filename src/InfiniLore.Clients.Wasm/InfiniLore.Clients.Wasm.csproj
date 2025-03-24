@@ -9,15 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.51.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3"/>
         <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0"/>
         <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Wasm.Services\InfiniLore.Clients.Wasm.Services.csproj"/>
     </ItemGroup>
 
