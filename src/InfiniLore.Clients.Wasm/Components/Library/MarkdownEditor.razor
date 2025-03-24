@@ -15,12 +15,11 @@
 
 <input type="text" class="w-full h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText"></input>
 
-<div class="w-full h-16 p-4 border-2 border-gray-300 rounded-lg">@MarkdownOutput</div>
+<div class="w-full h-16 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput</div>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     private string _markdownText = string.Empty;
     public string MarkdownText {
