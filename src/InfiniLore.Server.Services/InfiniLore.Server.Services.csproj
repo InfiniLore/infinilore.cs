@@ -9,10 +9,10 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.52.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.52.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.52.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.52.0">
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.53.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.53.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -28,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Api\InfiniLore.Server.Api.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.CQRS\InfiniLore.Server.Services.CQRS.csproj"/>
         <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj" />

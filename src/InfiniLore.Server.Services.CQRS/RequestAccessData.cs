@@ -1,9 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Contracts.Services.Cqrs;
+using InfiniLore.ServerClient.Shared;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace InfiniLore.Server.Services.CQRS;
 
@@ -28,6 +31,23 @@ public record RequestAccessData(
             UserId: userId,
             Roles: helper.GetRoles(),
             Permissions: helper.GetPermissions()
+        );
+    }
+
+    public static IAccessData FromClaims(ClaimsPrincipal? claimsPrincipal, CancellationToken ct = default) {
+
+        string? userIdString = claimsPrincipal?.FindFirstOrDefault(InfiniLoreClaimsStore.UserId)?.Value;
+        if (!Guid.TryParse(userIdString, out Guid userId)) return Empty;
+        
+        string[] roles = claimsPrincipal?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];
+        string[] permissions = claimsPrincipal?.FindAll("permissions").Select(claim => claim.Value).ToArray() ?? [];
+        
+        ct.ThrowIfCancellationRequested();
+        
+        return new RequestAccessData(
+            UserId: userId,
+            Roles: roles,
+            Permissions: permissions
         );
     }
     

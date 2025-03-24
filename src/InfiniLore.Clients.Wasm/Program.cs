@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Clients.Kiota;
 using InfiniLore.Clients.Kiota.Extensions;
+using InfiniLore.Clients.Wasm.Services;
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -32,6 +33,7 @@ public static class Program {
 
         builder.Logging.AddSerilog();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
+        builder.Services.RegisterServicesFromInfiniLoreClientsWasmServices();
         
         builder.Services.AddKiotaHandlers();
         builder.Services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI", 

@@ -18,13 +18,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.52.0" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0" />
 
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.52.0">
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.53.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.52.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0" />
         <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
@@ -32,6 +32,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
+        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj" />
     </ItemGroup>
 
 </Project>

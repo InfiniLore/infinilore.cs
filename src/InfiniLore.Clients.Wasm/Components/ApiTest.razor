@@ -1,23 +1,21 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Clients.Kiota
-@using InfiniLore.Clients.Kiota.Models
+@using AterraEngine.Unions
+@using InfiniLore.Server.Api.Responses.Data.User.LoreScopes
+@using InfiniLore.ServerClient.Services
 @using InfiniLore.ServerClient.Shared
-@using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.Kiota.Abstractions
-@using Microsoft.Kiota.Serialization
 @using System.Security.Claims
+@using System.Text.Json
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/api-test"
 @attribute [Authorize]
-@rendermode RenderModes.WebAssemblyOnly
-@inject InfiniLoreApiClient ApiClient
-@inject IJsSecureStorageJwtTokenProvider TokenProvider
+@rendermode InteractiveAuto
 @inject ILogger<ApiTest> Logger
+@inject IInteractiveApiAccess InteractiveApiAccess
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -47,30 +45,16 @@
 
         if (userId.IsNullOrWhiteSpace()) {
             Logger.Information("user: {@user}", state.User);
-            
             _apiResponse = "User Id Not Found";
             return;
         }
 
-        string? token = await TokenProvider.GetTokenAsync();
-        if (token.IsNullOrWhiteSpace()) {
-            _apiResponse = "TOKEN NOT FOUND";
-            return;
+        Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
+        if (result.TryGetAsErrorValue(out string? value)) {
+            _apiResponse = value;
         }
 
-        try {
-            InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse? result = await ApiClient.Api.V1.Data.User[userId].Lorescope
-                .GetAsync(configuration => configuration.AddJwtToken(token));
-            if (result is null) {
-                _apiResponse = "Could not get data from API";
-                return;
-            }
-            
-            string json = await result.SerializeAsJsonStringAsync();
-            _apiResponse = $"This data comes from an internal API: {Environment.NewLine} {json}";
-        }
-        catch (Exception e) {
-            _apiResponse = e.Message;
-        }
+        string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
+        _apiResponse = dataAsJson;
     }
 }

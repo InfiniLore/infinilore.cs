@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.52.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
