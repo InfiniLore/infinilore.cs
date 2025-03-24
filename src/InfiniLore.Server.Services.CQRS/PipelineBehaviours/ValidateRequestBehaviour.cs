@@ -16,8 +16,7 @@ public class ValidateRequestBehaviour<TRequest, TResponse>(
     IValidator<TRequest>? validator = null// Optional service, because not all requests have validation logic.
 )
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IMediatorRequest 
-{
+    where TRequest : IMediatorRequest {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct) {
         // If a Validator hasn't been defined, we skip any logic all together.
         //      In the long run everything should be validated, so we add warning logs.

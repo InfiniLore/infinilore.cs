@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.Contracts.Services.Auth0;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,11 +19,10 @@ public interface IJwtTokenHelper {
     bool TryGetAuthenticatedUser([NotNullWhen(true)] out ClaimsPrincipal? user);
     bool TryGetRoles([NotNullWhen(true)] out string[]? roles);
     bool TryGetPermissions([NotNullWhen(true)] out string[]? permissions);
-    
+
     Dictionary<string, List<string>> GetAllClaimsAsDictionary();
     ValueTask<Guid> TryGetUserIdFromClaimsAsync(CancellationToken ct = default);
-    
+
     string[] GetRoles();
     string[] GetPermissions();
-
 }

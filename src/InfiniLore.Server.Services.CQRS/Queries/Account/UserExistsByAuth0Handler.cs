@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using MediatR;
 
@@ -23,6 +22,7 @@ public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : IReq
 
         Result result = await userRepository.IsExistingAuth0Id(request.Auth0UserId, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
+
         return state;
     }
 }

@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.Services.Auth0;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,21 +39,21 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMediator 
         user = _user;
         return true;
     }
-    
+
     public bool TryGetRoles([NotNullWhen(true)] out string[]? roles) {
         roles = GetRoles();
         return roles.Length > 0;
     }
-    
+
     public bool TryGetPermissions([NotNullWhen(true)] out string[]? permissions) {
         permissions = GetPermissions();
         return permissions.Length > 0;
     }
 
-    public Dictionary<string, List<string>> GetAllClaimsAsDictionary() 
+    public Dictionary<string, List<string>> GetAllClaimsAsDictionary()
         => _user?.Claims
-            .GroupBy(claim => claim.Type)
-            .ToDictionary(group => group.Key, group => group.Select(claim => claim.Value).ToList()) 
+                .GroupBy(claim => claim.Type)
+                .ToDictionary(keySelector: group => group.Key, elementSelector: group => group.Select(claim => claim.Value).ToList())
             ?? [];
 
     public async ValueTask<Guid> TryGetUserIdFromClaimsAsync(CancellationToken ct = default) {
@@ -64,12 +63,13 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMediator 
         // TODO maybe not use mediator here? I dont know
         MediatorResponse<Guid> result = await mediator.Send(new GetUserIdByAuth0IdQuery(auth0UserId), ct);
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
-        return userId != Guid.Empty 
-            ? userId 
+
+        return userId != Guid.Empty
+            ? userId
             : Guid.Empty;
     }
-    
+
     public string[] GetRoles() => _user?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];
-    
+
     public string[] GetPermissions() => _user?.FindAll("permissions").Select(claim => claim.Value).ToArray() ?? [];
 }

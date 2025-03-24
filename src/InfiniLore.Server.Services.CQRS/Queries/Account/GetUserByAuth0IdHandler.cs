@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using MediatR;
@@ -20,7 +19,7 @@ public class GetUserByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : IRequ
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        Result<InfiniLoreUser> result = await userRepository.TryGetByAuth0IdAsync(request.Auth0Id, ct:ct);
+        Result<InfiniLoreUser> result = await userRepository.TryGetByAuth0IdAsync(request.Auth0Id, ct: ct);
         if (result.IsError) return MediatorResponse<InfiniLoreUser>.FromErrorString("Cannot get user id by auth0 id. Auth0 id not found.");
 
         return result.AsSuccess;

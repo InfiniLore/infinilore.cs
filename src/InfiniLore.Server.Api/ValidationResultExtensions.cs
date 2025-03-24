@@ -14,15 +14,14 @@ public static class ValidationResultExtensions {
         var problemDetails = new ProblemDetails {
             Status = 400,
             Detail = "One or more validation errors occurred.",
-            
+
             // Map each ValidationFailure in ValidationResult to ProblemDetails.Error
             Errors = validationResult.Errors
-                .Select(failure => new ProblemDetails.Error
-                {
-                    Name = failure.PropertyName,    // The name of the field or property
-                    Reason = failure.ErrorMessage, // The validation error message
-                    Code = failure.ErrorCode,      // Optional error code (if configured in FluentValidation)
-                    Severity = failure.Severity.ToString() // Error severity
+                .Select(failure => new ProblemDetails.Error {
+                    Name = failure.PropertyName,// The name of the field or property
+                    Reason = failure.ErrorMessage,// The validation error message
+                    Code = failure.ErrorCode,// Optional error code (if configured in FluentValidation)
+                    Severity = failure.Severity.ToString()// Error severity
                 })
                 .ToList()
         };

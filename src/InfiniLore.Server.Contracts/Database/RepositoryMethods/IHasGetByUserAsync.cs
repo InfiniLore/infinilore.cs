@@ -11,6 +11,6 @@ namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasGetByUserAsync<T> where T : UserData {
     ValueTask<Result<T[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default);
-    
+
     ValueTask<PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default);
 }

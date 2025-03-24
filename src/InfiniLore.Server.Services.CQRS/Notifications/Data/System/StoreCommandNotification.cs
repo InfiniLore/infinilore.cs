@@ -5,7 +5,6 @@ using InfiniLore.Server.Contracts.Services.Cqrs;
 using MediatR;
 
 namespace InfiniLore.Server.Services.CQRS.Notifications.Data.System;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

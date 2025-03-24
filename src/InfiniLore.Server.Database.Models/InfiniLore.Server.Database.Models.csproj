@@ -8,9 +8,9 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.3" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.3"/>
     </ItemGroup>
 
 </Project>

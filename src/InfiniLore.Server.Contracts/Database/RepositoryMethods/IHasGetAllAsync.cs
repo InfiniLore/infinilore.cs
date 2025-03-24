@@ -12,5 +12,5 @@ namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 public interface IHasGetAllAsync<T> where T : BasicData {
     ValueTask<Result<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default);
 
-    ValueTask<PaginatedResult<T>> GetAllAsync(PaginationInfo pageInfo,QueryConfig config = default,  CancellationToken ct = default);
+    ValueTask<PaginatedResult<T>> GetAllAsync(PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default);
 }

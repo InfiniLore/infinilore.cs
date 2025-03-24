@@ -18,13 +18,13 @@ public class LoreScopesMapper : ResponseMapper<LoreScopesResponse, PaginatedData
         var singleMapper = Resolve<LoreScopeMapper>();
 
         LoreScopeResponse[] items = entities.Items.Select(singleMapper.FromEntity).ToArray();
-        var response =  new LoreScopesResponse {
+        var response = new LoreScopesResponse {
             Items = items,
             TotalCount = entities.TotalCount,
             TotalPages = entities.TotalPages,
             CurrentPage = entities.CurrentPage
         };
-        
+
         return response;
     }
 }

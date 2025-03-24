@@ -1,11 +1,11 @@
-﻿@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Imports *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
-@using InfiniLore.Server.Components.ComponentLibrary
+﻿@using InfiniLore.Server.Components.ComponentLibrary
 @using InfiniLore.ServerClient.Shared
 @using InfiniLore.ServerClient.Shared.JwtToken
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports *@
+@* ------------------------------------------------------------------------------------------------------------------ *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -16,20 +16,24 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <CollapsibleMenu @bind-IsMenuCollapsed="@IsMenuCollapsed">
     <Header>
-        <a href="/" 
+        <a href="/"
            class="@(!IsMenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
             InfiniLore
         </a>
     </Header>
-    
+
     <NavigationMenu>
         <CollapsibleMenuButton Href="/about">
-            <Icon><LiEqualApproximately/></Icon>
+            <Icon>
+                <LiEqualApproximately/>
+            </Icon>
             <Text>About</Text>
         </CollapsibleMenuButton>
-        
+
         <CollapsibleMenuButton Href="/api-test">
-            <Icon><LiPlus/></Icon>
+            <Icon>
+                <LiPlus/>
+            </Icon>
             <Text>Api Test</Text>
         </CollapsibleMenuButton>
 
@@ -37,14 +41,16 @@
             <NotAuthorized></NotAuthorized>
             <Authorized>
                 <CollapsibleMenuButton Href="/claims-viewer">
-                    <Icon><LiView/></Icon>
+                    <Icon>
+                        <LiView/>
+                    </Icon>
                     <Text>Claims</Text>
                 </CollapsibleMenuButton>
             </Authorized>
         </AuthorizeView>
-        
+
     </NavigationMenu>
-    
+
     <Footer>
         <AuthorizeView>
             <NotAuthorized>
@@ -57,8 +63,7 @@
                          class="@($"transition-all duration-300 {(IsMenuCollapsed ? "w-8 h-8 mx-auto" : "w-10 h-10")}")">
                     @if (!string.IsNullOrEmpty(ProfileImage)) {
                         <img src="@ProfileImage" alt="Profile" class="rounded-full" crossorigin="anonymous">
-                    }
-                    else {
+                    } else {
                         <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
                     }
 
@@ -67,10 +72,13 @@
                 <div class="@(!IsMenuCollapsed ? "ml-4" : "hidden") text-white flex flex-col space-y-1">
                     <p class="font-semibold">@UserName</p>
 
-                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings</NavLink>
-                    
+                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings
+                    </NavLink>
+
                     @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
-                    <NavLink @onclick="LogoutCallbackAsync" href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
+                    <NavLink @onclick="LogoutCallbackAsync" href="/account/logout"
+                             class="text-sm text-gray-400 hover:text-gray-200">logout
+                    </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
@@ -109,10 +117,10 @@
             UserName = nameClaim ?? "User";
             ProfileImage = imageClaim ?? "";// Fallback if no image is available
         }
-        
+
         await InvokeAsync(StateHasChanged);
     }
-    
+
     private async Task LogoutCallbackAsync() {
         await JsTokenProvider.RemoveTokenAsync();
     }

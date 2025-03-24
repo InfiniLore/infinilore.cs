@@ -7,23 +7,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="wwwroot\**\*" />
+        <EmbeddedResource Include="wwwroot\**\*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.53.0" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.53.0"/>
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.53.0"/>
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.53.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0" />
-        <PackageReference Include="InfiniLore.Credentials" Version="4.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3" />
-        <PackageReference Include="Microsoft.JSInterop" Version="9.0.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.53.0"/>
+        <PackageReference Include="InfiniLore.Credentials" Version="4.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.JSInterop" Version="9.0.3"/>
         <PackageReference Include="InfiniLore.Credentials.Generators" Version="4.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,17 +31,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
+        <Folder Include="wwwroot\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="InfiniLore.Server.Services.Auth0">
-        <HintPath>..\InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.Services.Auth0.dll</HintPath>
-      </Reference>
+        <Reference Include="InfiniLore.Server.Services.Auth0">
+            <HintPath>..\InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.Services.Auth0.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

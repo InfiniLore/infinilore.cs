@@ -14,7 +14,7 @@ namespace InfiniLore.ServerClient.Shared.JwtToken;
 [InjectableService<IJsSecureStorageJwtTokenProvider>(ServiceLifetime.Scoped)]
 public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JsSecureStorageJwtTokenProvider> logger, IJwtTokenEncoder encoder) : IJsSecureStorageJwtTokenProvider {
     private const string StorageKey = "jwt_token";
-    
+
     private const string JsSaveTokenAsync = "secureStorage.saveTokenAsync";
     private const string JsGetTokenAsync = "secureStorage.getTokenAsync";
     private const string JsRemoveTokenAsync = "secureStorage.removeTokenAsync";
@@ -23,7 +23,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Save the JWT token securely along with its expiration timestamp.
+    ///     Save the JWT token securely along with its expiration timestamp.
     /// </summary>
     public async Task SaveTokenAsync(string token, DateTime expiresAt, CancellationToken ct = default) {
         try {
@@ -35,7 +35,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     }
 
     /// <summary>
-    /// Retrieve the JWT token securely and check for validity.
+    ///     Retrieve the JWT token securely and check for validity.
     /// </summary>
     public async Task<string?> GetTokenAsync(CancellationToken ct = default) {
         try {
@@ -45,7 +45,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
                 logger.LogInformation("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
             }
-            
+
             // Check if ExpiresAt is available in the storage
             //      If no ExpiresAt, decode the token and extract expiration
             if (!DateTime.TryParse(tokenRecord.ExpiresAt, out DateTime expiresAt)) {
@@ -73,7 +73,7 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
     }
 
     /// <summary>
-    /// Remove the JWT token securely (e.g., during logout).
+    ///     Remove the JWT token securely (e.g., during logout).
     /// </summary>
     public async Task RemoveTokenAsync(CancellationToken ct = default) {
         try {
@@ -83,8 +83,8 @@ public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFa
             logger.Error(e, "Failed to remove token from secureStorage");
         }
     }
-    
-    
+
+
     private async Task<string?> RetrieveAndStoreTokenAsync(CancellationToken ct = default) {
         try {
             // Fetch a new token from the server if no valid token is found

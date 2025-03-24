@@ -24,7 +24,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
         if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
+        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
 
         // Query
         IQueryable<LoreScope> query = dbSet.Where(l =>
@@ -42,7 +42,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
         if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet =  GetCachedDbSet<LoreScope>();
+        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
 
         // Query
         IQueryable<LoreScope> query = dbSet.Where(l =>

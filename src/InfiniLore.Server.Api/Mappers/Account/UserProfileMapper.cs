@@ -6,7 +6,6 @@ using InfiniLore.Server.Api.Responses.Account;
 using InfiniLore.Server.Database.Models.Account;
 
 namespace InfiniLore.Server.Api.Mappers.Account;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

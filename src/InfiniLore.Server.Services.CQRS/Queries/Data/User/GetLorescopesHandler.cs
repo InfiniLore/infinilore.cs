@@ -19,9 +19,9 @@ public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
     public async Task<MediatorResponse<PaginatedData<LoreScope>>> Handle(GetLoreScopesQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        
-        var queryConfig = new QueryConfig(AutoInclude: request.AutoInclude, Reverse: request.Reverse);
-        PaginatedResult<LoreScope> response = await loreScopeRepository.GetByUserAsync(request.UserId,request.PaginationInfo, queryConfig, ct);
+
+        var queryConfig = new QueryConfig(request.AutoInclude, request.Reverse);
+        PaginatedResult<LoreScope> response = await loreScopeRepository.GetByUserAsync(request.UserId, request.PaginationInfo, queryConfig, ct);
 
         if (!response.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes");

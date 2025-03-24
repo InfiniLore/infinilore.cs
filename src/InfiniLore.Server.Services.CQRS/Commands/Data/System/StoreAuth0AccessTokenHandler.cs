@@ -4,7 +4,6 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.System;
@@ -35,6 +34,7 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
 
         Result result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
+
         return state;
     }
 }

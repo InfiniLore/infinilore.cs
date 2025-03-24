@@ -4,7 +4,6 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Clients.Kiota;
-using InfiniLore.Clients.Kiota.Models;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.ServerClient.Services;
 using InfiniLore.ServerClient.Shared.JwtToken;
@@ -15,7 +14,6 @@ using Microsoft.Kiota.Serialization;
 using System.Text.Json;
 
 namespace InfiniLore.Clients.Wasm.Services;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -30,16 +28,20 @@ public class InteractiveApiAccessWasmSide(
     public async ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         string? token = await tokenProvider.GetTokenAsync(ct);
         if (token.IsNullOrWhiteSpace()) return Result<LoreScopesResponse>.FromError("JwtToken Not Found in JsSecureStorage");
-        
+
+        // ReSharper disable twice SuggestVarOrType_SimpleTypes
         try {
-            InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse? result = await apiClient.Api.V1.Data.User[userId].Lorescope
-                .GetAsync(configuration => configuration.AddJwtToken(token), ct);
-            if (result is null) return  Result<LoreScopesResponse>.FromError("Could not get data from API");
-            
+            var requestBuilder = apiClient.Api.V1.Data.User[userId].Lorescope;
+            var result = await requestBuilder
+                .GetAsync(requestConfiguration: configuration => configuration.AddJwtToken(token), ct);
+
+            if (result is null) return Result<LoreScopesResponse>.FromError("Could not get data from API");
+
             Stream jsonStream = result.SerializeAsJsonStream();
             var response = await JsonSerializer.DeserializeAsync<LoreScopesResponse>(jsonStream, Options, ct);
-            
+
             if (response is null) return Result<LoreScopesResponse>.FromError("Could not deserialize data from API");
+
             return Result<LoreScopesResponse>.FromSuccess(response);
         }
         catch (Exception e) {

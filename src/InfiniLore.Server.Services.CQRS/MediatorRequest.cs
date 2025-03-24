@@ -8,9 +8,9 @@ namespace InfiniLore.Server.Services.CQRS;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record CommonRequestData: IMediatorRequest {
+public record CommonRequestData : IMediatorRequest {
     public IAccessData AccessData { get; init; } = RequestAccessData.Empty;
-    
+
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
 }
 

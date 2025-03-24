@@ -10,7 +10,7 @@ namespace InfiniLore.ServerClient.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 [CredentialsStore(CredentialsFlags.IterateValues, true, ".")]
 public static partial class RolesStore {
-    
+
     public static Lazy<FrozenDictionary<string, string[]>> PermissionsPerRoles { get; } = new(static () => new Dictionary<string, string[]> {
         [User] = UserPermissions.Value,
         [Consumer] = ConsumerPermissions.Value,

@@ -39,6 +39,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [Parameter] public bool IsMenuCollapsed { get; set; }
 
@@ -49,8 +50,8 @@
     [Parameter] public EventCallback<bool> IsMenuCollapsedChanged { get; set; }
 
     private async Task ToggleMenu() {
-        IsMenuCollapsed = !IsMenuCollapsed; // Toggle the collapsed state
-        await IsMenuCollapsedChanged.InvokeAsync(IsMenuCollapsed); // Notify parent component about the change
+        IsMenuCollapsed = !IsMenuCollapsed;// Toggle the collapsed state
+        await IsMenuCollapsedChanged.InvokeAsync(IsMenuCollapsed);// Notify parent component about the change
         await InvokeAsync(StateHasChanged);
     }
 }

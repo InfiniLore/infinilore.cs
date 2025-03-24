@@ -34,6 +34,7 @@ public static class ServiceProviderFactory {
             .WriteTo.Console()
             .MinimumLevel.Information()
             .CreateLogger();
+
         services.AddLogging(static loggingBuilder =>
             loggingBuilder.AddSerilog(Log.Logger, true));
 

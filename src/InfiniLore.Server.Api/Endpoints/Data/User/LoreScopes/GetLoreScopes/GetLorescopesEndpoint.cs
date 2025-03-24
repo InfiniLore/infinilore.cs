@@ -28,7 +28,7 @@ using Response=Results<
 >;
 
 public class GetLoreScopesEndpoint(
-    IMediator mediator, 
+    IMediator mediator,
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
@@ -43,19 +43,19 @@ public class GetLoreScopesEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLoreScopesRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
+
         // Form Query
         var query = new GetLoreScopesQuery(
-            UserId: req.UserId,
-            AutoInclude: false,
-            PaginationInfo: new PaginationInfo(1)
+            req.UserId,
+            false,
+            new PaginationInfo(1)
         ) {
             AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
         };
-        
+
         // Execute Query
         MediatorResponse<PaginatedData<LoreScope>> result = await mediator.Send(query, ct);
-        
+
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);

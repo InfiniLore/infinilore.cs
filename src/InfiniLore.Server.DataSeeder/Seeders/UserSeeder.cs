@@ -5,7 +5,6 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
@@ -41,11 +40,12 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         HashSet<string> foundUserAuth0Ids = foundUsers.SelectMany(user => user.GetAuth0Ids()).ToHashSet();
 
         // Assign the users to _usersToSeed queue for seeding.
-        foreach (SeedingUser user in  users.Where(user => !foundUserAuth0Ids.Contains(user.Auth0Id))) {
+        foreach (SeedingUser user in users.Where(user => !foundUserAuth0Ids.Contains(user.Auth0Id))) {
             _usersToSeed.Enqueue(user);
         }
+
         bool shouldSeed = !_usersToSeed.IsEmpty;
-        
+
         logger.Information("User seeding is {State}", shouldSeed);
         return shouldSeed;
     }
@@ -53,12 +53,13 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
     public override async Task SeedAsync(CancellationToken ct = new()) {
         int totalUsersToSeed = _usersToSeed.Count;
         if (totalUsersToSeed == 0) return;
-        
+
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] =  mediator.Send(new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
+            tasks[i++] = mediator.Send(new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
         }
+
         await Task.WhenAny(tasks);
     }
 }

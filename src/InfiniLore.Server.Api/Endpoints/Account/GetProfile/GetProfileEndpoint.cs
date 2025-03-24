@@ -24,10 +24,8 @@ public class GetProfileEndpoint : Endpoint<GetProfileRequest, Response, UserProf
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override Task<Response> ExecuteAsync(GetProfileRequest req, CancellationToken ct) {
+    public override Task<Response> ExecuteAsync(GetProfileRequest req, CancellationToken ct) => throw
         // TODO check the user for more than just the permissions
         //      We need to validate if the user is an admin, accessing themselves if they are just a user, etc...
-        
-        throw new NotImplementedException();
-    }
+        new NotImplementedException();
 }

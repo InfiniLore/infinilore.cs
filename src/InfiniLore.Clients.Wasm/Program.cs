@@ -34,12 +34,12 @@ public static class Program {
         builder.Logging.AddSerilog();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
         builder.Services.RegisterServicesFromInfiniLoreClientsWasmServices();
-        
+
         builder.Services.AddKiotaHandlers();
-        builder.Services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI", 
-            static client => client.BaseAddress = new Uri("https://localhost:7059/")
+        builder.Services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI",
+            configureClient: static client => client.BaseAddress = new Uri("https://localhost:7059/")
         ).AttachKiotaHandlers();
-        
+
         builder.Services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
 
         // -------------------------------------------------------------------------------------------------------------

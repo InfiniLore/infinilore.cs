@@ -5,7 +5,6 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using FluentValidation.Results;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.CQRS.Notifications.Account;
@@ -42,6 +41,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
             Id = newUserId,
             Username = request.UserName
         };
+
         SetAuth0Id(user, request.Auth0UserId);
 
         // Validate the user model

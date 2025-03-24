@@ -49,18 +49,19 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
         // Run all checks and return to new user page if needed
         Task<MediatorResponse> userExistsTask = mediator.Send(new UserExistsByAuth0Query(auth0Info.Auth0UserId));
         Task<MediatorResponse<InfiniLoreUser>> userTask = mediator.Send(new GetUserByAuth0IdQuery(auth0Info.Auth0UserId));
-        
+
         (MediatorResponse userExistsResponse, MediatorResponse<InfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
-        
+
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId
-            case ({IsState:true, State: true}, {IsSuccess: true, AsSuccess: var user }): {
+            case ({ IsState: true, State: true }, { IsSuccess: true, AsSuccess: var user }): {
                 _logger.Debug("User already exists, continuing...");
-                
+
                 principal.AddIdentity(new ClaimsIdentity(new[] {
                     new Claim(InfiniLoreClaimsStoreConstants.UserId, user.Id.ToString()),
                     new Claim(InfiniLoreClaimsStoreConstants.UserName, user.Username)
                 }));
+
                 return;
             }
 
@@ -75,8 +76,8 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
             default: {
                 if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
-                else {failure = new[]{"Unknown error"};}
-                
+                else { failure = new[] { "Unknown error" }; }
+
                 RedirectToLogout(context, failure);
                 return;
 

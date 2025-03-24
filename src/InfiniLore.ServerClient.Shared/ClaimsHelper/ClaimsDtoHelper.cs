@@ -27,12 +27,12 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
         string[] roles = principal.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray();
 
         return new ClaimsDto(
-            Auth0UserId: auth0UserId ?? string.Empty,
-            InfiniLoreUserId: infiniloreUserId ?? string.Empty,
-            InfiniloreUserName: infiniloreUserName ?? string.Empty,
-            Name: name ?? string.Empty,
-            Email: email ?? string.Empty,
-            Roles: roles
+            auth0UserId ?? string.Empty,
+            infiniloreUserId ?? string.Empty,
+            infiniloreUserName ?? string.Empty,
+            name ?? string.Empty,
+            email ?? string.Empty,
+            roles
         );
     }
 
@@ -45,9 +45,9 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
             .AddClaim(InfiniLoreClaimsStoreConstants.UserId, claimsDto.InfiniLoreUserId)
             .AddClaim(InfiniLoreClaimsStoreConstants.UserName, claimsDto.InfiniloreUserName)
             .AddClaim("email", claimsDto.Email);
-        
+
         identity.AddClaims(claimsDto.Roles.Select(roleName => new Claim(ClaimTypes.Role, roleName)));
-        
+
         return new ClaimsPrincipal(identity);
     }
 }

@@ -13,9 +13,6 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
-    
-    protected override IQueryable<T> AutoInclude(IQueryable<T> query)
-        => query.Include(ls => ls.Owner);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -35,13 +32,13 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         return Result<T[]>.FromSuccess(result);
     }
 
-    public async ValueTask<PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo,  QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
         // Query
         IQueryable<T> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
-        
+
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<T>.Empty;
 
@@ -61,4 +58,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
+
+    protected override IQueryable<T> AutoInclude(IQueryable<T> query)
+        => query.Include(ls => ls.Owner);
 }

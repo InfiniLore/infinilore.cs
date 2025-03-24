@@ -14,8 +14,110 @@ namespace InfiniLore.Server.Database.Repositories;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, IBasicDataRepository<T> where T : BasicData {
-    
+
+    public async ValueTask<Result<T>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query
+        T? result = await dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .Where(ls => ls.Id == id)
+            .FirstOrDefaultAsync(cancellationToken: ct);
+
+        // Retrieve
+        if (result is null) return Result<T>.FromError(RepositoryFailures.ModelNotFound);
+
+        return Result<T>.FromSuccess(result);
+    }
+
+    public async ValueTask<Result<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query
+        IOrderedQueryable<T>? query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
+            .OrderByDescending(ls => ls.Id);
+
+        // Query & Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        return Result<T[]>.FromSuccess(data);
+    }
+
+    public async ValueTask<PaginatedResult<T>> GetAllAsync(PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query
+        int totalCount = await dbSet.CountAsync(ct);
+        if (totalCount == 0) return PaginatedData<T>.Empty;
+
+        IQueryable<T> query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalReverse(config.Reverse)
+            .OrderByDescending(ls => ls.Id)
+            .Skip(pageInfo.SkipAmount)
+            .Take(pageInfo.PageSize);
+
+        // Retrieve
+        T[] data = await query.ToArrayAsync(cancellationToken: ct);
+        return new PaginatedData<T>(
+            data,
+            totalCount,
+            pageInfo.PageNumber,
+            (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
+        );
+    }
+
+    public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query & Retrieve
+        int data = await dbSet
+            .AsNoTracking()
+            .CountAsync(cancellationToken: ct);
+
+        return Result<int>.FromSuccess(data);
+    }
+
+    public async ValueTask<Result> IsIdTakenAsync(Guid id, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query & Retrieve
+        bool result = await dbSet
+            .AsNoTracking()
+            .AnyAsync(predicate: ls => ls.Id == id, ct);
+
+        return Result.FromState(result);
+    }
+
+    public async ValueTask<Result> IsIdNotTakenAsync(Guid id, CancellationToken ct = default) {
+        // Access
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+
+        // Query & Retrieve
+        bool result = await dbSet
+            .AsNoTracking()
+            .AnyAsync(predicate: ls => ls.Id == id, ct);
+
+        return Result.FromState(!result);
+    }
+
     protected virtual IQueryable<T> AutoInclude(IQueryable<T> query) => query;
+
+    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
+        DbSet<T> dbSet = GetCachedDbSet<T>();
+        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
+        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
+        return result;
+    }
+
+    private ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
+        => IsNotUniqueAsync([originalModel], ct);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Repository Methods
@@ -170,7 +272,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
 
     }
-    
+
     public async ValueTask<Result> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();
@@ -198,7 +300,7 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         // Retrieve
         return true;
     }
-    
+
     public async ValueTask<Result> RemoveAsync(T model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
@@ -259,105 +361,4 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
         return true;
     }
     #endregion
-    
-    public async ValueTask<Result<T>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        T? result = await dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .Where(ls => ls.Id == id)
-            .FirstOrDefaultAsync(cancellationToken: ct);
-
-        // Retrieve
-        if (result is null) return Result<T>.FromError(RepositoryFailures.ModelNotFound);
-
-        return Result<T>.FromSuccess(result);
-    }
-
-    public async ValueTask<Result<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-        
-        // Query
-        var query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .ConditionalReverse(config.Reverse)
-            .OrderByDescending(ls => ls.Id);
-
-        // Query & Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return Result<T[]>.FromSuccess(data);
-    }
-
-    public async ValueTask<PaginatedResult<T>> GetAllAsync(PaginationInfo pageInfo, QueryConfig config = default,  CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query
-        int totalCount = await dbSet.CountAsync(ct);
-        if (totalCount == 0) return PaginatedData<T>.Empty;
-
-        IQueryable<T> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .ConditionalReverse(config.Reverse)
-            .OrderByDescending(ls => ls.Id)
-            .Skip(pageInfo.SkipAmount)
-            .Take(pageInfo.PageSize);
-
-        // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedData<T>(
-            data,
-            totalCount,
-            pageInfo.PageNumber,
-            (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
-        );
-    }
-
-    public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query & Retrieve
-        int data = await dbSet
-            .AsNoTracking()
-            .CountAsync(cancellationToken: ct);
-        return Result<int>.FromSuccess(data);
-    }
-
-    public async ValueTask<Result> IsIdTakenAsync(Guid id, CancellationToken ct = default) {
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query & Retrieve
-        bool result = await dbSet
-            .AsNoTracking()
-            .AnyAsync(predicate: ls => ls.Id == id, ct);
-
-        return Result.FromState(result);
-    }
-
-    public async ValueTask<Result> IsIdNotTakenAsync(Guid id, CancellationToken ct = default){
-        // Access
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-
-        // Query & Retrieve
-        bool result = await dbSet
-            .AsNoTracking()
-            .AnyAsync(predicate: ls => ls.Id == id, ct);
-
-        return Result.FromState(!result);
-    }
-
-    protected virtual async ValueTask<bool> IsNotUniqueAsync(T[] modelsToValidate, CancellationToken ct = default) {
-        DbSet<T> dbSet = GetCachedDbSet<T>();
-        Guid[] ids = modelsToValidate.Select(m => m.Id).ToArray();
-        bool result = await dbSet.AsNoTracking().AnyAsync(predicate: foundModel => ids.Contains(foundModel.Id), ct);
-        return result;
-    }
-
-    private ValueTask<bool> IsNotUniqueAsync(T originalModel, CancellationToken ct = default)
-        => IsNotUniqueAsync([originalModel], ct);
 }

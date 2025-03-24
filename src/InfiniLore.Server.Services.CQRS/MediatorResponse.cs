@@ -19,12 +19,12 @@ public readonly partial struct MediatorResponse() : IUnion<bool, Error<ICollecti
         IsError = true,
         AsError = new Error<ICollection<string>>([value])
     };
-    
+
     public static MediatorResponse FromErrorString(ICollection<string> value) => new() {
         IsError = true,
         AsError = new Error<ICollection<string>>(value)
     };
-    
+
     public static implicit operator MediatorResponse(string value) => FromErrorString(value);
     public static implicit operator MediatorResponse(Error<string> error) => FromErrorString(error.Value);
 }
@@ -32,20 +32,22 @@ public readonly partial struct MediatorResponse() : IUnion<bool, Error<ICollecti
 [UnionAliases("Success", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
 public readonly partial struct MediatorResponse<T>() : IUnion<T, Error<ICollection<string>>> {
-    
+
     // Used by ValidateRequestBehaviour
-    [UsedImplicitly] public MediatorResponse(string error) : this() => FromErrorString(error);
+    [UsedImplicitly] public MediatorResponse(string error) : this() {
+        FromErrorString(error);
+    }
 
     public static MediatorResponse<T> FromErrorString(string value) => new() {
         IsError = true,
         AsError = new Error<ICollection<string>>([value])
     };
-    
+
     public static MediatorResponse<T> FromErrorString(ICollection<string> value) => new() {
         IsError = true,
         AsError = new Error<ICollection<string>>(value)
     };
-    
+
     public static implicit operator MediatorResponse<T>(string value) => FromErrorString(value);
     public static implicit operator MediatorResponse<T>(Error<string> error) => FromErrorString(error.Value);
 }

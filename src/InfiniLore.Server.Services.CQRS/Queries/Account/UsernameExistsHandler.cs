@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using MediatR;
 
@@ -21,6 +20,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IReques
 
         Result result = await userRepository.IsUsernameTakenAsync(request.Username, ct: ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
+
         return state;
     }
 }

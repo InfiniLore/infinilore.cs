@@ -12,7 +12,7 @@ public record ClaimsDto(
     string Name,
     string Email,
     string[] Roles
-    ) : IClaimsDto {
+) : IClaimsDto {
 
     public static ClaimsDto Empty => new(
         string.Empty,
@@ -24,14 +24,13 @@ public record ClaimsDto(
     ) {
         IsAuthenticated = false
     };
-    
+
     public bool IsAuthenticated { get; private init; } = true;
     public bool IsEmpty =>
-        Auth0UserId.IsNotNullOrWhiteSpace() 
-        && InfiniLoreUserId.IsNotNullOrWhiteSpace() 
-        && InfiniloreUserName.IsNotNullOrWhiteSpace() 
-        && Name.IsNotNullOrWhiteSpace() 
+        Auth0UserId.IsNotNullOrWhiteSpace()
+        && InfiniLoreUserId.IsNotNullOrWhiteSpace()
+        && InfiniloreUserName.IsNotNullOrWhiteSpace()
+        && Name.IsNotNullOrWhiteSpace()
         && Email.IsNotNullOrWhiteSpace()
-        && Roles.IsEmpty()    
-    ;
+        && Roles.IsEmpty();
 }

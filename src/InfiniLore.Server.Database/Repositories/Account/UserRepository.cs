@@ -125,7 +125,7 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
         IQueryable<InfiniLoreUser> query = dbSet
             .ConditionalWith(config.AutoInclude, AutoInclude)
             .With(ByAuth0IdQuery, auth0Id);
-        
+
         InfiniLoreUser? result = await query
             .SingleOrDefaultAsync(cancellationToken: ct);
 
@@ -144,7 +144,7 @@ public class UserRepository : BasicDataRepository<InfiniLoreUser>, IUserReposito
             .ConditionalWith(config.AutoInclude, AutoInclude)
             .ConditionalReverse(config.Reverse)
             .With(ByAuth0IdQuery, auth0Id);
-        
+
         InfiniLoreUser? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve

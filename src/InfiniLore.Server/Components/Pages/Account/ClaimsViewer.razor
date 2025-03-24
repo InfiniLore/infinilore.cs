@@ -1,16 +1,16 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/claims-viewer"
 @using InfiniLore.Server.Services.Clipboard
 @using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/claims-viewer"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ClipboardService ClipboardService
@@ -75,15 +75,13 @@
                 <div class="bg-gray-50 border border-gray-200 text-sm rounded p-4 overflow-auto max-w-full">
                     <pre>@_decodedJwt</pre>
                 </div>
-            }
-            else if (!string.IsNullOrWhiteSpace(_accessToken)) {
+            } else if (!string.IsNullOrWhiteSpace(_accessToken)) {
                 <p class="text-gray-600 italic">Unable to decode token. Ensure it's a valid JWT.</p>
             }
         </div>
     </div>
 
-}
-else {
+} else {
     <p class="text-gray-600">Loading user information...</p>
 }
 
@@ -107,6 +105,7 @@ else {
             _accessToken = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
             if (_accessToken.IsNullOrWhiteSpace()) return;
             if (!JwtTokenEncoder.TryDecodeJwt(_accessToken, out string? payload)) return;
+
             _decodedJwt = payload;
         }
     }

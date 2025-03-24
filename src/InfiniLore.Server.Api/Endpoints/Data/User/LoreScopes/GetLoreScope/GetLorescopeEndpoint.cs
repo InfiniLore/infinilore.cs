@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using FluentValidation;
 using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts.Services.Auth0;
@@ -51,7 +50,7 @@ public class GetLorescopeEndpoint(
         ) {
             AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
         };
-        
+
         // Execute Query
         MediatorResponse<LoreScope> result = await mediator.Send(query, ct);
 
@@ -62,7 +61,7 @@ public class GetLorescopeEndpoint(
         }
 
         logger.Information("Successfully retrieved lorescope with id {id}", req.LoreScopeId);
-        
+
         // Return
         LoreScopeResponse response = Map.FromEntity(loreScope);
         return TypedResults.Ok(response);

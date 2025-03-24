@@ -18,7 +18,6 @@ public interface IBasicDataRepository<T> :
     IHasDeleteAsync<T>,
     IHasRemoveAsync<T>,
     #endregion
-    
     IHasGetByIdAsync<T>,
     IHasGetAllAsync<T>,
     IHasGetCountAsync,

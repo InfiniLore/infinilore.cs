@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace InfiniLore.Server.Services.CQRS.NotificationHandlers.StoreCommand;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +16,7 @@ public class LogCommandHandler(ILogger<LogCommandHandler> logger) : INotificatio
         IMediatorRequest request = notification.Request;
         string json = JsonSerializer.Serialize(request);
         logger.Debug("Command received: {json}", json);
-        
+
         return Task.CompletedTask;
     }
 }

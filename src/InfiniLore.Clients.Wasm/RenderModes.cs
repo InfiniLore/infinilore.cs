@@ -4,10 +4,9 @@
 using Microsoft.AspNetCore.Components.Web;
 
 namespace InfiniLore.Clients.Wasm;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class RenderModes {
-    public static readonly InteractiveWebAssemblyRenderMode WebAssemblyOnly = new(prerender:false);
+    public static readonly InteractiveWebAssemblyRenderMode WebAssemblyOnly = new(prerender: false);
 }

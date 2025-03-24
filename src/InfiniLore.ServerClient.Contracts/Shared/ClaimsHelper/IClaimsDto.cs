@@ -12,7 +12,7 @@ public interface IClaimsDto {
     string Name { get; }
     string Email { get; }
     string[] Roles { get; }
-    
+
     bool IsAuthenticated { get; }
     bool IsEmpty { get; }
 }
