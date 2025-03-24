@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
@@ -44,7 +45,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         string? value = model.Value;
 
         // Act
-        RepoResult result = await repo.TryAddOrUpdateAsync(model);
+        Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
         KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
 

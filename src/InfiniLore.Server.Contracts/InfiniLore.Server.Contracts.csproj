@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
-        <PackageReference Include="AterraEngine.Unions.Generators" Version="4.0.1">
+        <PackageReference Include="AterraEngine.Unions" Version="4.1.0" />
+        <PackageReference Include="AterraEngine.Unions.Generators" Version="4.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -20,7 +20,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
-        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>
 
 </Project>

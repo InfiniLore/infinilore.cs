@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using FluentValidation.Results;
@@ -24,8 +25,8 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(request.LoreScopeName, request.OwnerId, ct);
-        RepoResult userIdExistsResult = await userRepo.IsIdTakenAsync(request.OwnerId, ct);
+        Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(request.LoreScopeName, request.OwnerId, ct);
+        Result userIdExistsResult = await userRepo.IsIdTakenAsync(request.OwnerId, ct);
         if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MediatorResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
         if (userIdExistsResult.IsError) return MediatorResponse<Guid>.FromErrorString("Owner id does not exist");
 
@@ -44,7 +45,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         }
 
         // Save to Db
-        RepoResult result = await loreScopeRepo.AddAsync(loreScope, ct);
+        Result result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
         await mediator.Publish(new NewLoreScopeCreatedNotification(loreScope.Id), ct);

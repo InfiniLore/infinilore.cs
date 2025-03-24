@@ -12,8 +12,8 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
-        <PackageReference Include="AterraEngine.Unions.Generators" Version="4.0.1">
+        <PackageReference Include="AterraEngine.Unions" Version="4.1.0" />
+        <PackageReference Include="AterraEngine.Unions.Generators" Version="4.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Contracts.Database;
@@ -20,7 +21,7 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
 
-        RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Result<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Key not found.");

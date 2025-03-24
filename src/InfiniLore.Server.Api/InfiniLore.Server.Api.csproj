@@ -9,15 +9,22 @@
     <ItemGroup>
         <PackageReference Include="FastEndpoints" Version="5.35.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.51.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services.Auth0\InfiniLore.Server.Services.Auth0.csproj"/>
+        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Endpoints\Discovery\LoreScopes\" />
+      <Folder Include="Mappers\" />
     </ItemGroup>
 
 </Project>

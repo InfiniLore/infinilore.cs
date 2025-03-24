@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using InfiniLore.Server.Contracts.Database;
@@ -21,7 +22,7 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(request.Token);
 
-        RepoResult<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Result<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore)
             ? foundStore
             : new KeyValueStore { Key = "Auth0AccessToken" };
@@ -32,7 +33,7 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
 
 
-        RepoResult result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
+        Result result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
         return state;
     }

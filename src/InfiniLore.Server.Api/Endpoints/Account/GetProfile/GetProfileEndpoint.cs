@@ -2,9 +2,10 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Server.Api.Mappers.Account;
 using InfiniLore.Server.Api.Responses.Account;
+using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
-using PermissionsStore=InfiniLore.ServerClient.Shared.PermissionsStore;
 
 namespace InfiniLore.Server.Api.Endpoints.Account.GetProfile;
 // ---------------------------------------------------------------------------------------------------------------------

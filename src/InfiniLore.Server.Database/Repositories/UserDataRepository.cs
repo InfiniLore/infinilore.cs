@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
@@ -19,7 +20,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<RepoResult<T[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<Result<T[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
@@ -31,10 +32,10 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
 
         // Retrieve
         T[] result = await query.ToArrayAsync(cancellationToken: ct);
-        return RepoResult<T[]>.FromSuccess(result);
+        return Result<T[]>.FromSuccess(result);
     }
 
-    public async ValueTask<PaginatedRepoResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo,  QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo,  QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetDbSet<T>();
 
@@ -42,7 +43,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         IQueryable<T> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
         
         int totalCount = await baseQuery.CountAsync(ct);
-        if (totalCount == 0) return PaginatedResult<T>.Empty;
+        if (totalCount == 0) return PaginatedData<T>.Empty;
 
         IQueryable<T> query = baseQuery
             .ConditionalWith(config.AutoInclude, AutoInclude)
@@ -53,7 +54,7 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
 
         // Retrieve
         T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedResult<T>(
+        return new PaginatedData<T>(
             data,
             totalCount,
             pageInfo.PageNumber,

@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
@@ -23,7 +24,7 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         
         var queryConfig = new QueryConfig(AutoInclude: request.AutoInclude);
-        RepoResult<LoreScope> response = await loreScopeRepository.GetByIdAsync(request.LorescopeId, queryConfig, ct);
+        Result<LoreScope> response = await loreScopeRepository.GetByIdAsync(request.LorescopeId, queryConfig, ct);
 
         if (!response.TryGetAsSuccess(out LoreScope? value)) {
             logger.Warning("Failed to get lorescope");

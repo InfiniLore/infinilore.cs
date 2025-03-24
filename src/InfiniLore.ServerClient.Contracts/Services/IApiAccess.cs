@@ -2,16 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Server.Database.Models;
+using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 
-namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
+namespace InfiniLore.ServerClient.Services;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IHasDeleteAsync<in T> where T : BasicData {
-    ValueTask<Result> DeleteAsync(T model, CancellationToken ct = default);
-    ValueTask<Result> DeleteByIdAsync(Guid id, CancellationToken ct = default);
-
-    ValueTask<Result> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
-    ValueTask<Result> DeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+public interface IApiAccess {
+    public ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(Guid userId, CancellationToken ct = default);
 }

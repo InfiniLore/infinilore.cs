@@ -9,8 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
       <Folder Include="Shared\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AterraEngine.Unions" Version="4.1.0" />
+      <PackageReference Include="AterraEngine.Unions.Generators" Version="4.1.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj" />
     </ItemGroup>
 
 </Project>

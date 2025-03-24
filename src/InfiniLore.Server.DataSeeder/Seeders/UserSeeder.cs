@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
@@ -34,7 +35,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult<InfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
+        Result<InfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
         if (!result.TryGetAsSuccess(out InfiniLoreUser[]? foundUsers)) return logger.InformationAsTrue("User seeding is {State}", true);
 
         HashSet<string> foundUserAuth0Ids = foundUsers.SelectMany(user => user.GetAuth0Ids()).ToHashSet();

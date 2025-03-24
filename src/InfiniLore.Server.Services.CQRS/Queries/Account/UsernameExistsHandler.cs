@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
@@ -18,7 +19,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IReques
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult result = await userRepository.IsUsernameTakenAsync(request.Username, ct: ct);
+        Result result = await userRepository.IsUsernameTakenAsync(request.Username, ct: ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
         return state;
     }

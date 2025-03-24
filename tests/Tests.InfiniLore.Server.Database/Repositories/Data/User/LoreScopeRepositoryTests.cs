@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
@@ -36,7 +37,7 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        RepoResult result = await repo.IsLoreScopeNameTakenAsync(name, guidStore.GetGuid(userIdSeed));
+        Result result = await repo.IsLoreScopeNameTakenAsync(name, guidStore.GetGuid(userIdSeed));
 
         // Assert
         await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
@@ -53,7 +54,7 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Lo
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        RepoResult result = await repo.IsLoreScopeNameNotTakenAsync(name, guidStore.GetGuid(userIdSeed));
+        Result result = await repo.IsLoreScopeNameNotTakenAsync(name, guidStore.GetGuid(userIdSeed));
 
         // Assert
         await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();

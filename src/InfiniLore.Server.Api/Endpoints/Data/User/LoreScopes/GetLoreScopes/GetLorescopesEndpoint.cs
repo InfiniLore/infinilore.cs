@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Database.Models.Data.User;
@@ -35,8 +36,8 @@ public class GetLoreScopesEndpoint(IMediator mediator, ILogger<GetLoreScopesEndp
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLoreScopesRequest req, CancellationToken ct) {
-        MediatorResponse<PaginatedResult<LoreScope>> result = await mediator.Send(new GetLoreScopesQuery(req.UserId, false, new PaginationInfo(1)), ct);
-        if (!result.TryGetAsSuccess(out PaginatedResult<LoreScope> paginatedResult)) {
+        MediatorResponse<PaginatedData<LoreScope>> result = await mediator.Send(new GetLoreScopesQuery(req.UserId, false, new PaginationInfo(1)), ct);
+        if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
             return TypedResults.NotFound();
         }

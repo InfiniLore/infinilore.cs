@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
@@ -20,7 +21,7 @@ public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : IReq
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult result = await userRepository.IsExistingAuth0Id(request.Auth0UserId, ct);
+        Result result = await userRepository.IsExistingAuth0Id(request.Auth0UserId, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
         return state;
     }

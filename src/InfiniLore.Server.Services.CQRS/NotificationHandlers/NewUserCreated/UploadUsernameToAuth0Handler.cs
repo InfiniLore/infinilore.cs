@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database;
@@ -22,7 +23,7 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        RepoResult<InfiniLoreUser> userResult = await userRepo.GetByIdAsync(userId, ct:ct);
+        Result<InfiniLoreUser> userResult = await userRepo.GetByIdAsync(userId, ct:ct);
         if (!userResult.TryGetAsSuccess(out InfiniLoreUser? user)) {
             logger.Warning("Could not find user with id {UserId} in database.", userId);
             return;

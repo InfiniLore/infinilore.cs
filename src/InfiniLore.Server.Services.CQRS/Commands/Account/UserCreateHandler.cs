@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using FluentValidation.Results;
@@ -51,7 +52,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         }
 
         // Save to Db
-        RepoResult result = await userRepo.AddAsync(user, ct);
+        Result result = await userRepo.AddAsync(user, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
         ;

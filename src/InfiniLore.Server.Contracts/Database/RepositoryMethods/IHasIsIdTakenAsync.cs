@@ -1,11 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
+
 namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasIsIdTakenAsync {
-    ValueTask<RepoResult> IsIdTakenAsync(Guid id, CancellationToken ct = default);
-    ValueTask<RepoResult> IsIdNotTakenAsync(Guid id, CancellationToken ct = default);
+    ValueTask<Result> IsIdTakenAsync(Guid id, CancellationToken ct = default);
+    ValueTask<Result> IsIdNotTakenAsync(Guid id, CancellationToken ct = default);
 }
