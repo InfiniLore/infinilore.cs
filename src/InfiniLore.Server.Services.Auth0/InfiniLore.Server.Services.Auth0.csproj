@@ -8,18 +8,14 @@
 
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.44.0">
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.51.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.51.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="InfiniLore.Credentials" Version="3.6.1" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="3.6.1" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="3.6.1" />
-        <PackageReference Include="InfiniLore.Credentials.Generators" Version="3.6.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="InfiniLore.Credentials" Version="4.0.0" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0" />
         <PackageReference Include="MediatR" Version="12.4.1"/>
     </ItemGroup>
 

@@ -5,7 +5,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@inherits ComponentBase
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -20,7 +20,7 @@
             <button
                 class="text-white p-2 rounded hover:bg-gray-700 focus:outline-none justify-center"
                 @onclick="ToggleMenu">
-                <LucideIcon Name="menu"/>
+                <LiMenu/>
             </button>
         </div>
 
@@ -48,8 +48,7 @@
 
     [Parameter] public EventCallback<bool> IsMenuCollapsedChanged { get; set; }
 
-    private async Task ToggleMenu()
-    {
+    private async Task ToggleMenu() {
         IsMenuCollapsed = !IsMenuCollapsed; // Toggle the collapsed state
         await IsMenuCollapsedChanged.InvokeAsync(IsMenuCollapsed); // Notify parent component about the change
         await InvokeAsync(StateHasChanged);

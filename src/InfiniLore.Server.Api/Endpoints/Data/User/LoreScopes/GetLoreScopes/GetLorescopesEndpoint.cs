@@ -9,8 +9,6 @@ using InfiniLore.Server.Services.Auth0;
 using InfiniLore.Server.Services.CQRS;
 using InfiniLore.Server.Services.CQRS.Queries.Data.User;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -30,7 +28,7 @@ public class GetLoreScopesEndpoint(IMediator mediator, ILogger<GetLoreScopesEndp
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
-        Policies("APIAccess");
+        Policies(ApiPolicies.JwtProtected);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

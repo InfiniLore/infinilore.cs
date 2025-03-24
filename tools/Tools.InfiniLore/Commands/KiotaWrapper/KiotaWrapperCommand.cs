@@ -72,18 +72,26 @@ public partial class KiotaWrapperCommand : ICommand<KiotaWrapperParameters> {
     }
 
     private static async Task RunKiotaGenerateAsync(KiotaWrapperParameters parameters, string resolvedOutputFolder) {
-        string arguments =
-            "generate "
-            + $"--openapi {parameters.OpenApiFile} "
-            + "--language CSharp "
-            + $"--namespace-name {parameters.NamespaceName} "
-            + $"--class-name {parameters.ClassName} "
-            + $"--output {resolvedOutputFolder} "
-            + "--backing-store false "
-            + "--exclude-backward-compatible "
-            + "--clean-output --clear-cache";
+        try {
+            string arguments =
+                "generate "
+                + $"--openapi {parameters.OpenApiFile} "
+                + "--language CSharp "
+                + $"--namespace-name {parameters.NamespaceName} "
+                + $"--class-name {parameters.ClassName} "
+                + $"--output {resolvedOutputFolder} "
+                + "--backing-store false "
+                + "--exclude-backward-compatible "
+                + "--clean-output --clear-cache";
 
-        await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
+            await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
+        }
+        catch (System.ComponentModel.Win32Exception ex) {
+            Console.WriteLine("Failed to run Kiota, this is most likely due to a missing kiota as a global tool.");
+            Console.WriteLine("To install Kiota, run the following command:");
+            Console.WriteLine("dotnet tool install --global Microsoft.OpenApi.Kiota");
+            throw;
+        }
     }
 
     private static async Task RunDotNetRestoreAsync(string csprojPath)

@@ -4,10 +4,13 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using InfiniLore.Server.Components.ComponentLibrary
+@using InfiniLore.Server.Services.Auth0
+@using InfiniLore.ServerClient.Shared.JwtToken
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @rendermode InteractiveServer
+@inject IJsSecureStorageJwtTokenProvider JsTokenProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -20,13 +23,23 @@
     </Header>
     
     <NavigationMenu>
-        <CollapsibleMenuButton Href="/about" LucideIcon="equal-approximately">About</CollapsibleMenuButton>
-        <CollapsibleMenuButton Href="/counter" LucideIcon="plus">counter</CollapsibleMenuButton>
+        <CollapsibleMenuButton Href="/about">
+            <Icon><LiEqualApproximately/></Icon>
+            <Text>About</Text>
+        </CollapsibleMenuButton>
+        
+        <CollapsibleMenuButton Href="/api-test">
+            <Icon><LiPlus/></Icon>
+            <Text>Api Test</Text>
+        </CollapsibleMenuButton>
 
         <AuthorizeView>
             <NotAuthorized></NotAuthorized>
             <Authorized>
-                <CollapsibleMenuButton Href="/claims-viewer" LucideIcon="view">Claims</CollapsibleMenuButton>
+                <CollapsibleMenuButton Href="/claims-viewer">
+                    <Icon><LiView/></Icon>
+                    <Text>Claims</Text>
+                </CollapsibleMenuButton>
             </Authorized>
         </AuthorizeView>
         
@@ -54,11 +67,10 @@
                 <div class="@(!IsMenuCollapsed ? "ml-4" : "hidden") text-white flex flex-col space-y-1">
                     <p class="font-semibold">@UserName</p>
 
-                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings
-                    </NavLink>
+                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings</NavLink>
                     
                     @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
-                    <NavLink href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
+                    <NavLink @onclick="LogoutCallbackAsync" href="/account/logout" class="text-sm text-gray-400 hover:text-gray-200">logout</NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
@@ -87,7 +99,7 @@
 
         if (user.Identity is { IsAuthenticated: true }) {
             // Retrieve claims
-            string? nameClaim = user.FindFirst(c => c.Type == "infinilore.user.username")?.Value
+            string? nameClaim = user.FindFirst(c => c.Type == InfiniLoreClaimsStoreConstants.UserName)?.Value
                 ?? user.FindFirst(c => c.Type == "name")?.Value
                 ?? user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
 
@@ -99,5 +111,9 @@
         }
         
         await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task LogoutCallbackAsync() {
+        await JsTokenProvider.RemoveTokenAsync();
     }
 }

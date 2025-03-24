@@ -9,14 +9,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Auth0.ManagementApi" Version="7.34.0"/>
+        <PackageReference Include="Auth0.ManagementApi" Version="7.35.0" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" Version="4.9.0" />
         <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.9.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="3.6.1" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="3.6.1" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
         <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0"/>

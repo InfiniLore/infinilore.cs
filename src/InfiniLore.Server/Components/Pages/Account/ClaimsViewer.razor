@@ -2,7 +2,6 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using InfiniLore.Server.Services.Clipboard
-@using InfiniLore.ServerClient.Shared
 @using InfiniLore.ServerClient.Shared.JwtToken
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
@@ -15,11 +14,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ClipboardService ClipboardService
-@inject ILogger<ClaimsViewer> Logger
 @attribute [Authorize]
 @rendermode InteractiveServer
-@inject JwtTokenEncoder JwtTokenEncoder
-
+@inject IJwtTokenEncoder JwtTokenEncoder
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -108,9 +105,9 @@ else {
 
         if (HttpContextAccessor.HttpContext != null) {
             _accessToken = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (!string.IsNullOrWhiteSpace(_accessToken)) {
-                _decodedJwt = JwtTokenEncoder.DecodeJwt(_accessToken);
-            }
+            if (_accessToken.IsNullOrWhiteSpace()) return;
+            if (!JwtTokenEncoder.TryDecodeJwt(_accessToken, out string? payload)) return;
+            _decodedJwt = payload;
         }
     }
 

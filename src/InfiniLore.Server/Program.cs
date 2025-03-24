@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
@@ -41,7 +42,10 @@ public static class Program {
             //      And have proper application exception catching 
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.OverrideLoggingWithSerilog(config => config
-                .AsAnnaSasDevServerConsole(sectionMaxLength: 24)
+                .AsAnnaSasDevServerConsole(
+                    24,
+                    configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
+                )
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
 
@@ -92,7 +96,7 @@ public static class Program {
 
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-WebApp"]);
             options.ClientSecret = builder.Configuration["Auth0:ClientSecret-WebApp"]!;
-            
+
             options.Scope = "openid profile email";
             options.CallbackPath = "/auth/callback";
 
@@ -102,14 +106,11 @@ public static class Program {
         }).WithAccessToken(options => {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:Audience"]);
             options.Audience = builder.Configuration["Auth0:Audience"]!;
+            options.UseRefreshTokens = true;
         });
 
         builder.Services.AddAuthorizationBuilder()
-            .AddPolicy("APIAccess", policy =>
-            {
-                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                policy.RequireAuthenticatedUser(); // Enforce authentication
-            });
+            .AddJwtProtectedPolicy();
 
         builder.Services.AddCascadingAuthenticationState();
         #endregion
@@ -127,6 +128,7 @@ public static class Program {
             ArgumentNullException.ThrowIfNull(builder.Configuration["Auth0:ClientSecret-Management"]);
             config.Auth0Options.ClientSecret = builder.Configuration["Auth0:ClientSecret-Management"]!;
         });
+
         builder.Services.RegisterServicesFromInfiniLoreServerServicesAuth0();
         builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
         #endregion
@@ -137,9 +139,10 @@ public static class Program {
 
             options.Assemblies = [
                 typeof(IEntrypointInfiniLoreServerApi).Assembly,
-                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly,
+                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly
             ];
         });
+
         builder.Services.SwaggerDocument();
         #endregion
 
@@ -149,6 +152,7 @@ public static class Program {
 
             // config.AddBehavior(typeof(RequestExceptionHandler<,,>));
         });
+
         builder.Services.RegisterServicesFromInfiniLoreServerServicesCQRS();
         #endregion
 
@@ -160,9 +164,11 @@ public static class Program {
         //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
         builder.RegisterDataSeedingServices();
         #endregion
-        
+
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
+        builder.Services.AddHttpClient("ServerAPI");
+
         builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
@@ -171,6 +177,8 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerServices();
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
         builder.Services.RegisterServicesFromInfiniLoreServerApiResponses();
+        
+        builder.Services.AddLucideIcons();
 
         return builder.Build();
     }
@@ -188,7 +196,18 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+
+        // Reference the library containing the static files
+        var embeddedProvider = new EmbeddedFileProvider(
+            typeof(IEntryPointInfiniLoreServerClientShared).Assembly,// Replace with a type from the external library
+            "InfiniLore.ServerClient.Shared.wwwroot"// The root path defined in the library
+        );
+
+        app.UseStaticFiles(new StaticFileOptions {
+                FileProvider = embeddedProvider,
+                RequestPath = ""
+            }
+        );
 
         app.UseStaticFiles();
         app.UseAntiforgery();
@@ -213,8 +232,8 @@ public static class Program {
             await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         });
-        
-        app.MapGet("/account/token", async (IHttpContextAccessor httpContextAccessor, JwtTokenEncoder tokenEncoder) => {
+
+        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
             if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
                 return Results.Unauthorized();
 
@@ -223,28 +242,26 @@ public static class Program {
             if (accessToken.IsNullOrEmpty()) return Results.Unauthorized();
 
             // Token expiration logic (Auth0 provides token expiration info)
-            DateTime expiresAt = tokenEncoder.GetTokenExpiry(accessToken);
-            if (DateTime.UtcNow >= expiresAt) {
-                // TODO refresh the token with Auth0
-                return Results.Unauthorized();
-            }
+            if (!tokenEncoder.TryGetTokenUtcExpiry(accessToken, out DateTime expiresAt)) return Results.Unauthorized();
 
-            return Results.Json(new TokenResponse{
+            // Refresh is handled by Auth0 middleware
+            if (DateTime.UtcNow >= expiresAt) return Results.Unauthorized();
+
+            return Results.Json(new TokenResponse {
                 Token = accessToken,
-                ExpiresAt = expiresAt.ToString("o") // ISO 8601 format for JS Date parsing
+                ExpiresAt = expiresAt.ToString("o")// ISO 8601 format for JS Date parsing
             });
         }).RequireAuthorization();
-
-        
         #endregion
 
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
             config.Errors.UseProblemDetails();
-            
+
             config.Security.PermissionsClaimType = "permissions";
             config.Security.NameClaimType = ClaimTypes.NameIdentifier;
         });
+
         app.UseSwaggerGen();
 
         app.MapStaticAssets();

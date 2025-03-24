@@ -1,26 +1,25 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/profile"
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Server.Services.Auth0
 @using InfiniLore.Server.Services.CQRS
 @using InfiniLore.Server.Services.CQRS.Commands.Data.User
 @using InfiniLore.Server.Services.CQRS.Queries.Account
-@using InfiniLore.ServerClient.Shared
+@using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using MediatR
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/profile"
 @rendermode InteractiveServer
 
 @attribute [Authorize]
 @layout MainLayout
 @inject IMediator Mediator
-@inject IAuthenticationStateProviderClaimsPrincipalHelper ClaimsPrincipalHelper
+@inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -38,14 +37,11 @@
             </div>
             <div class="col-md-4">
                 <h3>@_username</h3>
-                <p>
-                    @* <i class="bi bi-envelope"></i> @_emailAddress *@
-                </p>
             </div>
 
             <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
                 <Authorized>
-                    <button @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
+                    <button class="btn btn-primary" @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
                     <h3>Admin Dashboard</h3>
                 </Authorized>
                 <NotAuthorized>
@@ -65,18 +61,12 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
     private string _username = string.Empty;
-    private string _emailAddress = string.Empty;
     private string _picture = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
 
         _username = state.User.Identity?.Name ?? string.Empty;
-        _emailAddress = state.User.Claims
-            .Where(c => c.Type.Equals(ClaimTypes.Email))
-            .Select(c => c.Value)
-            .FirstOrDefault() ?? string.Empty;
-
         _picture = state.User.Claims
             .Where(c => c.Type.Equals("picture"))
             .Select(c => c.Value)
@@ -88,10 +78,10 @@
     private async Task CreateLorescopeCallbackAsync(MouseEventArgs args) {
         AuthenticationState state = await AuthenticationStateTask;
 
-        IAuth0Information auth0Info = ClaimsPrincipalHelper.GetAuth0Information(state.User);
-        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.UserId));
+        IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
+        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
-            Logger.Warning($"User could not be found with auth0Id {auth0Info.UserId}");
+            Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 

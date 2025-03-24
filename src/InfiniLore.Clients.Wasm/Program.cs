@@ -19,13 +19,10 @@ public static class Program {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+        builder.Services.AddSingleton<AuthenticationStateProvider, WasmClientAuthenticationStateProvider>();
 
         builder.Services.AddHttpClient("ServerAPI", 
             client => client.BaseAddress = new Uri("https://localhost:7059/"));
-        
-        builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-            .CreateClient("ServerAPI"));
 
         builder.Services.AddHttpClient();
 

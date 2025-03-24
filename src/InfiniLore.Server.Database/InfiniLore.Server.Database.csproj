@@ -8,17 +8,17 @@
 
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions" Version="4.0.1" />
-        <PackageReference Include="Auth0.AuthenticationApi" Version="7.34.0"/>
-        <PackageReference Include="Auth0.ManagementApi" Version="7.34.0"/>
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.44.0">
+        <PackageReference Include="Auth0.AuthenticationApi" Version="7.35.0" />
+        <PackageReference Include="Auth0.ManagementApi" Version="7.35.0" />
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.51.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.51.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.51.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.51.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.44.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.44.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.51.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.51.0" />
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1"/>
         <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />

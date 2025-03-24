@@ -33,7 +33,7 @@
     "Update Kiota Client": {
       "_readme": "ONLY RUN WHEN THE SERVER IS LIVE! Updates the kiota client to the latest version",
       "commandName": "Project",
-      "commandLineArgs": "kiota-wrapper --namespace=\"InfiniLore.KiotaApiClient\" --output=\"src/client/InfiniLore.KiotaApiClient/\" --classname=\"InfiniLoreApiClient\" --openapi=\"https://localhost:7059/swagger/v1/swagger.json\" --csproj=\"src/client/InfiniLore.KiotaApiClient/InfiniLore.KiotaApiClient.csproj\""
+      "commandLineArgs": "kiota-wrapper --namespace=\"InfiniLore.Clients.Kiota\" --output=\"src/InfiniLore.Clients.Kiota/\" --classname=\"InfiniLoreApiClient\" --openapi=\"https://localhost:7059/swagger/v1/swagger.json\" --csproj=\"src/InfiniLore.Clients.Kiota/InfiniLore.Clients.Kiota.csproj\""
     },
     "download Repos": {
       "_readme": "Download all externally self built packages",
