@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using Auth0.ManagementApi.Models;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
@@ -29,8 +30,12 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
         }
 
         foreach (string auth0UserId in user.GetAuth0Ids()) {
-            UtilityResult result = await auth0UserUtility.TryAddOrUpdateAppMetadataAsync(auth0UserId, "username", user.Username, ct);
-            if (result.TryGetAsErrorValue(out string? failureReason)) {
+            UtilityResult resultUsername = await auth0UserUtility.TryAddOrUpdateAppMetadataAsync(auth0UserId, "username", user.Username, ct);
+            if (resultUsername.TryGetAsErrorValue(out string? failureReason)) {
+                logger.Warning("Failed to update user {userId} at auth0: {Reason}", auth0UserId, failureReason);
+            }
+            UtilityResult resultUserId = await auth0UserUtility.TryAddOrUpdateAppMetadataAsync(auth0UserId, "infinilore_user_id", user.Id.ToString(), ct);
+            if (resultUserId.TryGetAsErrorValue(out failureReason)) {
                 logger.Warning("Failed to update user {userId} at auth0: {Reason}", auth0UserId, failureReason);
                 continue;
             }
