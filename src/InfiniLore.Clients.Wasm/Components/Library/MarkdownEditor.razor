@@ -1,12 +1,11 @@
-@using System.Text.RegularExpressions
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@using InfiniLore.ServerClient.Shared.ComponentLibrary
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@inject ILogger<MarkdownEditor> Logger
+@inject MarkdownParser MarkdownParser
 @rendermode InteractiveAuto
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -22,23 +21,15 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
     private string _markdownText = string.Empty;
-    public string MarkdownText {
+
+    private string MarkdownText {
         get => _markdownText;
         set {
             _markdownText = value;
-
-            var boldRegex = new Regex(@"\*\*(.+?)\*\*", RegexOptions.RightToLeft);
-            var italicsRegex = new Regex(@"\*(.+?)\*", RegexOptions.RightToLeft);
-            string editedText = boldRegex.Replace(_markdownText, "<b>$1</b>");
-            editedText = italicsRegex.Replace(editedText, "<i>$1</i>");
-
-            Logger.LogInformation("Current MarkdownText: {Text}", MarkdownText);
-            Logger.LogInformation("Generated EditedText: {Text}", editedText);
-
-            // Update the MarkupString with the generated HTML
+            string editedText = MarkdownParser.Parse(_markdownText);
             MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
         }
     }
-    
-    public MarkupString MarkdownOutput { get; set; } = new();
+
+    private MarkupString MarkdownOutput { get; set; }
 }
