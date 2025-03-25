@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -25,63 +24,89 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     private static partial Regex MarkdownRegex { get; }
 
     public string Parse(string input) {
-        string output = MarkdownRegex.Replace(input, Evaluator);
-        
+        string output = MarkdownRegex.Replace(input, static match => Evaluator(match));
         logger.Information("markdown input: {input} html output: {output}", input, output);
-        
         return output;
     }
-    
-    private string Evaluator(Match match) {
-        
-        if (match.Groups["boldAndItalic"].Success) {
-            if (match.Groups[1] is {Success: true, ValueSpan: var chars1})
-                return $"<b><i>{chars1}</i></b>";
-            if (match.Groups[2] is {Success: true, ValueSpan: var chars2})
-                return $"<b><i>{chars2}</i></b>";
+
+    private static string Evaluator(Match match, Origin origin = Origin.Undefined) {
+
+        if (origin is not Origin.BoldAndItalic && match.Groups["boldAndItalic"].Success) {
+            if (match.Groups[1] is { Success: true, Value: var chars1 }) {
+                string output = MarkdownRegex.Replace(chars1, static m => Evaluator(m, Origin.BoldAndItalic));
+                return $"<b><i>{output}</i></b>";
+            }
+
+            if (match.Groups[2] is { Success: true, Value: var chars2 }) {
+                string output = MarkdownRegex.Replace(chars2, static m => Evaluator(m, Origin.BoldAndItalic));
+                return $"<b>{output}</b>";
+            }
         }
 
-        if (match.Groups["bold"].Success) {
-            if (match.Groups[3] is {Success: true, ValueSpan: var chars3})
-                return $"<b>{chars3}</b>";
-            if (match.Groups[4] is {Success: true, ValueSpan: var chars4})
-                return $"<b>{chars4}</b>";
+        if (origin is not Origin.Bold && match.Groups["bold"].Success) {
+            if (match.Groups[3] is { Success: true, Value: var chars3 }) {
+                string output = MarkdownRegex.Replace(chars3, static m => Evaluator(m, Origin.Bold));
+                return $"<b>{output}</b>";
+            }
+
+            if (match.Groups[4] is { Success: true, Value: var chars4 }) {
+                string output = MarkdownRegex.Replace(chars4, static m => Evaluator(m, Origin.Bold));
+                return $"<b>{output}</b>";
+            }
         }
 
-        if (match.Groups["italic"].Success) {
-            if (match.Groups[5] is {Success: true, ValueSpan: var chars5})
-                return $"<i>{chars5}</i>";
-            if (match.Groups[6] is {Success: true, ValueSpan: var chars6})
-                return $"<i>{chars6}</i>";
+        if (origin is not Origin.Italic && match.Groups["italic"].Success) {
+            if (match.Groups[5] is { Success: true, Value: var chars5 }) {
+                string output = MarkdownRegex.Replace(chars5, static m => Evaluator(m, Origin.Italic));
+                return $"<i>{output}</i>";
+            }
+
+            if (match.Groups[6] is { Success: true, Value: var chars6 }) {
+                string output = MarkdownRegex.Replace(chars6, static m => Evaluator(m, Origin.Italic));
+                return $"<i>{output}</i>";
+            }
         }
 
-        if (match.Groups["strike"].Success && match.Groups[7] is {Success: true, ValueSpan: var chars7})
-            return $"<s>{chars7}</s>";
+        if (origin is not Origin.Strike && match.Groups["strike"].Success && match.Groups[7] is { Success: true, Value: var chars7 }) {
+            string output = MarkdownRegex.Replace(chars7, static m => Evaluator(m, Origin.Strike));
+            return $"<s>{output}</s>";
 
-        if (match.Groups["code"].Success && match.Groups[8] is {Success: true, ValueSpan: var chars8})
+        }
+
+        if (match.Groups["code"].Success && match.Groups[8] is { Success: true, Value: var chars8 })
             return $"<code>{chars8}</code>";
 
-        if (match.Groups["link"].Success 
-            && match.Groups[9] is {Success: true, ValueSpan: var chars9} 
-            && match.Groups[10] is {Success: true, ValueSpan: var chars10}
+        if (match.Groups["link"].Success
+            && match.Groups[9] is { Success: true, Value: var chars9 }
+            && match.Groups[10] is { Success: true, Value: var chars10 }
         ) {
             return $"<a href=\"{chars9}\" target=\"_blank\">{chars10}</a>";
         }
 
-        if (match.Groups["heading"].Success && match.Groups[11] is {Success: true, Length: var headingLevel} && match.Groups[12] is {Success: true, Value: var string12}) {
-            string headingContent = Parse(string12); // Recursively parse inner content (e.g., bold)
-            return $"<h{headingLevel}>{headingContent}</h{headingLevel}>";
+        if (origin is not Origin.Heading && match.Groups["heading"].Success && match.Groups[11] is { Success: true, Length: var headingLevel } && match.Groups[12] is { Success: true, Value: var string12 }) {
+            string output = MarkdownRegex.Replace(string12, m => Evaluator(m, Origin.Heading));
+            return $"<h{headingLevel}>{output}</h{headingLevel}>";
         }
-        
+
         return match.Value;
-        
-        // # ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
-        // ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
-        // # heading
-        // ## headin
-        // ### headi
-        // #### head
-        // ##### hea
-        // ###### he
+    }
+
+    // # ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
+    // ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
+    // ** [text](https://example.com) **
+    // # heading
+    // ## headin
+    // ### headi
+    // #### head
+    // ##### hea
+    // ###### he
+    
+    private enum Origin {
+        Undefined = 0,
+        BoldAndItalic,
+        Bold,
+        Italic,
+        Strike,
+        Heading
     }
 }
