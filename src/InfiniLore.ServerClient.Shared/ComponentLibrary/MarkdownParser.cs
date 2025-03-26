@@ -136,13 +136,15 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             // Extract header, separator, and rows
             ReadOnlySpan<char> header = match.Groups[6].ValueSpan;
             Span<Range> headerColumns = stackalloc Range[header.Length];
-            int headerColumnCount = header.Split(headerColumns, '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            int headerColumnCount = header.Split(headerColumns, '|', StringSplitOptions.TrimEntries);
 
             ReadOnlySpan<char> separator = match.Groups[7].ValueSpan;
+            Span<Range> separatorColumns = stackalloc Range[separator.Length];
+            int separatorColumnCount = separator.Split(separatorColumns, '|', StringSplitOptions.TrimEntries);
 
             ReadOnlySpan<char> rows = match.Groups[8].ValueSpan;
             Span<Range> rowRanges = stackalloc Range[rows.Length];
-            int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.RemoveEmptyEntries);
+            int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.TrimEntries);
 
             // Construct table HTML
             var builder = new StringBuilder();
@@ -151,15 +153,17 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             // Add headers
             builder.Append("<thead><tr>");
             for (int index = 0; index < headerColumnCount; index++) {
+                builder.Append("<th>");
                 ReadOnlySpan<char> column = header[headerColumns[index]];
                 string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
-                builder.Append($"<th>{output}</th>");
+                builder.Append(output);
+                builder.Append("</th>");
             }
             builder.Append("</tr></thead>");
 
             // Add rows
             builder.Append("<tbody>");
-            var bufferPool = ArrayPool<Range>.Shared;
+            ArrayPool<Range> bufferPool = ArrayPool<Range>.Shared;
             const int maxExpectedRowLength = 512; // Based on expected data characteristics
             Range[] rowColumnRanges = bufferPool.Rent(maxExpectedRowLength);
 
@@ -169,15 +173,16 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
                     ReadOnlySpan<char> row = rows[rowRange];
 
                     // Split the row
-                    int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', 
-                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                     builder.Append("<tr>");
                     for (int columnIndex = 0; columnIndex < rowColumnCount; columnIndex++) {
+                        builder.Append("<td>");
                         Range columnRange = rowColumnRanges[columnIndex];
                         ReadOnlySpan<char> column = row[columnRange];
                         string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
-                        builder.Append($"<td>{output}</td>");
+                        builder.Append(output);
+                        builder.Append("</td>");
                     }
                     builder.Append("</tr>");
                 }
