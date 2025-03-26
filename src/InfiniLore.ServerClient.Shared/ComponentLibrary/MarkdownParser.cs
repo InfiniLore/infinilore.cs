@@ -273,11 +273,11 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     [Flags]
     private enum Origin {
         Undefined = 0,
-        BoldAndItalic,
-        Bold,
-        Italic,
-        Strike,
-        Code,
-        Link,
+        BoldAndItalic = 1 << 0,
+        Bold = 1 << 1,
+        Italic = 1 << 2,
+        Strike = 1 << 3,
+        Code = 1 << 4,
+        Link = 1 << 5,
     }
 }
