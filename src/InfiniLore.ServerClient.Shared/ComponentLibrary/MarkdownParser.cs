@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
@@ -26,11 +27,16 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     [GeneratedRegex("""
           (?<heading>^(\#{1,6})\s(.+))
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
-        | (?<headingSimple>^(.+?)\n[-=]{3,})
+        | (?<headingSimple>^(.+?)\n\s*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<table>
+            (?:\|(?:\ *(\w)*\ *\|)+)\s
+            (?:\|(?:\ *-+\ *\|)+)\s
+            (?:\|(?:\ *(\w)*\ *\|)+)
+          )
         | (?<remainder>.+?(?:\n|$))
-        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline )]
     private static partial Regex MultilineStructuresRegex { get; }
     
     [GeneratedRegex(@"^[ ]*[*+-.]\d*\s+(.+)((?:(?:(?:\n[ ]+[*+-.]\d*)|(?:\n[ ]+))\s+.+)*)", RegexOptions.Multiline)]
@@ -52,9 +58,6 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     //             if (match.Groups[groupname].Success) handler.Handle(match);
     //         }
     //     }
-    //
-    //
-    //
     // }
 
     public string Parse(string input) {
@@ -75,8 +78,9 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             return $"<h{headingLevel}>{output}</h{headingLevel}>";
         }
 
-        if (match.Groups["codeBlock"].Success && match.Groups[3] is { Success: true, Value: var string13 } && match.Groups[4] is { Success: true, ValueSpan: var chars14 }) {
-            return $"<code><pre>{chars14}</pre></code>"; // todo escape < and > characters
+        if (match.Groups["codeBlock"].Success && match.Groups[3] is { Success: true, Value: var string13 } && match.Groups[4] is { Success: true, Value: var chars14 }) {
+            string output = HtmlEncoder.Default.Encode(chars14);
+            return $"<pre><code>{output}</code></pre>";
         }
 
         if (match.Groups["headingSimple"].Success && match.Groups[5] is { Success: true, Value: var string15 }) {
@@ -122,6 +126,17 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             
             builder.Append("</ol>");
             return builder.ToString();
+        }
+
+        if (match.Groups["table"] is { Success: true, Value: var string18 } tableGroup) {
+            var builder = new StringBuilder(); // todo get and move to pool
+            builder.Append("<table>");
+
+            foreach (Capture tableGroupCapture in tableGroup.Captures) {
+                builder.Append("<tr>");
+                builder.Append("<th>");
+            }
+
         }
 
         return match.Value;
@@ -170,8 +185,10 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
 
         }
 
-        if (match.Groups["code"].Success && match.Groups[8] is { Success: true, Value: var chars8 })
-            return $"<code><pre>{chars8}</pre></code>";// todo escape < and > characters
+        if (match.Groups["code"].Success && match.Groups[8] is { Success: true, Value: var chars8 }) {
+            string output = HtmlEncoder.Default.Encode(chars8);
+            return $"<pre><code>{output}</code></pre>";
+        }
 
         if (match.Groups["link"].Success
             && match.Groups[9] is { Success: true, Value: var chars9 }
