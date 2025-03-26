@@ -201,54 +201,54 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     }
     
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
-        if (origin is not Origin.BoldAndItalic && match.Groups["boldAndItalic"].Success) {
+        if (!origin.HasFlag(Origin.BoldAndItalic) && match.Groups["boldAndItalic"].Success) {
             if (match.Groups[1].TryGetValue(out string? boldAndItalicValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.BoldAndItalic));
+                string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
                 return $"<b><i>{output}</i></b>";
             }
 
             if (match.Groups[2].TryGetValue(out string? boldAndItalicUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldAndItalicUnderscoreValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.BoldAndItalic));
+                string output = SinglelineStructuresRegex.Replace(boldAndItalicUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
                 return $"<b>{output}</b>";
             }
         }
 
-        if (origin is not Origin.Bold && match.Groups["bold"].Success) {
+        if (!origin.HasFlag(Origin.Bold) && match.Groups["bold"].Success) {
             if (match.Groups[3].TryGetValue(out string? boldValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.Bold));
+                string output = SinglelineStructuresRegex.Replace(boldValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
                 return $"<b>{output}</b>";
             }
 
             if (match.Groups[4].TryGetValue(out string? boldUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldUnderscoreValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.Bold));
+                string output = SinglelineStructuresRegex.Replace(boldUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
                 return $"<b>{output}</b>";
             }
         }
 
-        if (origin is not Origin.Italic && match.Groups["italic"].Success) {
+        if (!origin.HasFlag(Origin.Italic) && match.Groups["italic"].Success) {
             if (match.Groups[5].TryGetValue(out string? italicValue)) {
-                string output = SinglelineStructuresRegex.Replace(italicValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.Italic));
+                string output = SinglelineStructuresRegex.Replace(italicValue, evaluator:  m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
                 return $"<i>{output}</i>";
             }
 
             if (match.Groups[6].TryGetValue(out string? italicUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(italicUnderscoreValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.Italic));
+                string output = SinglelineStructuresRegex.Replace(italicUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
                 return $"<i>{output}</i>";
             }
         }
 
-        if (origin is not Origin.Strike && match.Groups["strike"].Success && match.Groups[7].TryGetValue(out string? strikeValue)) {
-            string output = SinglelineStructuresRegex.Replace(strikeValue, evaluator: static m => SinglelineStructuresEvaluator(m, Origin.Strike));
+        if (!origin.HasFlag(Origin.Strike) && match.Groups["strike"].Success && match.Groups[7].TryGetValue(out string? strikeValue)) {
+            string output = SinglelineStructuresRegex.Replace(strikeValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Strike));
             return $"<s>{output}</s>";
 
         }
 
-        if (match.Groups["code"].Success && match.Groups[8].TryGetValue(out string? codeValue)) {
+        if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups[8].TryGetValue(out string? codeValue)) {
             string output = HtmlEncoder.Default.Encode(codeValue);
             return $"<pre><code>{output}</code></pre>";
         }
 
-        if (match.Groups["link"].Success
+        if (!origin.HasFlag(Origin.Link) && match.Groups["link"].Success
             && match.Groups[9].TryGetValue(out string? linkHref)
             && match.Groups[10].TryGetValue(out string? linkText)
         ) {
@@ -270,11 +270,14 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     // ###### he
 
     // TODO should be flags
+    [Flags]
     private enum Origin {
         Undefined = 0,
         BoldAndItalic,
         Bold,
         Italic,
         Strike,
+        Code,
+        Link,
     }
 }
