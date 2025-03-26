@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Buffers;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
@@ -31,9 +32,9 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
-            (?:\|(?:\ *(.*)\ *\|)+)\s
-            (?:\|(?:\ *-+\ *\|)+)\s
-            (?:\|(?:\ *(.*)\ *\|)+)
+            ^\|(.+)\|\s*\r?\n
+            ^\|([:\-|\ ]+)\|\s*\r?\n
+            ((?:^\|.+\|\s*)+)
           )
         | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline )]
@@ -131,15 +132,64 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             return builder.ToString();
         }
 
-        if (match.Groups["table"] is { Success: true, Value: var string18 } tableGroup) {
-            var builder = new StringBuilder(); // todo get and move to pool
+        if (match.Groups["table"].Success) {
+            // Extract header, separator, and rows
+            ReadOnlySpan<char> header = match.Groups[6].ValueSpan;
+            Span<Range> headerColumns = stackalloc Range[header.Length];
+            int headerColumnCount = header.Split(headerColumns, '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            ReadOnlySpan<char> separator = match.Groups[7].ValueSpan;
+
+            ReadOnlySpan<char> rows = match.Groups[8].ValueSpan;
+            Span<Range> rowRanges = stackalloc Range[rows.Length];
+            int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Construct table HTML
+            var builder = new StringBuilder();
             builder.Append("<table>");
 
-            foreach (Capture tableGroupCapture in tableGroup.Captures) {
-                builder.Append("<tr>");
-                builder.Append("<th>");
+            // Add headers
+            builder.Append("<thead><tr>");
+            for (int index = 0; index < headerColumnCount; index++) {
+                ReadOnlySpan<char> column = header[headerColumns[index]];
+                string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                builder.Append($"<th>{output}</th>");
+            }
+            builder.Append("</tr></thead>");
+
+            // Add rows
+            builder.Append("<tbody>");
+            var bufferPool = ArrayPool<Range>.Shared;
+            const int maxExpectedRowLength = 512; // Based on expected data characteristics
+            Range[] rowColumnRanges = bufferPool.Rent(maxExpectedRowLength);
+
+            try {
+                for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+                    Range rowRange = rowRanges[rowIndex];
+                    ReadOnlySpan<char> row = rows[rowRange];
+
+                    // Split the row
+                    int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', 
+                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                    builder.Append("<tr>");
+                    for (int columnIndex = 0; columnIndex < rowColumnCount; columnIndex++) {
+                        Range columnRange = rowColumnRanges[columnIndex];
+                        ReadOnlySpan<char> column = row[columnRange];
+                        string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                        builder.Append($"<td>{output}</td>");
+                    }
+                    builder.Append("</tr>");
+                }
+            }
+            finally {
+                bufferPool.Return(rowColumnRanges); // Ensure the buffer is returned, avoiding leaks
             }
 
+            builder.Append("</tbody>");
+
+            builder.Append("</table>");
+            return builder.ToString();
         }
 
         return match.Value;
