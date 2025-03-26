@@ -234,6 +234,9 @@
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
+  .z-7 {
+    z-index: 7;
+  }
   .z-\[1000\] {
     z-index: 1000;
   }
