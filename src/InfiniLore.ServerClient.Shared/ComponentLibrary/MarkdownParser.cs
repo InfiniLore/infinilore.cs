@@ -31,9 +31,9 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
-            (?:\|(?:\ *(\w)*\ *\|)+)\s
+            (?:\|(?:\ *(.*)\ *\|)+)\s
             (?:\|(?:\ *-+\ *\|)+)\s
-            (?:\|(?:\ *(\w)*\ *\|)+)
+            (?:\|(?:\ *(.*)\ *\|)+)
           )
         | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline )]
