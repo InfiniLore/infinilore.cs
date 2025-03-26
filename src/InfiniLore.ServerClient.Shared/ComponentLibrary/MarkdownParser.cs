@@ -17,9 +17,10 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         | (?<bold>(?<!\*)\*\*([^*]+?)\*\*(?!\*)|(?<!_)__([^_]+?)__(?!_))
         | (?<italic>(?<!\*)\*([^*]+?)\*(?!\*)|(?<!_)_([^_]+?)_(?!_))
         | (?<strike>~~(.+?)~~)
-        | (?<code>`(.+?)`)
+        | (?<code>(?<!``)`([^`\n]+?)`(?!``))
         | (?<link>\[(.+?)\]\((.+?)\))
         | (?<heading>^(\#{1,6})\s(.+))
+        | (?<codeBlock>```(.+?)\n([\s\S]*?)```(?!.*```))
         """, RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex MarkdownRegex { get; }
 
@@ -74,7 +75,7 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         }
 
         if (match.Groups["code"].Success && match.Groups[8] is { Success: true, Value: var chars8 })
-            return $"<code>{chars8}</code>";
+            return $"<code><pre>{chars8}</pre></code>"; // todo escape < and > characters
 
         if (match.Groups["link"].Success
             && match.Groups[9] is { Success: true, Value: var chars9 }
@@ -86,6 +87,10 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         if (origin is not Origin.Heading && match.Groups["heading"].Success && match.Groups[11] is { Success: true, Length: var headingLevel } && match.Groups[12] is { Success: true, Value: var string12 }) {
             string output = MarkdownRegex.Replace(string12, m => Evaluator(m, Origin.Heading));
             return $"<h{headingLevel}>{output}</h{headingLevel}>";
+        }
+
+        if (origin is not Origin.CodeBlock && match.Groups["codeBlock"].Success && match.Groups[13] is { Success: true, Value: var string13 } && match.Groups[14] is { Success: true, ValueSpan: var chars14 }) {
+            return $"<code><pre>{chars14}</pre></code>"; // todo escape < and > characters
         }
 
         return match.Value;
@@ -107,6 +112,7 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         Bold,
         Italic,
         Strike,
-        Heading
+        Heading,
+        CodeBlock
     }
 }

@@ -11,11 +11,11 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
-<input type="text" class="w-full h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText"></input>
-
+<input type="text" class="w-full h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText">
 <div class="w-full h-16 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput</div>
 
+<textarea class="w-full h-64 p-4 border-2 border-gray-300 rounded-lg" @oninput="TextAreaOnChange"></textarea>
+<div class="w-full h-64 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput2</div>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -32,4 +32,11 @@
     }
 
     private MarkupString MarkdownOutput { get; set; }
+    private MarkupString MarkdownOutput2 { get; set; }
+    
+    private void TextAreaOnChange(ChangeEventArgs obj) {
+        if (obj.Value is not string content) return;
+        
+        MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
+    }
 }
