@@ -21,7 +21,7 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<italic>\*([^*]+?)\*|_([^_]+?)_)
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
-        | (?<link>\[(.+?)\]\((.+?)\))
+        | (?<link>(!)?\[(.+?)\]\((.+?)\))
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
@@ -257,9 +257,12 @@ public partial class MarkdownParser : IMarkdownParser {
         }
 
         if (!origin.HasFlag(Origin.Link) && match.Groups["link"].Success
-            && match.Groups[10].TryGetValue(out string? linkText)
-            && match.Groups[11].TryGetValue(out string? linkHref)
+            && match.Groups[11].TryGetValue(out string? linkText)
+            && match.Groups[12].TryGetValue(out string? linkHref)
         ) {
+            if (match.Groups[10].Success) {
+                return $"<img src=\"{linkHref}\" alt=\"{linkText}\">";
+            }
             string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Link));
             return $"<a href=\"{linkHref}\">{output}</a>";
         }
