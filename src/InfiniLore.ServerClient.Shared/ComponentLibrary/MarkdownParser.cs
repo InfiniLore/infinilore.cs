@@ -35,17 +35,22 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
         | (?<headingSimple>^(.+?)\n\s*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
-        | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[*+-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(.+)\|\s*\r?\n
             ^\|([:\-|\ ]+)\|\s*\r?\n
             ((?:^\|.+\|\s*)+)
           )
+        | (?<htmlTag>
+            <(?<tag>\w+)(?:\s[^>]*)?>
+            (?:(?!<\k<tag>>)[\s\S]*|<\k<tag>[\s\S]*?</\k<tag>>)*
+            </\k<tag>> 
+          )  
         | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline )]
     private static partial Regex MultilineStructuresRegex { get; }
     
-    [GeneratedRegex(@"^[ ]*[*+-.]\d*\s+(.+)((?:(?:(?:\n[ ]+[*+-.]\d*)|(?:\n[ ]+))\s+.+)*)", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(.+)((?:(?:(?:\n[ ]+[*+-.]?\d*\.?)|(?:\n[ ]+))\s+.+)*)", RegexOptions.Multiline)]
     private static partial Regex ListItemBodyRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -199,6 +204,10 @@ public partial class MarkdownParser : IMarkdownParser {
             finally {
                 StringBuilderPool.Return(builder);
             }
+        }
+
+        if (match.Groups["htmlBody"].Success) {
+            return match.Value;
         }
 
         return match.Value;
