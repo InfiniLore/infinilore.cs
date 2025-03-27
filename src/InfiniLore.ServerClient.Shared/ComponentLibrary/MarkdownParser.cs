@@ -47,26 +47,29 @@ public partial class MarkdownParser : IMarkdownParser {
             </\k<tag>> 
           )  
         | (?<remainder>.+?(?:\n|$))
-        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline )]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
     private static partial Regex MultilineStructuresRegex { get; }
-    
-    [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(.+)((?:(?:(?:\n[ ]+[*+-.]?\d*\.?)|(?:\n[ ]+))\s+.+)*)", RegexOptions.Multiline)]
+
+    [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(.+)((?:\n[ ]+.+)*)", RegexOptions.Multiline)]
     private static partial Regex ListItemBodyRegex { get; }
+
+    [GeneratedRegex(@"^( *)\S.*", RegexOptions.Multiline)]
+    private static partial Regex NormalizeNewlineRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public string Parse(string markdown) 
-        => MultilineStructuresRegex.Replace(markdown, evaluator: MultilineStructuresEvaluator);
+    public string Parse(string markdown)
+        => MultilineStructuresRegex.Replace(markdown, MultilineStructuresEvaluator);
 
     private static string MultilineStructuresEvaluator(Match match) {
         if (match.Groups["remainder"].TryGetValue(out string? paragraph)) {
-            string output = SinglelineStructuresRegex.Replace(paragraph, static m => SinglelineStructuresEvaluator(m));
+            string output = SinglelineStructuresRegex.Replace(paragraph, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<p>{output}</p>";
         }
-        
+
         if (match.Groups["heading"].Success && match.Groups[1].TryGetLength(out int headingLevel) && match.Groups[2].TryGetValue(out string? headerText)) {
-            string output = SinglelineStructuresRegex.Replace(headerText, static m => SinglelineStructuresEvaluator(m));
+            string output = SinglelineStructuresRegex.Replace(headerText, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<h{headingLevel}>{output}</h{headingLevel}>";
         }
 
@@ -76,7 +79,7 @@ public partial class MarkdownParser : IMarkdownParser {
         }
 
         if (match.Groups["headingSimple"].Success && match.Groups[5].TryGetValue(out string? headerSimpleText)) {
-            string output = SinglelineStructuresRegex.Replace(headerSimpleText, static m => SinglelineStructuresEvaluator(m));
+            string output = SinglelineStructuresRegex.Replace(headerSimpleText, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<h1>{output}</h1>";
         }
 
@@ -87,17 +90,19 @@ public partial class MarkdownParser : IMarkdownParser {
                 foreach (Match lineMatch in ListItemBodyRegex.Matches(listUnorderedBody)) {
                     builder.Append("<li>");
                     if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
-                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
+                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, evaluator: static m => SinglelineStructuresEvaluator(m));
                         builder.Append(listHeaderOutput);
                     }
+
                     if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
-                        string listBodyOutput = MultilineStructuresRegex.Replace(listBody, MultilineStructuresEvaluator);
+                        string normalizedBody = NormalizeIndentationWithRegex(listBody);
+                        string listBodyOutput = MultilineStructuresRegex.Replace(normalizedBody, MultilineStructuresEvaluator);
                         builder.Append(listBodyOutput);
                     }
-                
+
                     builder.Append("</li>");
                 }
-            
+
                 builder.Append("</ul>");
                 return builder.ToString();
             }
@@ -114,12 +119,13 @@ public partial class MarkdownParser : IMarkdownParser {
                     builder.Append("<li>");
 
                     if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
-                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
+                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, evaluator: static m => SinglelineStructuresEvaluator(m));
                         builder.Append(listHeaderOutput);
                     }
 
                     if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
-                        string listBodyOutput = MultilineStructuresRegex.Replace(listBody, MultilineStructuresEvaluator);
+                        string normalizedBody = NormalizeIndentationWithRegex(listBody);
+                        string listBodyOutput = MultilineStructuresRegex.Replace(normalizedBody, MultilineStructuresEvaluator);
                         builder.Append(listBodyOutput);
                     }
 
@@ -158,7 +164,7 @@ public partial class MarkdownParser : IMarkdownParser {
                 for (int index = 0; index < headerColumnCount; index++) {
                     builder.Append("<th>");
                     ReadOnlySpan<char> column = header[headerColumns[index]];
-                    string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                    string output = SinglelineStructuresRegex.Replace(column.ToString(), evaluator: static m => SinglelineStructuresEvaluator(m));
                     builder.Append(output);
                     builder.Append("</th>");
                 }
@@ -184,7 +190,7 @@ public partial class MarkdownParser : IMarkdownParser {
                             builder.Append("<td>");
                             Range columnRange = rowColumnRanges[columnIndex];
                             ReadOnlySpan<char> column = row[columnRange];
-                            string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                            string output = SinglelineStructuresRegex.Replace(column.ToString(), evaluator: static m => SinglelineStructuresEvaluator(m));
                             builder.Append(output);
                             builder.Append("</td>");
                         }
@@ -212,12 +218,12 @@ public partial class MarkdownParser : IMarkdownParser {
 
         return match.Value;
     }
-    
+
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
         if (match.Groups["escaped"].Success && match.Groups[1].TryGetValue(out string? escapedChar)) {
             return escapedChar;
         }
-        
+
         if (!origin.HasFlag(Origin.BoldAndItalic) && match.Groups["boldAndItalic"].Success) {
             if (match.Groups[2].TryGetValue(out string? boldAndItalicValue)) {
                 string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
@@ -244,7 +250,7 @@ public partial class MarkdownParser : IMarkdownParser {
 
         if (!origin.HasFlag(Origin.Italic) && match.Groups["italic"].Success) {
             if (match.Groups[6].TryGetValue(out string? italicValue)) {
-                string output = SinglelineStructuresRegex.Replace(italicValue, evaluator:  m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
+                string output = SinglelineStructuresRegex.Replace(italicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
                 return $"<em>{output}</em>";
             }
 
@@ -272,6 +278,7 @@ public partial class MarkdownParser : IMarkdownParser {
             if (match.Groups[10].Success) {
                 return $"<img src=\"{linkHref}\" alt=\"{linkText}\">";
             }
+
             string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Link));
             return $"<a href=\"{linkHref}\">{output}</a>";
         }
@@ -296,10 +303,10 @@ public partial class MarkdownParser : IMarkdownParser {
         if (match.Groups["greaterThan"].Success) {
             return "&gt;";
         }
-        
+
         return match.Value;
     }
-    
+
 
     // # ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
     // ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
@@ -320,6 +327,24 @@ public partial class MarkdownParser : IMarkdownParser {
         Italic = 1 << 2,
         Strike = 1 << 3,
         Code = 1 << 4,
-        Link = 1 << 5,
+        Link = 1 << 5
     }
+
+    private static string NormalizeIndentationWithRegex(string input) {
+        // Find the minimum indentation level (ignoring empty lines)
+        int minIndent = int.MaxValue;
+        foreach (Match match in NormalizeNewlineRegex.Matches(input)) {
+            if (match.Success) {
+                int leadingSpaces = match.Groups[1].Value.Length;
+                minIndent = Math.Min(minIndent, leadingSpaces);
+            }
+        }
+
+        if (minIndent == int.MaxValue) minIndent = 0;// No indentation found (handle edge case)
+
+        // Regex to strip "minIndent" spaces from all lines
+        var normalizeRegex = new Regex($"^ {{0,{minIndent}}}", RegexOptions.Multiline);
+        return normalizeRegex.Replace(input, "");
+    }
+
 }
