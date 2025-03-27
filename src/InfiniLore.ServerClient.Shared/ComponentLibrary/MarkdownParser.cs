@@ -35,7 +35,7 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
         | (?<headingSimple>^(.+?)\n\s*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
-        | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[*+-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(.+)\|\s*\r?\n
             ^\|([:\-|\ ]+)\|\s*\r?\n

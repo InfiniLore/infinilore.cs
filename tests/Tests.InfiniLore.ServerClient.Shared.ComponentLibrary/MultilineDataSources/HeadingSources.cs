@@ -24,5 +24,21 @@ public static class HeadingDataSources {
             """,
             HtmlOutput: "<h1>Heading</h1>"
         );
+        
+        yield return () => new MultilineDataDto(
+            Markdown: """
+            Heading
+            ===
+            """,
+            HtmlOutput: "<h1>Heading</h1>"
+        );
+        
+        yield return () => new MultilineDataDto(
+            Markdown: """
+            Heading
+                ========
+            """,
+            HtmlOutput: "<h1>Heading</h1>"
+        );
     }
 }

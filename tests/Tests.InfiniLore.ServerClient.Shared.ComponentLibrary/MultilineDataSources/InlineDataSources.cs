@@ -62,5 +62,20 @@ public static class InlineDataSources {
             Markdown: "![Specs](https://i.imgur.com/aV8o3rE.png)",
             HtmlOutput: "<p><img src=\"https://i.imgur.com/aV8o3rE.png\" alt=\"Specs\"></p>"
         );
+        
+        yield return static () => new MultilineDataDto(
+            Markdown: "This contains an emoji: 😀",
+            HtmlOutput: "<p>This contains an emoji: 😀</p>"
+        );
+        
+        yield return static () => new MultilineDataDto(
+            Markdown: @"Escape characters like backticks: \`code\`",
+            HtmlOutput: "<p>Escape characters like backticks: `code`</p>"
+        );
+
+        yield return static () => new MultilineDataDto(
+            Markdown: "@username mentions",
+            HtmlOutput: "<p>@username mentions</p>"
+        );
     }
 }
