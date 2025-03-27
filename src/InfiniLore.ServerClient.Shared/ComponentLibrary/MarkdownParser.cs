@@ -22,6 +22,8 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
         | (?<link>\[(.+?)\]\((.+?)\))
+        | (?<copyright>&copy;)
+        | (?<amp>&)
         """, RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
@@ -29,8 +31,8 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
           (?<heading>^(\#{1,6})\s(.+))
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
         | (?<headingSimple>^(.+?)\n\s*[-=]{3,})
-        | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
-        | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listOrdered>(?:^[^\S\r\n]*[*+-.]\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(.+)\|\s*\r?\n
             ^\|([:\-|\ ]+)\|\s*\r?\n
@@ -43,30 +45,11 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
     [GeneratedRegex(@"^[ ]*[*+-.]\d*\s+(.+)((?:(?:(?:\n[ ]+[*+-.]\d*)|(?:\n[ ]+))\s+.+)*)", RegexOptions.Multiline)]
     private static partial Regex ListItemBodyRegex { get; }
 
-    // private static void something() {
-    //     builder.AddMarkdownEditor(config =>
-    //         config.AddParser(@"(?<codeBlock>```(.+?)\n([\s\S]*?)```(?!.*```))", ExternalParsers.Codeblock)
-    //         config.AddParser(@"(?<heading>^(\#{1,6})\s(.+))", ExternalParsers.Heading)
-    //     );
-    //     
-    //     MarkdownParser.Regex = new Regex( string.join("|", config.Parsers.Select(p => p.Regex)), RegexOptions.Compiled);
-    //
-    //
-    //     MarkdownParser.Parse(input, CombinedEvaluator);
-    //     
-    //     private void CombinedEvaluator(Match match) {
-    //         foreach (var (groupname, handler) in MarkdownParser.Dictionary) {
-    //             if (match.Groups[groupname].Success) handler.Handle(match);
-    //         }
-    //     }
-    // }
-
-    public string Parse(string input) {
-        string output = MultilineStructuresRegex.Replace(input, evaluator: MultilineStructuresEvaluator);
-        
-        logger.Information("markdown input: {input} html output: {output}", input, output);
-        return output;
-    }
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public string Parse(string input) 
+        => MultilineStructuresRegex.Replace(input, evaluator: MultilineStructuresEvaluator);
 
     private static string MultilineStructuresEvaluator(Match match) {
         if (match.Groups["remainder"].TryGetValue(out string? paragraph)) {
@@ -90,46 +73,57 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
         }
 
         if (match.Groups["listUnordered"].TryGetValue(out string? listUnorderedBody)) {
-            var builder = new StringBuilder(); // todo get and move to pool
-            builder.Append("<ul>");
-            foreach (Match lineMatch in ListItemBodyRegex.Matches(listUnorderedBody)) {
-                builder.Append("<li>");
-                if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
-                    string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
-                    builder.Append(listHeaderOutput);
-                }
-                if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
-                    string listBodyOutput = MultilineStructuresRegex.Replace(listBody, static m => MultilineStructuresEvaluator(m));
-                    builder.Append(listBodyOutput);
-                }
+            StringBuilder builder = StringBuilderPool.Get();
+            try {
+                builder.Append("<ul>");
+                foreach (Match lineMatch in ListItemBodyRegex.Matches(listUnorderedBody)) {
+                    builder.Append("<li>");
+                    if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
+                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
+                        builder.Append(listHeaderOutput);
+                    }
+                    if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
+                        string listBodyOutput = MultilineStructuresRegex.Replace(listBody, MultilineStructuresEvaluator);
+                        builder.Append(listBodyOutput);
+                    }
                 
-                builder.Append("</li>");
-            }
+                    builder.Append("</li>");
+                }
             
-            builder.Append("</ul>");
-            return builder.ToString();
+                builder.Append("</ul>");
+                return builder.ToString();
+            }
+            finally {
+                StringBuilderPool.Return(builder);
+            }
         }
 
         if (match.Groups["listOrdered"].TryGetValue(out string? listOrderedBody)) {
-            var builder = new StringBuilder(); // todo get and move to pool
-            builder.Append("<ol>");
-            foreach (Match lineMatch in ListItemBodyRegex.Matches(listOrderedBody)) {
-                builder.Append("<li>");
-                
-                if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
-                    string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
-                    builder.Append(listHeaderOutput);
+            StringBuilder builder = StringBuilderPool.Get();
+            try {
+                builder.Append("<ol>");
+                foreach (Match lineMatch in ListItemBodyRegex.Matches(listOrderedBody)) {
+                    builder.Append("<li>");
+
+                    if (lineMatch.Groups[1].TryGetValue(out string? listHeader)) {
+                        string listHeaderOutput = SinglelineStructuresRegex.Replace(listHeader, static m => SinglelineStructuresEvaluator(m));
+                        builder.Append(listHeaderOutput);
+                    }
+
+                    if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
+                        string listBodyOutput = MultilineStructuresRegex.Replace(listBody, MultilineStructuresEvaluator);
+                        builder.Append(listBodyOutput);
+                    }
+
+                    builder.Append("</li>");
                 }
-                if (lineMatch.Groups[2].TryGetValue(out string? listBody)) {
-                    string listBodyOutput = MultilineStructuresRegex.Replace(listBody, static m => MultilineStructuresEvaluator(m));
-                    builder.Append(listBodyOutput);
-                }
-                
-                builder.Append("</li>");
+
+                builder.Append("</ol>");
+                return builder.ToString();
             }
-            
-            builder.Append("</ol>");
-            return builder.ToString();
+            finally {
+                StringBuilderPool.Return(builder);
+            }
         }
 
         if (match.Groups["table"].Success) {
@@ -140,61 +134,68 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
 
             ReadOnlySpan<char> separator = match.Groups[7].ValueSpan;
             Span<Range> separatorColumns = stackalloc Range[separator.Length];
-            int separatorColumnCount = separator.Split(separatorColumns, '|', StringSplitOptions.TrimEntries);
+            int _ = separator.Split(separatorColumns, '|', StringSplitOptions.TrimEntries);
 
             ReadOnlySpan<char> rows = match.Groups[8].ValueSpan;
             Span<Range> rowRanges = stackalloc Range[rows.Length];
             int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.TrimEntries);
 
             // Construct table HTML
-            var builder = new StringBuilder();
-            builder.Append("<table>");
-
-            // Add headers
-            builder.Append("<thead><tr>");
-            for (int index = 0; index < headerColumnCount; index++) {
-                builder.Append("<th>");
-                ReadOnlySpan<char> column = header[headerColumns[index]];
-                string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
-                builder.Append(output);
-                builder.Append("</th>");
-            }
-            builder.Append("</tr></thead>");
-
-            // Add rows
-            builder.Append("<tbody>");
-            ArrayPool<Range> bufferPool = ArrayPool<Range>.Shared;
-            const int maxExpectedRowLength = 512; // Based on expected data characteristics
-            Range[] rowColumnRanges = bufferPool.Rent(maxExpectedRowLength);
-
+            StringBuilder builder = StringBuilderPool.Get();
             try {
-                for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-                    Range rowRange = rowRanges[rowIndex];
-                    ReadOnlySpan<char> row = rows[rowRange];
+                builder.Append("<table>");
 
-                    // Split the row
-                    int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-                    builder.Append("<tr>");
-                    for (int columnIndex = 0; columnIndex < rowColumnCount; columnIndex++) {
-                        builder.Append("<td>");
-                        Range columnRange = rowColumnRanges[columnIndex];
-                        ReadOnlySpan<char> column = row[columnRange];
-                        string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
-                        builder.Append(output);
-                        builder.Append("</td>");
-                    }
-                    builder.Append("</tr>");
+                // Add headers
+                builder.Append("<thead><tr>");
+                for (int index = 0; index < headerColumnCount; index++) {
+                    builder.Append("<th>");
+                    ReadOnlySpan<char> column = header[headerColumns[index]];
+                    string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                    builder.Append(output);
+                    builder.Append("</th>");
                 }
+
+                builder.Append("</tr></thead>");
+
+                // Add rows
+                builder.Append("<tbody>");
+                ArrayPool<Range> bufferPool = ArrayPool<Range>.Shared;
+                const int maxExpectedRowLength = 512;// Based on expected data characteristics
+                Range[] rowColumnRanges = bufferPool.Rent(maxExpectedRowLength);
+
+                try {
+                    for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+                        Range rowRange = rowRanges[rowIndex];
+                        ReadOnlySpan<char> row = rows[rowRange];
+
+                        // Split the row
+                        int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+                        builder.Append("<tr>");
+                        for (int columnIndex = 0; columnIndex < rowColumnCount; columnIndex++) {
+                            builder.Append("<td>");
+                            Range columnRange = rowColumnRanges[columnIndex];
+                            ReadOnlySpan<char> column = row[columnRange];
+                            string output = SinglelineStructuresRegex.Replace(column.ToString(), static m => SinglelineStructuresEvaluator(m));
+                            builder.Append(output);
+                            builder.Append("</td>");
+                        }
+
+                        builder.Append("</tr>");
+                    }
+                }
+                finally {
+                    bufferPool.Return(rowColumnRanges);// Ensure the buffer is returned, avoiding leaks
+                }
+
+                builder.Append("</tbody>");
+
+                builder.Append("</table>");
+                return builder.ToString();
             }
             finally {
-                bufferPool.Return(rowColumnRanges); // Ensure the buffer is returned, avoiding leaks
+                StringBuilderPool.Return(builder);
             }
-
-            builder.Append("</tbody>");
-
-            builder.Append("</table>");
-            return builder.ToString();
         }
 
         return match.Value;
@@ -245,7 +246,7 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
 
         if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups[8].TryGetValue(out string? codeValue)) {
             string output = HtmlEncoder.Default.Encode(codeValue);
-            return $"<pre><code>{output}</code></pre>";
+            return $"<code>{output}</code>";
         }
 
         if (!origin.HasFlag(Origin.Link) && match.Groups["link"].Success
@@ -253,6 +254,14 @@ public partial class MarkdownParser(ILogger<MarkdownParser> logger) {
             && match.Groups[10].TryGetValue(out string? linkText)
         ) {
             return $"<a href=\"{linkHref}\" target=\"_blank\">{linkText}</a>";
+        }
+
+        if (match.Groups["copyright"].Success) {
+            return "\u00a9";
+        }
+
+        if (match.Groups["amp"].Success) {
+            return "&amp;";
         }
         
         return match.Value;
