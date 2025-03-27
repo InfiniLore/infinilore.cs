@@ -33,7 +33,7 @@ public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex("""
           (?<heading>^(\#{1,6})\s(.+))
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
-        | (?<headingSimple>^(.+?)\n\s*[-=]{3,})
+        | (?<headingSimple>^(.+?)\s+[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
@@ -46,6 +46,7 @@ public partial class MarkdownParser : IMarkdownParser {
             (?:(?!<\k<tag>>)[\s\S]*|<\k<tag>[\s\S]*?</\k<tag>>)*
             </\k<tag>> 
           )  
+        | (?<horizontalRule>^-{3,}\s*$)
         | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
     private static partial Regex MultilineStructuresRegex { get; }
@@ -214,6 +215,10 @@ public partial class MarkdownParser : IMarkdownParser {
 
         if (match.Groups["htmlBody"].Success) {
             return match.Value;
+        }
+
+        if (match.Groups["horizontalRule"].Success) {
+            return "<hr>";
         }
 
         return match.Value;

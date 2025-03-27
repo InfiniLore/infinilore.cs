@@ -11,11 +11,12 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 public class MarkdownParserTests {
     // see https://spec-md.com/
     [Test]
-    [MethodDataSource(typeof(InlineDataSources), nameof(InlineDataSources.Data))]
-    [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.Data))]
-    [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.Data))]
-    [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.Data))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.Data))]
+    [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.Data))]
+    [MethodDataSource(typeof(HorizontalLineDataSources), nameof(HorizontalLineDataSources.Data))]
+    [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.Data))]
+    [MethodDataSource(typeof(InlineDataSources), nameof(InlineDataSources.Data))]
+    [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.Data))]
     public async Task Parse_ValidInputs(MultilineDataDto dto) {
         // Arrange
         var parser = new MarkdownParser();
