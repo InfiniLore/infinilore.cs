@@ -31,6 +31,23 @@ public static class BlockQuoteDataSources {
                 </ul>
             </blockquote>
             """
+        );yield return static () => new MultilineDataDto(
+            Markdown: """
+            > blockQuote 1
+            >> ...blockQuote 2
+            >>> ...blockQuote 3
+            """,
+            HtmlOutput: """
+            <blockquote>
+                <p>blockQuote 1</p>
+                <blockquote>
+                    <p>...blockQuote 2</p>
+                    <blockquote>
+                        <p>...blockQuote 3</p>
+                    </blockquote>
+                </blockquote>
+            </blockquote>
+            """
         );
     }
 }

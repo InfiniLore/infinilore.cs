@@ -21,10 +21,15 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<italic>\*([^*]+?)\*|_([^_]+?)_)
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
-        | (?<link>
+        | (?<linkNested>
           (!)?
-          \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
-          \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
+          \[(!?\[.+?\]\(.+?\))\]
+          \((.+?)(?:\s?"([^"]*)")?\)
+        )
+        | (?<linkRegular>
+          (!)?
+          \[(.+?)\]
+          \((.+?)(?:\s?"([^"]*)")?\)
         )
         | (?<copyright>&copy;)
         | (?<amp>&)
@@ -64,7 +69,7 @@ public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex(@"^( *)\S.*", RegexOptions.Multiline)]
     private static partial Regex NormalizeNewlineRegex { get; }
     
-    [GeneratedRegex(@"^>\s+", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^>\s*", RegexOptions.Multiline)]
     private static partial Regex NormalizeBlockQuoteRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -297,7 +302,7 @@ public partial class MarkdownParser : IMarkdownParser {
             return $"<code>{output}</code>";
         }
 
-        if (!origin.HasFlag(Origin.Link) && match.Groups["link"].Success
+        if (match.Groups["linkNested"].Success
             && match.Groups[11].TryGetValue(out string? linkText)
             && match.Groups[12].TryGetValue(out string? linkHref)
         ) {
@@ -306,11 +311,21 @@ public partial class MarkdownParser : IMarkdownParser {
             if (match.Groups[10].Success) {
                 return $"<img src=\"{linkHref}\" alt=\"{linkText}\"{titleText}>";
             }
-            
-            Origin modifier = linkText.StartsWith('!') ? Origin.NestedLink : Origin.Link; // Check if the link is nested, easiest way to do this is to check if the first character is an exclamation mark
-
-            string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin | modifier));
+            string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin));
             return $"<a href=\"{linkHref}\">{output}</a>";
+        }
+        
+        if (!origin.HasFlag(Origin.Link) && match.Groups["linkRegular"].Success
+            && match.Groups[15].TryGetValue(out string? linkRegularText)
+            && match.Groups[16].TryGetValue(out string? linkRegularHref)
+        ) {
+            string titleText = match.Groups[17].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
+            
+            if (match.Groups[14].Success) {
+                return $"<img src=\"{linkRegularHref}\" alt=\"{linkRegularText}\"{titleText}>";
+            }
+            string output = SinglelineStructuresRegex.Replace(linkRegularText, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Link));
+            return $"<a href=\"{linkRegularHref}\">{output}</a>";
         }
 
         if (match.Groups["copyright"].Success) {
@@ -345,8 +360,7 @@ public partial class MarkdownParser : IMarkdownParser {
         Italic = 1 << 2,
         Strike = 1 << 3,
         Code = 1 << 4,
-        Link = 1 << 5,
-        NestedLink = 1 << 6
+        Link = 1 << 5
     }
 
     private static string NormalizeIndentationWithRegex(string input) {

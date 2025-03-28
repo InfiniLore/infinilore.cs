@@ -93,5 +93,10 @@ public static class InlineDataSources {
             Markdown: "`\\``",
             HtmlOutput: "<p><code>`</code></p>"
         );
+
+        yield return static () => new MultilineDataDto(
+            Markdown: "\\\"She told me that \\'he isn't here right *now*\\' - so I left.\\\"",
+            HtmlOutput: "<p>\"She told me that 'he isn't here right <em>now</em>' - so I left.\"</p>"
+        );
     }
 }
