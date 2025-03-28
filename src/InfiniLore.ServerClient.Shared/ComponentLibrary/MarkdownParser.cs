@@ -22,10 +22,10 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
         | (?<link>
-            (!)?
-            \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
-            \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
-          )
+          (!)?
+          \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
+          \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
+        )
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
@@ -36,7 +36,7 @@ public partial class MarkdownParser : IMarkdownParser {
 
     [GeneratedRegex("""
           (?<heading>^(\#{1,6})\s(.+))
-        | (?<codeBlock>```(.+?)?\s+?([\s\S]*?)```\s*?$)
+        | (?<codeBlock>```(.+?)?\r?\n+?([\s\S]+?)```\s*?$)
         | (?<headingSimple>^(.+?)\s[\ ]*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
@@ -54,7 +54,7 @@ public partial class MarkdownParser : IMarkdownParser {
             </\k<tag>> 
           )  
         | (?<horizontalRule>^-{3,}\s*$)
-        | (?<remainder>(?:[^\r\n]+\r?\n?)+(?!\r?\n)*?)
+        | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
     private static partial Regex MultilineStructuresRegex { get; }
 
@@ -88,7 +88,8 @@ public partial class MarkdownParser : IMarkdownParser {
         if (match.Groups["codeBlock"].Success && match.Groups[4].TryGetValue(out string? codeBlockBody)) {
             string langName = match.Groups[3].TryGetValue(out string? langNameValue) ? langNameValue : string.Empty;
             string output = HtmlEncoder.Default.Encode(codeBlockBody);
-            return $"<pre><code lang=\"{langName}\">{output}</code></pre>";
+            string langClass = langName.IsNullOrWhiteSpace() ? string.Empty : $" class=\"language-{langName}\"";
+            return $"<pre><code{langClass}>{output}</code></pre>";
         }
 
         if (match.Groups["headingSimple"].Success && match.Groups[5].TryGetValue(out string? headerSimpleText)) {

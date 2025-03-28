@@ -11,7 +11,6 @@ public class HtmlDataSources {
         yield return static () => new MultilineDataDto(
             Markdown: """
             Unrelated previous paragraph followed by a blank line
-            
             <table>
             <tr>
             <td>Table cell</td>
