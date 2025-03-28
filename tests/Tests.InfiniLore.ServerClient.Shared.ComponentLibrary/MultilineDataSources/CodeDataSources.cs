@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.Text.Encodings.Web;
+
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -23,5 +25,43 @@ public static class CodeDataSources {
             </pre>
             """
         );
+        yield return static () => {
+            string htmlEncoded = HtmlEncoder.Default.Encode("tell application \"Foo\"\nbeep\nend tell");
+            
+            return new MultilineDataDto(
+                Markdown: "```\ntell application \"Foo\"\nbeep\nend tell\n```",
+                HtmlOutput: $"""
+                <pre>
+                    <code lang="">
+                        {htmlEncoded}&#xA;
+                    </code>
+                </pre>
+                """
+            );
+        };
+        
+        yield return static () => {
+            string htmlEncoded = HtmlEncoder.Default.Encode("""
+                tell application "Foo"
+                    beep
+                end tell
+                """);
+            return new MultilineDataDto(
+                Markdown: """
+                ```
+                tell application "Foo"
+                    beep
+                end tell
+                ```
+                """,
+                HtmlOutput: $"""
+                <pre>
+                    <code lang="">
+                       {htmlEncoded}&#xD;&#xA;
+                    </code>
+                </pre>
+                """
+            );
+        };
     }
 }

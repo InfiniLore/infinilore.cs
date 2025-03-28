@@ -88,5 +88,10 @@ public static class InlineDataSources {
             </p>
             """
         );
+
+        yield return static () => new MultilineDataDto(
+            Markdown: "`\\``",
+            HtmlOutput: "<p><code>`</code></p>"
+        );
     }
 }

@@ -36,9 +36,9 @@ public partial class MarkdownParser : IMarkdownParser {
 
     [GeneratedRegex("""
           (?<heading>^(\#{1,6})\s(.+))
-        | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
+        | (?<codeBlock>```(.+?)?\s+?([\s\S]*?)```\s*?$)
         | (?<headingSimple>^(.+?)\s[\ ]*[-=]{3,})
-        | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(.+)\|\s*\r?\n
@@ -78,7 +78,8 @@ public partial class MarkdownParser : IMarkdownParser {
             return $"<h{headingLevel}>{output}</h{headingLevel}>";
         }
 
-        if (match.Groups["codeBlock"].Success && match.Groups[3].TryGetValue(out string? langName) && match.Groups[4].TryGetValue(out string? codeBlockBody)) {
+        if (match.Groups["codeBlock"].Success && match.Groups[4].TryGetValue(out string? codeBlockBody)) {
+            string langName = match.Groups[3].TryGetValue(out string? langNameValue) ? langNameValue : string.Empty;
             string output = HtmlEncoder.Default.Encode(codeBlockBody);
             return $"<pre><code lang=\"{langName}\">{output}</code></pre>";
         }
@@ -276,7 +277,8 @@ public partial class MarkdownParser : IMarkdownParser {
         }
 
         if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups[9].TryGetValue(out string? codeValue)) {
-            string output = HtmlEncoder.Default.Encode(codeValue);
+            string normalizedBackticks = codeValue.Replace("\\`", "`");
+            string output = HtmlEncoder.Default.Encode(normalizedBackticks);
             return $"<code>{output}</code>";
         }
 
