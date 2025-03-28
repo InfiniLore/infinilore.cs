@@ -54,9 +54,15 @@ public partial class MarkdownParser : IMarkdownParser {
         
         # stuff that doesnt need capture groups
         | (?<htmlBody>
-            <(?<tag>\w+)(?:\s[^>]*)?>
-            (?:(?!<\k<tag>>)[\s\S]*|<\k<tag>[\s\S]*?</\k<tag>>)*
-            </\k<tag>> 
+            <(?<tag>\w+)\b[^>]*>
+                (?:
+                    [^<]+
+                    | <(?<OPEN>\k<tag>)\b[^>]*>
+                    | </(?<-OPEN>\k<tag>)>
+                    | <(?!/?\k<tag>\b)[^>]+>
+                )*
+                # (?:(?<-OPEN>)(?!))
+                </\k<tag>>
           )  
         | (?<horizontalRule>^-{3,}\s*$)
         | (?<remainder>.+?(?:\n|$))
