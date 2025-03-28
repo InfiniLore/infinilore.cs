@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using Auth0.ManagementApi.Models;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;

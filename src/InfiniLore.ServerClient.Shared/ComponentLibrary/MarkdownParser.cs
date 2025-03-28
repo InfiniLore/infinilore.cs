@@ -43,8 +43,8 @@ public partial class MarkdownParser : IMarkdownParser {
             ((?:^\|.+\|\s*)+)
           )
         | (?<blockQuote>^>\s+(?:(?![*+-]\s+.+|[-.]?\d+).+(?:\r?\n|$)?)*)
-        
-        # stuff that doesnt need capture groups
+
+        # place ABOVE this line if you require group getting by index
         | (?<htmlBody>
             <(?<tag>\w+)\b[^>]*>
                 (?:
@@ -53,7 +53,7 @@ public partial class MarkdownParser : IMarkdownParser {
                     | </(?<-OPEN>\k<tag>)>
                     | <(?!/?\k<tag>\b)[^>]+>
                 )*
-                # (?:(?<-OPEN>)(?!))
+                # (?:(?<-OPEN>)(?!)) # This should be the end of the tag, but it doesnt work
                 </\k<tag>>
           )  
         | (?<horizontalRule>^[*-_]{3,}\s*$)
@@ -66,7 +66,7 @@ public partial class MarkdownParser : IMarkdownParser {
 
     [GeneratedRegex(@"^( *)\S.*", RegexOptions.Multiline)]
     private static partial Regex NormalizeNewlineRegex { get; }
-    
+
     [GeneratedRegex(@"^>\s*", RegexOptions.Multiline)]
     private static partial Regex NormalizeBlockQuoteRegex { get; }
 
@@ -79,6 +79,7 @@ public partial class MarkdownParser : IMarkdownParser {
     private static string MultilineStructuresEvaluator(Match match) {
         if (match.Groups["remainder"].TryGetValue(out string? paragraph)) {
             if (paragraph.IsNullOrWhiteSpace()) return string.Empty;
+
             string output = SinglelineStructuresRegex.Replace(paragraph, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<p>{output}</p>";
         }
@@ -305,23 +306,25 @@ public partial class MarkdownParser : IMarkdownParser {
             && match.Groups[12].TryGetValue(out string? linkHref)
         ) {
             string titleText = match.Groups[13].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
-            
+
             if (match.Groups[10].Success) {
                 return $"<img src=\"{linkHref}\" alt=\"{linkText}\"{titleText}>";
             }
+
             string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin));
             return $"<a href=\"{linkHref}\">{output}</a>";
         }
-        
+
         if (!origin.HasFlag(Origin.Link) && match.Groups["linkRegular"].Success
             && match.Groups[15].TryGetValue(out string? linkRegularText)
             && match.Groups[16].TryGetValue(out string? linkRegularHref)
         ) {
             string titleText = match.Groups[17].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
-            
+
             if (match.Groups[14].Success) {
                 return $"<img src=\"{linkRegularHref}\" alt=\"{linkRegularText}\"{titleText}>";
             }
+
             string output = SinglelineStructuresRegex.Replace(linkRegularText, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Link));
             return $"<a href=\"{linkRegularHref}\">{output}</a>";
         }
@@ -362,20 +365,20 @@ public partial class MarkdownParser : IMarkdownParser {
     }
 
     private static string NormalizeIndentationWithRegex(string input) {
-            // Find the minimum indentation level (ignoring empty lines)
-            int minIndent = int.MaxValue;
-            foreach (Match match in NormalizeNewlineRegex.Matches(input)) {
-                if (match.Success) {
-                    int leadingSpaces = match.Groups[1].Value.Length;
-                    minIndent = Math.Min(minIndent, leadingSpaces);
-                }
-            }
-    
-            if (minIndent == int.MaxValue) minIndent = 0;// No indentation found (handle edge case)
-    
-            // Regex to strip "minIndent" spaces from all lines
-            var normalizeRegex = new Regex($"^ {{0,{minIndent}}}", RegexOptions.Multiline);
-            return normalizeRegex.Replace(input, "");
+        // Find the minimum indentation level (ignoring empty lines)
+        int minIndent = int.MaxValue;
+        foreach (Match match in NormalizeNewlineRegex.Matches(input)) {
+            if (!match.Success) continue;
+
+            int leadingSpaces = match.Groups[1].Value.Length;
+            minIndent = Math.Min(minIndent, leadingSpaces);
         }
+
+        if (minIndent == int.MaxValue) minIndent = 0;// No indentation found (handle edge case)
+
+        // Regex to strip "minIndent" spaces from all lines
+        var normalizeRegex = new Regex($"^ {{0,{minIndent}}}", RegexOptions.Multiline);// todo make a dictionary or something that houses all of these
+        return normalizeRegex.Replace(input, string.Empty);
+    }
 
 }
