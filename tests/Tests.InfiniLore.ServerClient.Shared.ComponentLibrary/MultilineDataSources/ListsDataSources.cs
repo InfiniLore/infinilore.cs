@@ -154,9 +154,7 @@ public static class ListsDataSources {
                 <li>Top item 1</li>
                 <li>Top item 2</li>
             </ul>
-            <p></p>
             <p>Unrelated text block in the same list</p>
-            <p></p>
             <ul>
                 <li>Top item 3</li>
             </ul>

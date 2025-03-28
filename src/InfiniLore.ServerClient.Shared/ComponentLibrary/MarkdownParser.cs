@@ -22,10 +22,10 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
         | (?<link>
-          (!)?
-          \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
-          \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
-        )
+            (!)?
+            \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
+            \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
+          )
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
@@ -48,13 +48,13 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<blockQuote>^>\s+(?:(?![*+-]\s+.+|[-.]?\d+).+(?:\r?\n|$)?)*)
         
         # stuff that doesnt need capture groups
-        | (?<htmlTag>
+        | (?<htmlBody>
             <(?<tag>\w+)(?:\s[^>]*)?>
             (?:(?!<\k<tag>>)[\s\S]*|<\k<tag>[\s\S]*?</\k<tag>>)*
             </\k<tag>> 
           )  
         | (?<horizontalRule>^-{3,}\s*$)
-        | (?<remainder>.+?(?:\n|$))
+        | (?<remainder>(?:[^\r\n]+\r?\n?)+(?!\r?\n)*?)
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
     private static partial Regex MultilineStructuresRegex { get; }
 
@@ -75,6 +75,7 @@ public partial class MarkdownParser : IMarkdownParser {
 
     private static string MultilineStructuresEvaluator(Match match) {
         if (match.Groups["remainder"].TryGetValue(out string? paragraph)) {
+            if (paragraph.IsNullOrWhiteSpace()) return string.Empty;
             string output = SinglelineStructuresRegex.Replace(paragraph, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<p>{output}</p>";
         }
@@ -239,7 +240,7 @@ public partial class MarkdownParser : IMarkdownParser {
             return "<hr>";
         }
 
-        return match.Value;
+        return string.Empty;
     }
 
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
