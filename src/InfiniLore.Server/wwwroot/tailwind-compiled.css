@@ -234,9 +234,6 @@
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
-  .z-7 {
-    z-index: 7;
-  }
   .z-\[1000\] {
     z-index: 1000;
   }
@@ -294,14 +291,14 @@
   .hidden {
     display: none;
   }
+  .inline {
+    display: inline;
+  }
   .table {
     display: table;
   }
   .h-2 {
     height: calc(var(--spacing) * 2);
-  }
-  .h-4\/6 {
-    height: calc(4/6 * 100%);
   }
   .h-6 {
     height: calc(var(--spacing) * 6);
@@ -317,9 +314,6 @@
   }
   .h-16 {
     height: calc(var(--spacing) * 16);
-  }
-  .h-64 {
-    height: calc(var(--spacing) * 64);
   }
   .h-72 {
     height: calc(var(--spacing) * 72);
@@ -486,9 +480,6 @@
   }
   .border-red-300 {
     border-color: var(--color-red-300);
-  }
-  .border-red-500 {
-    border-color: var(--color-red-500);
   }
   .bg-amber-500 {
     background-color: var(--color-amber-500);

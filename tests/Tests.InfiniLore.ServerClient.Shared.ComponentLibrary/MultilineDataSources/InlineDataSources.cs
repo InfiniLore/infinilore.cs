@@ -45,7 +45,7 @@ public static class InlineDataSources {
 
         yield return static () => new MultilineDataDto(
             Markdown: "This is an [-->*example*<--](https://www.facebook.com) of a link.",
-            HtmlOutput: """<p>This is an <a href="https://www.facebook.com">--><em>example</em><--</a> of a link.</p>"""
+            HtmlOutput: """<p>This is an <a href="https://www.facebook.com">--&gt;<em>example</em>&lt;--</a> of a link.</p>"""
         );
 
         yield return static () => new MultilineDataDto(
@@ -76,6 +76,17 @@ public static class InlineDataSources {
         yield return static () => new MultilineDataDto(
             Markdown: "@username mentions",
             HtmlOutput: "<p>@username mentions</p>"
+        );
+
+        yield return static () => new MultilineDataDto(
+            Markdown: "[![Specs](https://i.imgur.com/aV8o3rE.png)](https://imgur.com/)",
+            HtmlOutput: """
+            <p>
+                <a href="https://imgur.com/">
+                    <img src="https://i.imgur.com/aV8o3rE.png" alt="Specs">
+                </a>
+            </p>
+            """
         );
     }
 }

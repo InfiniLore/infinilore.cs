@@ -21,19 +21,23 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<italic>\*([^*]+?)\*|_([^_]+?)_)
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
-        | (?<link>(!)?\[(.+?)\]\((.+?)\))
+        | (?<link>
+          (!)?
+          \[(!\[.*?\]\(.*?\)|[^\[\]]+)*\]
+          \(((?>[^()\s]+|\([^()]*\)))+(?:\s?"([^"]*)")?\)
+        )
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
-        | (?<lessThan>(<)(?:(?=\s|[^a-z!/-])|$))
-        | (?<greaterThan>(?:(?<=[^a-z!/-])|^)(>))
+        | (?<lessThan><)
+        | (?<greaterThan>>)
         """, RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
           (?<heading>^(\#{1,6})\s(.+))
         | (?<codeBlock>```(.+?)\n([\s\S]*?)```)
-        | (?<headingSimple>^(.+?)\s+[-=]{3,})
+        | (?<headingSimple>^(.+?)\s[\ ]*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
@@ -280,11 +284,15 @@ public partial class MarkdownParser : IMarkdownParser {
             && match.Groups[11].TryGetValue(out string? linkText)
             && match.Groups[12].TryGetValue(out string? linkHref)
         ) {
+            string titleText = match.Groups[13].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
+            
             if (match.Groups[10].Success) {
-                return $"<img src=\"{linkHref}\" alt=\"{linkText}\">";
+                return $"<img src=\"{linkHref}\" alt=\"{linkText}\"{titleText}>";
             }
+            
+            Origin modifier = linkText.StartsWith('!') ? Origin.NestedLink : Origin.Link; // Check if the link is nested, easiest way to do this is to check if the first character is an exclamation mark
 
-            string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Link));
+            string output = SinglelineStructuresRegex.Replace(linkText, evaluator: m => SinglelineStructuresEvaluator(m, origin | modifier));
             return $"<a href=\"{linkHref}\">{output}</a>";
         }
 
@@ -312,18 +320,6 @@ public partial class MarkdownParser : IMarkdownParser {
         return match.Value;
     }
 
-
-    // # ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
-    // ***boldAndItalic*** **bold** *italic* ~~strike~~ `code` [text](https://example.com)  ___boldAndItalic___ __bold__ _italic_
-    // ** [text](https://example.com) **
-    // # heading
-    // ## headin
-    // ### headi
-    // #### head
-    // ##### hea
-    // ###### he
-
-    // TODO should be flags
     [Flags]
     private enum Origin {
         Undefined = 0,
@@ -332,24 +328,25 @@ public partial class MarkdownParser : IMarkdownParser {
         Italic = 1 << 2,
         Strike = 1 << 3,
         Code = 1 << 4,
-        Link = 1 << 5
+        Link = 1 << 5,
+        NestedLink = 1 << 6
     }
 
     private static string NormalizeIndentationWithRegex(string input) {
-        // Find the minimum indentation level (ignoring empty lines)
-        int minIndent = int.MaxValue;
-        foreach (Match match in NormalizeNewlineRegex.Matches(input)) {
-            if (match.Success) {
-                int leadingSpaces = match.Groups[1].Value.Length;
-                minIndent = Math.Min(minIndent, leadingSpaces);
+            // Find the minimum indentation level (ignoring empty lines)
+            int minIndent = int.MaxValue;
+            foreach (Match match in NormalizeNewlineRegex.Matches(input)) {
+                if (match.Success) {
+                    int leadingSpaces = match.Groups[1].Value.Length;
+                    minIndent = Math.Min(minIndent, leadingSpaces);
+                }
             }
+    
+            if (minIndent == int.MaxValue) minIndent = 0;// No indentation found (handle edge case)
+    
+            // Regex to strip "minIndent" spaces from all lines
+            var normalizeRegex = new Regex($"^ {{0,{minIndent}}}", RegexOptions.Multiline);
+            return normalizeRegex.Replace(input, "");
         }
-
-        if (minIndent == int.MaxValue) minIndent = 0;// No indentation found (handle edge case)
-
-        // Regex to strip "minIndent" spaces from all lines
-        var normalizeRegex = new Regex($"^ {{0,{minIndent}}}", RegexOptions.Multiline);
-        return normalizeRegex.Replace(input, "");
-    }
 
 }

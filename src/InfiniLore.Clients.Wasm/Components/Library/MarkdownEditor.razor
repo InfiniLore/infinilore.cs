@@ -6,16 +6,20 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @inject IMarkdownParser MarkdownParser
-@rendermode InteractiveAuto
+@rendermode InteractiveWebAssembly
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<input type="text" class="w-full h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText">
-<div class="w-full h-16 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput</div>
+<div class="flex space-x-4">
+    <input type="text" class="w-1/2 h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText">
+    <div class="w-1/2 h-16 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput</div>
+</div>
 
-<textarea class="w-full h-64 p-4 border-2 border-gray-300 rounded-lg" @oninput="TextAreaOnChange"></textarea>
-<div class="w-full h-64 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput2</div>
+<div class="flex space-x-4">
+    <textarea class="w-1/2 p-4 border-2 border-gray-300 rounded-lg" @oninput="TextAreaOnChange"></textarea>
+    <div class="w-1/2 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput2</div>
+</div>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
