@@ -8,4 +8,5 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IMarkdownParser {
     string Parse(string markdown);
+    string ParseByMatches(string markdown);
 }

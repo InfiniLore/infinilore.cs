@@ -76,6 +76,22 @@ public partial class MarkdownParser : IMarkdownParser {
     public string Parse(string markdown)
         => MultilineStructuresRegex.Replace(markdown, MultilineStructuresEvaluator);
 
+    public string ParseByMatches(string markdown) {
+        StringBuilder builder = StringBuilderPool.Get();
+        try {
+            MatchCollection enumerable = MultilineStructuresRegex.Matches(markdown);
+            foreach (Match match in enumerable) {
+                var output = MultilineStructuresEvaluator(match);
+                builder.AppendLine(output);
+            }
+            return builder.ToString();
+        }
+        finally {
+            StringBuilderPool.Return(builder);
+        }
+        
+    }
+
     private static string MultilineStructuresEvaluator(Match match) {
         if (match.Groups["remainder"].TryGetValue(out string? paragraph)) {
             if (paragraph.IsNullOrWhiteSpace()) return string.Empty;
