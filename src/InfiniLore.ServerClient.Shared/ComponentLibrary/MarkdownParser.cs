@@ -21,16 +21,8 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<italic>\*([^*]+?)\*|_([^_]+?)_)
         | (?<strike>~~(.+?)~~)
         | (?<code>`((?:[^`\\]|\\`)+?)`)
-        | (?<linkNested>
-          (!)?
-          \[(!?\[.+?\]\(.+?\))\]
-          \((.+?)(?:\s?"([^"]*)")?\)
-        )
-        | (?<linkRegular>
-          (!)?
-          \[(.+?)\]
-          \((.+?)(?:\s?"([^"]*)")?\)
-        )
+        | (?<linkNested>(!)?\[(!?\[.+?\]\(.+?\))\]\((.+?)(?:\s?"([^"]*)")?\))
+        | (?<linkRegular>(!)?\[(.+?)\]\((.+?)(?:\s?"([^"]*)")?\))
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
@@ -64,7 +56,7 @@ public partial class MarkdownParser : IMarkdownParser {
                 # (?:(?<-OPEN>)(?!))
                 </\k<tag>>
           )  
-        | (?<horizontalRule>^-{3,}\s*$)
+        | (?<horizontalRule>^[*-_]{3,}\s*$)
         | (?<remainder>.+?(?:\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
     private static partial Regex MultilineStructuresRegex { get; }
