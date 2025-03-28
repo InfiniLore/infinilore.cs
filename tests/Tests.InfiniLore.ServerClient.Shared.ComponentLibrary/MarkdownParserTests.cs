@@ -11,6 +11,7 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 public class MarkdownParserTests {
     // see https://spec-md.com/
     [Test]
+    [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.Data))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.Data))]
     [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.Data))]
     [MethodDataSource(typeof(HorizontalLineDataSources), nameof(HorizontalLineDataSources.Data))]

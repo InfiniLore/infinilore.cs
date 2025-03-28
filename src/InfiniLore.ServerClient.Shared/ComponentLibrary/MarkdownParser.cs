@@ -38,13 +38,16 @@ public partial class MarkdownParser : IMarkdownParser {
           (?<heading>^(\#{1,6})\s(.+))
         | (?<codeBlock>```(.+?)?\s+?([\s\S]*?)```\s*?$)
         | (?<headingSimple>^(.+?)\s[\ ]*[-=]{3,})
-         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(.+)\|\s*\r?\n
             ^\|([:\-|\ ]+)\|\s*\r?\n
             ((?:^\|.+\|\s*)+)
           )
+        | (?<blockQuote>^>\s+(?:(?![*+-]\s+.+|[-.]?\d+).+(?:\r?\n|$)?)*)
+        
+        # stuff that doesnt need capture groups
         | (?<htmlTag>
             <(?<tag>\w+)(?:\s[^>]*)?>
             (?:(?!<\k<tag>>)[\s\S]*|<\k<tag>[\s\S]*?</\k<tag>>)*
@@ -60,6 +63,9 @@ public partial class MarkdownParser : IMarkdownParser {
 
     [GeneratedRegex(@"^( *)\S.*", RegexOptions.Multiline)]
     private static partial Regex NormalizeNewlineRegex { get; }
+    
+    [GeneratedRegex(@"^>\s+", RegexOptions.Multiline)]
+    private static partial Regex NormalizeBlockQuoteRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -216,6 +222,13 @@ public partial class MarkdownParser : IMarkdownParser {
             finally {
                 StringBuilderPool.Return(builder);
             }
+        }
+
+        if (match.Groups["blockQuote"].TryGetValue(out string? blockQuoteBody)) {
+            // Remove the leading ">" character
+            string normalized = NormalizeBlockQuoteRegex.Replace(blockQuoteBody, string.Empty);
+            string output = MultilineStructuresRegex.Replace(normalized, MultilineStructuresEvaluator);
+            return $"<blockquote>{output}</blockquote>";
         }
 
         if (match.Groups["htmlBody"].Success) {
