@@ -17,6 +17,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.Data))]
     [MethodDataSource(typeof(InlineDataSources), nameof(InlineDataSources.Data))]
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.Data))]
+    [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.Data))]
     public async Task Parse_ValidInputs(MultilineDataDto dto) {
         // Arrange
         var parser = new MarkdownParser();
