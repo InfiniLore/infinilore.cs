@@ -1,23 +1,28 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class HeadingDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
+    private static readonly string SectionName = nameof(HeadingDataSources)[..^nameof(DataSources).Length];
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
         for (int i = 1; i < 7; i++) {
             string heading = new('#', i);
             int depth = i;
-            yield return () => new MultilineDataDto(
+            yield return () => new MarkdownTestDto(SectionName,
                 Markdown: $"{heading} Heading",
                 HtmlOutput: $"<h{depth}>Heading</h{depth}>"
             );
         }
 
-        yield return () => new MultilineDataDto(
+        yield return () => new MarkdownTestDto(SectionName,
             Markdown: """
             Heading
             ---
@@ -25,7 +30,7 @@ public static class HeadingDataSources {
             HtmlOutput: "<h1>Heading</h1>"
         );
         
-        yield return () => new MultilineDataDto(
+        yield return () => new MarkdownTestDto(SectionName,
             Markdown: """
             Heading
             ===
@@ -33,7 +38,7 @@ public static class HeadingDataSources {
             HtmlOutput: "<h1>Heading</h1>"
         );
         
-        yield return () => new MultilineDataDto(
+        yield return () => new MarkdownTestDto(SectionName,
             Markdown: """
             Heading
                 ========

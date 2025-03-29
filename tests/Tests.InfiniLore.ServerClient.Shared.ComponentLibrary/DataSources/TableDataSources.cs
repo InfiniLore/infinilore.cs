@@ -1,14 +1,19 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class TableDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
-        yield return static () => new MultilineDataDto(
+    private static readonly string SectionName = nameof(TableDataSources)[..^nameof(DataSources).Length];
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             | Column 1      | Column 2     | Column 3      |
             | --------------| ------------ |-------------- |

@@ -1,15 +1,20 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class BlockQuoteDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
+    private static readonly string SectionName = nameof(BlockQuoteDataSources)[..^nameof(DataSources).Length];
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
         
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             > # test
             > > test
@@ -29,7 +34,7 @@ public static class BlockQuoteDataSources {
                 </ul>
             </blockquote>
             """
-        );yield return static () => new MultilineDataDto(
+        );yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             > blockQuote 1
             >> ...blockQuote 2

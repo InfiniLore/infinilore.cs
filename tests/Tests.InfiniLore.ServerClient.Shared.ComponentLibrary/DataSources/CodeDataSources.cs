@@ -3,15 +3,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using System.Text.Encodings.Web;
 
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class CodeDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
+    private static readonly string SectionName = nameof(CodeDataSources)[..^nameof(DataSources).Length];
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
         
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             ```
             const code = sample();
@@ -25,7 +30,7 @@ public static class CodeDataSources {
             </pre>
             """
         );
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             ```javascript
             const code = sample();
@@ -43,7 +48,7 @@ public static class CodeDataSources {
         yield return static () => {
             string htmlEncoded = HtmlEncoder.Default.Encode("tell application \"Foo\"\nbeep\nend tell");
             
-            return new MultilineDataDto(
+            return new MarkdownTestDto(SectionName,
                 Markdown: "```\ntell application \"Foo\"\nbeep\nend tell\n```",
                 HtmlOutput: $"""
                 <pre>
@@ -61,7 +66,7 @@ public static class CodeDataSources {
                     beep
                 end tell
                 """);
-            return new MultilineDataDto(
+            return new MarkdownTestDto(SectionName,
                 Markdown: """
                 ```
                 tell application "Foo"
@@ -79,7 +84,7 @@ public static class CodeDataSources {
             );
         };
         
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             ```
             **some valid markdown**

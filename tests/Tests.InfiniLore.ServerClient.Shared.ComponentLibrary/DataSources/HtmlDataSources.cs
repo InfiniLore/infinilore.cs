@@ -1,14 +1,19 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class HtmlDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
-        yield return static () => new MultilineDataDto(
+    private static readonly string SectionName = nameof(HtmlDataSources)[..^nameof(DataSources).Length];
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: """
             Unrelated previous paragraph followed by a blank line
             <table>
@@ -45,7 +50,7 @@ public class HtmlDataSources {
             """
         );
 
-        yield return () => new MultilineDataDto(
+        yield return () => new MarkdownTestDto(SectionName,
             Markdown: """
             <pre>
             Buffalo Bill ’s

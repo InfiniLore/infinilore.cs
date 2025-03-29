@@ -1,14 +1,19 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ListsDataSources {
-    public static IEnumerable<Func<MultilineDataDto>> Data() {
+    private static readonly string SectionName = nameof(ListsDataSources)[..^nameof(DataSources).Length];
 
-        yield return static () => new MultilineDataDto(
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
+
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             1. this
             2. is
@@ -30,7 +35,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - Item 1
               - Subitem 1.1
@@ -50,7 +55,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             1. Ordered item 1
             2. Ordered item 2
@@ -72,7 +77,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - Unordered item 1
             - Unordered item 2
@@ -94,7 +99,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             1. First ordered item
                - Subitem A
@@ -114,7 +119,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - Top-level item
                 - Subitem level 1
@@ -140,7 +145,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - Top item 1
             - Top item 2
@@ -161,7 +166,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             1.    Extra spaces for alignment
                   - This is a sublist
@@ -179,7 +184,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - A list item with **bold text**
             - A list item with *italic text*
@@ -194,7 +199,7 @@ public static class ListsDataSources {
             """
         );
 
-        yield return static () => new MultilineDataDto(
+        yield return static () => new MarkdownTestDto(SectionName,
             """
             - This list has
               - Uneven indentation

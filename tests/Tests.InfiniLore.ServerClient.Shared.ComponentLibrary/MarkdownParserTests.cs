@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.ServerClient.Shared.ComponentLibrary;
-using Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.MultilineDataSources;
+using Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -11,15 +11,19 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 public class MarkdownParserTests {
     // see https://spec-md.com/
     [Test]
-    [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.Data))]
-    [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.Data))]
-    [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.Data))]
-    [MethodDataSource(typeof(HorizontalLineDataSources), nameof(HorizontalLineDataSources.Data))]
-    [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.Data))]
-    [MethodDataSource(typeof(InlineDataSources), nameof(InlineDataSources.Data))]
-    [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.Data))]
-    [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.Data))]
-    public async Task Parse_ValidInputs(MultilineDataDto dto) {
+    [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
+    [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
+    [MethodDataSource(typeof(CodeInlineDataSources), nameof(CodeInlineDataSources.DataSources))]
+    [MethodDataSource(typeof(EmphasisDataSources), nameof(EmphasisDataSources.DataSources))]
+    [MethodDataSource(typeof(EscapedCharacterDataSources), nameof(EscapedCharacterDataSources.DataSources))]
+    [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.DataSources))]
+    [MethodDataSource(typeof(HorizontalLineDataSources), nameof(HorizontalLineDataSources.DataSources))]
+    [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.DataSources))]
+    [MethodDataSource(typeof(LinkDataSources), nameof(LinkDataSources.DataSources))]
+    [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
+    [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
+    [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
+    public async Task Parse_ValidInputs(MarkdownTestDto dto) {
         // Arrange
         var parser = new MarkdownParser();
 
