@@ -16,9 +16,9 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
 public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex("""
           (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
-        | (?<boldAndItalic>(?<bi>\*\*\*)(?<biText>.+?)\k<bi>)
-        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)\k<b>)
-        | (?<italic>(?<i>\*)(?<iText>.+?)\k<i>)
+        | (?<boldAndItalic>(?<bi>\*\*\*)(?<biText>.+?)(?<!\\)\k<bi>)
+        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
+        | (?<italic>(?<i>\*)(?<iText>.+?)(?<!\\)\k<i>)
         | (?<strike>~~(?<sText>.+?)~~)
         | (?<code>`(?<codeText>(?:[^`\\]|\\`)+?)`)
         | (?<linkNested>
@@ -41,7 +41,7 @@ public partial class MarkdownParser : IMarkdownParser {
           (?<heading>^(?<hLevel>\#{1,6})\s(?<hText>.+))
         | (?<codeBlock>```(?<cLang>.+?)?\r?\n+?(?<cBody>[\s\S]+?)```\s*?$)
         | (?<headingSimple>^(?<hsText>.+?)\r?\n[\ ]*[-=]{3,})
-        | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listUnordered>(?:^[^\S\r\n]*-\s+.+(?:(?:\n[^\S\r\n]*[-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
             ^\|(?<tHead>.+)\|\s*\r?\n

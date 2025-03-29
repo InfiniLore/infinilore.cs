@@ -38,6 +38,20 @@ public static class EmphasisDataSources {
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
+            Markdown: "**bold *nested \\* italic***",
+            HtmlOutput: "<p><strong>bold <em>nested * italic</em></strong></p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            Markdown: "** \\* **",
+            HtmlOutput: "<p><strong> * </strong></p>"
+        );
+        yield return static () => new MarkdownTestDto(SectionName,
+            Markdown: "* \\* *",
+            HtmlOutput: "<p><em> * </em></p>"
+        );
+
+        yield return static () => new MarkdownTestDto(SectionName,
             Markdown: "***nested italic* bold**",
             HtmlOutput: "<p><strong><em>nested italic</em> bold</strong></p>"
         );
