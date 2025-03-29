@@ -38,19 +38,17 @@ public partial class MarkdownParser : IMarkdownParser {
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
-          (?<heading>^(\#{1,6})\s(.+))
-        | (?<codeBlock>```(.+?)?\r?\n+?([\s\S]+?)```\s*?$)
-        | (?<headingSimple>^(.+?)\s[\ ]*[-=]{3,})
+          (?<heading>^(?<hLevel>\#{1,6})\s(?<hText>.+))
+        | (?<codeBlock>```(?<cLang>.+?)?\r?\n+?(?<cBody>[\s\S]+?)```\s*?$)
+        | (?<headingSimple>^(?<hsText>.+?)\r?\n[\ ]*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*[*+-]\s+.+(?:(?:\n[^\S\r\n]*[*+-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
         | (?<table>
-            ^\|(.+)\|\s*\r?\n
-            ^\|([:\-|\ ]+)\|\s*\r?\n
-            ((?:^\|.+\|\s*)+)
+            ^\|(?<tHead>.+)\|\s*\r?\n
+            ^\|(?<tSep>[:\-|\ ]+)\|\s*\r?\n
+            (?<tBody>(?:^\|.+\|\s*)+)
           )
         | (?<blockQuote>^>\s+(?:(?![*+-]\s+.+|[-.]?\d+).+(?:\r?\n|$)?)*)
-
-        # place ABOVE this line if you require group getting by index
         | (?<htmlBody>
             <(?<tag>\w+)\b[^>]*>
                 (?:
@@ -64,7 +62,7 @@ public partial class MarkdownParser : IMarkdownParser {
           )  
         | (?<horizontalRule>^[*-_]{3,}\s*$)
         | (?<remainder>.+?(?:\n|$))
-        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
     private static partial Regex MultilineStructuresRegex { get; }
 
     [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(.+)((?:\n[ ]+.+)*)", RegexOptions.Multiline)]
@@ -106,19 +104,26 @@ public partial class MarkdownParser : IMarkdownParser {
             return $"<p>{output}</p>";
         }
 
-        if (match.Groups["heading"].Success && match.Groups[1].TryGetLength(out int headingLevel) && match.Groups[2].TryGetValue(out string? headerText)) {
+        if (match.Groups["heading"].Success 
+            && match.Groups["hLevel"].TryGetLength(out int headingLevel)
+            && match.Groups["hText"].TryGetValue(out string? headerText)
+        ) {
             string output = SinglelineStructuresRegex.Replace(headerText, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<h{headingLevel}>{output}</h{headingLevel}>";
         }
 
-        if (match.Groups["codeBlock"].Success && match.Groups[4].TryGetValue(out string? codeBlockBody)) {
-            string langName = match.Groups[3].TryGetValue(out string? langNameValue) ? langNameValue : string.Empty;
+        if (match.Groups["codeBlock"].Success 
+            && match.Groups["cBody"].TryGetValue(out string? codeBlockBody)
+        ) {
+            string langName = match.Groups["cLang"].TryGetValue(out string? langNameValue) ? langNameValue : string.Empty;
             string output = HtmlEncoder.Default.Encode(codeBlockBody);
             string langClass = langName.IsNullOrWhiteSpace() ? string.Empty : $" class=\"language-{langName}\"";
             return $"<pre><code{langClass}>{output}</code></pre>";
         }
 
-        if (match.Groups["headingSimple"].Success && match.Groups[5].TryGetValue(out string? headerSimpleText)) {
+        if (match.Groups["headingSimple"].Success 
+            && match.Groups["hsText"].TryGetValue(out string? headerSimpleText)
+        ) {
             string output = SinglelineStructuresRegex.Replace(headerSimpleText, evaluator: static m => SinglelineStructuresEvaluator(m));
             return $"<h1>{output}</h1>";
         }
@@ -182,15 +187,15 @@ public partial class MarkdownParser : IMarkdownParser {
 
         if (match.Groups["table"].Success) {
             // Extract header, separator, and rows
-            ReadOnlySpan<char> header = match.Groups[6].ValueSpan;
+            ReadOnlySpan<char> header = match.Groups["tHead"].ValueSpan;
             Span<Range> headerColumns = stackalloc Range[header.Length];
             int headerColumnCount = header.Split(headerColumns, '|', StringSplitOptions.TrimEntries);
 
-            ReadOnlySpan<char> separator = match.Groups[7].ValueSpan;
+            ReadOnlySpan<char> separator = match.Groups["tSep"].ValueSpan;
             Span<Range> separatorColumns = stackalloc Range[separator.Length];
             int _ = separator.Split(separatorColumns, '|', StringSplitOptions.TrimEntries);
 
-            ReadOnlySpan<char> rows = match.Groups[8].ValueSpan;
+            ReadOnlySpan<char> rows = match.Groups["tBody"].ValueSpan;
             Span<Range> rowRanges = stackalloc Range[rows.Length];
             int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.TrimEntries);
 
@@ -271,38 +276,49 @@ public partial class MarkdownParser : IMarkdownParser {
     }
 
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
-        if (match.Groups["escaped"].Success && match.Groups["c"].TryGetValue(out string? escapedChar)) {
+        if (match.Groups["escaped"].Success 
+            && match.Groups["c"].TryGetValue(out string? escapedChar)
+        ) {
             return escapedChar;
         }
 
-        if (!origin.HasFlag(Origin.BoldAndItalic) && match.Groups["boldAndItalic"].Success) {
-            if (match.Groups["biText"].TryGetValue(out string? boldAndItalicValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
-                return $"<strong><em>{output}</em></strong>";
-            }
+        if (!origin.HasFlag(Origin.BoldAndItalic) 
+            && match.Groups["boldAndItalic"].Success 
+            && match.Groups["biText"].TryGetValue(out string? boldAndItalicValue)
+        ) {
+            string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
+            return $"<strong><em>{output}</em></strong>";
         }
 
-        if (!origin.HasFlag(Origin.Bold) && match.Groups["bold"].Success) {
-            if (match.Groups["bText"].TryGetValue(out string? boldValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
-                return $"<strong>{output}</strong>";
-            }
+        if (!origin.HasFlag(Origin.Bold) 
+            && match.Groups["bold"].Success 
+            && match.Groups["bText"].TryGetValue(out string? boldValue)
+        ) {
+            string output = SinglelineStructuresRegex.Replace(boldValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
+            return $"<strong>{output}</strong>";
         }
 
-        if (!origin.HasFlag(Origin.Italic) && match.Groups["italic"].Success) {
-            if (match.Groups["iText"].TryGetValue(out string? italicValue)) {
-                string output = SinglelineStructuresRegex.Replace(italicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
-                return $"<em>{output}</em>";
-            }
+        if (!origin.HasFlag(Origin.Italic) 
+            && match.Groups["italic"].Success
+            && match.Groups["iText"].TryGetValue(out string? italicValue)
+        ) {
+            string output = SinglelineStructuresRegex.Replace(italicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
+            return $"<em>{output}</em>";
         }
 
-        if (!origin.HasFlag(Origin.Strike) && match.Groups["strike"].Success && match.Groups["sText"].TryGetValue(out string? strikeValue)) {
+        if (!origin.HasFlag(Origin.Strike) 
+            && match.Groups["strike"].Success 
+            && match.Groups["sText"].TryGetValue(out string? strikeValue)
+        ) {
             string output = SinglelineStructuresRegex.Replace(strikeValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Strike));
             return $"<s>{output}</s>";
 
         }
 
-        if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups["codeText"].TryGetValue(out string? codeValue)) {
+        if (!origin.HasFlag(Origin.Code)
+            && match.Groups["code"].Success 
+            && match.Groups["codeText"].TryGetValue(out string? codeValue)
+        ) {
             string normalizedBackticks = codeValue.Replace("\\`", "`");
             string output = HtmlEncoder.Default.Encode(normalizedBackticks);
             return $"<code>{output}</code>";
