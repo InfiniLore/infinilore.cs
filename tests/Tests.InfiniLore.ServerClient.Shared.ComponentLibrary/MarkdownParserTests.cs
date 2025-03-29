@@ -9,6 +9,10 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class MarkdownParserTests {
+    private static IMarkdownParser GetParser() {
+        return new MarkdownParser();
+    }
+    
     // see https://spec-md.com/
     [Test]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
@@ -26,7 +30,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
     public async Task Parse_ValidInputs(MarkdownTestDto dto) {
         // Arrange
-        var parser = new MarkdownParser();
+        IMarkdownParser parser = GetParser();
 
         // Act
         string output = parser.Parse(dto.Markdown);
@@ -52,7 +56,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
     public async Task ParseByMatches_ValidInputs(MarkdownTestDto dto) {
         // Arrange
-        var parser = new MarkdownParser();
+        IMarkdownParser parser = GetParser();
 
         // Act
         string output = parser.ParseByMatches(dto.Markdown);

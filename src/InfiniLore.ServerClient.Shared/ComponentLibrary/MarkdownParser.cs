@@ -53,11 +53,11 @@ public partial class MarkdownParser : IMarkdownParser {
             <(?<tag>\w+)\b[^>]*>
                 (?:
                     [^<]+
-                    | <(?<OPEN>\k<tag>)\b[^>]*>
-                    | </(?<-OPEN>\k<tag>)>
+                    | <(?<open>\k<tag>)\b[^>]*>
+                    | </(?<-open>\k<tag>)>
                     | <(?!/?\k<tag>\b)[^>]+>
                 )*
-                # (?:(?<-OPEN>)(?!)) # This should be the end of the tag, but it doesnt work
+                # (?:(?<-open>)(?!)) # This should be the end of the tag, but it doesnt work
                 </\k<tag>>
           )  
         | (?<horizontalRule>^[*-_]{3,}\s*$)
@@ -68,7 +68,7 @@ public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex(@"^[ ]*[-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
     private static partial Regex ListItemBodyRegex { get; }
 
-    [GeneratedRegex(@"^>", RegexOptions.Multiline)]
+    [GeneratedRegex("^>", RegexOptions.Multiline)]
     private static partial Regex NormalizeBlockQuoteRegex { get; }
 
     [GeneratedRegex("\r?\n")]
