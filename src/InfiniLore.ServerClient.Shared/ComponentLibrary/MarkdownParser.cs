@@ -20,7 +20,7 @@ public partial class MarkdownParser : IMarkdownParser {
         | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
         | (?<italic>(?<i>\*)(?<iText>.+?)(?<!\\)\k<i>)
         | (?<strike>~~(?<sText>.+?)~~)
-        | (?<code>`(?<codeText>(?:[^`\\]|\\`)+?)`)
+        | (?<code>(?<open>`+)(?<codeText>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
         | (?<linkNested>
             (?<lnBang>!)?
             \[(?<lnText>!?\[.+?\]\(.+?\))\]
