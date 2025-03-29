@@ -21,6 +21,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.DataSources))]
     [MethodDataSource(typeof(LinkDataSources), nameof(LinkDataSources.DataSources))]
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
+    [MethodDataSource(typeof(RandomDataSources), nameof(RandomDataSources.DataSources))]
     [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
     public async Task Parse_ValidInputs(MarkdownTestDto dto) {

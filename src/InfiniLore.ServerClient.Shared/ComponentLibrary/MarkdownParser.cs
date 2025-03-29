@@ -48,7 +48,7 @@ public partial class MarkdownParser : IMarkdownParser {
             ^\|(?<tSep>[:\-|\ ]+)\|\s*\r?\n
             (?<tBody>(?:^\|.+\|\s*)+)
           )
-        | (?<blockQuote>^>\s+(?:(?![*+-]\s+.+|[-.]?\d+).+(?:\r?\n|$)?)*)
+        | (?<blockQuote>^>\s+.+(?:\r?\n(?![*+-]\s|[-.]?\d|\s*[^>]).+)*)$
         | (?<htmlBody>
             <(?<tag>\w+)\b[^>]*>
                 (?:
@@ -226,7 +226,9 @@ public partial class MarkdownParser : IMarkdownParser {
                 try {
                     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
                         Range rowRange = rowRanges[rowIndex];
-                        ReadOnlySpan<char> row = rows[rowRange];
+                        ReadOnlySpan<char> row = rows[rowRange].Trim();
+                        if (row.IsEmpty) continue;
+
 
                         // Split the row
                         int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
