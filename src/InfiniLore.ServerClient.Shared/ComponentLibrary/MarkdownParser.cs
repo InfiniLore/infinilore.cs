@@ -65,10 +65,10 @@ public partial class MarkdownParser : IMarkdownParser {
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture  | RegexOptions.Compiled)]
     private static partial Regex MultilineStructuresRegex { get; }
 
-    [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
+    [GeneratedRegex(@"^[ ]*[-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
     private static partial Regex ListItemBodyRegex { get; }
 
-    [GeneratedRegex(@"^>\s*", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^>", RegexOptions.Multiline)]
     private static partial Regex NormalizeBlockQuoteRegex { get; }
 
     [GeneratedRegex("\r?\n")]
@@ -259,9 +259,9 @@ public partial class MarkdownParser : IMarkdownParser {
         }
 
         if (match.Groups["blockQuote"].TryGetValue(out string? blockQuoteBody)) {
-            // Remove the leading ">" character
             string normalized = NormalizeBlockQuoteRegex.Replace(blockQuoteBody, string.Empty);
-            string output = MultilineStructuresRegex.Replace(normalized, MultilineStructuresEvaluator);
+            string adjustedBlockquote = NormalizeIndentation(normalized);
+            string output = MultilineStructuresRegex.Replace(adjustedBlockquote, MultilineStructuresEvaluator);
             return $"<blockquote>{output}</blockquote>";
         }
 
