@@ -11,7 +11,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[KeyedInjectableService<IMultiLineSectionParser>("boldAnditalic", ServiceLifetime.Singleton)]
+[KeyedInjectableService<IMultiLineSectionParser>("boldAndItalic", ServiceLifetime.Singleton)]
 public class BoldAndItalicSectionParser(IParserSwitcher parserSwitcher) : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.BoldAndItalic;
 
@@ -19,7 +19,6 @@ public class BoldAndItalicSectionParser(IParserSwitcher parserSwitcher) : ISingl
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["boldAndItalic"].Success) return;
         if (!entireMatch.Groups["biText"].TryGetValue(out string? boldAndItalicValue)) return;
 
         builder.Append("<strong><em>");

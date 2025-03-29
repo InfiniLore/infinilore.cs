@@ -37,7 +37,8 @@ public class ParserSwitcher(IServiceProvider serviceProvider) : IParserSwitcher 
     ];
     
     private static readonly string[] SinglelineGroupNames = [
-        "escaped"
+        "escaped",
+        "boldAndItalic"
     ];
     
     // -----------------------------------------------------------------------------------------------------------------

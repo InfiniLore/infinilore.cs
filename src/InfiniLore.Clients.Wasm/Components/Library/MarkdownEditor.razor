@@ -2,8 +2,6 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using InfiniLore.ServerClient.ComponentLibrary.Markdown
-@using InfiniLore.ServerClient.Shared.ComponentLibrary
-@using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -32,7 +30,7 @@
         get => _markdownText;
         set {
             _markdownText = value;
-            string editedText = MarkdownParser.ParseByMatches(_markdownText);
+            string editedText = MarkdownParser.Parse(_markdownText);
             MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
         }
     }

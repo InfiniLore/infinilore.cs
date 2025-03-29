@@ -21,6 +21,7 @@ public class MarkdownParser(IParserSwitcher parserSwitcher) : IMarkdownParser {
     
 
     private static string SinglelineStructuresEvaluator(Match match, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
+        // TODO CONTINUE FROM HERE!!!!
         if (!origin.HasFlag(SingleLineOrigin.Bold)
             && match.Groups["bold"].Success
             && match.Groups["bText"].TryGetValue(out string? boldValue)
