@@ -229,7 +229,6 @@ public partial class MarkdownParser : IMarkdownParser {
                         ReadOnlySpan<char> row = rows[rowRange].Trim();
                         if (row.IsEmpty) continue;
 
-
                         // Split the row
                         int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
