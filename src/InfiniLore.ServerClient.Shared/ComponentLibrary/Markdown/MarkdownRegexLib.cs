@@ -32,7 +32,7 @@ public static partial class MarkdownRegexLib {
         | (?<lessThan><)
         | (?<greaterThan>>)
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
-    public static partial Regex SinglelineStructuresRegex { get; }
+    private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
           (?<heading>^(?<hLevel>\#{1,6})\s(?<hText>.+))
@@ -60,7 +60,7 @@ public static partial class MarkdownRegexLib {
         | (?<horizontalRule>^[*-_]{3,}\s*$)
         | (?<remainder>.+?(?:\r?\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
-    public static partial Regex MultilineStructuresRegex { get; }
+    private static partial Regex MultilineStructuresRegex { get; }
 
     [GeneratedRegex(@"^[ ]*[-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
     public static partial Regex ListItemBodyRegex { get; }
@@ -73,8 +73,4 @@ public static partial class MarkdownRegexLib {
 
     public static MatchCollection SinglelineStructuresMatches(string markdown) => SinglelineStructuresRegex.Matches(markdown);
     public static MatchCollection MultilineStructuresMatches(string markdown) => MultilineStructuresRegex.Matches(markdown);
-    public static MatchCollection ListItemBodyMatches(string markdown) => ListItemBodyRegex.Matches(markdown);
-    public static string NormalizeBlockQuote(string markdown) => NormalizeBlockQuoteRegex.Replace(markdown, string.Empty);
-    public static string NormalizeNewlines(string markdown) => NormalizeNewlinesRegex.Replace(markdown, string.Empty);
-
 }

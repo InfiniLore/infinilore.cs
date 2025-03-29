@@ -8,19 +8,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[KeyedInjectableService<ISingleLineSectionParser>("escaped", ServiceLifetime.Singleton)]
-public class EscapedSectionParser : ISingleLineSectionParser {
+[KeyedInjectableService<ISingleLineSectionParser>("lessThan", ServiceLifetime.Singleton)]
+public class LessThanSectionParser : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.NotSkipped;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match _, Group group, StringBuilder builder, SingleLineOrigin origin) {
-       if (!group.TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)) return;
-       builder.Append(escapedCharSpan[1]);
+    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+        builder.Append("&lt;");
     }
 }

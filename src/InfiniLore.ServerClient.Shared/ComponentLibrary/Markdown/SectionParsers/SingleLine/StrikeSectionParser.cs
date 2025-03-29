@@ -8,19 +8,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[KeyedInjectableService<ISingleLineSectionParser>("escaped", ServiceLifetime.Singleton)]
-public class EscapedSectionParser : ISingleLineSectionParser {
-    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.NotSkipped;
+[KeyedInjectableService<ISingleLineSectionParser>("strike", ServiceLifetime.Singleton)]
+public class StrikeSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
+    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Strike;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match _, Group group, StringBuilder builder, SingleLineOrigin origin) {
-       if (!group.TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)) return;
-       builder.Append(escapedCharSpan[1]);
+    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+        if (!entireMatch.Groups["sText"].TryGetValue(out string? italicValue)) return;
+
+        builder.Append("<s>");
+        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(italicValue, builder, origin | SkipOnOrigin);
+        builder.Append("</s>");
     }
 }

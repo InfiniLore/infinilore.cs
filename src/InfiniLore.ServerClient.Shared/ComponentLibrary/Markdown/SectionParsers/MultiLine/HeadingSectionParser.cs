@@ -13,13 +13,13 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<IMultiLineSectionParser>("heading", ServiceLifetime.Singleton)]
-public class HeadingSectionParser(IParserSwitcher parserSwitcher) : IMultiLineSectionParser {
+public class HeadingSectionParser(IServiceProvider provider) : IMultiLineSectionParser {
     public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
         if(!entireMatch.Groups["hLevel"].TryGetLength(out int headingLevel)) return;
         if(!entireMatch.Groups["hText"].TryGetValue(out string? headerText)) return;
         
         builder.Append("<h").Append(headingLevel).Append('>');
-        parserSwitcher.ParseSingleline(headerText, builder);
+        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(headerText, builder);
         builder.Append("</h").Append(headingLevel).Append('>');
     }
 }

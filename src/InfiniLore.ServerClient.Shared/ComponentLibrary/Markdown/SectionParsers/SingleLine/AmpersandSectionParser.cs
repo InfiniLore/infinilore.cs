@@ -7,19 +7,18 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
-
+namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[KeyedInjectableService<IMultiLineSectionParser>("remainder", ServiceLifetime.Singleton)]
-public class RemainderSectionParser(IServiceProvider provider) : IMultiLineSectionParser {
-    public void ParseToStringBuilder(Match _, Group group, StringBuilder builder) {
-        if (!group.TryGetValue(out string? paragraph)) return;
-        if (paragraph.IsNullOrWhiteSpace()) return;
+[KeyedInjectableService<ISingleLineSectionParser>("amp", ServiceLifetime.Singleton)]
+public class AmpersandSectionParser : ISingleLineSectionParser {
+    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.NotSkipped;
 
-        builder.Append("<p>");
-        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(paragraph, builder);
-        builder.Append("</p>");
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+        builder.Append("&amp;");
     }
 }

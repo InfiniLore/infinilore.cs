@@ -12,7 +12,7 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 // ---------------------------------------------------------------------------------------------------------------------
 public class MarkdownParserTests {
     private static IMarkdownParser GetParser() {
-        IServiceCollection? services = new ServiceCollection()
+        IServiceCollection services = new ServiceCollection()
             .RegisterServicesFromInfiniLoreServerClientShared();
         
         ServiceProvider provider = services.BuildServiceProvider();
@@ -21,7 +21,6 @@ public class MarkdownParserTests {
     
     // see https://spec-md.com/
     [Test]
-    [Skip("Does not need to always be tested.")]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
     [MethodDataSource(typeof(CodeInlineDataSources), nameof(CodeInlineDataSources.DataSources))]
@@ -40,7 +39,7 @@ public class MarkdownParserTests {
         IMarkdownParser parser = GetParser();
         
         // Act
-        string output = parser.Parse(dto.Markdown);
+        string output = parser.ParseMultiline(dto.Markdown);
 
         // Assert
         await Assert.That(output).IsEqualTo(dto.HtmlOutput).IgnoringWhitespace();
