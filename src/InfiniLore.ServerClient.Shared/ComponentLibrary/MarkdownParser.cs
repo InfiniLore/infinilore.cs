@@ -16,9 +16,9 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
 public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex("""
           (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
-        | (?<boldAndItalic>(?<bi>\*\*\*|___)(?<biText>.+?)\k<bi>)
-        | (?<bold>(?<b>\*\*|__)(?<bText>.+?)\k<b>)
-        | (?<italic>(?<i>\*|_)(?<iText>.+?)\k<i>)
+        | (?<boldAndItalic>(?<bi>\*\*\*)(?<biText>.+?)\k<bi>)
+        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)\k<b>)
+        | (?<italic>(?<i>\*)(?<iText>.+?)\k<i>)
         | (?<strike>~~(?<sText>.+?)~~)
         | (?<code>`(?<codeText>(?:[^`\\]|\\`)+?)`)
         | (?<linkNested>
