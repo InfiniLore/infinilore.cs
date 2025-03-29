@@ -15,7 +15,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
 [InjectableService<IMarkdownParser>(ServiceLifetime.Singleton)]
 public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex("""
-          (?<escaped>\\(?<c>[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]))
+          (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
         | (?<boldAndItalic>(?<bi>\*\*\*|___)(?<biText>.+?)\k<bi>)
         | (?<bold>(?<b>\*\*|__)(?<bText>.+?)\k<b>)
         | (?<italic>(?<i>\*|_)(?<iText>.+?)\k<i>)
@@ -27,14 +27,14 @@ public partial class MarkdownParser : IMarkdownParser {
             \((?<lnHref>.+?)(?:\s?"(?<lnTitle>[^"]*)")?\))
         | (?<linkRegular>
             (?<lrBang>!)?
-            \[(?<lrText>.+?)\]
-            \((?<lrHref>.+?)(?:\s?"(?<lrTitle>[^"]*)")?\))
+            \[(?<lrText>[^\]]+?)\]
+            \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\))
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
         | (?<lessThan><)
         | (?<greaterThan>>)
-        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture)]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
@@ -62,7 +62,7 @@ public partial class MarkdownParser : IMarkdownParser {
           )  
         | (?<horizontalRule>^[*-_]{3,}\s*$)
         | (?<remainder>.+?(?:\r?\n|$))
-        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture  | RegexOptions.Compiled)]
     private static partial Regex MultilineStructuresRegex { get; }
 
     [GeneratedRegex(@"^[ ]*[*+-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
@@ -277,10 +277,9 @@ public partial class MarkdownParser : IMarkdownParser {
     }
 
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
-        if (match.Groups["escaped"].Success
-            && match.Groups["c"].TryGetValue(out string? escapedChar)
+        if (match.Groups["escaped"].TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)
         ) {
-            return escapedChar;
+            return escapedCharSpan[1].ToString(); // skip the `\` character
         }
 
         if (!origin.HasFlag(Origin.BoldAndItalic)
