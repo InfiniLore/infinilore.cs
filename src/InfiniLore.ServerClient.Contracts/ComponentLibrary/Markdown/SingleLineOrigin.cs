@@ -1,12 +1,19 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
+namespace InfiniLore.ServerClient.ComponentLibrary.Markdown;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMarkdownParser {
-    string Parse(string markdown);
-    string ParseByMatches(string markdown);
+[Flags]
+public enum SingleLineOrigin {
+    NotSkipped = -1,
+    Undefined = 0,
+    BoldAndItalic = 1 << 0,
+    Bold = 1 << 1,
+    Italic = 1 << 2,
+    Strike = 1 << 3,
+    Code = 1 << 4,
+    Link = 1 << 5
 }

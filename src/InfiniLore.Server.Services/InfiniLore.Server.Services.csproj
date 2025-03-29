@@ -9,10 +9,10 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.55.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.55.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.55.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.55.0">
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.56.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.56.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.56.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.56.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

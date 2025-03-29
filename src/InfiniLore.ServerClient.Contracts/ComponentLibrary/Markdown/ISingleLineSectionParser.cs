@@ -1,21 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.Extensions.ObjectPool;
 using System.Text;
+using System.Text.RegularExpressions;
 
-namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
+namespace InfiniLore.ServerClient.ComponentLibrary.Markdown;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class StringBuilderPool {
-    private static readonly ObjectPool<StringBuilder> Pool =
-        ObjectPool.Create(new DefaultPooledObjectPolicy<StringBuilder>());
-
-    public static StringBuilder Get() => Pool.Get();
-
-    public static void Return(StringBuilder builder) {
-        builder.Clear();// Ensure the builder is cleared before reusing
-        Pool.Return(builder);
-    }
+public interface ISingleLineSectionParser {
+    public SingleLineOrigin SkipOnOrigin { get; }
+    
+    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin);
 }

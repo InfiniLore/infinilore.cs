@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using System.Text.RegularExpressions;
 
-namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
+namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -70,4 +70,11 @@ public static partial class MarkdownRegexLib {
 
     [GeneratedRegex("\r?\n")]
     public static partial Regex NormalizeNewlinesRegex { get; }
+
+    public static MatchCollection SinglelineStructuresMatches(string markdown) => SinglelineStructuresRegex.Matches(markdown);
+    public static MatchCollection MultilineStructuresMatches(string markdown) => MultilineStructuresRegex.Matches(markdown);
+    public static MatchCollection ListItemBodyMatches(string markdown) => ListItemBodyRegex.Matches(markdown);
+    public static string NormalizeBlockQuote(string markdown) => NormalizeBlockQuoteRegex.Replace(markdown, string.Empty);
+    public static string NormalizeNewlines(string markdown) => NormalizeNewlinesRegex.Replace(markdown, string.Empty);
+
 }
