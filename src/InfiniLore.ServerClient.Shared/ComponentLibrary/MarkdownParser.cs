@@ -15,20 +15,26 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary;
 [InjectableService<IMarkdownParser>(ServiceLifetime.Singleton)]
 public partial class MarkdownParser : IMarkdownParser {
     [GeneratedRegex("""
-          (?<escaped>\\([!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]))
-        | (?<boldAndItalic>\*\*\*([^*]+?)\*\*\*|___([^_]+?)___)
-        | (?<bold>\*\*([^*]+?)\*\*|__([^_]+?)__)
-        | (?<italic>\*([^*]+?)\*|_([^_]+?)_)
-        | (?<strike>~~(.+?)~~)
-        | (?<code>`((?:[^`\\]|\\`)+?)`)
-        | (?<linkNested>(!)?\[(!?\[.+?\]\(.+?\))\]\((.+?)(?:\s?"([^"]*)")?\))
-        | (?<linkRegular>(!)?\[(.+?)\]\((.+?)(?:\s?"([^"]*)")?\))
+          (?<escaped>\\(?<c>[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]))
+        | (?<boldAndItalic>(?<bi>\*\*\*|___)(?<biText>.+?)\k<bi>)
+        | (?<bold>(?<b>\*\*|__)(?<bText>.+?)\k<b>)
+        | (?<italic>(?<i>\*|_)(?<iText>.+?)\k<i>)
+        | (?<strike>~~(?<sText>.+?)~~)
+        | (?<code>`(?<codeText>(?:[^`\\]|\\`)+?)`)
+        | (?<linkNested>
+            (?<lnBang>!)?
+            \[(?<lnText>!?\[.+?\]\(.+?\))\]
+            \((?<lnHref>.+?)(?:\s?"(?<lnTitle>[^"]*)")?\))
+        | (?<linkRegular>
+            (?<lrBang>!)?
+            \[(?<lrText>.+?)\]
+            \((?<lrHref>.+?)(?:\s?"(?<lrTitle>[^"]*)")?\))
         | (?<copyright>&copy;)
         | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
         | (?<lessThan><)
         | (?<greaterThan>>)
-        """, RegexOptions.IgnorePatternWhitespace)]
+        """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
@@ -265,65 +271,50 @@ public partial class MarkdownParser : IMarkdownParser {
     }
 
     private static string SinglelineStructuresEvaluator(Match match, Origin origin = Origin.Undefined) {
-        if (match.Groups["escaped"].Success && match.Groups[1].TryGetValue(out string? escapedChar)) {
+        if (match.Groups["escaped"].Success && match.Groups["c"].TryGetValue(out string? escapedChar)) {
             return escapedChar;
         }
 
         if (!origin.HasFlag(Origin.BoldAndItalic) && match.Groups["boldAndItalic"].Success) {
-            if (match.Groups[2].TryGetValue(out string? boldAndItalicValue)) {
+            if (match.Groups["biText"].TryGetValue(out string? boldAndItalicValue)) {
                 string output = SinglelineStructuresRegex.Replace(boldAndItalicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
                 return $"<strong><em>{output}</em></strong>";
-            }
-
-            if (match.Groups[3].TryGetValue(out string? boldAndItalicUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldAndItalicUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.BoldAndItalic));
-                return $"<strong>{output}</strong>";
             }
         }
 
         if (!origin.HasFlag(Origin.Bold) && match.Groups["bold"].Success) {
-            if (match.Groups[4].TryGetValue(out string? boldValue)) {
+            if (match.Groups["bText"].TryGetValue(out string? boldValue)) {
                 string output = SinglelineStructuresRegex.Replace(boldValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
-                return $"<strong>{output}</strong>";
-            }
-
-            if (match.Groups[5].TryGetValue(out string? boldUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(boldUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Bold));
                 return $"<strong>{output}</strong>";
             }
         }
 
         if (!origin.HasFlag(Origin.Italic) && match.Groups["italic"].Success) {
-            if (match.Groups[6].TryGetValue(out string? italicValue)) {
+            if (match.Groups["iText"].TryGetValue(out string? italicValue)) {
                 string output = SinglelineStructuresRegex.Replace(italicValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
-                return $"<em>{output}</em>";
-            }
-
-            if (match.Groups[7].TryGetValue(out string? italicUnderscoreValue)) {
-                string output = SinglelineStructuresRegex.Replace(italicUnderscoreValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Italic));
                 return $"<em>{output}</em>";
             }
         }
 
-        if (!origin.HasFlag(Origin.Strike) && match.Groups["strike"].Success && match.Groups[8].TryGetValue(out string? strikeValue)) {
+        if (!origin.HasFlag(Origin.Strike) && match.Groups["strike"].Success && match.Groups["sText"].TryGetValue(out string? strikeValue)) {
             string output = SinglelineStructuresRegex.Replace(strikeValue, evaluator: m => SinglelineStructuresEvaluator(m, origin | Origin.Strike));
             return $"<s>{output}</s>";
 
         }
 
-        if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups[9].TryGetValue(out string? codeValue)) {
+        if (!origin.HasFlag(Origin.Code) && match.Groups["code"].Success && match.Groups["codeText"].TryGetValue(out string? codeValue)) {
             string normalizedBackticks = codeValue.Replace("\\`", "`");
             string output = HtmlEncoder.Default.Encode(normalizedBackticks);
             return $"<code>{output}</code>";
         }
 
         if (match.Groups["linkNested"].Success
-            && match.Groups[11].TryGetValue(out string? linkText)
-            && match.Groups[12].TryGetValue(out string? linkHref)
+            && match.Groups["lnText"].TryGetValue(out string? linkText)
+            && match.Groups["lnHref"].TryGetValue(out string? linkHref)
         ) {
-            string titleText = match.Groups[13].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
+            string titleText = match.Groups["lnTitle"].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
 
-            if (match.Groups[10].Success) {
+            if (match.Groups["lnBang"].Success) {
                 return $"<img src=\"{linkHref}\" alt=\"{linkText}\"{titleText}>";
             }
 
@@ -332,12 +323,12 @@ public partial class MarkdownParser : IMarkdownParser {
         }
 
         if (!origin.HasFlag(Origin.Link) && match.Groups["linkRegular"].Success
-            && match.Groups[15].TryGetValue(out string? linkRegularText)
-            && match.Groups[16].TryGetValue(out string? linkRegularHref)
+            && match.Groups["lrText"].TryGetValue(out string? linkRegularText)
+            && match.Groups["lrHref"].TryGetValue(out string? linkRegularHref)
         ) {
-            string titleText = match.Groups[17].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
+            string titleText = match.Groups["lrTitle"].TryGetValue(out string? altTextValue) ? $" title=\"{altTextValue}\"" : string.Empty;
 
-            if (match.Groups[14].Success) {
+            if (match.Groups["lrBang"].Success) {
                 return $"<img src=\"{linkRegularHref}\" alt=\"{linkRegularText}\"{titleText}>";
             }
 
