@@ -34,4 +34,30 @@ public class MarkdownParserTests {
         // Assert
         await Assert.That(output).IsEqualTo(dto.HtmlOutput).IgnoringWhitespace();
     }
+    
+    [Test]
+    [Skip("Does not need to always be tested.")]
+    [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
+    [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
+    [MethodDataSource(typeof(CodeInlineDataSources), nameof(CodeInlineDataSources.DataSources))]
+    [MethodDataSource(typeof(EmphasisDataSources), nameof(EmphasisDataSources.DataSources))]
+    [MethodDataSource(typeof(EscapedCharacterDataSources), nameof(EscapedCharacterDataSources.DataSources))]
+    [MethodDataSource(typeof(HeadingDataSources), nameof(HeadingDataSources.DataSources))]
+    [MethodDataSource(typeof(HorizontalLineDataSources), nameof(HorizontalLineDataSources.DataSources))]
+    [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.DataSources))]
+    [MethodDataSource(typeof(LinkDataSources), nameof(LinkDataSources.DataSources))]
+    [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
+    [MethodDataSource(typeof(RandomDataSources), nameof(RandomDataSources.DataSources))]
+    [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
+    [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
+    public async Task ParseByMatches_ValidInputs(MarkdownTestDto dto) {
+        // Arrange
+        var parser = new MarkdownParser();
+
+        // Act
+        string output = parser.ParseByMatches(dto.Markdown);
+
+        // Assert
+        await Assert.That(output).IsEqualTo(dto.HtmlOutput).IgnoringWhitespace();
+    }
 }
