@@ -14,6 +14,11 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<IMultiLineSectionParser>("table", ServiceLifetime.Singleton)]
 public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionParser {
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
         // Extract header, separator, and rows
         ReadOnlySpan<char> header = entireMatch.Groups["tHead"].ValueSpan;
@@ -36,7 +41,7 @@ public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionPa
         for (int index = 0; index < headerColumnCount; index++) {
             builder.Append("<th>");
             ReadOnlySpan<char> column = header[headerColumns[index]];
-            provider.GetRequiredService<IMarkdownParser>().ParseSingleline(column.ToString(), builder);
+            _markdownParser.Value.ParseSingleline(column.ToString(), builder);
             builder.Append("</th>");
         }
 
@@ -61,7 +66,7 @@ public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionPa
                 builder.Append("<td>");
                 Range columnRange = rowColumnRanges[columnIndex];
                 ReadOnlySpan<char> column = row[columnRange];
-                provider.GetRequiredService<IMarkdownParser>().ParseSingleline(column.ToString(), builder);
+                _markdownParser.Value.ParseSingleline(column.ToString(), builder);
                 builder.Append("</td>");
             }
 

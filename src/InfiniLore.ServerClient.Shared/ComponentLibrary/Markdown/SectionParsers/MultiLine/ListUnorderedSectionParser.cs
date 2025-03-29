@@ -14,6 +14,11 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<IMultiLineSectionParser>("listUnordered", ServiceLifetime.Singleton)]
 public class ListUnorderedSectionParser(IServiceProvider provider) : IMultiLineSectionParser {
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
         if (!group.TryGetValue(out string? listUnorderedBody)) return;
         
@@ -21,12 +26,12 @@ public class ListUnorderedSectionParser(IServiceProvider provider) : IMultiLineS
         foreach (Match lineMatch in MarkdownRegexLib.ListItemBodyRegex.Matches(listUnorderedBody)) {
             builder.Append("<li>");
             if (lineMatch.Groups["lHead"].TryGetValue(out string? listHeader)) {
-                provider.GetRequiredService<IMarkdownParser>().ParseSingleline(listHeader, builder);
+                _markdownParser.Value.ParseSingleline(listHeader, builder);
             }
 
             if (lineMatch.Groups["lBody"].TryGetValue(out string? listBody)) {
                 string normalizedBody = NormalizationHelper.NormalizeIndentation(listBody);
-                provider.GetRequiredService<IMarkdownParser>().ParseMultiline(normalizedBody, builder);
+                _markdownParser.Value.ParseMultiline(normalizedBody, builder);
             }
 
             builder.Append("</li>");

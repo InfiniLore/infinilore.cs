@@ -14,6 +14,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 [KeyedInjectableService<ISingleLineSectionParser>("linkNested", ServiceLifetime.Singleton)]
 public class LinkNestedSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.NotSkipped;
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -38,7 +39,7 @@ public class LinkNestedSectionParser(IServiceProvider provider) : ISingleLineSec
         builder.Append(linkHref);
         builder.Append("\">");
         
-        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(linkText, builder, origin);
+        _markdownParser.Value.ParseSingleline(linkText, builder, origin);
         builder.Append("</a>");
     }
 }

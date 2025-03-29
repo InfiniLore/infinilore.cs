@@ -14,6 +14,11 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<IMultiLineSectionParser>("blockQuote", ServiceLifetime.Singleton)]
 public class BlockQuoteSectionParser(IServiceProvider provider) : IMultiLineSectionParser {
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match _, Group group, StringBuilder builder) {
         if(!group.TryGetValue(out string? blockQuoteBody)) return;
         
@@ -21,7 +26,7 @@ public class BlockQuoteSectionParser(IServiceProvider provider) : IMultiLineSect
         string adjustedBlockquote = NormalizationHelper.NormalizeIndentation(normalized);
         
         builder.Append("<blockquote>");
-        provider.GetRequiredService<IMarkdownParser>().ParseMultiline(adjustedBlockquote, builder);
+        _markdownParser.Value.ParseMultiline(adjustedBlockquote, builder);
         builder.Append("</blockquote>");
     }
 }

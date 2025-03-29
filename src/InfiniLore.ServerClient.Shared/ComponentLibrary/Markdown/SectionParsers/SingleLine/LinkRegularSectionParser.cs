@@ -14,6 +14,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 [KeyedInjectableService<ISingleLineSectionParser>("linkRegular", ServiceLifetime.Singleton)]
 public class LinkRegularSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Link;
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -37,7 +38,7 @@ public class LinkRegularSectionParser(IServiceProvider provider) : ISingleLineSe
         builder.Append("<a href=\"");
         builder.Append(linkHref);
         builder.Append("\">");
-        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(linkText, builder, origin | SkipOnOrigin);
+        _markdownParser.Value.ParseSingleline(linkText, builder, origin | SkipOnOrigin);
         builder.Append("</a>");
     }
 }

@@ -14,6 +14,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 [KeyedInjectableService<ISingleLineSectionParser>("strike", ServiceLifetime.Singleton)]
 public class StrikeSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Strike;
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -22,7 +23,7 @@ public class StrikeSectionParser(IServiceProvider provider) : ISingleLineSection
         if (!entireMatch.Groups["sText"].TryGetValue(out string? italicValue)) return;
 
         builder.Append("<s>");
-        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(italicValue, builder, origin | SkipOnOrigin);
+        _markdownParser.Value.ParseSingleline(italicValue, builder, origin | SkipOnOrigin);
         builder.Append("</s>");
     }
 }

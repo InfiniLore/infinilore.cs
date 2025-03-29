@@ -14,6 +14,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 [KeyedInjectableService<ISingleLineSectionParser>("bold", ServiceLifetime.Singleton)]
 public class BoldSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
     public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Bold;
+    private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -22,7 +23,7 @@ public class BoldSectionParser(IServiceProvider provider) : ISingleLineSectionPa
         if (!entireMatch.Groups["bText"].TryGetValue(out string? boldValue)) return;
 
         builder.Append("<strong>");
-        provider.GetRequiredService<IMarkdownParser>().ParseSingleline(boldValue, builder, origin | SkipOnOrigin);
+        _markdownParser.Value.ParseSingleline(boldValue, builder, origin | SkipOnOrigin);
         builder.Append("</strong>");
     }
 }
