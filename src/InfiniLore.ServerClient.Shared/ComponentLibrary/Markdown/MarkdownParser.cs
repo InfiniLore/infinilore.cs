@@ -75,13 +75,11 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     
     #region Parsing Methods
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
-        List<Match> collection = MarkdownRegexLib.MultilineStructuresMatches(markdown).ToList();
-        int collectionLength = collection.Count;
-        
-        for (int index = 0; index < collectionLength; index++) {
+        var collection = MarkdownRegexLib.MultilineStructuresMatches(markdown).ToList();
+        for (int index = 0; index < collection.Count; index++) {
             Match match = collection[index];
-            GroupCollection groups = match.Groups;
-            int groupCount = groups.Count;
+            var groups = match.Groups;
+            var groupCount = groups.Count;
 
             for (int i = 0; i < groupCount; i++) {
                 Group group = groups[i];
@@ -94,15 +92,14 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     }
     
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
-        List<Match> collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
-        int collectionLength = collection.Count;
-        int currentIndex = 0; // Track the position in the string we're currently at
+        var collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
+        int currentIndex = 0;// Track the position in the string we're currently at
         ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 
-        for (int index = 0; index < collectionLength; index++) {
+        for (int index = 0; index < collection.Count; index++) {
             Match match = collection[index];
-            GroupCollection groups = match.Groups;
-            int groupCount = groups.Count;
+            var groups = match.Groups;
+            var groupCount = groups.Count;
 
             // Add unmatched text before the current match
             if (match.Index > currentIndex) {
