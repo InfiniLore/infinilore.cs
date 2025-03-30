@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 
@@ -19,14 +18,14 @@ public class CodeInlineSectionParser : ISingleLineSectionParser {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
         if (!entireMatch.Groups["codeText"].TryGetValue(out string? codeValue)) return;
         
         string normalizedBackticks = codeValue.Replace("\\`", "`");
         string output = HtmlEncoder.Default.Encode(normalizedBackticks);
 
-        builder.Append("<code>");
-        builder.Append(output);
-        builder.Append("</code>");
+        writer.Write("<code>");
+        writer.Write(output);
+        writer.Write("</code>");
     }
 }

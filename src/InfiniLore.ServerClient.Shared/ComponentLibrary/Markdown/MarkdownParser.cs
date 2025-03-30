@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
+using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.MarkdownWriters;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Frozen;
 using System.Text;
@@ -58,40 +59,40 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public string ParseMultiline(string markdown) {
-        StringBuilder builder = StringBuilderPool.Get();
+        StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
         try {
-            ParseMultiline(markdown, builder);
-            return builder.ToString();
+            ParseMultiline(markdown, writer);
+            return writer.ToString();
         }
         finally {
-            StringBuilderPool.Return(builder);
+            StringBuilderMarkdownWriterPool.Return(writer);
         }
     }
 
-    public void ParseMultiline(string markdown, StringBuilder builder) {
+    public void ParseMultiline(string markdown, IMarkdownWriter writer) {
         MatchCollection collection = MarkdownRegexLib.MultilineStructuresMatches(markdown);
         for (int index = 0; index < collection.Count; index++) {
             Match match = collection[index];
             foreach ((string groupName, IMultiLineSectionParser sectionParser) in MultilineGroupToParserDictionary) {
                 if (match.Groups[groupName] is not { Success: true } group) continue;
 
-                sectionParser.ParseToStringBuilder(match, group, builder);
+                sectionParser.ParseToStringBuilder(match, group, writer);
             }
         }
     }
 
     public string ParseSingleline(string markdown) {
-        StringBuilder builder = StringBuilderPool.Get();
+        StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
         try {
-            ParseSingleline(markdown, builder);
-            return builder.ToString();
+            ParseSingleline(markdown, writer);
+            return writer.ToString();
         }
         finally {
-            StringBuilderPool.Return(builder);
+            StringBuilderMarkdownWriterPool.Return(writer);
         }
     }
 
-    public void ParseSingleline(string markdown, StringBuilder builder, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
+    public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
         MatchCollection collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown);
         int currentIndex = 0;// Track the position in the string we're currently at
         ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
@@ -102,7 +103,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
             // Add unmatched text before the current match
             if (match.Index > currentIndex) {
                 ReadOnlySpan<char> unmatchedText = markdownSpan.Slice(currentIndex, match.Index - currentIndex);
-                builder.Append(unmatchedText);// Append unmatched text to builder
+                writer.Write(unmatchedText);
             }
 
             // Process matched text using parsers
@@ -110,7 +111,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
                 if (origin.HasFlag(sectionParser.SkipOnOrigin)) continue;
                 if (match.Groups[groupName] is not { Success: true } group) continue;
 
-                sectionParser.ParseToStringBuilder(match, group, builder, origin);
+                sectionParser.ParseToStringBuilder(match, group, writer, origin);
             }
 
             // Update the current position to the end of the current match
@@ -120,7 +121,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
         // Append any remaining unmatched text after the last match
         if (currentIndex < markdown.Length) {
             ReadOnlySpan<char> remainingText = markdownSpan[currentIndex..];
-            builder.Append(remainingText);
+            writer.Write(remainingText);
         }
 
     }

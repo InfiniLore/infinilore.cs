@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
 using System.Buffers;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
@@ -19,7 +18,7 @@ public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionPa
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer) {
         // Extract header, separator, and rows
         ReadOnlySpan<char> header = entireMatch.Groups["tHead"].ValueSpan;
         Span<Range> headerColumns = stackalloc Range[header.Length];
@@ -34,21 +33,21 @@ public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionPa
         int rowCount = rows.Split(rowRanges, '\n', StringSplitOptions.TrimEntries);
 
         // Construct table HTML
-        builder.Append("<table>");
+        writer.Write("<table>");
 
         // Add headers
-        builder.Append("<thead><tr>");
+        writer.Write("<thead><tr>");
         for (int index = 0; index < headerColumnCount; index++) {
-            builder.Append("<th>");
+            writer.Write("<th>");
             ReadOnlySpan<char> column = header[headerColumns[index]];
-            _markdownParser.Value.ParseSingleline(column.ToString(), builder);
-            builder.Append("</th>");
+            _markdownParser.Value.ParseSingleline(column.ToString(), writer);
+            writer.Write("</th>");
         }
 
-        builder.Append("</tr></thead>");
+        writer.Write("</tr></thead>");
 
         // Add rows
-        builder.Append("<tbody>");
+        writer.Write("<tbody>");
         ArrayPool<Range> bufferPool = ArrayPool<Range>.Shared;
         const int maxExpectedRowLength = 512;// Based on expected data characteristics
         Range[] rowColumnRanges = bufferPool.Rent(maxExpectedRowLength);
@@ -61,20 +60,20 @@ public class TableSectionParser(IServiceProvider provider) : IMultiLineSectionPa
             // Split the row
             int rowColumnCount = row.Split(rowColumnRanges.AsSpan(0, row.Length), '|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            builder.Append("<tr>");
+            writer.Write("<tr>");
             for (int columnIndex = 0; columnIndex < rowColumnCount; columnIndex++) {
-                builder.Append("<td>");
+                writer.Write("<td>");
                 Range columnRange = rowColumnRanges[columnIndex];
                 ReadOnlySpan<char> column = row[columnRange];
-                _markdownParser.Value.ParseSingleline(column.ToString(), builder);
-                builder.Append("</td>");
+                _markdownParser.Value.ParseSingleline(column.ToString(), writer);
+                writer.Write("</td>");
             }
 
-            builder.Append("</tr>");
+            writer.Write("</tr>");
         }
 
-        builder.Append("</tbody>");
+        writer.Write("</tbody>");
 
-        builder.Append("</table>");
+        writer.Write("</table>");
     }
 }

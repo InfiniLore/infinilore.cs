@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
@@ -18,7 +17,7 @@ public class CopyrightSectionParser : ISingleLineSectionParser {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
-        builder.Append('\u00a9');
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
+        writer.Write('\u00a9');
     }
 }

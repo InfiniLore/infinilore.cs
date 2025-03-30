@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
@@ -19,25 +18,25 @@ public class ListOrderedSectionParser(IServiceProvider provider) : IMultiLineSec
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer) {
         if (!group.TryGetValue(out string? listOrderedBody)) return;
         
-        builder.Append("<ol>");
+        writer.Write("<ol>");
         foreach (Match lineMatch in MarkdownRegexLib.ListItemBodyRegex.Matches(listOrderedBody)) {
-            builder.Append("<li>");
+            writer.Write("<li>");
 
             if (lineMatch.Groups["lHead"].TryGetValue(out string? listHeader)) {
-                _markdownParser.Value.ParseSingleline(listHeader, builder);
+                _markdownParser.Value.ParseSingleline(listHeader, writer);
             }
 
             if (lineMatch.Groups["lBody"].TryGetValue(out string? listBody)) {
                 string normalizedBody = NormalizationHelper.NormalizeIndentation(listBody);
-                _markdownParser.Value.ParseMultiline(normalizedBody, builder);
+                _markdownParser.Value.ParseMultiline(normalizedBody, writer);
             }
 
-            builder.Append("</li>");
+            writer.Write("</li>");
         }
 
-        builder.Append("</ol>");
+        writer.Write("</ol>");
     }
 }

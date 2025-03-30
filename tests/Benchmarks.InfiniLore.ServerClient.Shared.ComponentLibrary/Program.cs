@@ -1,15 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.ServerClient.ComponentLibrary.Markdown;
+using BenchmarkDotNet.Running;
+
+namespace Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMarkdownParser {
-    string ParseMultiline(string markdown);
-    void ParseMultiline(string markdown, IMarkdownWriter writer);
-    
-    string ParseSingleline(string markdown);
-    void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined);
+public static class Program {
+    public static void Main(string[] args) {
+        BenchmarkRunner.Run<MarkdownBenchmarks>();
+    }
 }

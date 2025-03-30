@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
@@ -19,11 +18,11 @@ public class StrikeSectionParser(IServiceProvider provider) : ISingleLineSection
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
         if (!entireMatch.Groups["sText"].TryGetValue(out string? italicValue)) return;
 
-        builder.Append("<s>");
-        _markdownParser.Value.ParseSingleline(italicValue, builder, origin | SkipOnOrigin);
-        builder.Append("</s>");
+        writer.Write("<s>");
+        _markdownParser.Value.ParseSingleline(italicValue, writer, origin | SkipOnOrigin);
+        writer.Write("</s>");
     }
 }

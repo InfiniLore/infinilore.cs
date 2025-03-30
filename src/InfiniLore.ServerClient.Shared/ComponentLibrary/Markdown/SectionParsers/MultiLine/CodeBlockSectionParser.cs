@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 
@@ -15,7 +14,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<IMultiLineSectionParser>("codeBlock", ServiceLifetime.Singleton)]
 public class CodeBlockSectionParser : IMultiLineSectionParser {
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer) {
         if (!entireMatch.Groups["cBody"].TryGetValue(out string? codeBlockBody)) return;
         string langName = entireMatch.Groups["cLang"].TryGetValue(out string? langNameValue)
             ? langNameValue 
@@ -25,10 +24,10 @@ public class CodeBlockSectionParser : IMultiLineSectionParser {
             ? $" class=\"language-{langName}\""
             : string.Empty;
         
-        builder.Append("<pre><code")
-            .Append(langClass)
-            .Append('>')
-            .Append(output)
-            .Append("</code></pre>");
+        writer.Write("<pre><code")
+            .Write(langClass)
+            .Write('>')
+            .Write(output)
+            .Write("</code></pre>");
     }
 }

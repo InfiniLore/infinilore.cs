@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
@@ -19,12 +18,12 @@ public class RemainderSectionParser(IServiceProvider provider) : IMultiLineSecti
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match _, Group group, StringBuilder builder) {
+    public void ParseToStringBuilder(Match _, Group group, IMarkdownWriter writer) {
         if (!group.TryGetValue(out string? paragraph)) return;
         if (paragraph.IsNullOrWhiteSpace()) return;
 
-        builder.Append("<p>");
-        _markdownParser.Value.ParseSingleline(paragraph, builder);
-        builder.Append("</p>");
+        writer.Write("<p>");
+        _markdownParser.Value.ParseSingleline(paragraph, writer);
+        writer.Write("</p>");
     }
 }

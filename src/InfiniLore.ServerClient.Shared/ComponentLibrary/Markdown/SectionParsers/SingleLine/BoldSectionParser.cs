@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
@@ -19,11 +18,11 @@ public class BoldSectionParser(IServiceProvider provider) : ISingleLineSectionPa
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
         if (!entireMatch.Groups["bText"].TryGetValue(out string? boldValue)) return;
 
-        builder.Append("<strong>");
-        _markdownParser.Value.ParseSingleline(boldValue, builder, origin | SkipOnOrigin);
-        builder.Append("</strong>");
+        writer.Write("<strong>");
+        _markdownParser.Value.ParseSingleline(boldValue, writer, origin | SkipOnOrigin);
+        writer.Write("</strong>");
     }
 }

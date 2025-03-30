@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
@@ -19,14 +18,14 @@ public class BlockQuoteSectionParser(IServiceProvider provider) : IMultiLineSect
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match _, Group group, StringBuilder builder) {
+    public void ParseToStringBuilder(Match _, Group group, IMarkdownWriter writer) {
         if(!group.TryGetValue(out string? blockQuoteBody)) return;
         
         string normalized = MarkdownRegexLib.NormalizeBlockQuoteRegex.Replace(blockQuoteBody, string.Empty);
         string adjustedBlockquote = NormalizationHelper.NormalizeIndentation(normalized);
         
-        builder.Append("<blockquote>");
-        _markdownParser.Value.ParseMultiline(adjustedBlockquote, builder);
-        builder.Append("</blockquote>");
+        writer.Write("<blockquote>");
+        _markdownParser.Value.ParseMultiline(adjustedBlockquote, writer);
+        writer.Write("</blockquote>");
     }
 }

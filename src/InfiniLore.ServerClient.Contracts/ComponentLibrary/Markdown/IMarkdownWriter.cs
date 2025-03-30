@@ -6,10 +6,13 @@ namespace InfiniLore.ServerClient.ComponentLibrary.Markdown;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMarkdownParser {
-    string ParseMultiline(string markdown);
-    void ParseMultiline(string markdown, IMarkdownWriter writer);
+public interface IMarkdownWriter {
+    IMarkdownWriter Write(string value);
+    IMarkdownWriter Write(char value);
+    IMarkdownWriter Write(int value);
+    IMarkdownWriter Write(ReadOnlySpan<char> value);
     
-    string ParseSingleline(string markdown);
-    void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined);
+    IMarkdownWriter WriteLine();
+    IMarkdownWriter WriteLine(string value);
+    IMarkdownWriter WriteFormatted(string format, params object[] args);
 }

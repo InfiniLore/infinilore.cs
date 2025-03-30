@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 
@@ -19,9 +18,9 @@ public class ScriptSectionParser : ISingleLineSectionParser {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void ParseToStringBuilder(Match entireMatch, Group group, StringBuilder builder, SingleLineOrigin origin) {
+    public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
         if (!group.TryGetValue(out string? scriptValue)) return;
         string output = HtmlEncoder.Default.Encode(scriptValue);
-        builder.Append(output);
+        writer.Write(output);
     }
 }
