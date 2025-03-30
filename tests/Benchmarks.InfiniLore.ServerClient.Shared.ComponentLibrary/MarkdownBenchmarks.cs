@@ -39,7 +39,7 @@ public class MarkdownBenchmarks {
     public string RenderMarkdown() {
         string input = Markdown;
         
-        string output = Parser.ParseMultiline(input);
+        string output = Parser.Parse(input);
         return output; 
     }
 }

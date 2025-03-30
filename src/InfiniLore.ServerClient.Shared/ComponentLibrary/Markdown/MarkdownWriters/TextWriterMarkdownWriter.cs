@@ -7,7 +7,7 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.MarkdownWrite
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class TextWriterMarkdownWriter<T>(T writer) : IMarkdownWriter  where T :TextWriter {
+public class TextWriterMarkdownWriter<T>(T writer) : IMarkdownWriter  where T : TextWriter {
     public IMarkdownWriter Write(string value) {
         writer.Write(value);
         return this;

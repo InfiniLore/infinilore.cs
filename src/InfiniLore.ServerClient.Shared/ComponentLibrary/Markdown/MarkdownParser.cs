@@ -6,7 +6,6 @@ using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.MarkdownWriters;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Frozen;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
@@ -58,7 +57,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public string ParseMultiline(string markdown) {
+    public string Parse(string markdown) {
         StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
         try {
             ParseMultiline(markdown, writer);
@@ -68,7 +67,13 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
             StringBuilderMarkdownWriterPool.Return(writer);
         }
     }
-
+    
+    public void Parse<T>(string markdown, T writer) where T : TextWriter {
+        var markdownWriter = new TextWriterMarkdownWriter<T>(writer);
+        ParseMultiline(markdown, markdownWriter);
+    }
+    
+    #region Parsing Methods
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
         MatchCollection collection = MarkdownRegexLib.MultilineStructuresMatches(markdown);
         for (int index = 0; index < collection.Count; index++) {
@@ -80,18 +85,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
             }
         }
     }
-
-    public string ParseSingleline(string markdown) {
-        StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
-        try {
-            ParseSingleline(markdown, writer);
-            return writer.ToString();
-        }
-        finally {
-            StringBuilderMarkdownWriterPool.Return(writer);
-        }
-    }
-
+    
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
         MatchCollection collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown);
         int currentIndex = 0;// Track the position in the string we're currently at
@@ -125,4 +119,5 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
         }
 
     }
+    #endregion
 }
