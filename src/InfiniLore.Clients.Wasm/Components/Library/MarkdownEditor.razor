@@ -30,7 +30,7 @@
         get => _markdownText;
         set {
             _markdownText = value;
-            string editedText = MarkdownParser.ParseSingleline(_markdownText);
+            string editedText = MarkdownParser.Parse(_markdownText);
             MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
         }
     }
