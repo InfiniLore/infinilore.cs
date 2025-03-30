@@ -34,6 +34,7 @@ public class MarkdownBenchmarks {
         
         var serviceCollection = new ServiceCollection();
         serviceCollection.RegisterServicesFromInfiniLoreServerClientShared();
+        serviceCollection.AddLogging();
         ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
         Parser = serviceProvider.GetRequiredService<IMarkdownParser>();
     }

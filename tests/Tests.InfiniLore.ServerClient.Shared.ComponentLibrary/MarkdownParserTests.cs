@@ -13,7 +13,8 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary;
 public class MarkdownParserTests {
     private static IMarkdownParser GetParser() {
         IServiceCollection services = new ServiceCollection()
-            .RegisterServicesFromInfiniLoreServerClientShared();
+            .RegisterServicesFromInfiniLoreServerClientShared()
+            .AddLogging();
         
         ServiceProvider provider = services.BuildServiceProvider();
         return provider.GetRequiredService<IMarkdownParser>();

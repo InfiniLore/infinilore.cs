@@ -20,7 +20,6 @@ public class CodeBlockSectionParser : IMultiLineSectionParser {
             ? langNameValue 
             : string.Empty;
         
-        string output = HtmlEncoder.Default.Encode(codeBlockBody);
         string langClass = langName.IsNotNullOrWhiteSpace() 
             ? $" class=\"language-{langName}\""
             : string.Empty;
@@ -28,7 +27,7 @@ public class CodeBlockSectionParser : IMultiLineSectionParser {
         writer.Write("<pre><code")
             .Write(langClass)
             .Write('>')
-            .Write(output)
+            .Write(HtmlEncoder.Default.Encode(codeBlockBody))
             .Write("</code></pre>");
     }
 }

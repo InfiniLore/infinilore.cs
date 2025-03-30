@@ -21,18 +21,23 @@ public class ListUnorderedSectionParser(IServiceProvider provider) : IMultiLineS
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer) {
         if (!group.TryGetValue(out string? listUnorderedBody)) return;
         
+        List<Match> matchCollection = MarkdownRegexLib.ListItemBodyRegex.Matches(listUnorderedBody).ToList();
+        int matchCount = matchCollection.Count;
+        
         writer.Write("<ul>");
-        foreach (Match lineMatch in MarkdownRegexLib.ListItemBodyRegex.Matches(listUnorderedBody)) {
+        for (int index = 0; index < matchCount; index++) {
+            Match match = matchCollection[index];
+            GroupCollection groups = match.Groups;
+            
             writer.Write("<li>");
-            if (lineMatch.Groups["lHead"].TryGetValue(out string? listHeader)) {
+            if (groups["lHead"].TryGetValue(out string? listHeader)) {
                 _markdownParser.Value.ParseSingleline(listHeader, writer);
             }
 
-            if (lineMatch.Groups["lBody"].TryGetValue(out string? listBody)) {
+            if (groups["lBody"].TryGetValue(out string? listBody)) {
                 string normalizedBody = NormalizationHelper.NormalizeIndentation(listBody);
                 _markdownParser.Value.ParseMultiline(normalizedBody, writer);
             }
-
             writer.Write("</li>");
         }
 

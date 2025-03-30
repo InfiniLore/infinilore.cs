@@ -16,7 +16,7 @@ public static class StringBuilderMarkdownWriterPool {
     public static StringBuilderMarkdownWriter Get() => Pool.Get();
 
     public static void Return(StringBuilderMarkdownWriter builder) {
-        builder.Clear();// Ensure the builder is cleared before reusing
+        builder.Clear();
         Pool.Return(builder);
     }
 }
@@ -28,7 +28,7 @@ public static class StringBuilderPool {
     public static StringBuilder Get() => Pool.Get();
 
     public static void Return(StringBuilder builder) {
-        builder.Clear();// Ensure the builder is cleared before reusing
+        builder.Clear();
         Pool.Return(builder);
     }
 }

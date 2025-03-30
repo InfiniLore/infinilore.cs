@@ -16,8 +16,8 @@ public static class NormalizationHelper {
         int minIndent = int.MaxValue;
 
         // ReSharper disable once ForCanBeConvertedToForeach
-        for (int i = 0; i < lines.Length; i++) {
-            string line = lines[i];
+        for (int index = 0; index < lines.Length; index++) {
+            string line = lines[index]; 
             ReadOnlySpan<char> trimmed = line.AsSpan().TrimStart();
             if (trimmed.IsEmpty) continue;
 
@@ -27,54 +27,55 @@ public static class NormalizationHelper {
 
         if (minIndent == int.MaxValue) return input;
 
-        // If the number of lines is small, use simple string concatenation
-        if (lines.Length <= smallLineThreshold) {
-            int totalLength = 0;
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (lines.Length <= smallLineThreshold) return ProcessSmallerInput(lines, minIndent);
+        return ProcessLargerInput(lines, minIndent);
+    }
+
+    private static string ProcessLargerInput(string[] lines, int minIndent) {
+        StringBuilder stringBuilder = StringBuilderPool.Get();
+        try {
+            // ReSharper disable once ForCanBeConvertedToForeach
+            for (int index = 0; index < lines.Length; index++) {
+                ReadOnlySpan<char> trimmed = lines[index].AsSpan();
+                stringBuilder.Append(trimmed.Length >= minIndent ? trimmed[minIndent..] : trimmed);
+                stringBuilder.AppendLine();
+            }
+
+            return stringBuilder.ToString();
+        } finally {
+            StringBuilderPool.Return(stringBuilder);
+        }
+    }
+
+    private static string ProcessSmallerInput(string[] lines, int minIndent) {
+        int totalLength = 0;
+        
+        // ReSharper disable once ForCanBeConvertedToForeach
+        for (int index = 0; index < lines.Length; index++) {
+            string line = lines[index];
+            ReadOnlySpan<char> span = line.AsSpan();
+            totalLength += Math.Max(span.Length - minIndent, 0) + 1;// Include space for '\n'
+        }
+
+        char[] buffer = ArrayPool<char>.Shared.Rent(totalLength);
+        try {
+            Span<char> resultSpan = buffer.AsSpan(0, totalLength);
+            int position = 0;
 
             // ReSharper disable once ForCanBeConvertedToForeach
             for (int index = 0; index < lines.Length; index++) {
-                string line = lines[index];
-                ReadOnlySpan<char> span = line.AsSpan();
-                totalLength += Math.Max(span.Length - minIndent, 0) + 1;// Account for "\n"
+                ReadOnlySpan<char> span = lines[index].AsSpan();
+                ReadOnlySpan<char> trimmed = span.Length >= minIndent ? span[minIndent..] : span;
+
+                trimmed.CopyTo(resultSpan[position..]);
+                position += trimmed.Length;
+                resultSpan[position++] = '\n';
             }
 
-            char[] rentedBuffer = ArrayPool<char>.Shared.Rent(totalLength);
-            try {
-                Span<char> resultSpan = rentedBuffer.AsSpan(0, totalLength);
-                int position = 0;
-
-                // ReSharper disable once ForCanBeConvertedToForeach
-                for (int i = 0; i < lines.Length; i++) {
-                    ReadOnlySpan<char> span = lines[i].AsSpan();
-                    ReadOnlySpan<char> trimmed = span.Length >= minIndent ? span[minIndent..] : span;
-
-                    trimmed.CopyTo(resultSpan[position..]);
-                    position += trimmed.Length;
-                    resultSpan[position++] = '\n';
-                }
-
-                return resultSpan[..(position - 1)].ToString();
-            }
-            finally {
-                ArrayPool<char>.Shared.Return(rentedBuffer);
-            }
-        }
-
-
-        // Use StringBuilder for larger inputs
-        StringBuilder resultBuilder = StringBuilderPool.Get();
-        try {
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (int i = 0; i < lines.Length; i++) {
-                ReadOnlySpan<char> span = lines[i].AsSpan();
-                resultBuilder.Append(span.Length >= minIndent ? span[minIndent..] : span);
-                resultBuilder.AppendLine();
-            }
-
-            return resultBuilder.ToString();
-        }
-        finally {
-            StringBuilderPool.Return(resultBuilder);
+            return resultSpan[..(position - 1)].ToString(); // Exclude trailing newline
+        } finally {
+            ArrayPool<char>.Shared.Return(buffer);
         }
     }
 }
