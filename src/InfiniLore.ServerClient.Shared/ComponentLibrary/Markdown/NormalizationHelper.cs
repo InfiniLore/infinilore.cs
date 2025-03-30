@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Text;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +16,7 @@ public static class NormalizationHelper {
 
         // ReSharper disable once ForCanBeConvertedToForeach
         for (int index = 0; index < lines.Length; index++) {
-            string line = lines[index]; 
+            string line = lines[index];
             ReadOnlySpan<char> trimmed = line.AsSpan().TrimStart();
             if (trimmed.IsEmpty) continue;
 
@@ -29,6 +28,7 @@ public static class NormalizationHelper {
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (lines.Length <= smallLineThreshold) return ProcessSmallerInput(lines, minIndent);
+
         return ProcessLargerInput(lines, minIndent);
     }
 
@@ -43,14 +43,15 @@ public static class NormalizationHelper {
             }
 
             return stringBuilder.ToString();
-        } finally {
+        }
+        finally {
             StringBuilderPool.Return(stringBuilder);
         }
     }
 
     private static string ProcessSmallerInput(string[] lines, int minIndent) {
         int totalLength = 0;
-        
+
         // ReSharper disable once ForCanBeConvertedToForeach
         for (int index = 0; index < lines.Length; index++) {
             string line = lines[index];
@@ -73,8 +74,9 @@ public static class NormalizationHelper {
                 resultSpan[position++] = '\n';
             }
 
-            return resultSpan[..(position - 1)].ToString(); // Exclude trailing newline
-        } finally {
+            return resultSpan[..(position - 1)].ToString();// Exclude trailing newline
+        }
+        finally {
             ArrayPool<char>.Shared.Return(buffer);
         }
     }

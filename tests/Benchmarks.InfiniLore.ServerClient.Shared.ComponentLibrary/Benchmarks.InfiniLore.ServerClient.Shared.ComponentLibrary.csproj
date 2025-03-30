@@ -8,13 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.14.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj" />
-      <ProjectReference Include="..\..\src\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj" />
+        <ProjectReference Include="..\..\src\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj"/>
+        <ProjectReference Include="..\..\src\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>
 
 </Project>

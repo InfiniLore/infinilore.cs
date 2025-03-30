@@ -12,8 +12,8 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<ISingleLineSectionParser>("boldAndItalic", ServiceLifetime.Singleton)]
 public class BoldAndItalicSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
-    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.BoldAndItalic;
     private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
+    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.BoldAndItalic;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

@@ -4,7 +4,6 @@
 using System.Text.Encodings.Web;
 
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -15,14 +14,14 @@ public static class CodeDataSources {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
-        
+
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             ```
             const code = sample();
             ```
             """,
-            HtmlOutput: """
+            """
             <pre>
                 <code>
                     const code = sample();&#xD;&#xA;
@@ -31,12 +30,12 @@ public static class CodeDataSources {
             """
         );
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             ```javascript
             const code = sample();
             ```
             """,
-            HtmlOutput: """
+            """
             <pre>
                 <code class="language-javascript">
                     const code = sample();&#xD;&#xA;
@@ -44,13 +43,13 @@ public static class CodeDataSources {
             </pre>
             """
         );
-        
+
         yield return static () => {
             string htmlEncoded = HtmlEncoder.Default.Encode("tell application \"Foo\"\nbeep\nend tell");
-            
+
             return new MarkdownTestDto(SectionName,
-                Markdown: "```\ntell application \"Foo\"\nbeep\nend tell\n```",
-                HtmlOutput: $"""
+                "```\ntell application \"Foo\"\nbeep\nend tell\n```",
+                $"""
                 <pre>
                     <code>
                         {htmlEncoded}&#xA;
@@ -59,7 +58,7 @@ public static class CodeDataSources {
                 """
             );
         };
-        
+
         yield return static () => {
             string htmlEncoded = HtmlEncoder.Default.Encode("""
                 tell application "Foo"
@@ -67,14 +66,14 @@ public static class CodeDataSources {
                 end tell
                 """);
             return new MarkdownTestDto(SectionName,
-                Markdown: """
+                """
                 ```
                 tell application "Foo"
                     beep
                 end tell
                 ```
                 """,
-                HtmlOutput: $"""
+                $"""
                 <pre>
                     <code>
                        {htmlEncoded}&#xD;&#xA;
@@ -83,14 +82,14 @@ public static class CodeDataSources {
                 """
             );
         };
-        
+
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             ```
             **some valid markdown**
             ```
             """,
-            HtmlOutput: """
+            """
             <pre><code>
                 **some valid markdown**&#xD;&#xA;
             </code></pre>

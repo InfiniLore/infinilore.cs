@@ -20,6 +20,7 @@ public class ScriptSectionParser : ISingleLineSectionParser {
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
         if (!group.TryGetValue(out string? scriptValue)) return;
+
         string output = HtmlEncoder.Default.Encode(scriptValue);
         writer.Write(output);
     }

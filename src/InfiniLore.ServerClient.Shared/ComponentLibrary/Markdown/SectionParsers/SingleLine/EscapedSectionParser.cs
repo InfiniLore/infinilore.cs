@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,7 +18,8 @@ public class EscapedSectionParser : ISingleLineSectionParser {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match _, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-       if (!group.TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)) return;
-       writer.Write(escapedCharSpan[1]);
+        if (!group.TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)) return;
+
+        writer.Write(escapedCharSpan[1]);
     }
 }

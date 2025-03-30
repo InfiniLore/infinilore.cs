@@ -1,7 +1,7 @@
+@using InfiniLore.ServerClient.ComponentLibrary.Markdown
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.ServerClient.ComponentLibrary.Markdown
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -23,6 +23,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     private string _markdownText = string.Empty;
 
@@ -37,10 +38,10 @@
 
     private MarkupString MarkdownOutput { get; set; }
     private MarkupString MarkdownOutput2 { get; set; }
-    
+
     private void TextAreaOnChange(ChangeEventArgs obj) {
         if (obj.Value is not string content) return;
-        
+
         MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
     }
 }

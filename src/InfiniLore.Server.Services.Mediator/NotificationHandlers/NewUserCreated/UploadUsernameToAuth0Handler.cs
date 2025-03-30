@@ -33,6 +33,7 @@ public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkF
             if (resultUsername.TryGetAsErrorValue(out string? failureReason)) {
                 logger.Warning("Failed to update user {userId} at auth0: {Reason}", auth0UserId, failureReason);
             }
+
             UtilityResult resultUserId = await auth0UserUtility.TryAddOrUpdateAppMetadataAsync(auth0UserId, "infinilore_user_id", user.Id.ToString(), ct);
             if (resultUserId.TryGetAsErrorValue(out failureReason)) {
                 logger.Warning("Failed to update user {userId} at auth0: {Reason}", auth0UserId, failureReason);

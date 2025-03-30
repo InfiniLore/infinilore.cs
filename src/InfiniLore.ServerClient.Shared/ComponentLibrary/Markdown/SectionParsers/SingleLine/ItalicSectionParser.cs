@@ -12,8 +12,8 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParser
 // ---------------------------------------------------------------------------------------------------------------------
 [KeyedInjectableService<ISingleLineSectionParser>("italic", ServiceLifetime.Singleton)]
 public class ItalicSectionParser(IServiceProvider provider) : ISingleLineSectionParser {
-    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Italic;
     private readonly Lazy<IMarkdownParser> _markdownParser = new(provider.GetRequiredService<IMarkdownParser>);
+    public SingleLineOrigin SkipOnOrigin => SingleLineOrigin.Italic;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

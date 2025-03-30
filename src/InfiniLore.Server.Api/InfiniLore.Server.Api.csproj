@@ -17,9 +17,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Api.Responses\InfiniLore.Server.Api.Responses.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj"/>
         <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>
 

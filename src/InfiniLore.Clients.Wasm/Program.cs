@@ -27,8 +27,8 @@ public static class Program {
         builder.Services.AddHttpClient();
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose() 
-            .WriteTo.BrowserConsole() // Log to browser console for WASM
+            .MinimumLevel.Verbose()
+            .WriteTo.BrowserConsole()// Log to browser console for WASM
             .CreateLogger();
 
         builder.Logging.AddSerilog();

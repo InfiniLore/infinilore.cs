@@ -14,38 +14,38 @@ public static class SpecialCharacterDataSources {
     public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "",
-            HtmlOutput: ""
+            "",
+            ""
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "&",
-            HtmlOutput: "<p>&amp;</p>"
+            "&",
+            "<p>&amp;</p>"
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "<",
-            HtmlOutput: "<p>&lt;</p>"
+            "<",
+            "<p>&lt;</p>"
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: ">",
-            HtmlOutput: "<p>&gt;</p>"
+            ">",
+            "<p>&gt;</p>"
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "&copy;",
-            HtmlOutput: "<p>\u00a9</p>"
-        );
-        
-        yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "This contains an emoji: 😀",
-            HtmlOutput: "<p>This contains an emoji: 😀</p>"
+            "&copy;",
+            "<p>\u00a9</p>"
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: "@username mentions",
-            HtmlOutput: "<p>@username mentions</p>"
+            "This contains an emoji: 😀",
+            "<p>This contains an emoji: 😀</p>"
+        );
+
+        yield return static () => new MarkdownTestDto(SectionName,
+            "@username mentions",
+            "<p>@username mentions</p>"
         );
     }
 }

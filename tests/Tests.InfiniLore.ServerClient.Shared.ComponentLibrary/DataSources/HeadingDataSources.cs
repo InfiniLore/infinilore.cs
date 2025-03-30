@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,33 +16,33 @@ public static class HeadingDataSources {
             string heading = new('#', i);
             int depth = i;
             yield return () => new MarkdownTestDto(SectionName,
-                Markdown: $"{heading} Heading",
-                HtmlOutput: $"<h{depth}>Heading</h{depth}>"
+                $"{heading} Heading",
+                $"<h{depth}>Heading</h{depth}>"
             );
         }
 
         yield return () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             Heading
             ---
             """,
-            HtmlOutput: "<h1>Heading</h1>"
+            "<h1>Heading</h1>"
         );
-        
+
         yield return () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             Heading
             ===
             """,
-            HtmlOutput: "<h1>Heading</h1>"
+            "<h1>Heading</h1>"
         );
-        
+
         yield return () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             Heading
                 ========
             """,
-            HtmlOutput: "<h1>Heading</h1>"
+            "<h1>Heading</h1>"
         );
     }
 }

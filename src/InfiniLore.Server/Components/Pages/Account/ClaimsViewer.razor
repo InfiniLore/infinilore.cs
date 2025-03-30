@@ -75,13 +75,15 @@
                 <div class="bg-gray-50 border border-gray-200 text-sm rounded p-4 overflow-auto max-w-full">
                     <pre>@_decodedJwt</pre>
                 </div>
-            } else if (!string.IsNullOrWhiteSpace(_accessToken)) {
+            }
+            else if (!string.IsNullOrWhiteSpace(_accessToken)) {
                 <p class="text-gray-600 italic">Unable to decode token. Ensure it's a valid JWT.</p>
             }
         </div>
     </div>
 
-} else {
+}
+else {
     <p class="text-gray-600">Loading user information...</p>
 }
 

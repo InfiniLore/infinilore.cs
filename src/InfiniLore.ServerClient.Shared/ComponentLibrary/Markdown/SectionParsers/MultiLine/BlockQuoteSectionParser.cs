@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,11 +18,11 @@ public class BlockQuoteSectionParser(IServiceProvider provider) : IMultiLineSect
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match _, Group group, IMarkdownWriter writer) {
-        if(!group.TryGetValue(out string? blockQuoteBody)) return;
-        
+        if (!group.TryGetValue(out string? blockQuoteBody)) return;
+
         string normalized = MarkdownRegexLib.NormalizeBlockQuoteRegex.Replace(blockQuoteBody, string.Empty);
         string adjustedBlockquote = NormalizationHelper.NormalizeIndentation(normalized);
-        
+
         writer.Write("<blockquote>");
         _markdownParser.Value.ParseMultiline(adjustedBlockquote, writer);
         writer.Write("</blockquote>");

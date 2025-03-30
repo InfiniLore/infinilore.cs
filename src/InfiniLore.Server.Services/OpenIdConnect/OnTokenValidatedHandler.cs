@@ -61,9 +61,11 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
                 if (principal.FindFirstOrDefault(InfiniLoreClaimsStoreConstants.UserId) is null) {
                     addedClaims.AddClaim(new Claim(InfiniLoreClaimsStoreConstants.UserId, user.Id.ToString()));
                 }
+
                 if (principal.FindFirstOrDefault(InfiniLoreClaimsStoreConstants.UserName) is null) {
                     addedClaims.AddClaim(new Claim(InfiniLoreClaimsStoreConstants.UserName, user.Username));
                 }
+
                 principal.AddIdentity(addedClaims);
 
                 return;

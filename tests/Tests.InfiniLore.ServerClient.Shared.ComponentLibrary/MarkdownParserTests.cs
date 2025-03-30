@@ -15,11 +15,11 @@ public class MarkdownParserTests {
         IServiceCollection services = new ServiceCollection()
             .RegisterServicesFromInfiniLoreServerClientShared()
             .AddLogging();
-        
+
         ServiceProvider provider = services.BuildServiceProvider();
         return provider.GetRequiredService<IMarkdownParser>();
     }
-    
+
     // see https://spec-md.com/
     [Test]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
@@ -38,14 +38,14 @@ public class MarkdownParserTests {
     public async Task Parse_ValidInputs(MarkdownTestDto dto) {
         // Arrange
         IMarkdownParser parser = GetParser();
-        
+
         // Act
         string output = parser.Parse(dto.Markdown);
 
         // Assert
         await Assert.That(output).IsEqualTo(dto.HtmlOutput).IgnoringWhitespace();
     }
-    
+
     [Test]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
@@ -63,14 +63,13 @@ public class MarkdownParserTests {
     public async Task Parse_ValidInputs_WithTextWriter(MarkdownTestDto dto) {
         // Arrange
         IMarkdownParser parser = GetParser();
-        
+
         // Act
         await using var writer = new StringWriter();
-        parser.Parse(dto.Markdown, writer);            
-        string output = writer.ToString();             
+        parser.Parse(dto.Markdown, writer);
+        string output = writer.ToString();
 
         // Assert
         await Assert.That(output).IsEqualTo(dto.HtmlOutput).IgnoringWhitespace();
     }
-
 }

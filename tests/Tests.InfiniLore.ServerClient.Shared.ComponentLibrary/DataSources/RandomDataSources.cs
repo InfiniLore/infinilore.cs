@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -13,17 +12,17 @@ public static class RandomDataSources {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
-        
+
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             ## Longer Example with Multiple Sections
 
             ### Introduction
             Welcome to this test. This section introduces the topic, along with **bold**, *italic*, and `code` formatting.
-            
+
             ### Code Snippet
             Below is an example of a C# code snippet:
-            
+
             ```csharp
             public class Program {
                 public static void Main() {
@@ -31,31 +30,31 @@ public static class RandomDataSources {
                 }
             }
             ```
-            
+
             ### Bullet Points
             Here are some bullet points:
             - Point one
             - Point two
               - Subpoint A
               - Subpoint B
-            
+
             ### Blockquote
             > This is a blockquote. It can contain multiple lines of text
             > and demonstrates how Markdown handles quoted content.
-            
-            
+
+
             ### Table Example
             | Column 1       | Column 2       | Column 3       |
             |----------------|----------------|----------------|
             | Data 1         | Data 2         | Data 3         |
             | Data 4         | Data 5         | Data 6         |
-            
+
             ### Links and Images
             You can visit [Google](https://www.google.com) or check out the following image:
-            
+
             ![Placeholder Image](https://via.placeholder.com/150)
             """,
-            HtmlOutput: """
+            """
             <h2>Longer Example with Multiple Sections</h2>
             <h3>Introduction</h3>
             <p>Welcome to this test. This section introduces the topic, along with <strong>bold</strong>, <em>italic</em>, and <code>code</code> formatting.</p>
@@ -111,7 +110,7 @@ public static class RandomDataSources {
         );
 
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             ## Nested Lists and Complex Formatting
 
             - **Main Topic 1**
@@ -126,7 +125,7 @@ public static class RandomDataSources {
                  - Sub-Item 2.2.1
                  - Sub-Item 2.2.2
             """,
-            HtmlOutput: """
+            """
             <h2>Nested Lists and Complex Formatting</h2>
             <ul>
                 <li><strong>Main Topic 1</strong>

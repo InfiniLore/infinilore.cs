@@ -5,4 +5,5 @@ namespace InfiniLore.ServerClient.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IEntryPointInfiniLoreServerClientShared {}
+public interface IEntryPointInfiniLoreServerClientShared {
+}

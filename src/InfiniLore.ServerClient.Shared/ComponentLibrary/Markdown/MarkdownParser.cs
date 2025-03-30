@@ -48,10 +48,29 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "greaterThan"
     ];
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public string Parse(string markdown) {
+        StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
+        try {
+            ParseMultiline(markdown, writer);
+            return writer.ToString();
+        }
+        finally {
+            StringBuilderMarkdownWriterPool.Return(writer);
+        }
+    }
+
+    public void Parse<T>(string markdown, T writer) where T : TextWriter {
+        var markdownWriter = new TextWriterMarkdownWriter<T>(writer);
+        ParseMultiline(markdown, markdownWriter);
+    }
+
     private static FrozenDictionary<string, T> ToFrozenDictionary<T>(ImmutableArray<string> keyNames, ILogger<MarkdownParser> logger, IServiceProvider serviceProvider) {
         int keyCount = keyNames.Length;
         var dictionaryBuilder = new Dictionary<string, T>(keyCount);
-        
+
         for (int index = 0; index < keyCount; index++) {
             string groupName = keyNames[index];
             var service = serviceProvider.GetKeyedService<T>(groupName);
@@ -67,30 +86,11 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
 
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    public string Parse(string markdown) {
-        StringBuilderMarkdownWriter writer = StringBuilderMarkdownWriterPool.Get();
-        try {
-            ParseMultiline(markdown, writer);
-            return writer.ToString();
-        }
-        finally {
-            StringBuilderMarkdownWriterPool.Return(writer);
-        }
-    }
-    
-    public void Parse<T>(string markdown, T writer) where T : TextWriter {
-        var markdownWriter = new TextWriterMarkdownWriter<T>(writer);
-        ParseMultiline(markdown, markdownWriter);
-    }
-    
     #region Parsing Methods
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
         List<Match> collection = MarkdownRegexLib.MultilineStructuresMatches(markdown).ToList();
         int collectionCount = collection.Count;
-        
+
         for (int index = 0; index < collectionCount; index++) {
             Match match = collection[index];
             GroupCollection groups = match.Groups;
@@ -105,11 +105,11 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
             }
         }
     }
-    
+
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
         List<Match> collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
         int collectionCount = collection.Count;
-        
+
         int currentIndex = 0;// Track the position in the string we're currently at
         ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 

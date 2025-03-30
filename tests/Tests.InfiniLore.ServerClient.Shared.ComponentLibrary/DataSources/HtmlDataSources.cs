@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -14,7 +13,7 @@ public class HtmlDataSources {
     // -----------------------------------------------------------------------------------------------------------------
     public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
         yield return static () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             Unrelated previous paragraph followed by a blank line
             <table>
             <tr>
@@ -31,7 +30,7 @@ public class HtmlDataSources {
             </tr>
             </table>
             """,
-            HtmlOutput: """
+            """
             <p>Unrelated previous paragraph followed by a blank line</p>
             <table>
             <tr>
@@ -51,7 +50,7 @@ public class HtmlDataSources {
         );
 
         yield return () => new MarkdownTestDto(SectionName,
-            Markdown: """
+            """
             <pre>
             Buffalo Bill ’s
             defunct
@@ -66,7 +65,7 @@ public class HtmlDataSources {
             Mister Death
             </pre>
             """,
-            HtmlOutput: """
+            """
             <pre>
             Buffalo Bill ’s
             defunct

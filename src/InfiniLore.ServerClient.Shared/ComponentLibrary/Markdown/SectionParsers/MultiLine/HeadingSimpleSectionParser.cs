@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
 
 namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.MultiLine;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,8 +18,8 @@ public class HeadingSimpleSectionParser(IServiceProvider provider) : IMultiLineS
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer) {
-        if(!entireMatch.Groups["hsText"].TryGetValue(out string? headerSimpleText)) return;
-        
+        if (!entireMatch.Groups["hsText"].TryGetValue(out string? headerSimpleText)) return;
+
         writer.Write("<h1>");
         _markdownParser.Value.ParseSingleline(headerSimpleText, writer);
         writer.Write("</h1>");
