@@ -19,6 +19,7 @@ public class CodeBlockSectionParser : IMultiLineSectionParser {
         string langName = entireMatch.Groups["cLang"].TryGetValue(out string? langNameValue)
             ? langNameValue 
             : string.Empty;
+        
         string output = HtmlEncoder.Default.Encode(codeBlockBody);
         string langClass = langName.IsNotNullOrWhiteSpace() 
             ? $" class=\"language-{langName}\""

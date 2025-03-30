@@ -21,7 +21,7 @@ public class MarkdownBenchmarks {
     // -----------------------------------------------------------------------------------------------------------------
     [GlobalSetup]
     public async Task Setup() {
-        string url = "https://gist.githubusercontent.com/allysonsilva/85fff14a22bbdf55485be947566cc09e/raw/fa8048a906ebed3c445d08b20c9173afd1b4a1e5/Full-Markdown.md";
+        const string url = "https://gist.githubusercontent.com/allysonsilva/85fff14a22bbdf55485be947566cc09e/raw/fa8048a906ebed3c445d08b20c9173afd1b4a1e5/Full-Markdown.md";
         var client = new HttpClient();
         HttpResponseMessage response = await client.GetAsync(url);
         

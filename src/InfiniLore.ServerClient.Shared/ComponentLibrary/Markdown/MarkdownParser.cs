@@ -24,7 +24,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
         .Where(tuple => tuple.Service is not null)
         .ToFrozenDictionary(keySelector: tuple => tuple.GroupName, elementSelector: tuple => tuple.Service!);
 
-    private static readonly string[] MultilineGroupNames = [
+    private static readonly FrozenSet<string> MultilineGroupNames = [
         "remainder",
         "heading",
         "codeBlock",
@@ -37,7 +37,7 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
         "horizontalRule"
     ];
 
-    private static readonly string[] SinglelineGroupNames = [
+    private static readonly FrozenSet<string> SinglelineGroupNames = [
         "escaped",
         "boldAndItalic",
         "bold",
@@ -75,11 +75,18 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     
     #region Parsing Methods
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
-        MatchCollection collection = MarkdownRegexLib.MultilineStructuresMatches(markdown);
-        for (int index = 0; index < collection.Count; index++) {
+        List<Match> collection = MarkdownRegexLib.MultilineStructuresMatches(markdown).ToList();
+        int collectionLength = collection.Count;
+        
+        for (int index = 0; index < collectionLength; index++) {
             Match match = collection[index];
-            foreach ((string groupName, IMultiLineSectionParser sectionParser) in MultilineGroupToParserDictionary) {
-                if (match.Groups[groupName] is not { Success: true } group) continue;
+            GroupCollection groups = match.Groups;
+            int groupCount = groups.Count;
+
+            for (int i = 0; i < groupCount; i++) {
+                Group group = groups[i];
+                if (!group.Success) continue;
+                if (!MultilineGroupToParserDictionary.TryGetValue(group.Name, out IMultiLineSectionParser? sectionParser)) continue;
 
                 sectionParser.ParseToStringBuilder(match, group, writer);
             }
@@ -87,12 +94,15 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
     }
     
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
-        MatchCollection collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown);
-        int currentIndex = 0;// Track the position in the string we're currently at
+        List<Match> collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
+        int collectionLength = collection.Count;
+        int currentIndex = 0; // Track the position in the string we're currently at
         ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 
-        for (int index = 0; index < collection.Count; index++) {
+        for (int index = 0; index < collectionLength; index++) {
             Match match = collection[index];
+            GroupCollection groups = match.Groups;
+            int groupCount = groups.Count;
 
             // Add unmatched text before the current match
             if (match.Index > currentIndex) {
@@ -101,9 +111,11 @@ public class MarkdownParser(IServiceProvider serviceProvider) : IMarkdownParser 
             }
 
             // Process matched text using parsers
-            foreach ((string groupName, ISingleLineSectionParser sectionParser) in SinglelineGroupToParserDictionary) {
+            for (int i = 0; i < groupCount; i++) {
+                Group group = groups[i];
+                if (!group.Success) continue;
+                if (!SinglelineGroupToParserDictionary.TryGetValue(group.Name, out ISingleLineSectionParser? sectionParser)) continue;
                 if (origin.HasFlag(sectionParser.SkipOnOrigin)) continue;
-                if (match.Groups[groupName] is not { Success: true } group) continue;
 
                 sectionParser.ParseToStringBuilder(match, group, writer, origin);
             }
