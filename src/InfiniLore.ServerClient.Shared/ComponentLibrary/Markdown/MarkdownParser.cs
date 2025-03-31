@@ -43,7 +43,8 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "linkRegular",
         "script",
         "lookupDict",
-        "underline"
+        "underline",
+        "emote"
     ];
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -108,7 +109,7 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         List<Match> collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
         int collectionCount = collection.Count;
 
-        int currentIndex = 0;// Track the position in the string we're currently at
+        int currentIndex = 0; // Track the position in the string we're currently at
         ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 
         for (int index = 0; index < collectionCount; index++) {

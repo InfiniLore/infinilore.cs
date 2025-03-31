@@ -16,4 +16,5 @@ public enum SingleLineOrigin {
     Code = 1 << 4,
     Link = 1 << 5,
     Underline = 1 << 6,
+    Emote = 1 << 7,
 }
