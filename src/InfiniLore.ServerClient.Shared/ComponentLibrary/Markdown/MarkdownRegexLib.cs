@@ -53,13 +53,14 @@ public static partial class MarkdownRegexLib {
         | (?:
             (?<htmlPre>.+?)?
             (?<htmlBody>
-              <(?<tag>\w+)\b[^>]*>
+              <(?<tag>\w+)\b[^:>]*>
               (?:
                 [^<]+
                 | <(?<open>\k<tag>)\b[^>]*>
                 | </(?<-open>\k<tag>)>
                 | <(?!/?\k<tag>\b)[^>]+>
               )*
+              (?(open)(?!))
               </\k<tag>>
             )
             (?<htmlPost>.+)?
