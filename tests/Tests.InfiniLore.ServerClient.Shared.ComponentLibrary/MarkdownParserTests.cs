@@ -35,6 +35,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
     [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
+    [MethodDataSource(typeof(UnderlineDataSources), nameof(UnderlineDataSources.DataSources))]
     public async Task Parse_ValidInputs(MarkdownTestDto dto) {
         // Arrange
         IMarkdownParser parser = GetParser();
@@ -60,6 +61,7 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
     [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
+    [MethodDataSource(typeof(UnderlineDataSources), nameof(UnderlineDataSources.DataSources))]
     public async Task Parse_ValidInputs_WithTextWriter(MarkdownTestDto dto) {
         // Arrange
         IMarkdownParser parser = GetParser();

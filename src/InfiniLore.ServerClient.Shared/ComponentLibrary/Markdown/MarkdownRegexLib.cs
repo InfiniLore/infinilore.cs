@@ -14,6 +14,7 @@ public static partial class MarkdownRegexLib {
         | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
         | (?<italic>(?<i>\*)(?<iText>.+?)(?<!\\)\k<i>)
         | (?<strike>~~(?<sText>.+?)~~)
+        | (?<underline>(?<u>_)(?<uText>.+?)(?<!\\)\k<u>)
         | (?<code>(?<open>`+)(?<codeText>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
         | (?<linkNested>
             (?<lnBang>!)?

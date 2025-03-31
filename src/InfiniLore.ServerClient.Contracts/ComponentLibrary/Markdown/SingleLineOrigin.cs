@@ -14,5 +14,6 @@ public enum SingleLineOrigin {
     Italic = 1 << 2,
     Strike = 1 << 3,
     Code = 1 << 4,
-    Link = 1 << 5
+    Link = 1 << 5,
+    Underline = 1 << 6,
 }
