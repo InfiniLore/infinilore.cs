@@ -37,6 +37,8 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "boldAndItalic",
         "bold",
         "italic",
+        "supScript",
+        "subScript",
         "strike",
         "code",
         "linkNested",

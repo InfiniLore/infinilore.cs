@@ -11,8 +11,10 @@ public static partial class MarkdownRegexLib {
     [GeneratedRegex("""
           (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
         | (?<boldAndItalic>(?<bi>\*\*\*)(?<biText>.+?)(?<!\\)\k<bi>)
-        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*|_)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
+        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
         | (?<italic>(?<i>\*)(?<iText>.+?)(?<!\\)\k<i>)
+        | (?<supScript>(?<sp>\^\^)(?<spText>.+?(?:(?<sbNested>\^)[^\^]+?\k<sbNested>)?)(?<!\\)\k<sp>)
+        | (?<subScript>(?<sb>\^)(?<sbText>.+?)(?<!\\)\k<sb>)
         | (?<strike>~~(?<sText>.+?)~~)
         | (?<underline>(?<u>_)(?<uText>.+?)(?<!\\)\k<u>)
         | (?<code>(?<open>`+)(?<codeText>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
@@ -70,7 +72,7 @@ public static partial class MarkdownRegexLib {
 
     [GeneratedRegex("^>", RegexOptions.Multiline)]
     public static partial Regex NormalizeBlockQuoteRegex { get; }
-
+    
     [GeneratedRegex("\r?\n")]
     public static partial Regex NormalizeNewlinesRegex { get; }
 
