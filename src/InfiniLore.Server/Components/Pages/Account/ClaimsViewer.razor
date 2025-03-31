@@ -72,12 +72,10 @@
             <!-- Header Section -->
             <div>
                 <h6 class="font-semibold text-gray-600 mb-1">Header</h6>
-                @if (!string.IsNullOrWhiteSpace(_header))
-                {
+                @if (!string.IsNullOrWhiteSpace(_header)) {
                     <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_header</pre>
                 }
-                else
-                {
+                else {
                     <p class="text-gray-600 italic">Header not available</p>
                 }
             </div>
@@ -85,12 +83,11 @@
             <!-- Payload Section -->
             <div class="mt-4">
                 <h6 class="font-semibold text-gray-600 mb-1">Payload</h6>
-                @if (!string.IsNullOrWhiteSpace(_decodedPayload))
-                {
-                    <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_decodedPayload</pre>
+                @if (!string.IsNullOrWhiteSpace(_decodedPayload)) {
+                    <pre
+                        class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_decodedPayload</pre>
                 }
-                else
-                {
+                else {
                     <p class="text-gray-600 italic">Payload not available</p>
                 }
             </div>
@@ -98,12 +95,10 @@
             <!-- Signature Section -->
             <div class="mt-4">
                 <h6 class="font-semibold text-gray-600 mb-1">Signature</h6>
-                @if (!string.IsNullOrWhiteSpace(_signature))
-                {
+                @if (!string.IsNullOrWhiteSpace(_signature)) {
                     <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto">@_signature</pre>
                 }
-                else
-                {
+                else {
                     <p class="text-gray-600 italic">Signature not available</p>
                 }
             </div>
@@ -117,6 +112,7 @@ else {
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     private ClaimsPrincipal? _user;
     private string? _accessToken;

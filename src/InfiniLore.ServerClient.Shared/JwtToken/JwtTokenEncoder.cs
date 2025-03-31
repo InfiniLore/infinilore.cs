@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 
 namespace InfiniLore.ServerClient.Shared.JwtToken;
@@ -20,13 +21,13 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     // -----------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Decodes the expiration date from the "exp" field in the payload.
+    ///     Decodes the expiration date from the "exp" field in the payload.
     /// </summary>
     public bool TryGetTokenUtcExpiry(string token, out DateTime expiry) {
         expiry = DateTime.MinValue;
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return false; // Not a valid JWT
+            if (parts.Length != 3) return false;// Not a valid JWT
 
             // Decode payload
             string payloadJson = DecodeBase64(parts[1]);
@@ -34,7 +35,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
 
             // Extract the "exp" field
             JsonElement root = document.RootElement;
-            if (!root.TryGetProperty("exp", out JsonElement expClaim)) return false; // "exp" field not found
+            if (!root.TryGetProperty("exp", out JsonElement expClaim)) return false;// "exp" field not found
 
             long expSeconds = expClaim.GetInt64();
             // Convert from Unix timestamp to DateTime
@@ -48,13 +49,13 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     }
 
     /// <summary>
-    /// Decodes the JWT header only.
+    ///     Decodes the JWT header only.
     /// </summary>
     public bool TryDecodeJwtHeader(string token, [NotNullWhen(true)] out string? header) {
         header = null;
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return false; // Not a valid JWT
+            if (parts.Length != 3) return false;// Not a valid JWT
 
             string headerJson = DecodeBase64(parts[0]);
             JsonDocument headerDoc = JsonDocument.Parse(headerJson);
@@ -68,13 +69,13 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     }
 
     /// <summary>
-    /// Decodes the JWT payload only.
+    ///     Decodes the JWT payload only.
     /// </summary>
     public bool TryDecodeJwtPayload(string token, [NotNullWhen(true)] out string? payload) {
         payload = null;
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return false; // Not a valid JWT
+            if (parts.Length != 3) return false;// Not a valid JWT
 
             string payloadJson = DecodeBase64(parts[1]);
             JsonDocument payloadDoc = JsonDocument.Parse(payloadJson);
@@ -88,13 +89,13 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     }
 
     /// <summary>
-    /// Fetches the raw signature from the JWT token.
+    ///     Fetches the raw signature from the JWT token.
     /// </summary>
     public bool TryGetJwtSignature(string token, [NotNullWhen(true)] out string? signature) {
         signature = null;
         try {
             string[] parts = token.Split('.');
-            if (parts.Length != 3) return false; // Not a valid JWT
+            if (parts.Length != 3) return false;// Not a valid JWT
 
             signature = parts[2];
             return true;
@@ -110,15 +111,15 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
     // -----------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Decodes a Base64-encoded string, padding if necessary.
+    ///     Decodes a Base64-encoded string, padding if necessary.
     /// </summary>
     private static string DecodeBase64(string base64) {
         byte[] bytes = Convert.FromBase64String(PadBase64(base64));
-        return System.Text.Encoding.UTF8.GetString(bytes);
+        return Encoding.UTF8.GetString(bytes);
     }
 
     /// <summary>
-    /// Pads a Base64 string if it's not properly padded.
+    ///     Pads a Base64 string if it's not properly padded.
     /// </summary>
     private static string PadBase64(string base64)
         => (base64.Length % 4) switch {
