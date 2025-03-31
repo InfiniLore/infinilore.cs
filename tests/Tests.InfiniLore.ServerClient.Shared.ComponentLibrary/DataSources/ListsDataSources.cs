@@ -226,27 +226,133 @@ public static class ListsDataSources {
         );
 
 
-        // yield return static () => new MultilineDataDto(
-        //     Markdown: """
-        //     1. this
-        //     2. [ ] is
-        //     3. [x] a
-        //       - [X] nested
-        //     4. todo list
-        //     """,
-        //     HtmlOutput: """
-        //     <ol>
-        //         <li>this</li>
-        //         <li class="task"><input type="checkbox">is</li>
-        //         <li class="task"><input type="checkbox" checked="">a
-        //             <ul>
-        //             <li class="task">
-        //             <input type="checkbox" disabled="" checked="">nested</li>
-        //             </ul>
-        //         </li>
-        //         <li>todo list</li>
-        //     </ol>
-        //     """
-        // );
+        yield return static () => new MarkdownTestDto( SectionName,
+            Markdown: """
+            1. this
+            2. [ ] is
+            3. [x] a
+              - [X] nested
+            4. todo list
+            """,
+            HtmlOutput: """
+            <ol>
+                <li>this</li>
+                <li><input type="checkbox" disabled/>is</li>
+                <li><input type="checkbox" disabled checked/>a
+                    <ul>
+                    <li>
+                    <input type="checkbox" disabled checked/>nested</li>
+                    </ul>
+                </li>
+                <li>todo list</li>
+            </ol>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            - [ ] Task with sublist
+              - Subitem A
+              - Subitem B
+            - [x] Completed task with sublist
+              - Subitem C
+              - Subitem D
+            """,
+            """
+            <ul>
+                <li><input type="checkbox" disabled />Task with sublist
+                    <ul>
+                        <li>Subitem A</li>
+                        <li>Subitem B</li>
+                    </ul>
+                </li>
+                <li><input type="checkbox" disabled checked />Completed task with sublist
+                    <ul>
+                        <li>Subitem C</li>
+                        <li>Subitem D</li>
+                    </ul>
+                </li>
+            </ul>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            1. Ordered task list
+            2. [ ] Incomplete task in ordered list
+            3. [x] Completed task in ordered list
+            """,
+            """
+            <ol>
+                <li>Ordered task list</li>
+                <li><input type="checkbox" disabled />Incomplete task in ordered list</li>
+                <li><input type="checkbox" disabled checked />Completed task in ordered list</li>
+            </ol>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            - [x] Mixed list
+              1. [ ] Subtask 1
+              2. [x] Subtask 2
+            - Another item
+            """,
+            """
+            <ul>
+                <li><input type="checkbox" disabled checked />Mixed list
+                    <ol>
+                        <li><input type="checkbox" disabled />Subtask 1</li>
+                        <li><input type="checkbox" disabled checked />Subtask 2</li>
+                    </ol>
+                </li>
+                <li>Another item</li>
+            </ul>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            - Normal item
+            - [ ] Task item without sublist
+            
+                Unrelated paragraph between list items.
+
+            - [x] Another completed task
+            """,
+            """
+            <ul>
+                <li>Normal item</li>
+                <li><input type="checkbox" disabled />Task item without sublist</li>
+            </ul>
+            <p>Unrelated paragraph between list items.</p>
+            <ul>
+                <li><input type="checkbox" disabled checked />Another completed task</li>
+            </ul>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            - Normal item
+            - [ ] Task item without sublist
+                related paragraph between list items.
+
+            - [x] Another completed task
+            """,
+            """
+            <ul>
+                <li>Normal item</li>
+                <li><input type="checkbox" disabled />Task item without sublist
+                    <p>related paragraph between list items.</p>
+                </li>
+            </ul>
+            
+            <ul>
+                <li><input type="checkbox" disabled checked />Another completed task</li>
+            </ul>
+            """
+        );
+        
     }
 }

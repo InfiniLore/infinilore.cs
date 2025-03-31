@@ -29,6 +29,11 @@ public class ListOrderedSectionParser(IServiceProvider provider) : IMultiLineSec
             GroupCollection groups = match.Groups;
 
             writer.Write("<li>");
+            if (groups["lTask"].TryGetValue(out string? taskMarker)) {
+                bool isChecked = taskMarker.Contains('x');
+                writer.Write($"<input type=\"checkbox\" disabled {(isChecked ? "checked" : "")} /> ");
+            }
+            
             if (groups["lHead"].TryGetValue(out string? listHeader)) {
                 _markdownParser.Value.ParseSingleline(listHeader, writer);
             }

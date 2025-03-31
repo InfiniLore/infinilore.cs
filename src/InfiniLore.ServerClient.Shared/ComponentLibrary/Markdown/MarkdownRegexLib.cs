@@ -65,7 +65,7 @@ public static partial class MarkdownRegexLib {
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex MultilineStructuresRegex { get; }
 
-    [GeneratedRegex(@"^[ ]*[-.]?\d*\.?\s+(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
+    [GeneratedRegex(@"^[ ]*[-.]?\d*\.?\s+(?<lTask>\[[\ xX]\])?(?<lHead>.+)(?<lBody>(?:\n[ ]+.+)*)", RegexOptions.Multiline | RegexOptions.ExplicitCapture)]
     public static partial Regex ListItemBodyRegex { get; }
 
     [GeneratedRegex("^>", RegexOptions.Multiline)]
