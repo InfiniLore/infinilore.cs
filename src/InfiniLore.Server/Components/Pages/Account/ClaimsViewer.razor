@@ -1,9 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/claims-viewer"
 @using InfiniLore.Server.Services.Clipboard
 @using InfiniLore.ServerClient.Shared.JwtToken
@@ -54,11 +51,11 @@
 
     <br>
     <h4 class="text-xl font-semibold text-gray-800 mb-2">Access Token Viewer</h4>
-    <div class="flex flex-row space-x-4 items-start">
+    <div class="flex flex-row space-x-4 w-full items-start">
         <!-- Access Token Section -->
         <div class="w-1/2">
             <h5 class="text-lg font-medium text-gray-700 mb-2">Original JWT</h5>
-            <p class="bg-gray-100 border border-gray-300 rounded px-4 py-2 break-words whitespace-pre-wrap h-72 overflow-hidden">@_accessToken</p>
+            <p class="bg-gray-100 border border-gray-300 rounded px-4 py-2 break-words whitespace-pre-wrap h-72 overflow-auto">@_accessToken</p>
             <div class="flex justify-center mt-2">
                 <button
                     class="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-2 rounded outline outline-2 outline-green-700 shadow transition duration-200"
@@ -69,19 +66,49 @@
         </div>
 
         <!-- JWT Viewer Section -->
-        <div class="w-1/2">
-            <h5 class="text-lg font-medium text-gray-700 mb-2">Decoded JWT</h5>
-            @if (_decodedJwt != null) {
-                <div class="bg-gray-50 border border-gray-200 text-sm rounded p-4 overflow-auto max-w-full">
-                    <pre>@_decodedJwt</pre>
-                </div>
-            }
-            else if (!string.IsNullOrWhiteSpace(_accessToken)) {
-                <p class="text-gray-600 italic">Unable to decode token. Ensure it's a valid JWT.</p>
-            }
+        <div class="w-full">
+            <h5 class="text-lg font-medium text-gray-700 mb-2">Decoded JWT Details</h5>
+
+            <!-- Header Section -->
+            <div>
+                <h6 class="font-semibold text-gray-600 mb-1">Header</h6>
+                @if (!string.IsNullOrWhiteSpace(_header))
+                {
+                    <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_header</pre>
+                }
+                else
+                {
+                    <p class="text-gray-600 italic">Header not available</p>
+                }
+            </div>
+
+            <!-- Payload Section -->
+            <div class="mt-4">
+                <h6 class="font-semibold text-gray-600 mb-1">Payload</h6>
+                @if (!string.IsNullOrWhiteSpace(_decodedPayload))
+                {
+                    <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_decodedPayload</pre>
+                }
+                else
+                {
+                    <p class="text-gray-600 italic">Payload not available</p>
+                }
+            </div>
+
+            <!-- Signature Section -->
+            <div class="mt-4">
+                <h6 class="font-semibold text-gray-600 mb-1">Signature</h6>
+                @if (!string.IsNullOrWhiteSpace(_signature))
+                {
+                    <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto">@_signature</pre>
+                }
+                else
+                {
+                    <p class="text-gray-600 italic">Signature not available</p>
+                }
+            </div>
         </div>
     </div>
-
 }
 else {
     <p class="text-gray-600">Loading user information...</p>
@@ -90,25 +117,36 @@ else {
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     private ClaimsPrincipal? _user;
     private string? _accessToken;
-    private string? _decodedJwt;
+    private string? _header;
+    private string? _decodedPayload;
+    private string? _signature;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        AuthenticationState authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        _user = authenticationState.User;
+        AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _user = authState.User;
 
         if (HttpContextAccessor.HttpContext != null) {
             _accessToken = await HttpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (_accessToken.IsNullOrWhiteSpace()) return;
-            if (!JwtTokenEncoder.TryDecodeJwt(_accessToken, out string? payload)) return;
 
-            _decodedJwt = payload;
+            if (!string.IsNullOrWhiteSpace(_accessToken)) {
+                if (JwtTokenEncoder.TryDecodeJwtHeader(_accessToken, out string? header)) {
+                    _header = header;
+                }
+
+                if (JwtTokenEncoder.TryDecodeJwtPayload(_accessToken, out string? payload)) {
+                    _decodedPayload = payload;
+                }
+
+                if (JwtTokenEncoder.TryGetJwtSignature(_accessToken, out string? signature)) {
+                    _signature = signature;
+                }
+            }
         }
     }
 
