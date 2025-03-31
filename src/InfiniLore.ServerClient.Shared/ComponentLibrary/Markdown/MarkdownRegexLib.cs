@@ -31,6 +31,7 @@ public static partial class MarkdownRegexLib {
           )
         | (?<lookupDict>
             &copy;
+            | <br/>
             | &
             | <
             | >

@@ -20,7 +20,8 @@ public class LookupDictSectionParser(ILogger<LookupDictSectionParser> logger) : 
         {"&", "&amp;"},
         {"<", "&lt;"},
         {">", "&gt;"},
-        {"&copy;", "\u00a9"}
+        {"&copy;", "\u00a9"},
+        {"<br/>", "<br/>"},
     }.ToFrozenDictionary();
 
     // -----------------------------------------------------------------------------------------------------------------

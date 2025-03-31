@@ -47,5 +47,10 @@ public static class SpecialCharacterDataSources {
             "@username mentions",
             "<p>@username mentions</p>"
         );
+
+        yield return static () => new MarkdownTestDto(SectionName,
+            "test <br/> test",
+            "<p>test <br/> test</p>"
+        );
     }
 }
