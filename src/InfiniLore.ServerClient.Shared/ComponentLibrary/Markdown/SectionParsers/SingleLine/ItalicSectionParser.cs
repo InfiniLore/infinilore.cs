@@ -19,7 +19,7 @@ public class ItalicSectionParser(IServiceProvider provider) : ISingleLineSection
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["iText"].TryGetValue(out string? italicValue)) return;
+        if (!entireMatch.Groups["i"].TryGetValue(out string? italicValue)) return;
 
         writer.Write("<em>");
         _markdownParser.Value.ParseSingleline(italicValue, writer, origin | SkipOnOrigin);

@@ -19,7 +19,7 @@ public class CodeInlineSectionParser : ISingleLineSectionParser {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["codeText"].TryGetValue(out string? codeValue)) return;
+        if (!entireMatch.Groups["c"].TryGetValue(out string? codeValue)) return;
 
         string normalizedBackticks = codeValue.Replace("\\`", "`");
         string output = HtmlEncoder.Default.Encode(normalizedBackticks);

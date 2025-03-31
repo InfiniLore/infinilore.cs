@@ -19,7 +19,7 @@ public class BoldAndItalicSectionParser(IServiceProvider provider) : ISingleLine
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["biText"].TryGetValue(out string? boldAndItalicValue)) return;
+        if (!entireMatch.Groups["bi"].TryGetValue(out string? boldAndItalicValue)) return;
 
         writer.Write("<strong><em>");
         _markdownParser.Value.ParseSingleline(boldAndItalicValue, writer, origin | SkipOnOrigin);

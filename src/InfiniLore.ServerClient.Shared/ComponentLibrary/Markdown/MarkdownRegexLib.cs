@@ -10,15 +10,15 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
 public static partial class MarkdownRegexLib {
     [GeneratedRegex("""
           (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
-        | (?<boldAndItalic>(?<bi>\*\*\*)(?<biText>.+?)(?<!\\)\k<bi>)
-        | (?<bold>(?<b>\*\*)(?<bText>.+?(?:(?<iNested>\*)[^*]+?\k<iNested>)?)(?<!\\)\k<b>)
-        | (?<italic>(?<i>\*)(?<iText>.+?)(?<!\\)\k<i>)
-        | (?<supScript>(?<sp>\^\^)(?<spText>.+?(?:(?<sbNested>\^)[^\^]+?\k<sbNested>)?)(?<!\\)\k<sp>)
-        | (?<subScript>(?<sb>\^)(?<sbText>.+?)(?<!\\)\k<sb>)
-        | (?<strike>~~(?<sText>.+?)~~)
-        | (?<underline>(?<u>_)(?<uText>.+?)(?<!\\)\k<u>)
-        | (?<code>(?<open>`+)(?<codeText>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
-        | (?<emote>(?<e>:)(?<eText>[a-zA-Z0-9-_]+?)\k<e>)
+        | (?<boldAndItalic>\*\*\*(?<bi>.+?)(?<!\\)\*\*\*)
+        | (?<bold>\*\*(?<b>.+?(?:\*[^*]+?\*)?)(?<!\\)\*\*)
+        | (?<italic>\*(?<i>.+?)(?<!\\)\*)
+        | (?<supScript>\^\^(?<sp>.+?(?:\^[^\^]+?\^)?)(?<!\\)\^\^)
+        | (?<subScript>\^(?<sb>.+?)(?<!\\)\^)
+        | (?<strike>~~(?<s>.+?)~~)
+        | (?<underline>_(?<u>.+?)(?<!\\)_)
+        | (?<code>(?<open>`+)(?<c>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
+        | (?<emote>:(?<eText>[a-zA-Z0-9-_]+?):)
         | (?<linkNested>
             (?<lnBang>!)?
             \[(?<lnText>!?\[.+?\]\(.+?\))\]
@@ -29,7 +29,7 @@ public static partial class MarkdownRegexLib {
             \[(?<lrText>[^\]]+?)\]
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
-        | (?<tag>\#(?<tagText>[a-zA-Z0-9\/\-]+))
+        | (?<tag>\#(?<tText>[a-zA-Z0-9\/\-]+))
         | (?<lookupDict>
             &copy;
             | <br/>

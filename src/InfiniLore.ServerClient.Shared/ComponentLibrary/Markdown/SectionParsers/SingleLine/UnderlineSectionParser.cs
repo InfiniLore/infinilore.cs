@@ -19,7 +19,7 @@ public class UnderlineSectionParser(IServiceProvider provider) : ISingleLineSect
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["uText"].TryGetValue(out string? underlineValue)) return;
+        if (!entireMatch.Groups["u"].TryGetValue(out string? underlineValue)) return;
 
         writer.Write("<span style=\"text-decoration: underline;\">");
         _markdownParser.Value.ParseSingleline(underlineValue, writer, origin | SkipOnOrigin);

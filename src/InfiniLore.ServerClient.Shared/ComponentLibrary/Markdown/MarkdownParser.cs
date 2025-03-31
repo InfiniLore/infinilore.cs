@@ -6,6 +6,7 @@ using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.MarkdownWriters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.ObjectPool;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
@@ -88,64 +89,91 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
     }
 
     #region Parsing Methods
+    private const int InitialCapacity = 100;
+    private readonly ObjectPool<Queue<Match>> _queuePool = new DefaultObjectPool<Queue<Match>>(new DefaultPooledObjectPolicy<Queue<Match>>(), InitialCapacity);
+
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
-        List<Match> collection = MarkdownRegexLib.MultilineStructuresMatches(markdown).ToList();
-        int collectionCount = collection.Count;
+        Queue<Match> matchesQueue = _queuePool.Get();
 
-        for (int index = 0; index < collectionCount; index++) {
-            Match match = collection[index];
-            GroupCollection groups = match.Groups;
-            int groupCount = groups.Count;
+        try {
+            // Preload matches into the queue
+            MatchCollection matches = MarkdownRegexLib.MultilineStructuresMatches(markdown);
+            matchesQueue.EnsureCapacity(matches.Count);
+            foreach (Match match in matches) {
+                matchesQueue.Enqueue(match);
+            }
 
-            for (int i = 0; i < groupCount; i++) {
-                Group group = groups[i];
-                if (!group.Success) continue;
-                if (!MultilineGroupToParsers.TryGetValue(group.Name, out IMultiLineSectionParser? sectionParser)) continue;
+            // Process matches
+            while (matchesQueue.TryDequeue(out Match? match)) {
+                GroupCollection groups = match.Groups;
+                int count = groups.Count;
 
-                sectionParser.ParseToStringBuilder(match, group, writer);
+                for (int index = 0; index < count; index++) {
+                    Group group = groups[index];
+                    if (!group.Success) continue;
+                    if (!MultilineGroupToParsers.TryGetValue(group.Name, out IMultiLineSectionParser? sectionParser)) continue;
+
+                    sectionParser.ParseToStringBuilder(match, group, writer);
+                }
             }
         }
+        finally {
+            matchesQueue.Clear();
+            _queuePool.Return(matchesQueue);
+        }
+
     }
 
+
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
-        List<Match> collection = MarkdownRegexLib.SinglelineStructuresMatches(markdown).ToList();
-        int collectionCount = collection.Count;
+        Queue<Match> matchesQueue = _queuePool.Get();
 
-        int currentIndex = 0; // Track the position in the string we're currently at
-        ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
-
-        for (int index = 0; index < collectionCount; index++) {
-            Match match = collection[index];
-            GroupCollection groups = match.Groups;
-            int groupCount = groups.Count;
-
-            // Add unmatched text before the current match
-            if (match.Index > currentIndex) {
-                ReadOnlySpan<char> unmatchedText = markdownSpan.Slice(currentIndex, match.Index - currentIndex);
-                writer.Write(unmatchedText);
+        try {
+            // Preload matches into the queue
+            MatchCollection matches = MarkdownRegexLib.SinglelineStructuresMatches(markdown);
+            matchesQueue.EnsureCapacity(matches.Count);
+            foreach (Match match in matches) {
+                matchesQueue.Enqueue(match);
             }
 
-            // Process matched text using parsers
-            for (int i = 0; i < groupCount; i++) {
-                Group group = groups[i];
-                if (!group.Success) continue;
-                if (!SinglelineGroupToParsers.TryGetValue(group.Name, out ISingleLineSectionParser? sectionParser)) continue;
-                if (origin.HasFlag(sectionParser.SkipOnOrigin)) continue;
+            // Track the current index in the markdown span
+            int currentIndex = 0;
+            ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 
-                sectionParser.ParseToStringBuilder(match, group, writer, origin);
+            // Process all matches
+            while (matchesQueue.TryDequeue(out Match? match)) {
+                GroupCollection groups = match.Groups;
+                int count = groups.Count;
+                int matchIndex = match.Index;
+
+                // Add unmatched text before the current match
+                if (matchIndex > currentIndex) {
+                    ReadOnlySpan<char> unmatchedText = markdownSpan.Slice(currentIndex, matchIndex - currentIndex);
+                    writer.Write(unmatchedText);
+                }
+
+                for (int index = 0; index < count; index++) {
+                    Group group = groups[index];
+                    if (!group.Success) continue;
+                    if (!SinglelineGroupToParsers.TryGetValue(group.Name, out ISingleLineSectionParser? sectionParser)) continue;
+                    if (origin.HasFlag(sectionParser.SkipOnOrigin)) continue;
+
+                    sectionParser.ParseToStringBuilder(match, group, writer, origin);
+                }
+
+                // Update the current position to the end of the current match
+                currentIndex = matchIndex + match.Length;
             }
 
-            // Update the current position to the end of the current match
-            currentIndex = match.Index + match.Length;
+            if (currentIndex < markdown.Length) {
+                ReadOnlySpan<char> remainingText = markdownSpan[currentIndex..];
+                writer.Write(remainingText);
+            }
         }
-
-        // ReSharper disable once InvertIf
-        // Append any remaining unmatched text after the last match
-        if (currentIndex < markdown.Length) {
-            ReadOnlySpan<char> remainingText = markdownSpan[currentIndex..];
-            writer.Write(remainingText);
+        finally {
+            matchesQueue.Clear();
+            _queuePool.Return(matchesQueue);
         }
-
     }
     #endregion
 }

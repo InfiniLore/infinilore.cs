@@ -19,7 +19,7 @@ public class StrikeSectionParser(IServiceProvider provider) : ISingleLineSection
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["sText"].TryGetValue(out string? italicValue)) return;
+        if (!entireMatch.Groups["s"].TryGetValue(out string? italicValue)) return;
 
         writer.Write("<s>");
         _markdownParser.Value.ParseSingleline(italicValue, writer, origin | SkipOnOrigin);

@@ -19,7 +19,7 @@ public class SubScriptSectionParser(IServiceProvider provider) : ISingleLineSect
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["sbText"].TryGetValue(out string? boldValue)) return;
+        if (!entireMatch.Groups["sb"].TryGetValue(out string? boldValue)) return;
 
         writer.Write("<sub>");
         _markdownParser.Value.ParseSingleline(boldValue, writer, origin | SkipOnOrigin);

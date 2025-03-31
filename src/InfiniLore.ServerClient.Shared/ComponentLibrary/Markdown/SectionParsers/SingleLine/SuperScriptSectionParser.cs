@@ -19,7 +19,7 @@ public class SuperScriptSectionParser(IServiceProvider provider) : ISingleLineSe
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["spText"].TryGetValue(out string? boldValue)) return;
+        if (!entireMatch.Groups["sp"].TryGetValue(out string? boldValue)) return;
 
         writer.Write("<sup>");
         _markdownParser.Value.ParseSingleline(boldValue, writer, origin | SkipOnOrigin);
