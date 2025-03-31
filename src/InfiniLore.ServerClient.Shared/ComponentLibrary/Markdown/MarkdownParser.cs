@@ -43,7 +43,6 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "code",
         "linkNested",
         "linkRegular",
-        "script",
         "lookupDict",
         "underline",
         "emote"

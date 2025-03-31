@@ -29,13 +29,12 @@ public static partial class MarkdownRegexLib {
             \[(?<lrText>[^\]]+?)\]
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
-        | (?<script><script.*?>[\w\s\D]*?</script>)
         | (?<lookupDict>
             &copy;
             | &
             | <
             | >
-        )
+          )
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
@@ -51,17 +50,20 @@ public static partial class MarkdownRegexLib {
             (?<tBody>(?:^\|.+\|\s*)+)
           )
         | (?<blockQuote>^>\s+.+(?:\r?\n(?![*+-]\s|[-.]?\d|\s*[^>]).+)*)$
-        | (?<htmlBody>
-            <(?<tag>\w+)\b[^>]*>
-            (?:
-              [^<]+
-              | <(?<open>\k<tag>)\b[^>]*>
-              | </(?<-open>\k<tag>)>
-              | <(?!/?\k<tag>\b)[^>]+>
-            )*
-            # (?:(?<-open>)(?!)) # This should be a valuable check, but it doesnt work for me
-            </\k<tag>>
-          )  
+        | (?:
+            (?<htmlPre>.+?)?
+            (?<htmlBody>
+              <(?<tag>\w+)\b[^>]*>
+              (?:
+                [^<]+
+                | <(?<open>\k<tag>)\b[^>]*>
+                | </(?<-open>\k<tag>)>
+                | <(?!/?\k<tag>\b)[^>]+>
+              )*
+              </\k<tag>>
+            )
+            (?<htmlPost>.+)?
+          )
         | (?<horizontalRule>^[*-_]{3,}\s*$)
         | (?<remainder>.+?(?:\r?\n|$))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
@@ -75,6 +77,9 @@ public static partial class MarkdownRegexLib {
     
     [GeneratedRegex("\r?\n")]
     public static partial Regex NormalizeNewlinesRegex { get; }
+    
+    [GeneratedRegex(@"<[sS][cC][rR][iI][pP][tT].*?>[\s\S]*?</[sS][cC][rR][iI][pP][tT]>")]
+    public static partial Regex NormalizeScriptRegex { get; }
 
     public static MatchCollection SinglelineStructuresMatches(string markdown) => SinglelineStructuresRegex.Matches(markdown);
     public static MatchCollection MultilineStructuresMatches(string markdown) => MultilineStructuresRegex.Matches(markdown);

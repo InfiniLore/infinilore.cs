@@ -81,5 +81,58 @@ public class HtmlDataSources {
             </pre>
             """
         );
+
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            test <div>
+            <bold>something</bold>
+            </div>
+            """,
+            """
+            <p> test <div>
+            <bold>something</bold>
+            </div> </p>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            test <div>
+            <script>something</script>
+            </div>
+            """,
+            """
+            <p> test <div>
+            &lt;script&gt;something&lt;/script&gt;
+            </div></p> 
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "test <div> <script>something</script> </div>",
+            """
+            <p> test <div>
+            &lt;script&gt;something&lt;/script&gt;
+            </div> </p> 
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "test <script>something</script>",
+            "<p> test &lt;script&gt;something&lt;/script&gt;</p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            *test* <div>
+            <bold>something</bold>
+            </div> **bold this**
+            """,
+            """
+            <p> <em>test</em> <div>
+            <bold>something</bold>
+            </div> <strong>bold this</strong> </p>
+            """
+        );
     }
 }
