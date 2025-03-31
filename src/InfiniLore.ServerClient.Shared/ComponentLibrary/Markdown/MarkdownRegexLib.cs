@@ -29,6 +29,7 @@ public static partial class MarkdownRegexLib {
             \[(?<lrText>[^\]]+?)\]
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
+        | (?<tag>\#(?<tagText>[a-zA-Z0-9\/\-]+))
         | (?<lookupDict>
             &copy;
             | <br/>

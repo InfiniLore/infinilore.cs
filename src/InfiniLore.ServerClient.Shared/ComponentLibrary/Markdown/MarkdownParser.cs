@@ -45,7 +45,8 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "linkRegular",
         "lookupDict",
         "underline",
-        "emote"
+        "emote",
+        "tag"
     ];
 
     // -----------------------------------------------------------------------------------------------------------------
