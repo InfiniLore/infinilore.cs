@@ -22,6 +22,7 @@ public class MarkdownParserTests {
 
     // see https://spec-md.com/
     [Test]
+    [MethodDataSource(typeof(AggregateDataSources), nameof(AggregateDataSources.DataSources))]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
     [MethodDataSource(typeof(CodeInlineDataSources), nameof(CodeInlineDataSources.DataSources))]
@@ -32,7 +33,6 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.DataSources))]
     [MethodDataSource(typeof(LinkDataSources), nameof(LinkDataSources.DataSources))]
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
-    [MethodDataSource(typeof(RandomDataSources), nameof(RandomDataSources.DataSources))]
     [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
     public async Task Parse_ValidInputs(MarkdownTestDto dto) {
@@ -47,6 +47,7 @@ public class MarkdownParserTests {
     }
 
     [Test]
+    [MethodDataSource(typeof(AggregateDataSources), nameof(AggregateDataSources.DataSources))]
     [MethodDataSource(typeof(BlockQuoteDataSources), nameof(BlockQuoteDataSources.DataSources))]
     [MethodDataSource(typeof(CodeDataSources), nameof(CodeDataSources.DataSources))]
     [MethodDataSource(typeof(CodeInlineDataSources), nameof(CodeInlineDataSources.DataSources))]
@@ -57,7 +58,6 @@ public class MarkdownParserTests {
     [MethodDataSource(typeof(HtmlDataSources), nameof(HtmlDataSources.DataSources))]
     [MethodDataSource(typeof(LinkDataSources), nameof(LinkDataSources.DataSources))]
     [MethodDataSource(typeof(ListsDataSources), nameof(ListsDataSources.DataSources))]
-    [MethodDataSource(typeof(RandomDataSources), nameof(RandomDataSources.DataSources))]
     [MethodDataSource(typeof(SpecialCharacterDataSources), nameof(SpecialCharacterDataSources.DataSources))]
     [MethodDataSource(typeof(TableDataSources), nameof(TableDataSources.DataSources))]
     public async Task Parse_ValidInputs_WithTextWriter(MarkdownTestDto dto) {

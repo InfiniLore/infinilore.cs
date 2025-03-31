@@ -5,8 +5,8 @@ namespace Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.DataSources;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class RandomDataSources {
-    private static readonly string SectionName = nameof(RandomDataSources)[..^nameof(DataSources).Length];
+public static class AggregateDataSources {
+    private static readonly string SectionName = nameof(AggregateDataSources)[..^nameof(DataSources).Length];
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
