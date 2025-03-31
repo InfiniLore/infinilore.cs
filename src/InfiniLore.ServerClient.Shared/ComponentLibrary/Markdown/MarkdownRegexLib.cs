@@ -25,11 +25,13 @@ public static partial class MarkdownRegexLib {
             \[(?<lrText>[^\]]+?)\]
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
-        | (?<copyright>&copy;)
-        | (?<amp>&)
         | (?<script><script.*?>[\w\s\D]*?</script>)
-        | (?<lessThan><)
-        | (?<greaterThan>>)
+        | (?<lookupDict>
+            &copy;
+            | &
+            | <
+            | >
+        )
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 

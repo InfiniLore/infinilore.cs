@@ -41,11 +41,8 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "code",
         "linkNested",
         "linkRegular",
-        "copyright",
-        "amp",
         "script",
-        "lessThan",
-        "greaterThan"
+        "lookupDict",
     ];
 
     // -----------------------------------------------------------------------------------------------------------------
