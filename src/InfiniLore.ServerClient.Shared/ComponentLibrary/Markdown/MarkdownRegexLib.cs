@@ -39,17 +39,17 @@ public static partial class MarkdownRegexLib {
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
-          (?<heading>^(?<hLevel>\#{1,6})\s(?<hText>.+))
-        | (?<codeBlock>```(?<cLang>.+?)?\r?\n+?(?<cBody>[\s\S]+?)```\s*?$)
+          (?<heading>^(?<hLevel>\#{1,6})\s+(?<hText>.+))
+        | (?<codeBlock>```(?<cLang>.*?)?\r?\n(?<cBody>[\s\S]*?)```)
         | (?<headingSimple>^(?<hsText>.+?)\r?\n[\ ]*[-=]{3,})
-        | (?<listUnordered>(?:^[^\S\r\n]*-\s+.+(?:(?:\n[^\S\r\n]*[-.]\d*\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
-        | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.+(?:(?:\n[^\S\r\n]*[-.]?\d+\.?\s+.+)|(?:\n[^\S\r\n]+.+))*(?:[^\S\r\n]{0,2}(?![\r\n]))?)+)
+        | (?<listUnordered>(?:^[^\S\r\n]*-\s+.*(?:\n(?:[^\S\r\n]*[-.]\d*\.?\s+.*|[^\S\r\n]+.*))*))
+        | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.*(?:\n(?:[^\S\r\n]*[-.]?\d+\.?\s+.*|[^\S\r\n]+.*))*))
         | (?<table>
             ^\|(?<tHead>.+)\|\s*\r?\n
-            ^\|(?<tSep>[:\-|\ ]+)\|\s*\r?\n
-            (?<tBody>(?:^\|.+\|\s*)+)
+            ^\|(?<tSep>[:\-|\ ]+?)\|\s*\r?\n
+            (?<tBody>(?:^\|.*\|\s*)+)
           )
-        | (?<blockQuote>^>\s+.+(?:\r?\n(?![*+-]\s|[-.]?\d|\s*[^>]).+)*)$
+        | (?<blockQuote>^>\s+.*(?:\r?\n(?![*+-]\s|[-.]?\d|\s*[^>]).+)*)
         | (?:
             (?<htmlPre>.+?)?
             (?<htmlBody>
