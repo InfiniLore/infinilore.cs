@@ -60,5 +60,10 @@ public static class EmphasisDataSources {
             "**bold** *italic*",
             "<p><strong>bold</strong> <em>italic</em></p>"
         );
+
+        yield return static () => new MarkdownTestDto(SectionName,
+            "* something **bold** in italic *",
+            "<p><em>something <strong>bold</strong> in italic</em></p>"
+        );
     }
 }

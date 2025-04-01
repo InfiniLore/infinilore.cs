@@ -18,7 +18,6 @@ public class EscapedSectionParser : ISingleLineSectionParser {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match _, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!group.TryGetValueSpan(out ReadOnlySpan<char> escapedCharSpan)) return;
-        writer.Write(escapedCharSpan[1]);
+        writer.Write(group.ValueSpan[1]);
     }
 }

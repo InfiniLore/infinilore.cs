@@ -36,7 +36,6 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
 
     private static ImmutableArray<string> SinglelineGroupNames => [
         "escaped",
-        "boldAndItalic",
         "bold",
         "italic",
         "supScript",

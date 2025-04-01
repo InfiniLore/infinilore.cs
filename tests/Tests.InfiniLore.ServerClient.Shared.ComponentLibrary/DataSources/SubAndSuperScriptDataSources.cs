@@ -101,6 +101,20 @@ public static class SubAndSuperScriptDataSources {
             </ul>
             """
         );
-
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "^subscript with ^^superscript^^ inside^",
+            "<p><sub>subscript with <sup>superscript</sup> inside</sub></p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "^^superscript with ^subscript^ inside^^",
+            "<p><sup>superscript with <sub>subscript</sub> inside</sup></p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "Complex nesting: **Bold ^subscript ^^with superscript^^ inside^ and ^^superscript ^with subscript^ inside^^**",
+            "<p>Complex nesting: <strong>Bold <sub>subscript <sup>with superscript</sup> inside</sub> and <sup>superscript <sub>with subscript</sub> inside</sup></strong></p>"
+        );
     }
 }

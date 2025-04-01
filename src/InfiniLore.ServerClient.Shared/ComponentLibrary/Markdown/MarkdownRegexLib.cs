@@ -9,12 +9,11 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
 // ---------------------------------------------------------------------------------------------------------------------
 public static partial class MarkdownRegexLib {
     [GeneratedRegex("""
-          (?<escaped>\\[!"\#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])
-        | (?<boldAndItalic>\*\*\*(?<bi>.+?)(?<!\\)\*\*\*)
-        | (?<bold>\*\*(?<b>.+?(?:\*[^*]+?\*)?)(?<!\\)\*\*)
-        | (?<italic>\*(?<i>.+?)(?<!\\)\*)
-        | (?<supScript>\^\^(?<sp>.+?(?:\^[^\^]+?\^)?)(?<!\\)\^\^)
-        | (?<subScript>\^(?<sb>.+?)(?<!\\)\^)
+          (?<escaped>\\[][!"\#$%&'()*+,\-./:;<=>?@\\^_`{|}~])
+        | (?<bold>\*\*(?<b>.+?(?:\*[^*]+?\*)?\*?)(?<!\\)\*\*)
+        | (?<italic>\*(?<i>(?>[^\\\*]+|\\\*|\*\*|(?<open>\*)|(?<-open>\*))+)(?(open)(?!))\*)
+        | (?<supScript>\^\^(?<sp>.+?(?:\^[^*]+?\^)?\^?)(?<!\\)\^\^)
+        | (?<subScript>\^(?<sb>(?>[^\\\^]+|\\\^|\^\^|(?<open>\^)|(?<-open>\^))+)(?(open)(?!))\^)
         | (?<strike>~~(?<s>.+?)~~)
         | (?<underline>_(?<u>.+)(?<!\\)_)
         | (?<code>(?<open>`+)(?<c>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
@@ -30,12 +29,14 @@ public static partial class MarkdownRegexLib {
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
         | (?<tag>\#(?<tText>[a-zA-Z0-9\/\-]+))
+        
+        
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
     [GeneratedRegex("""
           (?<heading>^(?<hLevel>\#{1,6})\s+(?<hText>.+))
-        | (?<codeBlock>```(?<cLang>.*?)?\r?\n(?<cBody>[\s\S]*?)```)
+        | (?<codeBlock>`{3}(?<cLang>.*?)?\r?\n(?<cBody>[\s\S]*?)`{3})
         | (?<headingSimple>^(?<hsText>.+?)\r?\n[\ ]*[-=]{3,})
         | (?<listUnordered>(?:^[^\S\r\n]*-\s+.*(?:\n(?:[^\S\r\n]*[-.]\d*\.?\s+.*|[^\S\r\n]+.*))*))
         | (?<listOrdered>(?:^[^\S\r\n]*[-.]?\d+\.?\s+.*(?:\n(?:[^\S\r\n]*[-.]?\d+\.?\s+.*|[^\S\r\n]+.*))*))
