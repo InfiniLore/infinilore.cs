@@ -170,5 +170,210 @@ public static class BlockQuoteDataSources {
             </blockquote>
             """
         );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            ">", 
+            "<p>&gt;</p>" // an empty blockquote is not parsed as a blockquote
+        );
+        
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            "> Plain text blockquote.",
+            """
+            <blockquote>
+                <p>Plain text blockquote.</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > This is a blockquote with escaped characters: \*, \>, `\``.
+            """,
+            """
+            <blockquote>
+                <p>This is a blockquote with escaped characters: *, >, <code>`</code>.</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > Level 1
+            > > Level 2
+            > Back to Level 1
+            > > > Level 3
+            """,
+            """
+            <blockquote>
+                <p>Level 1</p>
+                <blockquote>
+                    <p>Level 2</p>
+                </blockquote>
+                <p>Back to Level 1</p>
+                <blockquote>
+                    <blockquote>
+                        <p>Level 3</p>
+                    </blockquote>
+                </blockquote>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > **Bold text**, *italic text*, `inline code`, ~strikethrough~, and [link](#).
+            """,
+            """
+            <blockquote>
+                <p><strong>Bold text</strong>, <em>italic text</em>, <code>inline code</code>, <s>strikethrough</s>, and <a href="#">link</a>.</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > Line 1
+            >
+            >
+            > Line 2
+            """,
+            """
+            <blockquote>
+                <p>Line 1</p>
+                <p>Line 2</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > This is a paragraph.
+            >
+            > ```
+            > Code block inside a blockquote.
+            > ```
+            """,
+            """
+            <blockquote>
+                <p>This is a paragraph.</p>
+                <pre><code>Code block inside a blockquote.&#xA;</code></pre>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > This is the first paragraph.
+            >
+            > This is the second paragraph, separated by an empty line.
+            """,
+            """
+            <blockquote>
+                <p>This is the first paragraph.</p>
+                <p>This is the second paragraph, separated by an empty line.</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > <div>This is a div inside a blockquote.</div>
+            """,
+            """
+            <blockquote>
+                <div>This is a div inside a blockquote.</div>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > Level 1
+            >>>>>>>>>>>>>>>>>>>> Level 20
+            """,
+            """
+            <blockquote>
+                <p>Level 1</p>
+                <p>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;Level 20</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > - First item
+            >    - Nested item with **bold text**.
+            > - Second item
+            """,
+            """
+            <blockquote>
+                <ul>
+                    <li>First item
+                        <ul>
+                            <li>Nested item with <strong>bold text</strong>.</li>
+                        </ul>
+                    </li>
+                    <li>Second item</li>
+                </ul>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > Line 1
+            >> Line 2
+            >>> Line 3
+            > Line 4
+            """,
+            """
+            <blockquote>
+                <p>Line 1</p>
+                <blockquote>
+                    <p>Line 2</p>
+                    <blockquote>
+                        <p>Line 3</p>
+                    </blockquote>
+                </blockquote>
+                <p>Line 4</p>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            > This is a blockquote
+            >
+            > - List item 1
+            > - List item 2
+            """,
+            """
+            <blockquote>
+                <p>This is a blockquote</p>
+                <ul>
+                    <li>List item 1</li>
+                    <li>List item 2</li>
+                </ul>
+            </blockquote>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
+            """
+            - List item
+                > This is a blockquote inside a list item.
+            """,
+            """
+            <ul>
+                <li>
+                    List item
+                    <blockquote>
+                        <p>This is a blockquote inside a list item.</p>
+                    </blockquote>
+                </li>
+            </ul>
+            """
+        );
     }
 }
