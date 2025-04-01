@@ -17,7 +17,7 @@ public static partial class MarkdownRegexLib {
         | (?<strike>~(?<s>.+?)(?<!\\)~)
         | (?<underline>_(?<u>.+?)(?<!\\)_)
         | (?<code>(?<open>`+)(?<c>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
-        | (?<emote>:(?<eText>[a-zA-Z0-9-_]+):)
+        | (?<emote>:(?<e>[a-zA-Z0-9-_]+):)
         | (?<linkNested>
             (?<lnBang>!)?
             \[(?<lnText>!?\[.+?\]\(.+?\))\]

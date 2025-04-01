@@ -35,7 +35,7 @@ public class EmoteSectionParser(ILogger<EmoteSectionParser> logger) : ISingleLin
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public void ParseToStringBuilder(Match entireMatch, Group group, IMarkdownWriter writer, SingleLineOrigin origin) {
-        if (!entireMatch.Groups["eText"].TryGetValue(out string? lookupValue)) return;
+        if (!entireMatch.Groups["e"].TryGetValue(out string? lookupValue)) return;
         if (!EmoteLookup.TryGetValue(lookupValue, out string? value)) {
             logger.LogWarning("Lookup emote not found: {LookupValue}", lookupValue);
             writer.Write(group.Value);
