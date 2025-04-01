@@ -51,12 +51,12 @@ public class IndividualMarkdownBenchmarks {
     
     [Benchmark]
     public string Superscript() {
-        return Parser.Parse("2^^nd^^");
+        return Parser.Parse("^^sup-script^^");
     }
     
     [Benchmark]
     public string Subscript() {
-        return Parser.Parse("H^2^O");
+        return Parser.Parse("^^sub-script^^");
     }
     
     [Benchmark]

@@ -13,6 +13,11 @@ public static class SubAndSuperScriptDataSources {
     // -----------------------------------------------------------------------------------------------------------------
     public static IEnumerable<Func<MarkdownTestDto>> DataSources() {
         yield return static () => new MarkdownTestDto(SectionName,
+            "Example of ^^super^^ and ^sub^ and ^^^super sub^^^.",
+            "<p>Example of <sup>super</sup> and <sub>sub</sub> and <sup><sub>super sub</sub></sup>.</p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
             "^^superscript^^",
             "<p><sup>superscript</sup></p>"
         );

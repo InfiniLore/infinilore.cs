@@ -161,12 +161,12 @@ public static class AggregateDataSources {
         yield return static () => new MarkdownTestDto(SectionName,
             """
             URLs and URLs in angle brackets will automatically get turned into links.
-            http://www.example.com or <http://www.example.com> and sometimes
+            https://www.example.com or <https://www.example.com> and sometimes
             example.com (but not on Github, for example).
             """,
             """
             <p>URLs and URLs in angle brackets will automatically get turned into links.
-            </p><p>http://www.example.com or &lt;http://www.example.com&gt; and sometimes
+            </p><p>https://www.example.com or &lt;https://www.example.com&gt; and sometimes
             </p><p>example.com (but not on Github, for example).</p>
             """);
     }

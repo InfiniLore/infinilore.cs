@@ -16,6 +16,14 @@ public static class TagDataSources {
             "#tag",
             "<p><span>#tag</span></p>"
         );
+        yield return static () => new MarkdownTestDto(SectionName,
+            "#不",
+            "<p><span>#不</span></p>"
+        );
+        yield return static () => new MarkdownTestDto(SectionName,
+            "#öäüÖÄÜß",
+            "<p><span>#öäüÖÄÜß</span></p>"
+        );
 
         yield return static () => new MarkdownTestDto(SectionName,
             "**#tag**",

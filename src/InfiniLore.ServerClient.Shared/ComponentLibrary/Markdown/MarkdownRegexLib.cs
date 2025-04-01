@@ -10,9 +10,9 @@ namespace InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown;
 public static partial class MarkdownRegexLib {
     [GeneratedRegex("""
           (?<escaped>\\[][!"\#$%&'()*+,\-./:;<=>?@\\^_`{|}~])
-        | (?<bold>\*\*(?<b>.+?(?:\*[^*]+?\*)?\*?)(?<!\\)\*\*)
+        | (?<bold>\*\*(?<b>(?>[^\\\*]+|\\\*|\*|(?<open>\*\*)|(?<-open>\*\*))+?\*?)(?(open)(?!))\*\*)
         | (?<italic>\*(?<i>(?>[^\\\*]+|\\\*|\*\*|(?<open>\*)|(?<-open>\*))+)(?(open)(?!))\*)
-        | (?<supScript>\^\^(?<sp>.+?(?:\^[^*]+?\^)?\^?)(?<!\\)\^\^)
+        | (?<supScript>\^\^(?<sp>(?>[^\\\^]+|\\\^|\^|(?<open>\^\^)|(?<-open>\^\^))+?\^?)(?(open)(?!))\^\^)
         | (?<subScript>\^(?<sb>(?>[^\\\^]+|\\\^|\^\^|(?<open>\^)|(?<-open>\^))+)(?(open)(?!))\^)
         | (?<strike>~(?<s>.+?)(?<!\\)~)
         | (?<underline>_(?<u>.+?)(?<!\\)_)
@@ -28,9 +28,7 @@ public static partial class MarkdownRegexLib {
             \[(?<lrText>[^\]]+?)\]
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
-        | (?<tag>\#(?<tText>[a-zA-Z0-9\/\-]+))
-        
-        
+        | (?<tag>\#(?<tText>[^#\s]+))
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
@@ -50,7 +48,7 @@ public static partial class MarkdownRegexLib {
             (?<htmlPre>.+?)?
             (?<htmlBody>
               <(?<tag>\w+)\b[^:>]*>
-              (?:
+              (?>
                 [^<]+
                 | <(?<open>\k<tag>)\b[^>]*>
                 | </(?<-open>\k<tag>)>
