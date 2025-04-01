@@ -13,31 +13,33 @@ public static class NormalizationHelper {
     public static string NormalizeIndentation(string input) {
         const int smallLineThreshold = 10;
         string[] lines = MarkdownRegexLib.NormalizeNewlinesRegex.Split(input);
+        int lineCount = lines.Length;
         int minIndent = int.MaxValue;
 
         // ReSharper disable once ForCanBeConvertedToForeach
-        for (int index = 0; index < lines.Length; index++) {
+        for (int index = 0; index < lineCount; index++) {
             string line = lines[index];
             ReadOnlySpan<char> trimmed = line.AsSpan().TrimStart();
             if (trimmed.IsEmpty) continue;
-
-            int leadingSpaces = line.Length - trimmed.Length;
-            minIndent = Math.Min(minIndent, leadingSpaces);
+            
+            minIndent = Math.Min(minIndent, line.Length - trimmed.Length);
         }
 
         if (minIndent == int.MaxValue) return input;
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (lines.Length <= smallLineThreshold) return ProcessSmallerInput(lines, minIndent);
+        if (lineCount <= smallLineThreshold) return ProcessSmallerInput(lines, minIndent);
 
         return ProcessLargerInput(lines, minIndent);
     }
 
     private static string ProcessLargerInput(string[] lines, int minIndent) {
         StringBuilder stringBuilder = StringBuilderPool.Get();
+        int lineCount = lines.Length;
+        
         try {
             // ReSharper disable once ForCanBeConvertedToForeach
-            for (int index = 0; index < lines.Length; index++) {
+            for (int index = 0; index < lineCount; index++) {
                 ReadOnlySpan<char> trimmed = lines[index].AsSpan();
                 stringBuilder.Append(trimmed.Length >= minIndent ? trimmed[minIndent..] : trimmed);
                 stringBuilder.AppendLine();
@@ -52,9 +54,10 @@ public static class NormalizationHelper {
 
     private static string ProcessSmallerInput(string[] lines, int minIndent) {
         int totalLength = 0;
+        int lineCount = lines.Length;
 
         // ReSharper disable once ForCanBeConvertedToForeach
-        for (int index = 0; index < lines.Length; index++) {
+        for (int index = 0; index < lineCount; index++) {
             string line = lines[index];
             ReadOnlySpan<char> span = line.AsSpan();
             totalLength += Math.Max(span.Length - minIndent, 0) + 1;// Include space for '\n'
@@ -66,7 +69,7 @@ public static class NormalizationHelper {
             int position = 0;
 
             // ReSharper disable once ForCanBeConvertedToForeach
-            for (int index = 0; index < lines.Length; index++) {
+            for (int index = 0; index < lineCount; index++) {
                 ReadOnlySpan<char> span = lines[index].AsSpan();
                 ReadOnlySpan<char> trimmed = span.Length >= minIndent ? span[minIndent..] : span;
 

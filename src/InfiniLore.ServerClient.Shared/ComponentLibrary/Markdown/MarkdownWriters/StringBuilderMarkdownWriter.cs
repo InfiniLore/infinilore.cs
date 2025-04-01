@@ -35,6 +35,10 @@ public class StringBuilderMarkdownWriter(StringBuilder builder) : IMarkdownWrite
         builder.Append(value);
         return this;
     }
+    public IMarkdownWriter Write(ref ReadOnlySpan<char> value) {
+        builder.Append(value);
+        return this;
+    }
 
     public IMarkdownWriter WriteLine() {
         builder.AppendLine();

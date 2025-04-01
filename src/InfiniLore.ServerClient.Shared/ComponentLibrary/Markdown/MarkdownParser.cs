@@ -46,7 +46,7 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "linkRegular",
         "underline",
         "emote",
-        "tag",
+        "tag"
         // "remainder" // Remainder for single-lines are their own separate thing, see service below
     ];
     private readonly RemainderSectionParser RemainderSectionParser = (RemainderSectionParser)serviceProvider.GetRequiredKeyedService<ISingleLineSectionParser>("remainder");
@@ -116,7 +116,6 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
             }
         }
         finally {
-            matchesQueue.Clear();
             MatchQueuePool.Return(matchesQueue);
         }
 
@@ -134,11 +133,9 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
                 matchesQueue.Enqueue(match);
             }
 
-            // Track the current index in the markdown span
             int currentIndex = 0;
             ReadOnlySpan<char> markdownSpan = markdown.AsSpan();
 
-            // Process all matches
             while (matchesQueue.TryDequeue(out Match? match)) {
                 GroupCollection groups = match.Groups;
                 int count = groups.Count;
@@ -154,7 +151,9 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
                     Group group = groups[index];
                     if (!group.Success) continue;
                     if (!SinglelineGroupToParsers.TryGetValue(group.Name, out ISingleLineSectionParser? sectionParser)) continue;
-                    if (origin.HasFlag(sectionParser.SkipOnOrigin)) continue;
+
+                    SingleLineOrigin sectionParserOrigin = sectionParser.SkipOnOrigin;
+                    if ((origin & sectionParserOrigin) == sectionParserOrigin) continue;
 
                     sectionParser.ParseToStringBuilder(match, group, writer, origin);
                 }
@@ -163,13 +162,13 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
                 currentIndex = matchIndex + match.Length;
             }
 
+            // ReSharper disable once InvertIf
             if (currentIndex < markdown.Length) {
                 ReadOnlySpan<char> remainingText = markdownSpan[currentIndex..];
                 RemainderSectionParser.ParseToStringBuilder(ref remainingText, writer);
             }
         }
         finally {
-            matchesQueue.Clear();
             MatchQueuePool.Return(matchesQueue);
         }
     }
