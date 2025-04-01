@@ -69,6 +69,24 @@ public class UnderlineDataSources {
             <p>this has <span style="text-decoration: underline;"><strong>multiple</strong> elements to<em> underline</em></span></p>
             """
         );
+        
+        yield return static () => new MarkdownTestDto(
+            SectionName,
+            "__",
+            "<p>__</p>"
+        );
+        
+        yield return static () => new MarkdownTestDto(
+            SectionName,
+            @"\_escaped_",
+            "<p>_escaped_</p>"
+        );
+
+        yield return static () => new MarkdownTestDto(
+            SectionName,
+            @"_escaped\_",
+            "<p>_escaped_</p>"
+        );
 
 
     }
