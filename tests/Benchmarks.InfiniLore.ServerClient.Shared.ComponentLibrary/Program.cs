@@ -10,5 +10,6 @@ namespace Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary;
 public static class Program {
     public static void Main(string[] args) {
         BenchmarkRunner.Run<MarkdownBenchmarks>();
+        // BenchmarkRunner.Run<IndividualMarkdownBenchmarks>();
     }
 }

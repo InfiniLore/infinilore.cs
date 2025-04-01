@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ namespace Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [MemoryDiagnoser]
+[Orderer(SummaryOrderPolicy.Declared)]
 public class MarkdownBenchmarks {
     private string Markdown { get; set; } = string.Empty;
     private IMarkdownParser Parser { get; set; } = null!;

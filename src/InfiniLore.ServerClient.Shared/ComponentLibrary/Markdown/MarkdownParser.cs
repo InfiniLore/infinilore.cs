@@ -4,9 +4,10 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.ServerClient.ComponentLibrary.Markdown;
 using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.MarkdownWriters;
+using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.Pools;
+using InfiniLore.ServerClient.Shared.ComponentLibrary.Markdown.SectionParsers.SingleLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
@@ -44,11 +45,12 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         "code",
         "linkNested",
         "linkRegular",
-        "lookupDict",
         "underline",
         "emote",
-        "tag"
+        "tag",
+        // "remainder" // Remainder for single-lines are their own separate thing, see service below
     ];
+    private readonly RemainderSectionParser RemainderSectionParser = (RemainderSectionParser)serviceProvider.GetRequiredKeyedService<ISingleLineSectionParser>("remainder");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -89,11 +91,8 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
     }
 
     #region Parsing Methods
-    private const int InitialCapacity = 100;
-    private readonly ObjectPool<Queue<Match>> _queuePool = new DefaultObjectPool<Queue<Match>>(new DefaultPooledObjectPolicy<Queue<Match>>(), InitialCapacity);
-
     public void ParseMultiline(string markdown, IMarkdownWriter writer) {
-        Queue<Match> matchesQueue = _queuePool.Get();
+        Queue<Match> matchesQueue = MatchQueuePool.Get();
 
         try {
             // Preload matches into the queue
@@ -119,14 +118,14 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
         }
         finally {
             matchesQueue.Clear();
-            _queuePool.Return(matchesQueue);
+            MatchQueuePool.Return(matchesQueue);
         }
 
     }
 
 
     public void ParseSingleline(string markdown, IMarkdownWriter writer, SingleLineOrigin origin = SingleLineOrigin.Undefined) {
-        Queue<Match> matchesQueue = _queuePool.Get();
+        Queue<Match> matchesQueue = MatchQueuePool.Get();
 
         try {
             // Preload matches into the queue
@@ -149,7 +148,7 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
                 // Add unmatched text before the current match
                 if (matchIndex > currentIndex) {
                     ReadOnlySpan<char> unmatchedText = markdownSpan.Slice(currentIndex, matchIndex - currentIndex);
-                    writer.Write(unmatchedText);
+                    RemainderSectionParser.ParseToStringBuilder(ref unmatchedText, writer);
                 }
 
                 for (int index = 0; index < count; index++) {
@@ -167,12 +166,12 @@ public class MarkdownParser(IServiceProvider serviceProvider, ILogger<MarkdownPa
 
             if (currentIndex < markdown.Length) {
                 ReadOnlySpan<char> remainingText = markdownSpan[currentIndex..];
-                writer.Write(remainingText);
+                RemainderSectionParser.ParseToStringBuilder(ref remainingText, writer);
             }
         }
         finally {
             matchesQueue.Clear();
-            _queuePool.Return(matchesQueue);
+            MatchQueuePool.Return(matchesQueue);
         }
     }
     #endregion

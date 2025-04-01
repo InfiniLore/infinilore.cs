@@ -21,6 +21,13 @@ public class UnderlineDataSources {
         );
         
         yield return static () => new MarkdownTestDto(SectionName,
+            "something _underlined with an \\_ escaped_",
+            """
+            <p>something <span style="text-decoration: underline;">underlined with an _ escaped</span></p>
+            """
+        );
+        
+        yield return static () => new MarkdownTestDto(SectionName,
             "something _**bold and underlined**_",
             """
             <p>something <span style="text-decoration: underline;"><strong>bold and underlined</strong></span></p>

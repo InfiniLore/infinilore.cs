@@ -16,9 +16,9 @@ public static partial class MarkdownRegexLib {
         | (?<supScript>\^\^(?<sp>.+?(?:\^[^\^]+?\^)?)(?<!\\)\^\^)
         | (?<subScript>\^(?<sb>.+?)(?<!\\)\^)
         | (?<strike>~~(?<s>.+?)~~)
-        | (?<underline>_(?<u>.+?)(?<!\\)_)
+        | (?<underline>_(?<u>.+)(?<!\\)_)
         | (?<code>(?<open>`+)(?<c>(?>[^`\\]+|\\.|`(?!\k<open>))*?)\k<open>)
-        | (?<emote>:(?<eText>[a-zA-Z0-9-_]+?):)
+        | (?<emote>:(?<eText>[a-zA-Z0-9-_]+):)
         | (?<linkNested>
             (?<lnBang>!)?
             \[(?<lnText>!?\[.+?\]\(.+?\))\]
@@ -30,13 +30,6 @@ public static partial class MarkdownRegexLib {
             \((?<lrHref>[^\)]+?)(?:\s?"(?<lrTitle>[^"]*)")?\)
           )
         | (?<tag>\#(?<tText>[a-zA-Z0-9\/\-]+))
-        | (?<lookupDict>
-            &copy;
-            | <br/>
-            | &
-            | <
-            | >
-          )
         """, RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
     private static partial Regex SinglelineStructuresRegex { get; }
 
