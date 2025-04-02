@@ -76,10 +76,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota.Extensions", "src\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj", "{8D707686-342B-495D-A85D-F577B1AB6800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.InfiniLore.ServerClient.Shared.ComponentLibrary", "tests\Tests.InfiniLore.ServerClient.Shared.ComponentLibrary\Tests.InfiniLore.ServerClient.Shared.ComponentLibrary.csproj", "{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary", "tests\Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary\Benchmarks.InfiniLore.ServerClient.Shared.ComponentLibrary.csproj", "{BEAA4A03-28C4-4452-8007-00BC517B2E54}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,14 +174,6 @@ Global
 		{8D707686-342B-495D-A85D-F577B1AB6800}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D707686-342B-495D-A85D-F577B1AB6800}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D707686-342B-495D-A85D-F577B1AB6800}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEAA4A03-28C4-4452-8007-00BC517B2E54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEAA4A03-28C4-4452-8007-00BC517B2E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEAA4A03-28C4-4452-8007-00BC517B2E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEAA4A03-28C4-4452-8007-00BC517B2E54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -221,7 +209,5 @@ Global
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{859E6C9D-2EEB-485C-9735-9A3CA484A3DA} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{8D707686-342B-495D-A85D-F577B1AB6800} = {B7C12299-7FB3-488E-89FB-B30DDB7480B3}
-		{E9B0F5BC-5B5F-49C6-AA13-EBD5D5DB58E0} = {56F59020-E2A2-4187-A847-5CF479A5BFD4}
-		{BEAA4A03-28C4-4452-8007-00BC517B2E54} = {56F59020-E2A2-4187-A847-5CF479A5BFD4}
 	EndGlobalSection
 EndGlobal
