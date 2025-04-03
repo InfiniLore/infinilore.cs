@@ -1,0 +1,47 @@
+@using InfiniLore.Blazor.Markdown
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@inject IMarkdownParser MarkdownParser
+@rendermode InteractiveServer
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<div class="flex space-x-4">
+    <input type="text" class="w-1/2 h-full p-4 border-2 border-gray-300 rounded-lg" @bind="MarkdownText">
+    <div class="w-1/2 h-16 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput</div>
+</div>
+
+<div class="flex space-x-4">
+    <textarea class="w-1/2 p-4 border-2 border-gray-300 rounded-lg" @oninput="TextAreaOnChange"></textarea>
+    <div class="w-1/2 p-4 border-2 border-red-300 rounded-lg">@MarkdownOutput2</div>
+</div>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private string _markdownText = string.Empty;
+
+    private string MarkdownText {
+        get => _markdownText;
+        set {
+            _markdownText = value;
+            string editedText = MarkdownParser.Parse(_markdownText);
+            MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
+        }
+    }
+
+    private MarkupString MarkdownOutput { get; set; }
+    private MarkupString MarkdownOutput2 { get; set; }
+
+    private void TextAreaOnChange(ChangeEventArgs obj) {
+        if (obj.Value is not string content) return;
+
+        MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
+    }
+}

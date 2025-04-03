@@ -57,10 +57,16 @@ public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFa
             case ({ IsState: true, State: true }, { IsSuccess: true, AsSuccess: var user }): {
                 _logger.Debug("User already exists, continuing...");
 
-                principal.AddIdentity(new ClaimsIdentity(new[] {
-                    new Claim(InfiniLoreClaimsStoreConstants.UserId, user.Id.ToString()),
-                    new Claim(InfiniLoreClaimsStoreConstants.UserName, user.Username)
-                }));
+                var addedClaims = new ClaimsIdentity();
+                if (principal.FindFirstOrDefault(InfiniLoreClaimsStoreConstants.UserId) is null) {
+                    addedClaims.AddClaim(new Claim(InfiniLoreClaimsStoreConstants.UserId, user.Id.ToString()));
+                }
+
+                if (principal.FindFirstOrDefault(InfiniLoreClaimsStoreConstants.UserName) is null) {
+                    addedClaims.AddClaim(new Claim(InfiniLoreClaimsStoreConstants.UserName, user.Username));
+                }
+
+                principal.AddIdentity(addedClaims);
 
                 return;
             }

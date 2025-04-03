@@ -27,7 +27,7 @@ public static class Program {
         builder.Services.AddHttpClient();
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()// You can adjust this to Information, Warning, Error, etc.
+            .MinimumLevel.Verbose()
             .WriteTo.BrowserConsole()// Log to browser console for WASM
             .CreateLogger();
 

@@ -36,7 +36,7 @@ public class InteractiveApiAccessWasmSide(
         try {
             var requestBuilder = apiClient.Api.V1.Data.User[userId].Lorescope;
             var result = await requestBuilder
-                .GetAsync(configuration => configuration.AddJwtToken(token), ct);
+                .GetAsync(requestConfiguration: configuration => configuration.AddJwtToken(token), ct);
 
             if (result is null) return Result<LoreScopesResponse>.FromError("Could not get data from API");
 
