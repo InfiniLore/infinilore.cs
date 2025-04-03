@@ -11,14 +11,12 @@
 @using InfiniLore.Server.Services.Mediator.Queries.Account
 @using InfiniLore.ServerClient.Shared
 @using InfiniLore.ServerClient.Shared.ClaimsHelper
-@using MediatR
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
 
 @attribute [Authorize]
 @layout MainLayout
-@inject IMediator Mediator
 @inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@

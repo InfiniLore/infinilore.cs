@@ -4,7 +4,6 @@
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Services.Mediator;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.PipelineBehaviours;

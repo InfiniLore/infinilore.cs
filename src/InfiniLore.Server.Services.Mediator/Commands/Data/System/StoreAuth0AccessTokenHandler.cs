@@ -3,19 +3,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using FluentValidation;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.System;
-using MediatR;
 
 namespace InfiniLore.Server.Services.Mediator.Commands.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueStore> validator) : IRequestHandler<StoreAuth0AccessTokenMediatorRequest, MediatorResponse<bool>> {
+public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueStore> validator) : ICommandHandler<StoreAuth0AccessTokenMediatorRequest, MediatorResponse<bool>> {
 
-    public async Task<MediatorResponse<bool>> Handle(StoreAuth0AccessTokenMediatorRequest mediatorRequest, CancellationToken ct) {
+    public async Task<MediatorResponse<bool>> ExecuteAsync(StoreAuth0AccessTokenMediatorRequest mediatorRequest, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
 

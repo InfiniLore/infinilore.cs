@@ -2,19 +2,19 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLoreScopesHandler> logger) : IRequestHandler<GetLoreScopesQuery, MediatorResponse<PaginatedData<LoreScope>>> {
+public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLoreScopesHandler> logger) : ICommandHandler<GetLoreScopesQuery, MediatorResponse<PaginatedData<LoreScope>>> {
 
     // public void Configure() {
     //     RequiresPermission(); // requires a permission to be set on the AccessData 

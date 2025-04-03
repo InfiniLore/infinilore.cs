@@ -7,7 +7,6 @@ using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Commands.Data.System;
 using InfiniLore.Server.Services.Mediator.Queries.Data.System;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +15,7 @@ namespace InfiniLore.Server.Services.Auth0.TokenStore;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuth0AccessTokenStore>(ServiceLifetime.Scoped)]
-public class MediatorProxyAccessTokenStore(IMediator mediator, ILogger<MediatorProxyAccessTokenStore> logger) : IAuth0AccessTokenStore {
+public class MediatorProxyAccessTokenStore(, ILogger<MediatorProxyAccessTokenStore> logger) : IAuth0AccessTokenStore {
     private readonly GetAuth0AccessTokenQuery _request = new();
 
     // -----------------------------------------------------------------------------------------------------------------

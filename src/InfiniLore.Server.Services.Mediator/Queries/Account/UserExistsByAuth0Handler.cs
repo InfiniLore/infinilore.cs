@@ -3,14 +3,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
-using MediatR;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<UserExistsByAuth0Query, MediatorResponse> {
+public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : ICommandHandler<UserExistsByAuth0Query, MediatorResponse> {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

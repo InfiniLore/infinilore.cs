@@ -9,7 +9,6 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
 using InfiniLore.Server.Services.Mediator.Commands.Account;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,7 +19,7 @@ namespace InfiniLore.Server.DataSeeder.Seeders;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, IMediator mediator) : Seeder {
+public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, ) : Seeder {
     private readonly SeedingConfig _options = options.Value;
     private readonly ConcurrentQueue<SeedingUser> _usersToSeed = new();
 

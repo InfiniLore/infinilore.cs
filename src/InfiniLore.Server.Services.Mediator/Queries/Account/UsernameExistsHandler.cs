@@ -3,14 +3,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
-using MediatR;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<UsernameExistsQuery, MediatorResponse> {
+public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : ICommandHandler<UsernameExistsQuery, MediatorResponse> {
 
     public async Task<MediatorResponse> Handle(UsernameExistsQuery request, CancellationToken ct) {
         if (request.Username.IsNullOrWhiteSpace()) return MediatorResponse.FromErrorString("Cannot check for username existence. Username is empty.");

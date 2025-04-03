@@ -3,18 +3,18 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.System;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger, IAuth0AccessTokenEncryptionService encryptionService) : IRequestHandler<GetAuth0AccessTokenQuery, MediatorResponse<IAuth0AccessToken>> {
+public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger, IAuth0AccessTokenEncryptionService encryptionService) : ICommandHandler<GetAuth0AccessTokenQuery, MediatorResponse<IAuth0AccessToken>> {
 
     public async Task<MediatorResponse<IAuth0AccessToken>> Handle(GetAuth0AccessTokenQuery request, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();

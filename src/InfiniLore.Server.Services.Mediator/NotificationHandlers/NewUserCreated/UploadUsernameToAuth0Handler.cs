@@ -3,19 +3,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Mediator.Notifications.Account;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.NotificationHandlers.NewUserCreated;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : INotificationHandler<NewUserCreatedNotification> {
-    public async Task Handle(NewUserCreatedNotification notification, CancellationToken ct) {
+public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : IEventHandler<NewUserCreatedEvent> {
+    public async Task Handle(NewUserCreatedEvent notification, CancellationToken ct) {
         Guid userId = notification.UserId;
         if (userId == Guid.Empty) return;
 

@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Queries.Account;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
@@ -16,7 +15,7 @@ namespace InfiniLore.Server.Services.Auth0;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenHelper>(ServiceLifetime.Scoped)]
-public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMediator mediator) : IJwtTokenHelper {
+public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, ) : IJwtTokenHelper {
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
     public bool IsAuthenticated => _user?.Identity?.IsAuthenticated == true;

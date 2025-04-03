@@ -10,7 +10,6 @@ using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Queries.Data.User;
 using InfiniLore.ServerClient.Services;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -23,7 +22,7 @@ namespace InfiniLore.Server.Services;
 [InjectableService<IInteractiveApiAccess>(ServiceLifetime.Scoped)]
 public class InteractiveApiAccessServerSide(
     ILogger<InteractiveApiAccessServerSide> logger,
-    IMediator mediator,
+    ,
     IHttpContextAccessor httpContextAccessor,
     LoreScopesMapper loreScopesMapper
 ) : IInteractiveApiAccess {

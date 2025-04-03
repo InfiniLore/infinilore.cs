@@ -1,10 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using MediatR;
+
+using FastEndpoints;
 
 namespace InfiniLore.Server.Services.Mediator.Notifications.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class NewLoreScopeCreatedNotification(Guid LoreScopeId) : INotification;
+public class NewLoreScopeCreatedEvent(Guid LoreScopeId) : IEvent;

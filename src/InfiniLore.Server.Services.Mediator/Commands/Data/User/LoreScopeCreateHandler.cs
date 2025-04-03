@@ -3,23 +3,23 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Mediator.Notifications.Data.User;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<LoreScope> validator, IMediator mediator) : IRequestHandler<LoreScopeCreateMediatorRequest, MediatorResponse<Guid>> {
+public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<LoreScope> validator) : ICommandHandler<LoreScopeCreateMediatorRequest, MediatorResponse<Guid>> {
     private readonly ILogger logger = factory.CreateLogger("LORESCOPE Create");
 
-    public async Task<MediatorResponse<Guid>> Handle(LoreScopeCreateMediatorRequest mediatorRequest, CancellationToken ct) {
+    public async Task<MediatorResponse<Guid>> ExecuteAsync(LoreScopeCreateMediatorRequest mediatorRequest, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
@@ -47,7 +47,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         Result result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await mediator.Publish(new NewLoreScopeCreatedNotification(loreScope.Id), ct);
+        await new NewLoreScopeCreatedEvent(loreScope.Id).PublishAsync(Mode.WaitForNone, cancellation: ct);
         logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }

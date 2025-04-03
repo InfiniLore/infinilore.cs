@@ -138,23 +138,15 @@ public static class Program {
 
             options.Assemblies = [
                 typeof(IEntrypointInfiniLoreServerApi).Assembly,
-                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly
+                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly,
+                typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly
             ];
         });
 
         builder.Services.SwaggerDocument();
-        #endregion
-
-        #region MediatR
-        builder.Services.AddMediatR(config => {
-            config.RegisterServicesFromAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
-
-            config.AddOpenBehavior(typeof(ValidateRequestBehaviour<,>));
-        });
-
         builder.Services.RegisterServicesFromInfiniLoreServerServicesMediator();
         #endregion
-
+        
         #region DataSeeding
         // Everything is handled by the DataSeeding project
         //      This is to make sure we don't have any issues with the seeding process

@@ -10,7 +10,6 @@ using InfiniLore.Server.Services.Mediator.Queries.Account;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;
 using JetBrains.Annotations;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidatedHandler(IMediator mediator, ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidatedHandler(, ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------

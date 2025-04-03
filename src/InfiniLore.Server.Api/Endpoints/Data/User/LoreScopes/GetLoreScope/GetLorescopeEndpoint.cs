@@ -9,7 +9,6 @@ using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Queries.Data.User;
 using InfiniLore.ServerClient.Shared;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
@@ -27,7 +26,7 @@ using Response=Results<
 >;
 
 public class GetLorescopeEndpoint(
-    IMediator mediator,
+    ,
     ILogger<GetLorescopeEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {

@@ -1,21 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Services.Mediator;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Mediator.PipelineBehaviours;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ChallengeAccessDataBehaviour<TRequest, TResponse>(
-    ILogger<ChallengeAccessDataBehaviour<TRequest, TResponse>> logger
+public class ChallengeAccessDataBehaviour<TRequest>(
+    ILogger<ChallengeAccessDataBehaviour<TRequest>> logger
 )
-    : IPipelineBehavior<TRequest, TResponse>
+    : IPreProcessor<TRequest>
     where TRequest : IMediatorRequest {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct) {
+    public Task PreProcessAsync(IPreProcessorContext<TRequest> ctx, CancellationToken ct) {
         logger.LogWarning("Challenge access data not implemented");
-        return await next();
+        return Task.CompletedTask;
     }
 }

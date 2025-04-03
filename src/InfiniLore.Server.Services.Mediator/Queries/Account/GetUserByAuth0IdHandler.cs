@@ -3,15 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
-using MediatR;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUserByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : IRequestHandler<GetUserByAuth0IdQuery, MediatorResponse<InfiniLoreUser>> {
+public class GetUserByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : ICommandHandler<GetUserByAuth0IdQuery, MediatorResponse<InfiniLoreUser>> {
 
     public async Task<MediatorResponse<InfiniLoreUser>> Handle(GetUserByAuth0IdQuery request, CancellationToken ct) {
         if (request.Auth0Id.IsNullOrEmpty()) return MediatorResponse<InfiniLoreUser>.FromErrorString("Cannot get user id by auth0 id. Auth0 id is empty.");
