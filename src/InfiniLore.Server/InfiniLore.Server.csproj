@@ -29,6 +29,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3"/>
+        <PackageReference Include="WolverineFx" Version="3.11.0" />
     </ItemGroup>
 
     <ItemGroup>

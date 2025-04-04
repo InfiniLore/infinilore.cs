@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
@@ -16,14 +15,12 @@ namespace InfiniLore.Server.Services.Mediator.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<InfiniLoreUser> validator) : ICommandHandler<UserCreateMediatorRequest, MediatorResponse<Guid>> {
-
+public static partial class UserCreateHandler{
     private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },
         { "github", (user, id) => user.Auth0Github = id },
         { "auth0", (user, id) => user.Auth0MailPassword = id }
     };
-    private readonly ILogger logger = factory.CreateLogger("ACCOUNT CreateUser");
 
     [GeneratedRegex("^(google|github|auth0)")]
     private static partial Regex Auth0Regex { get; }
@@ -31,7 +28,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task<MediatorResponse<Guid>> ExecuteAsync(UserCreateMediatorRequest mediatorRequest, CancellationToken ct) {
+    public static async Task<MediatorResponse<Guid>> HandleAsync(UserCreateMediatorRequest mediatorRequest, IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<InfiniLoreUser> validator , CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
@@ -42,7 +39,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
             Username = mediatorRequest.UserName
         };
 
-        SetAuth0Id(user, mediatorRequest.Auth0UserId);
+        SetAuth0Id(user, mediatorRequest.Auth0UserId, logger);
 
         // Validate the user model
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
@@ -59,7 +56,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         return newUserId;
     }
 
-    private void SetAuth0Id(InfiniLoreUser user, string auth0UserId) {
+    private static void SetAuth0Id(InfiniLoreUser user, string auth0UserId, ILogger logger) {
         Match match = Auth0Regex.Match(auth0UserId.ToLowerInvariant());
         if (!match.Success || !Auth0Handlers.TryGetValue(match.Groups[1].Value, out Action<InfiniLoreUser, string>? handler)) {
             logger.Warning("Unknown auth0 id: {Auth0Id}", auth0UserId);

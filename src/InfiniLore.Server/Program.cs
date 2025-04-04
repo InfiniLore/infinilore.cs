@@ -29,6 +29,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
+using Wolverine;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -130,6 +131,10 @@ public static class Program {
         });
 
         builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
+        #endregion
+        
+        #region Wolverine
+        builder.Host.UseWolverine();
         #endregion
 
         #region FastEndpoints

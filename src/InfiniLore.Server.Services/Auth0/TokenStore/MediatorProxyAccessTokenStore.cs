@@ -15,7 +15,7 @@ namespace InfiniLore.Server.Services.Auth0.TokenStore;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IAuth0AccessTokenStore>(ServiceLifetime.Scoped)]
-public class MediatorProxyAccessTokenStore(, ILogger<MediatorProxyAccessTokenStore> logger) : IAuth0AccessTokenStore {
+public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore> logger) : IAuth0AccessTokenStore {
     private readonly GetAuth0AccessTokenQuery _request = new();
 
     // -----------------------------------------------------------------------------------------------------------------

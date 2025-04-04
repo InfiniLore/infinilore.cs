@@ -1,10 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/profile"
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Server.Services.Mediator
 @using InfiniLore.Server.Services.Mediator.Commands.Data.User
@@ -13,6 +9,10 @@
 @using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/profile"
 @rendermode InteractiveServer
 
 @attribute [Authorize]
