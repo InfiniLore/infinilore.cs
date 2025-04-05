@@ -27,6 +27,10 @@
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.57.0" />
         <PackageReference Include="FluentValidation" Version="12.0.0-preview1"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0" />
         <PackageReference Include="WolverineFx" Version="3.11.0" />
     </ItemGroup>
 
