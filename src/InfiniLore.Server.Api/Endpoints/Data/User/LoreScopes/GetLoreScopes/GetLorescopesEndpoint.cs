@@ -10,10 +10,10 @@ using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Mediator;
 using InfiniLore.Server.Services.Mediator.Queries.Data.User;
 using InfiniLore.ServerClient.Shared;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using Wolverine;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScopes;
 
@@ -28,7 +28,7 @@ using Response=Results<
 >;
 
 public class GetLoreScopesEndpoint(
-    IMediator mediator,
+    IMessageBus messageBus,
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
@@ -54,7 +54,7 @@ public class GetLoreScopesEndpoint(
         };
 
         // Execute Query
-        MediatorResponse<PaginatedData<LoreScope>> result = await mediator.Send(query, ct);
+        var result = await messageBus.InvokeAsync<MediatorResponse<PaginatedData<LoreScope>>>(query, ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {

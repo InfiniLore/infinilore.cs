@@ -2,10 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Services.Mediator;
-using MediatR;
 
 namespace InfiniLore.Server.Services.Mediator.Notifications.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record StoreCommandNotification(IMediatorRequest Request) : INotification;
+public record StoreCommandNotification(IMediatorRequest Request);

@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Services.Mediator;
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("State", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct MediatorResponse() : IUnion<bool, Error<ICollection<string>>> {
+public partial record MediatorResponse() : IUnion<bool, Error<ICollection<string>>> {
 
     public bool State => AsState;
     public bool TryGetState(out bool state) => TryGetAsState(out state);
@@ -31,7 +31,7 @@ public readonly partial struct MediatorResponse() : IUnion<bool, Error<ICollecti
 
 [UnionAliases("Success", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial struct MediatorResponse<T>() : IUnion<T, Error<ICollection<string>>> {
+public partial record MediatorResponse<T>() : IUnion<T, Error<ICollection<string>>> {
 
     // Used by ValidateRequestBehaviour
     [UsedImplicitly] public MediatorResponse(string error) : this() {

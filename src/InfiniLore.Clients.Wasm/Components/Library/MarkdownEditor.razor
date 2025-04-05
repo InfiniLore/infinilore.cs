@@ -1,7 +1,8 @@
-@using InfiniLore.Blazor.Markdown
+@using InfiniLore.Blazor.Markdown.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@* @using InfiniLore.Blazor.Markdown *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -41,7 +42,6 @@
 
     private void TextAreaOnChange(ChangeEventArgs obj) {
         if (obj.Value is not string content) return;
-
         MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
     }
 }

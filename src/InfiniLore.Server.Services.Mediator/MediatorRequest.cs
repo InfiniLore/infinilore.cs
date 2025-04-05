@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts.Services.Mediator;
-using MediatR;
 using Newtonsoft.Json;
 
 namespace InfiniLore.Server.Services.Mediator;
@@ -14,6 +13,7 @@ public record CommonRequestData : ICommonRequestData {
     [JsonProperty("created_at")] public DateTime CreatedAt { get; } = DateTime.UtcNow;
 }
 
-public record MediatorRequest : CommonRequestData, IRequest<MediatorResponse>;
+public record MediatorRequest : CommonRequestData;
 
-public record MediatorRequest<TResponse> : CommonRequestData, IRequest<MediatorResponse<TResponse>>;
+// ReSharper disable once UnusedTypeParameter
+public record MediatorRequest<TResponse> : CommonRequestData;

@@ -9,18 +9,18 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
 using InfiniLore.Server.Services.Mediator.Commands.Account;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
+using Wolverine;
 
 namespace InfiniLore.Server.DataSeeder.Seeders;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, IMediator mediator) : Seeder {
+public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, IMessageBus messageBus) : Seeder {
     private readonly SeedingConfig _options = options.Value;
     private readonly ConcurrentQueue<SeedingUser> _usersToSeed = new();
 
@@ -57,7 +57,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] = mediator.Send(new UserCreateMediatorRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
+            tasks[i++] = messageBus.InvokeAsync(new UserCreateMediatorRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
         }
 
         await Task.WhenAny(tasks);

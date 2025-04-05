@@ -9,23 +9,27 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.56.0"/>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.56.0"/>
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.56.0"/>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.56.0">
+        <PackageReference Include="CodeOfChaos.Extensions" Version="0.57.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.57.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.57.0" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.57.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0"/>
-        <PackageReference Include="MediatR" Version="12.4.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3"/>
         <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.3"/>
         <PackageReference Include="Serilog" Version="4.2.0"/>
+        <PackageReference Include="WolverineFx" Version="3.11.0" />
     </ItemGroup>
 
     <ItemGroup>

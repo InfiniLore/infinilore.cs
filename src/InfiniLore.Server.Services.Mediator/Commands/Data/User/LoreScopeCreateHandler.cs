@@ -9,31 +9,36 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Mediator.Notifications.Data.User;
-using MediatR;
 using Microsoft.Extensions.Logging;
+using Wolverine;
 
 namespace InfiniLore.Server.Services.Mediator.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory, IValidator<LoreScope> validator, IMediator mediator) : IRequestHandler<LoreScopeCreateMediatorRequest, MediatorResponse<Guid>> {
-    private readonly ILogger logger = factory.CreateLogger("LORESCOPE Create");
-
-    public async Task<MediatorResponse<Guid>> Handle(LoreScopeCreateMediatorRequest mediatorRequest, CancellationToken ct) {
+public class LoreScopeCreateHandler{
+    public static async Task<MediatorResponse<Guid>> HandleAsync(
+        // Message
+        LoreScopeCreateMediatorRequest message,
+        // Services
+        IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<LoreScope> validator,IMessageBus messageBus,
+        // CT
+        CancellationToken ct
+    ) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(mediatorRequest.LoreScopeName, mediatorRequest.OwnerId, ct);
-        Result userIdExistsResult = await userRepo.IsIdTakenAsync(mediatorRequest.OwnerId, ct);
+        Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(message.LoreScopeName, message.OwnerId, ct);
+        Result userIdExistsResult = await userRepo.IsIdTakenAsync(message.OwnerId, ct);
         if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MediatorResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
         if (userIdExistsResult.IsError) return MediatorResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new lorescope based on the request
         var loreScope = new LoreScope {
-            Name = mediatorRequest.LoreScopeName,
-            OwnerId = mediatorRequest.OwnerId,
-            ShortDescription = mediatorRequest.LoreScopeDescription ?? string.Empty
+            Name = message.LoreScopeName,
+            OwnerId = message.OwnerId,
+            ShortDescription = message.LoreScopeDescription ?? string.Empty
         };
 
         // Validate the lorescope model
@@ -47,7 +52,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         Result result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await mediator.Publish(new NewLoreScopeCreatedNotification(loreScope.Id), ct);
+        await messageBus.PublishAsync(new NewLoreScopeCreatedEvent(loreScope.Id));
         logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }
