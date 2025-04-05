@@ -56,6 +56,8 @@
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json"/>
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json"/>
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
+        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenu.razor" />
+        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenuButton.razor" />
     </ItemGroup>
 
 </Project>
