@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using FluentValidation;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth0;
@@ -13,13 +12,19 @@ namespace InfiniLore.Server.Services.Mediator.Commands.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueStore> validator) : ICommandHandler<StoreAuth0AccessTokenMediatorRequest, MediatorResponse<bool>> {
-
-    public async Task<MediatorResponse<bool>> ExecuteAsync(StoreAuth0AccessTokenMediatorRequest mediatorRequest, CancellationToken ct) {
+public static class StoreAuth0AccessTokenHandler {
+    public static async Task<MediatorResponse<bool>> HandleAsync(
+        // Message
+        StoreAuth0AccessTokenMediatorRequest message,
+        // Services
+        IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueStore> validator,
+        // CT
+        CancellationToken ct
+    ) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
 
-        Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(mediatorRequest.Token);
+        Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(message.Token);
 
         Result<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore)

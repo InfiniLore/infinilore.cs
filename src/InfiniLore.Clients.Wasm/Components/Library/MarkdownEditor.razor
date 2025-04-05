@@ -1,3 +1,4 @@
+@using InfiniLore.Blazor.Markdown.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -5,7 +6,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* @inject IMarkdownParser MarkdownParser *@
+@inject IMarkdownParser MarkdownParser
 @rendermode InteractiveServer
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -31,8 +32,8 @@
         get => _markdownText;
         set {
             _markdownText = value;
-            // string editedText = MarkdownParser.Parse(_markdownText);
-            // MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
+            string editedText = MarkdownParser.Parse(_markdownText);
+            MarkdownOutput = new MarkupString($"<p>{editedText}</p>");
         }
     }
 
@@ -41,7 +42,6 @@
 
     private void TextAreaOnChange(ChangeEventArgs obj) {
         if (obj.Value is not string content) return;
-
-        // MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
+        MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
     }
 }

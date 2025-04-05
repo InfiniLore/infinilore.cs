@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Wolverine;
 
 namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ namespace InfiniLore.Server.Services;
 [InjectableService<IInteractiveApiAccess>(ServiceLifetime.Scoped)]
 public class InteractiveApiAccessServerSide(
     ILogger<InteractiveApiAccessServerSide> logger,
-    ,
+    IMessageBus messageBus,
     IHttpContextAccessor httpContextAccessor,
     LoreScopesMapper loreScopesMapper
 ) : IInteractiveApiAccess {
@@ -40,7 +41,7 @@ public class InteractiveApiAccessServerSide(
         };
 
         // Execute Query
-        MediatorResponse<PaginatedData<LoreScope>> result = await mediator.Send(query, ct);
+        var result = await messageBus.InvokeAsync<MediatorResponse<PaginatedData<LoreScope>>>(query, ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedData)) {

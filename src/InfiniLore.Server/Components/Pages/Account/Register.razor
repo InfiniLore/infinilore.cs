@@ -9,11 +9,11 @@
 @using InfiniLore.Server.Services.Mediator
 @using InfiniLore.Server.Services.Mediator.Commands.Account
 @using InfiniLore.Server.Services.Mediator.Queries.Account
-@using MediatR
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
+@using Wolverine
 @inject NavigationManager Navigation
-@inject 
+@inject IMessageBus MessageBus
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -153,7 +153,7 @@
         }
 
         // Call the backend to check username availability
-        MediatorResponse mediatorResponse = await Mediator.Send(new UsernameExistsQuery(username));
+        var mediatorResponse = await MessageBus.InvokeAsync<MediatorResponse>(new UsernameExistsQuery(username));
 
         if (!mediatorResponse.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
@@ -176,7 +176,7 @@
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MediatorResponse<Guid> result = await Mediator.Send(new UserCreateMediatorRequest(Auth0UserId, userModel.Username));
+        var result = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(new UserCreateMediatorRequest(Auth0UserId, userModel.Username));
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry

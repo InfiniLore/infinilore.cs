@@ -20,9 +20,11 @@
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions" Version="4.1.0"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1"/>
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.56.0"/>
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.57.0" />
         <PackageReference Include="FastEndpoints" Version="5.35.0"/>
         <PackageReference Include="FastEndpoints.Swagger" Version="5.35.0"/>
+        <PackageReference Include="InfiniLore.Blazor" Version="0.2.1" />
+        <PackageReference Include="InfiniLore.Blazor.Markdown" Version="0.2.1" />
         <PackageReference Include="InfiniLore.Credentials" Version="4.0.0"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0"/>
         <PackageReference Include="InfiniLore.Lucide" Version="0.21.487" />
@@ -30,6 +32,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3"/>
         <PackageReference Include="WolverineFx" Version="3.11.0" />
+        <PackageReference Include="WolverineFx.FluentValidation" Version="3.11.0" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,6 +5,7 @@ using Auth0.AspNetCore.Authentication;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using InfiniLore.Blazor.Markdown;
 using InfiniLore.Clients.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.Server.Api;
@@ -16,7 +17,6 @@ using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Auth0.Encryption;
 using InfiniLore.Server.Services.Auth0.TokenStore;
 using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.PipelineBehaviours;
 using InfiniLore.Server.Services.OpenIdConnect;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.JwtToken;
@@ -30,6 +30,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
 using Wolverine;
+using Wolverine.FluentValidation;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -134,7 +135,10 @@ public static class Program {
         #endregion
         
         #region Wolverine
-        builder.Host.UseWolverine();
+        builder.Host.UseWolverine(options => {
+            options.UseFluentValidation();
+            options.Discovery.IncludeAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
+        });
         #endregion
 
         #region FastEndpoints
@@ -159,6 +163,12 @@ public static class Program {
         //      We also migrate the db in this step, if required.
         //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
         builder.RegisterDataSeedingServices();
+        #endregion
+        
+        #region InfiniLore.Blazor
+        builder.Services.AddInfiniLoreBlazor(config => {
+            config.AddMarkdown();
+        });
         #endregion
 
         builder.Services.AddHttpContextAccessor();

@@ -9,6 +9,7 @@
 @using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using Wolverine
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -19,6 +20,7 @@
 @layout MainLayout
 @inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
+@inject IMessageBus MessageBus
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -77,14 +79,14 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        MediatorResponse<Guid> resultUserId = await Mediator.Send(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
+        var resultUserId = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
             Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 
         var request = new LoreScopeCreateMediatorRequest(userId, Guid.NewGuid().ToString());
-        MediatorResponse<Guid> createResult = await Mediator.Send(request);
+        var createResult = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(request);
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);
             return;

@@ -9,13 +9,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using Wolverine;
 
 namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenHelper>(ServiceLifetime.Scoped)]
-public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, ) : IJwtTokenHelper {
+public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMessageBus messageBus) : IJwtTokenHelper {
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
     public bool IsAuthenticated => _user?.Identity?.IsAuthenticated == true;
@@ -61,7 +62,7 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, ) : IJwtTo
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         // TODO maybe not use mediator here? I dont know
-        MediatorResponse<Guid> result = await mediator.Send(new GetUserIdByAuth0IdQuery(auth0UserId), ct);
+        MediatorResponse<Guid> result = await messageBus.InvokeAsync<MediatorResponse<Guid>>(new GetUserIdByAuth0IdQuery(auth0UserId), ct);
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
 
         return userId != Guid.Empty

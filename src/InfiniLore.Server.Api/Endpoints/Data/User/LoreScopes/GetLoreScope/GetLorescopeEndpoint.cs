@@ -12,6 +12,7 @@ using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using Wolverine;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScope;
 
@@ -26,7 +27,7 @@ using Response=Results<
 >;
 
 public class GetLorescopeEndpoint(
-    ,
+    IMessageBus messageBus,
     ILogger<GetLorescopeEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
@@ -51,7 +52,7 @@ public class GetLorescopeEndpoint(
         };
 
         // Execute Query
-        MediatorResponse<LoreScope> result = await mediator.Send(query, ct);
+        var result = await messageBus.InvokeAsync<MediatorResponse<LoreScope>>(query, ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {

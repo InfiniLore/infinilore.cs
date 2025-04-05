@@ -3,24 +3,27 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 
 namespace InfiniLore.Server.Services.Mediator.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : ICommandHandler<UserExistsByAuth0Query, MediatorResponse> {
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    public async Task<MediatorResponse> Handle(UserExistsByAuth0Query request, CancellationToken ct) {
-        if (request.Auth0UserId.IsNullOrEmpty()) return false;
+public static class UserExistsByAuth0Handler {
+    public static async Task<MediatorResponse> HandleAsync(
+        // Message
+        UserExistsByAuth0Query message,
+        // Services
+        IReadonlyUnitOfWorkFactory factory,
+        // CT
+        CancellationToken ct
+    ) {
+        if (message.Auth0UserId.IsNullOrEmpty()) return false;
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
-        Result result = await userRepository.IsExistingAuth0Id(request.Auth0UserId, ct);
+        Result result = await userRepository.IsExistingAuth0Id(message.Auth0UserId, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
 
         return state;

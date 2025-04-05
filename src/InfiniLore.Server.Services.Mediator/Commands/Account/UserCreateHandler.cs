@@ -10,6 +10,7 @@ using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Mediator.Notifications.Account;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
+using Wolverine;
 
 namespace InfiniLore.Server.Services.Mediator.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -28,7 +29,14 @@ public static partial class UserCreateHandler{
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static async Task<MediatorResponse<Guid>> HandleAsync(UserCreateMediatorRequest mediatorRequest, IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<InfiniLoreUser> validator , CancellationToken ct) {
+    public static async Task<MediatorResponse<Guid>> HandleAsync(
+        // Message
+        UserCreateMediatorRequest message,
+        // Services
+        IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<InfiniLoreUser> validator, IMessageBus messageBus,
+        // CT
+        CancellationToken ct
+    ) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
@@ -36,10 +44,10 @@ public static partial class UserCreateHandler{
         var newUserId = Guid.CreateVersion7();
         var user = new InfiniLoreUser {
             Id = newUserId,
-            Username = mediatorRequest.UserName
+            Username = message.UserName
         };
 
-        SetAuth0Id(user, mediatorRequest.Auth0UserId, logger);
+        SetAuth0Id(user, message.Auth0UserId, logger);
 
         // Validate the user model
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
@@ -52,7 +60,7 @@ public static partial class UserCreateHandler{
         Result result = await userRepo.AddAsync(user, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await new NewUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForNone, cancellation: ct);
+        await messageBus.PublishAsync(new NewUserCreatedEvent(user.Id));
         return newUserId;
     }
 
