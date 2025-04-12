@@ -1,3 +1,4 @@
+﻿# noinspection EditorConfigKeyCorrectness
 [*]
 charset = utf-8-bom
 end_of_line = crlf
@@ -92,6 +93,7 @@ dotnet_naming_symbols.unity_serialized_field_symbols_1.applicable_kinds =
 dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_applicable_kinds = unity_serialised_field
 dotnet_naming_symbols.unity_serialized_field_symbols_1.resharper_required_modifiers = instance
 dotnet_sort_system_directives_first = false
+csharp_new_line_between_members = false
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
 dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:none
 dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
