@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
@@ -70,7 +70,10 @@ public abstract class BasicDataRepository<T> : UnitOfWorkRepository<ContentDb>, 
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
-
+    /// <summary>
+    /// Counts the amount of <typeparamref name="T"/>s in the database.
+    /// </summary>
+    /// <returns>The amount of <typeparamref name="T"/>s in the database.</returns>
     public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         DbSet<T> dbSet = GetCachedDbSet<T>();

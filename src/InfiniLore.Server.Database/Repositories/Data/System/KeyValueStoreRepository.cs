@@ -16,6 +16,8 @@ namespace InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IKeyValueStoreRepository>(ServiceLifetime.Scoped)]
 public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValueStoreRepository {
+    /// <returns> <see langword="true"/> if the object was added or updated sucessfully.</returns>
+    /// <inheritdoc/>
     public async ValueTask<Result> TryAddOrUpdateAsync(KeyValueStore model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
@@ -43,7 +45,10 @@ public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
 
         return Result<KeyValueStore>.FromSuccess(result);
     }
-
+    /// <summary>
+    /// Counts the amount of <see cref="KeyValueStore">KeyValueStores</see> in the database.
+    /// </summary>
+    /// <returns>Returns the amount of <see cref="KeyValueStore">KeyValueStores</see> in the database.</returns>
     public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         DbSet<KeyValueStore> dbSet = GetCachedDbSet<KeyValueStore>();
