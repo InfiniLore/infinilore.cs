@@ -8,5 +8,8 @@ namespace InfiniLore.Server.Api.Endpoints.Account.GetProfile;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public record GetProfileRequest {
+    /// <summary>
+    /// the id of the user you want to retrieve the profile of.
+    /// </summary>
     public Guid UserId { [UsedImplicitly] get; init; }
 }

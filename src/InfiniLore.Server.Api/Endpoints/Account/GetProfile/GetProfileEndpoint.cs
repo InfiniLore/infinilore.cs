@@ -16,7 +16,7 @@ using Response=Results<
     NotFound,
     ProblemDetails
 >;
-
+// retrieves a profile given a user.
 public class GetProfileEndpoint : Endpoint<GetProfileRequest, Response, UserProfileMapper> {
     public override void Configure() {
         Get("/account/profile/{UserId:guid}");
