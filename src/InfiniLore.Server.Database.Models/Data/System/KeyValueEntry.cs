@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Database.Models.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueStore {
+public class KeyValueEntry {
     [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; set; } = string.Empty;
     [MaxLength(Defaults.ValueMaxLength)] public string? Value { get; set; }
 

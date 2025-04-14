@@ -39,14 +39,14 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        KeyValueStore model = faker.Faker.Generate();
+        KeyValueEntry model = faker.Faker.Generate();
         string key = model.Key;
         string? value = model.Value;
 
         // Act
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
+        KeyValueEntry? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();
