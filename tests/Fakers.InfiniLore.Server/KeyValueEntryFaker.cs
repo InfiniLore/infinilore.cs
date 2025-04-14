@@ -9,7 +9,7 @@ namespace Fakers.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueStoreFaker {
+public class KeyValueEntryFaker {
     private readonly ConcurrentDictionary<Guid, KeyValueEntry> Entries = new();
 
     public Faker<KeyValueEntry> Faker { get; } = new Faker<KeyValueEntry>()
