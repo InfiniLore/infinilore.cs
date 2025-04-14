@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Database.Configurations.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueStoreConfiguration : IEntityTypeConfiguration<KeyValueEntry> {
+public class KeyValueEntryConfiguration : IEntityTypeConfiguration<KeyValueEntry> {
     public void Configure(EntityTypeBuilder<KeyValueEntry> builder) {
         builder.HasKey(x => x.Key);
         builder.HasIndex(x => x.Key).IsUnique();

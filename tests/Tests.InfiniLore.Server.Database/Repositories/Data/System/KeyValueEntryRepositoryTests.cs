@@ -16,7 +16,7 @@ namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [ClassDataSource<ContentDbInfrastructure, KeyValueEntryFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueEntryFaker faker) {
+public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueEntryFaker faker) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -26,17 +26,17 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
 
         // Act
-        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
+        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
 
         // Assert
-        await Assert.That(repo).IsTypeOf<KeyValueStoreRepository>();
+        await Assert.That(repo).IsTypeOf<KeyValueEntryRepository>();
     }
 
     [Test]
     public async Task TryAddOrUpdateAsync_ReturnsExpectedResult() {
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
-        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
+        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         KeyValueEntry model = faker.Faker.Generate();
@@ -46,7 +46,7 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         // Act
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueEntry? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
+        KeyValueEntry? actual = await dbContext.KeyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();

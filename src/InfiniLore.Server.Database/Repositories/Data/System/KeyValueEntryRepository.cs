@@ -14,8 +14,8 @@ namespace InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IKeyValueStoreRepository>(ServiceLifetime.Scoped)]
-public class KeyValueStoreRepository : UnitOfWorkRepository<ContentDb>, IKeyValueStoreRepository {
+[InjectableService<IKeyValueEntryRepository>(ServiceLifetime.Scoped)]
+public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValueEntryRepository {
     public async ValueTask<Result> TryAddOrUpdateAsync(KeyValueEntry model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();

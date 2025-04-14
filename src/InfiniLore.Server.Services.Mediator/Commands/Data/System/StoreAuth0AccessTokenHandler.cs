@@ -22,11 +22,11 @@ public static class StoreAuth0AccessTokenHandler {
         CancellationToken ct
     ) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
-        var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
+        var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(message.Token);
 
-        Result<KeyValueEntry> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Result<KeyValueEntry> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         KeyValueEntry store = storeResult.TryGetAsSuccess(out KeyValueEntry? foundStore)
             ? foundStore
             : new KeyValueEntry { Key = "Auth0AccessToken" };
@@ -37,7 +37,7 @@ public static class StoreAuth0AccessTokenHandler {
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
 
 
-        Result result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
+        Result result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
 
         return state;

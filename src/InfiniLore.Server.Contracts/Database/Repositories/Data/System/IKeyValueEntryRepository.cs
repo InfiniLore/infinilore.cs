@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IKeyValueStoreRepository :
+public interface IKeyValueEntryRepository :
     IUnitOfWorkRepository,
     IHasGetCountAsync {
     ValueTask<Result> TryAddOrUpdateAsync(KeyValueEntry model, CancellationToken ct = default);

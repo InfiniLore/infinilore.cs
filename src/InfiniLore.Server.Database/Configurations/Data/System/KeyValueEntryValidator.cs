@@ -11,8 +11,8 @@ namespace InfiniLore.Server.Database.Configurations.Data.System;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IValidator<KeyValueEntry>>(ServiceLifetime.Singleton)]
-public class KeyValueStoreValidator : AbstractValidator<KeyValueEntry> {
-    public KeyValueStoreValidator() {
+public class KeyValueEntryValidator : AbstractValidator<KeyValueEntry> {
+    public KeyValueEntryValidator() {
         RuleFor(x => x.Key)
             .NotEmpty().WithMessage("The Key field is required.")
             .MaximumLength(KeyValueEntry.Defaults.KeyMaxLength)
