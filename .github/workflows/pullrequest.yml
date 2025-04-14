@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ core ]
 
+  workflow_dispatch:
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
