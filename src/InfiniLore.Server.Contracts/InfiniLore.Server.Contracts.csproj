@@ -15,7 +15,7 @@
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.57.0" />
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>
