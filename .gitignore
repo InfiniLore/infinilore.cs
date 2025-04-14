@@ -779,3 +779,4 @@ src/server/InfiniLore.Server/app.db-shm
 src/server/InfiniLore.Server/app.db-wal
 
 .temp/
+/src/Tools.InfiniLore.Server.Database.EFC.Content/Properties/launchSettings.json
