@@ -17,27 +17,27 @@ public static class StoreAuth0AccessTokenHandler {
         // Message
         StoreAuth0AccessTokenMediatorRequest message,
         // Services
-        IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueStore> validator,
+        IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueEntry> validator,
         // CT
         CancellationToken ct
     ) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
-        var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
+        var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(message.Token);
 
-        Result<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        KeyValueStore store = storeResult.TryGetAsSuccess(out KeyValueStore? foundStore)
+        Result<KeyValueEntry> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        KeyValueEntry store = storeResult.TryGetAsSuccess(out KeyValueEntry? foundStore)
             ? foundStore
-            : new KeyValueStore { Key = "Auth0AccessToken" };
+            : new KeyValueEntry { Key = "Auth0AccessToken" };
 
-        if (!store.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Json conversion failed.");
+        if (!KeyValueEntry.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Json conversion failed.");
 
         store.Value = encryptionService.Encrypt(store.Value);
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MediatorResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
 
 
-        Result result = await keyValueStoreRepository.TryAddOrUpdateAsync(store, ct);
+        Result result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetState(out bool state)) return result.AsError;
 
         return state;

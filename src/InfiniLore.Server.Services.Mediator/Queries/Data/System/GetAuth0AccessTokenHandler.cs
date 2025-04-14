@@ -23,15 +23,15 @@ public static class GetAuth0AccessTokenHandler {
         CancellationToken ct
     ) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
-        var keyValueStoreRepository = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>(ct);
+        var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
-        Result<KeyValueStore> storeResult = await keyValueStoreRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Result<KeyValueEntry> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Key not found.");
         }
 
-        KeyValueStore store = storeResult.AsSuccess;
+        KeyValueEntry store = storeResult.AsSuccess;
         if (store.Value.IsNullOrEmpty()) {
             logger.Warning("Auth0 access token value is empty.");
             return MediatorResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Value is empty.");

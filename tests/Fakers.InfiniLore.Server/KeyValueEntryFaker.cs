@@ -9,10 +9,10 @@ namespace Fakers.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueStoreFaker {
-    private readonly ConcurrentDictionary<Guid, KeyValueStore> Entries = new();
+public class KeyValueEntryFaker {
+    private readonly ConcurrentDictionary<Guid, KeyValueEntry> Entries = new();
 
-    public Faker<KeyValueStore> Faker { get; } = new Faker<KeyValueStore>()
+    public Faker<KeyValueEntry> Faker { get; } = new Faker<KeyValueEntry>()
         .RuleFor(property: x => x.Key, setter: f => f.Random.AlphaNumeric(10))
         .RuleFor(property: x => x.Value, setter: f => f.Random.AlphaNumeric(10));
 }

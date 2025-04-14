@@ -15,8 +15,8 @@ namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, KeyValueStoreFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueStoreFaker faker) {
+[ClassDataSource<ContentDbInfrastructure, KeyValueEntryFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueEntryFaker faker) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -26,27 +26,27 @@ public class KeyValueStoreRepositoryTests(ContentDbInfrastructure infrastructure
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
 
         // Act
-        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
+        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
 
         // Assert
-        await Assert.That(repo).IsTypeOf<KeyValueStoreRepository>();
+        await Assert.That(repo).IsTypeOf<KeyValueEntryRepository>();
     }
 
     [Test]
     public async Task TryAddOrUpdateAsync_ReturnsExpectedResult() {
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
-        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueStoreRepository>();
+        var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        KeyValueStore model = faker.Faker.Generate();
+        KeyValueEntry model = faker.Faker.Generate();
         string key = model.Key;
         string? value = model.Value;
 
         // Act
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueStore? actual = await dbContext.KeyValueStores.FirstOrDefaultAsync(x => x.Key == key);
+        KeyValueEntry? actual = await dbContext.KeyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();

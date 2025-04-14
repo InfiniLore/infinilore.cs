@@ -23,7 +23,7 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
     // -----------------------------------------------------------------------------------------------------------------
     // DbSets
     // -----------------------------------------------------------------------------------------------------------------
-    public DbSet<KeyValueStore> KeyValueStores { get; set; } = null!;
+    public DbSet<KeyValueEntry> KeyValueEntries { get; set; } = null!;
 
     public DbSet<InfiniLoreUser> Users { get; set; } = null!;
     public DbSet<LoreScope> LoreScopes { get; set; } = null!;

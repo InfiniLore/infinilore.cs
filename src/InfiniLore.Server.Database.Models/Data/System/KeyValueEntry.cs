@@ -9,18 +9,18 @@ namespace InfiniLore.Server.Database.Models.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueStore {
-    [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; set; } = string.Empty;
+public class KeyValueEntry {
+    [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; init; } = string.Empty;
     [MaxLength(Defaults.ValueMaxLength)] public string? Value { get; set; }
 
-    public bool TryGetConvertJsonValueToObject<TJsonObject>([NotNullWhen(true)] out TJsonObject? obj) where TJsonObject : class {
-        obj = null;
+    public bool TryGetConvertJsonValueToObject<TJsonObject>([NotNullWhen(true)] out TJsonObject? decodedObject) where TJsonObject : class {
+        decodedObject = null;
         if (Value.IsNullOrWhiteSpace()) return false;
 
         // Try deserializing Value to the specified type TJsonObject
         try {
-            obj = JsonSerializer.Deserialize<TJsonObject>(Value);
-            return obj != null;
+            decodedObject = JsonSerializer.Deserialize<TJsonObject>(Value);
+            return decodedObject != null;
         }
         catch (JsonException) {
             return false;
@@ -28,9 +28,9 @@ public class KeyValueStore {
     }
 
     [MemberNotNullWhen(true, nameof(Value))]
-    public bool TrySetObjectAsJsonValue<TJsonObject>(TJsonObject obj) where TJsonObject : class {
+    public bool TrySetObjectAsJsonValue<TJsonObject>(in TJsonObject objectToEncode) where TJsonObject : class {
         try {
-            string json = JsonSerializer.Serialize(obj);
+            string json = JsonSerializer.Serialize(objectToEncode);
             if (json.Length > Defaults.ValueMaxLength) return false;
 
             Value = json;
@@ -41,13 +41,12 @@ public class KeyValueStore {
         }
     }
 
-    public bool CanSetObjectAsValueJson<TJsonObject>(TJsonObject obj) where TJsonObject : class {
+    public static bool CanSetObjectAsValueJson<TJsonObject>(in TJsonObject objectToEncode) where TJsonObject : class {
         try {
-            string json = JsonSerializer.Serialize(obj);
+            string json = JsonSerializer.Serialize(objectToEncode);
             return json.Length <= Defaults.ValueMaxLength;
         }
-        catch (Exception ex) {
-            Console.WriteLine(ex);
+        catch (Exception) {
             return false;
         }
     }
