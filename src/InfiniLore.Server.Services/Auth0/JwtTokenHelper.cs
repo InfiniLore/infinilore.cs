@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Contracts.Services.Auth0;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Queries.Account;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Queries.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;

@@ -71,7 +71,7 @@ public static class ContentDbFactory {
 
         // Our UnitOfWork is integral to the correct execution of the repo pattern
         services.AddReadonlyUnitOfWork<ContentDb>();
-        services.AddReadonlyUnitOfWork<ContentDb>("ContentDb");
+        // services.AddReadonlyUnitOfWork<ContentDb>("ContentDb");
 
         // These services are required for the db to work correctly
         services.RegisterServicesFromInfiniLoreServerDatabase();

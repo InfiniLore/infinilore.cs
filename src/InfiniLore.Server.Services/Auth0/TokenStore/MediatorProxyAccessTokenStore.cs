@@ -4,9 +4,9 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Commands.Data.System;
-using InfiniLore.Server.Services.Mediator.Queries.Data.System;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Commands.Data.System;
+using InfiniLore.Server.Services.Messaging.Queries.Data.System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wolverine;

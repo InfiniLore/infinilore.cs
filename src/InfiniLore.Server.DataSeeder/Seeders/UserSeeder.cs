@@ -8,7 +8,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Services.Mediator.Commands.Account;
+using InfiniLore.Server.Services.Messaging.Commands.Account;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

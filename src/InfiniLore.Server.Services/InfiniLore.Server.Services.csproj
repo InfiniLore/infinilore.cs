@@ -34,7 +34,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Api\InfiniLore.Server.Api.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Messaging\InfiniLore.Server.Services.Messaging.csproj" />
         <ProjectReference Include="..\InfiniLore.ServerClient.Contracts\InfiniLore.ServerClient.Contracts.csproj"/>
         <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
     </ItemGroup>

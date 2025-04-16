@@ -12,7 +12,7 @@
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Messaging\InfiniLore.Server.Services.Messaging.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj"/>
     </ItemGroup>

@@ -16,7 +16,7 @@ using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Services;
 using InfiniLore.Server.Services.Auth0.Encryption;
 using InfiniLore.Server.Services.Auth0.TokenStore;
-using InfiniLore.Server.Services.Mediator;
+using InfiniLore.Server.Services.Messaging;
 using InfiniLore.Server.Services.OpenIdConnect;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.JwtToken;
@@ -139,6 +139,7 @@ public static class Program {
             options.UseFluentValidation();
             options.Discovery.IncludeAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
         });
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesMessaging();
         #endregion
 
         #region FastEndpoints
@@ -153,7 +154,6 @@ public static class Program {
         });
 
         builder.Services.SwaggerDocument();
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesMediator();
         #endregion
         
         #region DataSeeding
