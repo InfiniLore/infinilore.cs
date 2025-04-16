@@ -22,7 +22,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------

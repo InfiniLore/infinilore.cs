@@ -69,8 +69,7 @@
                          class="@($"transition-all duration-300 {(IsMenuCollapsed ? "w-8 h-8 mx-auto" : "w-10 h-10")}")">
                     @if (!string.IsNullOrEmpty(ProfileImage)) {
                         <img src="@ProfileImage" alt="Profile" class="rounded-full" crossorigin="anonymous">
-                    }
-                    else {
+                    } else {
                         <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
                     }
 

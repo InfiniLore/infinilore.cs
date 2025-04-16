@@ -59,6 +59,7 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtToke
     public async ValueTask<Guid> TryGetUserIdFromClaimsAsync(CancellationToken ct = default) {
         string? auth0UserId = _user?.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? _user?.FindFirstValue("sub");
+
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         // TODO maybe not use mediator here? I dont know

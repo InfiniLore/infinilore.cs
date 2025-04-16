@@ -8,4 +8,4 @@ namespace InfiniLore.Server.Services.Messaging.Notifications.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record StoreCommandNotification(IMediatorRequest Request) : IEvent ;
+public record StoreCommandNotification(IMediatorRequest Request) : IEvent;

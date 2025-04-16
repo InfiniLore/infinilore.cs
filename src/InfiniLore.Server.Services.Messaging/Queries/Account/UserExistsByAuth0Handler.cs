@@ -12,8 +12,8 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Account;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory): CommandHandler<UserExistsByAuth0Query, MessageResponse> {
-    public override async Task<MessageResponse> ExecuteAsync(UserExistsByAuth0Query command, CancellationToken ct = new CancellationToken()) {
+public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : CommandHandler<UserExistsByAuth0Query, MessageResponse> {
+    public override async Task<MessageResponse> ExecuteAsync(UserExistsByAuth0Query command, CancellationToken ct = new()) {
         if (command.Auth0UserId.IsNullOrEmpty()) return false;
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();

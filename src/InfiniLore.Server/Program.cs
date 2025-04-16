@@ -144,10 +144,10 @@ public static class Program {
         });
 
         builder.Services.SwaggerDocument();
-        
+
         builder.Services.RegisterServicesFromInfiniLoreServerServicesMessaging();
         #endregion
-        
+
         #region DataSeeding
         // Everything is handled by the DataSeeding project
         //      This is to make sure we don't have any issues with the seeding process
@@ -156,7 +156,7 @@ public static class Program {
         //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
         builder.RegisterDataSeedingServices();
         #endregion
-        
+
         #region InfiniLore.Blazor
         builder.Services.AddInfiniLoreBlazor(config => {
             config.AddMarkdown();

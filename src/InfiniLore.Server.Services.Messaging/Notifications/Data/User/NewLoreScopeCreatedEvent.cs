@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.Messaging.Notifications.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class NewLoreScopeCreatedEvent(Guid LoreScopeId) : IEvent ;
+public class NewLoreScopeCreatedEvent(Guid LoreScopeId) : IEvent;

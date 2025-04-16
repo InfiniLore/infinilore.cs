@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Services.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("State", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record MessageResponse() : IUnion<bool, Error<ICollection<string>>> {
+public partial record MessageResponse : IUnion<bool, Error<ICollection<string>>> {
 
     public bool State => AsState;
     public bool TryGetState(out bool state) => TryGetAsState(out state);

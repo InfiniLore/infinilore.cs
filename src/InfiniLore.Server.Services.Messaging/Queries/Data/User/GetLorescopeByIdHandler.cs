@@ -16,7 +16,7 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopeByIdHandler> logger) : CommandHandler<GetLorescopeByIdQuery, MessageResponse<LoreScope>> {
-    public override async Task<MessageResponse<LoreScope>> ExecuteAsync(GetLorescopeByIdQuery command, CancellationToken ct = new CancellationToken()){
+    public override async Task<MessageResponse<LoreScope>> ExecuteAsync(GetLorescopeByIdQuery command, CancellationToken ct = new()) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 

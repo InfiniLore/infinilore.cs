@@ -34,5 +34,4 @@ public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
 
         return MessageResponse<PaginatedData<LoreScope>>.FromSuccess(paginatedResult);
     }
-
 }

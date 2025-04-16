@@ -1,6 +1,10 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/profile"
 @using FastEndpoints
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Server.Services.Messaging
@@ -10,10 +14,6 @@
 @using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/profile"
 @rendermode InteractiveServer
 
 @attribute [Authorize]
@@ -78,14 +78,14 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        var resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
+        MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
             Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 
         var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
-        var createResult = await request.ExecuteAsync();
+        MessageResponse<Guid> createResult = await request.ExecuteAsync();
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);
             return;

@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.Messaging.Notifications.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record NewUserCreatedEvent(Guid UserId): IEvent;
+public record NewUserCreatedEvent(Guid UserId) : IEvent;
