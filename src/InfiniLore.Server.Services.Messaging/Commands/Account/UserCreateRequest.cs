@@ -5,7 +5,7 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserCreateMediatorRequest(
+public record UserCreateRequest(
     string Auth0UserId,
     string UserName
 ) : MessageRequest<Guid>;

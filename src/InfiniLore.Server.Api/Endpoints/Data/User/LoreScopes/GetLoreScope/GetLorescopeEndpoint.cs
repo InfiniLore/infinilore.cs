@@ -31,6 +31,7 @@ public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
+    
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);

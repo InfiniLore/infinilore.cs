@@ -57,7 +57,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] = messageBus.InvokeAsync(new UserCreateMediatorRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
+            tasks[i++] = messageBus.InvokeAsync(new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
         }
 
         await Task.WhenAny(tasks);

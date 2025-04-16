@@ -31,7 +31,7 @@ public static partial class UserCreateHandler{
     // -----------------------------------------------------------------------------------------------------------------
     public static async Task<MediatorResponse<Guid>> HandleAsync(
         // Message
-        UserCreateMediatorRequest message,
+        UserCreateRequest message,
         // Services
         IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<InfiniLoreUser> validator, IMessageBus messageBus,
         // CT

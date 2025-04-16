@@ -5,7 +5,6 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
-using JetBrains.Annotations;
 
 namespace InfiniLore.Server.Services.Messaging.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
