@@ -2,6 +2,8 @@
 
 on:
   push:
+      branches:
+          - 'core'
     tags:
       - 'v*.*.*' # Match version tags like v1.0.0
 
