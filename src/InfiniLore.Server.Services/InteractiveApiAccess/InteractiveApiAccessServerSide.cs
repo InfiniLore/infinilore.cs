@@ -3,18 +3,18 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using FastEndpoints;
 using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Database.Models.Data.User;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Queries.Data.User;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Queries.Data.User;
 using InfiniLore.ServerClient.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Wolverine;
 
 namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,6 @@ namespace InfiniLore.Server.Services;
 [InjectableService<IInteractiveApiAccess>(ServiceLifetime.Scoped)]
 public class InteractiveApiAccessServerSide(
     ILogger<InteractiveApiAccessServerSide> logger,
-    IMessageBus messageBus,
     IHttpContextAccessor httpContextAccessor,
     LoreScopesMapper loreScopesMapper
 ) : IInteractiveApiAccess {
@@ -32,6 +31,7 @@ public class InteractiveApiAccessServerSide(
 
         ClaimsPrincipal? claims = httpContextAccessor.HttpContext?.User;
 
+        // Form Message
         var query = new GetLoreScopesQuery(
             parsedUserId,
             false,
@@ -40,8 +40,8 @@ public class InteractiveApiAccessServerSide(
             AccessData = RequestAccessData.FromClaims(claims, ct)
         };
 
-        // Execute Query
-        var result = await messageBus.InvokeAsync<MediatorResponse<PaginatedData<LoreScope>>>(query, ct);
+        // Execute Message
+        MessageResponse<PaginatedData<LoreScope>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedData)) {

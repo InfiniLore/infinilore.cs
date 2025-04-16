@@ -13,13 +13,16 @@
 @using System.Security.Claims
 @using System.Text.Json
 @attribute [Authorize]
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveAuto
 @inject ILogger<ApiTest> Logger
 @inject IInteractiveApiAccess InteractiveApiAccess
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <PageTitle>API TEST</PageTitle>
+<div>
+    @RendererInfo.Name
+</div>
 <div>
     <br>
     <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
@@ -29,6 +32,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }

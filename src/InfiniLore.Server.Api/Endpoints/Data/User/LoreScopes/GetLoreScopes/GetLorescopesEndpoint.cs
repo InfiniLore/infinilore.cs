@@ -7,13 +7,12 @@ using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.User;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Queries.Data.User;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Queries.Data.User;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using Wolverine;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScopes;
 
@@ -28,7 +27,6 @@ using Response=Results<
 >;
 
 public class GetLoreScopesEndpoint(
-    IMessageBus messageBus,
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
@@ -54,7 +52,7 @@ public class GetLoreScopesEndpoint(
         };
 
         // Execute Query
-        var result = await messageBus.InvokeAsync<MediatorResponse<PaginatedData<LoreScope>>>(query, ct);
+        MessageResponse<PaginatedData<LoreScope>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {

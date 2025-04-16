@@ -52,7 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Wasm.Services", "src\InfiniLore.Clients.Wasm.Services\InfiniLore.Clients.Wasm.Services.csproj", "{FA2AA209-3A25-4286-9976-75CD1630B911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.Mediator", "src\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj", "{E8BF294A-B7A0-4834-A7D8-393BFC9190A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Services.Messaging", "src\InfiniLore.Server.Services.Messaging\InfiniLore.Server.Services.Messaging.csproj", "{E8BF294A-B7A0-4834-A7D8-393BFC9190A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.DataSeeder", "src\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj", "{3D95910A-7BCC-4C94-9394-C0C76F267B4E}"
 EndProject

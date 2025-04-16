@@ -6,16 +6,14 @@ using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.User;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Queries.Data.User;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Queries.Data.User;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using Wolverine;
 
 namespace InfiniLore.Server.Api.Endpoints.Data.User.LoreScopes.GetLoreScope;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,10 +25,10 @@ using Response=Results<
 >;
 
 public class GetLorescopeEndpoint(
-    IMessageBus messageBus,
     ILogger<GetLorescopeEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
+
     public override void Configure() {
         Get("/data/user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
@@ -52,7 +50,7 @@ public class GetLorescopeEndpoint(
         };
 
         // Execute Query
-        var result = await messageBus.InvokeAsync<MediatorResponse<LoreScope>>(query, ct);
+        MessageResponse<LoreScope> result = await query.ExecuteAsync(ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {

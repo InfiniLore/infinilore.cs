@@ -12,7 +12,7 @@
         <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Mediator\InfiniLore.Server.Services.Mediator.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Services.Messaging\InfiniLore.Server.Services.Messaging.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.Services\InfiniLore.Server.Services.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Wasm\InfiniLore.Clients.Wasm.csproj"/>
     </ItemGroup>
@@ -20,24 +20,22 @@
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions" Version="4.1.0"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1"/>
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.57.0" />
-        <PackageReference Include="FastEndpoints" Version="6.0.0" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="6.0.0" />
-        <PackageReference Include="InfiniLore.Blazor" Version="0.2.2" />
-        <PackageReference Include="InfiniLore.Blazor.Markdown" Version="0.2.2" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.57.0"/>
+        <PackageReference Include="FastEndpoints" Version="6.0.0"/>
+        <PackageReference Include="FastEndpoints.Swagger" Version="6.0.0"/>
+        <PackageReference Include="InfiniLore.Blazor" Version="0.2.2"/>
+        <PackageReference Include="InfiniLore.Blazor.Markdown" Version="0.2.2"/>
         <PackageReference Include="InfiniLore.Credentials" Version="4.0.0"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.0.0"/>
-        <PackageReference Include="InfiniLore.Lucide" Version="0.22.488" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.4" />
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
-        <PackageReference Include="WolverineFx" Version="3.12.1" />
-        <PackageReference Include="WolverineFx.FluentValidation" Version="3.12.1" />
+        <PackageReference Include="InfiniLore.Lucide" Version="0.22.488"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -61,8 +59,8 @@
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json"/>
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json"/>
         <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenu.razor" />
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenuButton.razor" />
+        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenu.razor"/>
+        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenuButton.razor"/>
     </ItemGroup>
 
 </Project>

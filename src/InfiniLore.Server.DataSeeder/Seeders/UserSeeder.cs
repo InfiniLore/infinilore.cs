@@ -5,22 +5,22 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Services.Mediator.Commands.Account;
+using InfiniLore.Server.Services.Messaging.Commands.Account;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
-using Wolverine;
 
 namespace InfiniLore.Server.DataSeeder.Seeders;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger, IMessageBus messageBus) : Seeder {
+public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger) : Seeder {
     private readonly SeedingConfig _options = options.Value;
     private readonly ConcurrentQueue<SeedingUser> _usersToSeed = new();
 
@@ -57,7 +57,7 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] = messageBus.InvokeAsync(new UserCreateMediatorRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username), ct);
+            tasks[i++] = new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username).ExecuteAsync(ct: ct);
         }
 
         await Task.WhenAny(tasks);

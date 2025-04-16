@@ -11,7 +11,11 @@ namespace InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class WasmClientAuthenticationStateProvider(PersistentComponentState persistentState, IClaimsDtoHelper principalHelper, ILogger<WasmClientAuthenticationStateProvider> logger) : AuthenticationStateProvider {
+public class WasmClientAuthenticationStateProvider(
+    PersistentComponentState persistentState,
+    IClaimsDtoHelper principalHelper,
+    ILogger<WasmClientAuthenticationStateProvider> logger
+) : AuthenticationStateProvider {
     private static readonly Task<AuthenticationState> UnauthenticatedTask = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
 
     // -----------------------------------------------------------------------------------------------------------------

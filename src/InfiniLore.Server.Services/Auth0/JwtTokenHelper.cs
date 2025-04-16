@@ -2,21 +2,21 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Services.Auth0;
-using InfiniLore.Server.Services.Mediator;
-using InfiniLore.Server.Services.Mediator.Queries.Account;
+using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Queries.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using Wolverine;
 
 namespace InfiniLore.Server.Services.Auth0;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IJwtTokenHelper>(ServiceLifetime.Scoped)]
-public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMessageBus messageBus) : IJwtTokenHelper {
+public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtTokenHelper {
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
     public bool IsAuthenticated => _user?.Identity?.IsAuthenticated == true;
@@ -59,10 +59,11 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor, IMessageBu
     public async ValueTask<Guid> TryGetUserIdFromClaimsAsync(CancellationToken ct = default) {
         string? auth0UserId = _user?.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? _user?.FindFirstValue("sub");
+
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         // TODO maybe not use mediator here? I dont know
-        MediatorResponse<Guid> result = await messageBus.InvokeAsync<MediatorResponse<Guid>>(new GetUserIdByAuth0IdQuery(auth0UserId), ct);
+        MessageResponse<Guid> result = await new GetUserIdByAuth0IdQuery(auth0UserId).ExecuteAsync(ct);
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
 
         return userId != Guid.Empty
