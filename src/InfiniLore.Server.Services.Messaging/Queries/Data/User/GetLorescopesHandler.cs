@@ -8,12 +8,14 @@ using InfiniLore.Server.Contracts.Database;
 using InfiniLore.Server.Contracts.Database.Repositories;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Messaging.Queries.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLoreScopesHandler> logger) : CommandHandler<GetLoreScopesQuery, MessageResponse<PaginatedData<LoreScope>>> {
     public override async Task<MessageResponse<PaginatedData<LoreScope>>> ExecuteAsync(GetLoreScopesQuery command, CancellationToken ct = new()) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();

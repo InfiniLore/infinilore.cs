@@ -50,7 +50,7 @@ public class GetLorescopeEndpoint(
         };
 
         // Execute Query
-        var result = await query.ExecuteAsync(ct);
+        MessageResponse<LoreScope> result = await query.ExecuteAsync(ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {

@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Messaging.Notifications.Account;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 
@@ -16,6 +17,7 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUser> validator) : CommandHandler<UserCreateRequest, MessageResponse<Guid>> {
     private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },

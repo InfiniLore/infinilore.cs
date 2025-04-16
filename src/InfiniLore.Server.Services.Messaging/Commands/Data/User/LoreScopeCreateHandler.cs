@@ -10,12 +10,14 @@ using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Messaging.Notifications.Data.User;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Messaging.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScope> validator) : CommandHandler<LoreScopeCreateRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(LoreScopeCreateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();

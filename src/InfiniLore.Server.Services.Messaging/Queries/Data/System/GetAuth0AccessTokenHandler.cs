@@ -8,12 +8,14 @@ using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Database.Models.Data.System;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Services.Messaging.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger, IAuth0AccessTokenEncryptionService encryptionService) : CommandHandler<GetAuth0AccessTokenQuery, MessageResponse<IAuth0AccessToken>> {
     public override async Task<MessageResponse<IAuth0AccessToken>> ExecuteAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = new CancellationToken()) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();

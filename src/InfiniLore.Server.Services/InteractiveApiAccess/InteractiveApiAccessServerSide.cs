@@ -31,6 +31,7 @@ public class InteractiveApiAccessServerSide(
 
         ClaimsPrincipal? claims = httpContextAccessor.HttpContext?.User;
 
+        // Form Message
         var query = new GetLoreScopesQuery(
             parsedUserId,
             false,
@@ -39,7 +40,7 @@ public class InteractiveApiAccessServerSide(
             AccessData = RequestAccessData.FromClaims(claims, ct)
         };
 
-        // Execute Query
+        // Execute Message
         MessageResponse<PaginatedData<LoreScope>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
