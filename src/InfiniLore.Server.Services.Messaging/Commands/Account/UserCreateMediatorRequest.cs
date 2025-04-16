@@ -8,4 +8,4 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Account;
 public record UserCreateMediatorRequest(
     string Auth0UserId,
     string UserName
-) : MediatorRequest<Guid>;
+) : MessageRequest<Guid>;

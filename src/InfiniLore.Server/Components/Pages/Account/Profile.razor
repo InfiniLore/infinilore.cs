@@ -85,7 +85,7 @@
             return;
         }
 
-        var request = new LoreScopeCreateMediatorRequest(userId, Guid.NewGuid().ToString());
+        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
         var createResult = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(request);
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);

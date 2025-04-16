@@ -13,7 +13,7 @@ public record CommonRequestData : ICommonRequestData {
     [JsonProperty("created_at")] public DateTime CreatedAt { get; } = DateTime.UtcNow;
 }
 
-public record MediatorRequest : CommonRequestData;
+public record MessageRequest : CommonRequestData;
 
 // ReSharper disable once UnusedTypeParameter
-public record MediatorRequest<TResponse> : CommonRequestData;
+public record MessageRequest<TResponse> : CommonRequestData;

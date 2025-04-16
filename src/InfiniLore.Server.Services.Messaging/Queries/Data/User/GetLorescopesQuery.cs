@@ -13,4 +13,4 @@ public record GetLoreScopesQuery(
     bool AutoInclude = false,
     PaginationInfo PaginationInfo = default,
     bool Reverse = false
-) : MediatorRequest<PaginatedData<LoreScope>>;
+) : MessageRequest<PaginatedData<LoreScope>>;

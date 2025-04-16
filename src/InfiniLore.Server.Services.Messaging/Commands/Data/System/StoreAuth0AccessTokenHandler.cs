@@ -15,7 +15,7 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Data.System;
 public static class StoreAuth0AccessTokenHandler {
     public static async Task<MediatorResponse<bool>> HandleAsync(
         // Message
-        StoreAuth0AccessTokenMediatorRequest message,
+        StoreAuth0AccessTokenRequest message,
         // Services
         IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueEntry> validator,
         // CT

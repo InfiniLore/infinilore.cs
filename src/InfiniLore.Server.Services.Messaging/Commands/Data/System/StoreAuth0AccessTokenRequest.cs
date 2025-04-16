@@ -1,12 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Services.Messaging.Commands.Data.User;
+using InfiniLore.Credentials.Auth0;
+
+namespace InfiniLore.Server.Services.Messaging.Commands.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeCreateMediatorRequest(
-    Guid OwnerId,
-    string LoreScopeName,
-    string? LoreScopeDescription = null
-) : MediatorRequest<Guid>;
+public record StoreAuth0AccessTokenRequest(IAuth0AccessToken Token) : MessageRequest<bool>;

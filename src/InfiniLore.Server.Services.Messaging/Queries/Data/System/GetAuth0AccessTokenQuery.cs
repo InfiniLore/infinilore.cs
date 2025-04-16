@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetAuth0AccessTokenQuery : MediatorRequest<IAuth0AccessToken>;
+public record GetAuth0AccessTokenQuery : MessageRequest<IAuth0AccessToken>;

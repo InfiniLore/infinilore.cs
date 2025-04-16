@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public record UsernameExistsQuery(
     string Username
-) : MediatorRequest;
+) : MessageRequest;

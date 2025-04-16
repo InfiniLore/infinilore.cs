@@ -7,4 +7,4 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public record GetUserIdByAuth0IdQuery(
     string Auth0Id
-) : MediatorRequest<Guid>;
+) : MessageRequest<Guid>;

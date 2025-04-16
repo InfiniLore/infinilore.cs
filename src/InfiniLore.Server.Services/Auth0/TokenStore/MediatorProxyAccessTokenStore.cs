@@ -35,7 +35,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
     }
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
-        MediatorResponse<bool> mediatorResponse = await messageBus.InvokeAsync<MediatorResponse<bool>>(new StoreAuth0AccessTokenMediatorRequest(token), ct);
+        MediatorResponse<bool> mediatorResponse = await messageBus.InvokeAsync<MediatorResponse<bool>>(new StoreAuth0AccessTokenRequest(token), ct);
         if (!mediatorResponse.TryGetAsSuccess(out bool success)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;
             logger.Critical("Failed to retrieve access token. Errors: {Errors}", errors);

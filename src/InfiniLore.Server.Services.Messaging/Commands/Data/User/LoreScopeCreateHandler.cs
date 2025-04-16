@@ -11,17 +11,19 @@ using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Messaging.Notifications.Data.User;
 using Microsoft.Extensions.Logging;
 using Wolverine;
+using Wolverine.Attributes;
 
 namespace InfiniLore.Server.Services.Messaging.Commands.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeCreateHandler{
+[Transactional]
+public static class LoreScopeCreateHandler{
     public static async Task<MediatorResponse<Guid>> HandleAsync(
         // Message
-        LoreScopeCreateMediatorRequest message,
+        LoreScopeCreateRequest message,
         // Services
-        IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<LoreScope> validator,IMessageBus messageBus,
+        IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<LoreScope> validator,IMessageContext messageContext,
         // CT
         CancellationToken ct
     ) {
@@ -52,7 +54,7 @@ public class LoreScopeCreateHandler{
         Result result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await messageBus.PublishAsync(new NewLoreScopeCreatedEvent(loreScope.Id));
+        await messageContext.PublishAsync(new NewLoreScopeCreatedEvent(loreScope.Id));
         logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }
