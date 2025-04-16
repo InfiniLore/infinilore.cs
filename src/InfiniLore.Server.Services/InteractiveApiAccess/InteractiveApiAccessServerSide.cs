@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using FastEndpoints;
 using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts;
@@ -14,7 +15,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Wolverine;
 
 namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,6 @@ namespace InfiniLore.Server.Services;
 [InjectableService<IInteractiveApiAccess>(ServiceLifetime.Scoped)]
 public class InteractiveApiAccessServerSide(
     ILogger<InteractiveApiAccessServerSide> logger,
-    IMessageBus messageBus,
     IHttpContextAccessor httpContextAccessor,
     LoreScopesMapper loreScopesMapper
 ) : IInteractiveApiAccess {
@@ -41,7 +40,7 @@ public class InteractiveApiAccessServerSide(
         };
 
         // Execute Query
-        var result = await messageBus.InvokeAsync<MediatorResponse<PaginatedData<LoreScope>>>(query, ct);
+        MessageResponse<PaginatedData<LoreScope>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedData)) {

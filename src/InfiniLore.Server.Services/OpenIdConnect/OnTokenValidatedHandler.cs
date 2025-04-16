@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Services;
 using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Messaging;
@@ -14,7 +15,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using Wolverine;
 
 namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ namespace InfiniLore.Server.Services.OpenIdConnect;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper, IMessageBus messageBus ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -47,10 +47,10 @@ public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHel
         }
 
         // Run all checks and return to new user page if needed
-        Task<MediatorResponse> userExistsTask = messageBus.InvokeAsync<MediatorResponse>(new UserExistsByAuth0Query(auth0Info.Auth0UserId));
-        Task<MediatorResponse<InfiniLoreUser>> userTask = messageBus.InvokeAsync<MediatorResponse<InfiniLoreUser>>(new GetUserByAuth0IdQuery(auth0Info.Auth0UserId));
+        Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId).ExecuteAsync();
+        Task<MessageResponse<InfiniLoreUser>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
 
-        (MediatorResponse userExistsResponse, MediatorResponse<InfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
+        (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId

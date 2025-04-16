@@ -5,4 +5,4 @@ namespace InfiniLore.Server.Services.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IEntrypointInfiniLoreServerServicesCqrs;
+public interface IEntrypointInfiniLoreServerServicesMessaging;

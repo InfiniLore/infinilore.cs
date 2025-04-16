@@ -29,7 +29,6 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.4" />
         <PackageReference Include="Serilog" Version="4.2.0"/>
-        <PackageReference Include="WolverineFx" Version="3.12.1" />
     </ItemGroup>
 
     <ItemGroup>

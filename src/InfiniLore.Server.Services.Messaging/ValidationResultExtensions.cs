@@ -9,14 +9,14 @@ namespace InfiniLore.Server.Services.Messaging;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ValidationResultExtensions {
-    public static MediatorResponse ToMediatorResponse(this ValidationResult validationResult) {
+    public static MessageResponse ToMediatorResponse(this ValidationResult validationResult) {
         string error = validationResult.Errors.Select(e => e.ErrorMessage).Aggregate((a, b) => a + ", " + b);
-        return MediatorResponse.FromErrorString(error);
+        return MessageResponse.FromErrorString(error);
     }
 
     // Used by ValidateRequestBehaviour
-    [UsedImplicitly] public static MediatorResponse<T> ToMediatorResponse<T>(this ValidationResult validationResult) {
+    [UsedImplicitly] public static MessageResponse<T> ToMediatorResponse<T>(this ValidationResult validationResult) {
         string error = validationResult.Errors.Select(e => e.ErrorMessage).Aggregate((a, b) => a + ", " + b);
-        return MediatorResponse<T>.FromErrorString(error);
+        return MessageResponse<T>.FromErrorString(error);
     }
 }

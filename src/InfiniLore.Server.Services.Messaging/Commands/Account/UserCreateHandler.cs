@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
@@ -10,13 +11,12 @@ using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.Services.Messaging.Notifications.Account;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using Wolverine;
 
 namespace InfiniLore.Server.Services.Messaging.Commands.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static partial class UserCreateHandler{
+public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUser> validator) : CommandHandler<UserCreateRequest, MessageResponse<Guid>> {
     private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },
         { "github", (user, id) => user.Auth0Github = id },
@@ -29,14 +29,7 @@ public static partial class UserCreateHandler{
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static async Task<MediatorResponse<Guid>> HandleAsync(
-        // Message
-        UserCreateRequest message,
-        // Services
-        IUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IValidator<InfiniLoreUser> validator, IMessageBus messageBus,
-        // CT
-        CancellationToken ct
-    ) {
+    public override async Task<MessageResponse<Guid>> ExecuteAsync(UserCreateRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
 
@@ -44,23 +37,23 @@ public static partial class UserCreateHandler{
         var newUserId = Guid.CreateVersion7();
         var user = new InfiniLoreUser {
             Id = newUserId,
-            Username = message.UserName
+            Username = command.UserName
         };
 
-        SetAuth0Id(user, message.Auth0UserId, logger);
+        SetAuth0Id(user, command.Auth0UserId, logger);
 
         // Validate the user model
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors);
-            return MediatorResponse<Guid>.FromErrorString("Validation failed");
+            return MessageResponse<Guid>.FromErrorString("Validation failed");
         }
 
         // Save to Db
         Result result = await userRepo.AddAsync(user, ct);
-        if (result.IsError) return MediatorResponse<Guid>.FromErrorString("Failed to save user to database");
+        if (result.IsError) return MessageResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await messageBus.PublishAsync(new NewUserCreatedEvent(user.Id));
+        await new NewUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
         return newUserId;
     }
 

@@ -22,7 +22,6 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
-        <PackageReference Include="WolverineFx" Version="3.12.1" />
     </ItemGroup>
 
     <ItemGroup>

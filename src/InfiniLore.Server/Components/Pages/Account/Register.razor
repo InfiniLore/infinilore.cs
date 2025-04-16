@@ -1,19 +1,18 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/register"
 @using AterraEngine.Unions
+@using FastEndpoints
 @using InfiniLore.Server.Services.Messaging
 @using InfiniLore.Server.Services.Messaging.Commands.Account
 @using InfiniLore.Server.Services.Messaging.Queries.Account
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
-@using Wolverine
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/register"
 @inject NavigationManager Navigation
-@inject IMessageBus MessageBus
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -153,7 +152,7 @@
         }
 
         // Call the backend to check username availability
-        var mediatorResponse = await MessageBus.InvokeAsync<MediatorResponse>(new UsernameExistsQuery(username));
+        var mediatorResponse = await new UsernameExistsQuery(username).ExecuteAsync();
 
         if (!mediatorResponse.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
@@ -176,7 +175,7 @@
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        var result = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(new UserCreateRequest(Auth0UserId, userModel.Username));
+        var result = await new UserCreateRequest(Auth0UserId, userModel.Username).ExecuteAsync();
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry

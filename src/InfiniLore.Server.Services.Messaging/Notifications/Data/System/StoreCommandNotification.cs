@@ -1,10 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FastEndpoints;
 using InfiniLore.Server.Contracts.Services.Mediator;
 
 namespace InfiniLore.Server.Services.Messaging.Notifications.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record StoreCommandNotification(IMediatorRequest Request);
+public record StoreCommandNotification(IMediatorRequest Request) : IEvent ;

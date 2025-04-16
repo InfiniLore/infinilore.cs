@@ -29,8 +29,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
-using Wolverine;
-using Wolverine.FluentValidation;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -133,14 +131,6 @@ public static class Program {
 
         builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
         #endregion
-        
-        #region Wolverine
-        builder.Host.UseWolverine(options => {
-            options.UseFluentValidation();
-            options.Discovery.IncludeAssembly(typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly);
-        });
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesMessaging();
-        #endregion
 
         #region FastEndpoints
         builder.Services.AddFastEndpoints(options => {
@@ -149,11 +139,13 @@ public static class Program {
             options.Assemblies = [
                 typeof(IEntrypointInfiniLoreServerApi).Assembly,
                 typeof(IEntrypointInfiniLoreServerApiResponses).Assembly,
-                typeof(IEntrypointInfiniLoreServerServicesCqrs).Assembly
+                typeof(IEntrypointInfiniLoreServerServicesMessaging).Assembly
             ];
         });
 
         builder.Services.SwaggerDocument();
+        
+        builder.Services.RegisterServicesFromInfiniLoreServerServicesMessaging();
         #endregion
         
         #region DataSeeding

@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using FastEndpoints;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Database.Models.Account;
@@ -13,16 +14,9 @@ namespace InfiniLore.Server.Services.Messaging.NotificationHandlers.NewUserCreat
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class UploadUsernameToAuth0Handler {
-    public static async Task HandleAsync(
-        // Message
-        NewUserCreatedEvent message,
-        // Services
-        IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger logger, IAuth0UserUtility auth0UserUtility,
-        // CT
-        CancellationToken ct
-    ) {
-        Guid userId = message.UserId;
+public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : IEventHandler<NewUserCreatedEvent> {
+    public async Task HandleAsync(NewUserCreatedEvent eventModel, CancellationToken ct) {
+        Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
 
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();

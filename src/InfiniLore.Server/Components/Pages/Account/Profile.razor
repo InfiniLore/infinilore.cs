@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using FastEndpoints
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Server.Services.Messaging
 @using InfiniLore.Server.Services.Messaging.Commands.Data.User
@@ -9,7 +10,6 @@
 @using InfiniLore.ServerClient.Shared.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-@using Wolverine
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -20,7 +20,6 @@
 @layout MainLayout
 @inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
-@inject IMessageBus MessageBus
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -79,14 +78,14 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        var resultUserId = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId));
+        var resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
             Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 
         var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
-        var createResult = await MessageBus.InvokeAsync<MediatorResponse<Guid>>(request);
+        var createResult = await request.ExecuteAsync();
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);
             return;
