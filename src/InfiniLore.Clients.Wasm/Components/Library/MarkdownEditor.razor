@@ -42,6 +42,7 @@
 
     private void TextAreaOnChange(ChangeEventArgs obj) {
         if (obj.Value is not string content) return;
+
         MarkdownOutput2 = new MarkupString(MarkdownParser.Parse(content));
     }
 }
