@@ -11,7 +11,7 @@ jobs:
       - name: "TODO to Issue"
         uses: "alstr/todo-to-issue-action@v5"
         with:
-          PROJECT: "organization/InfiniLore/InfiniLore"
+          PROJECT: "organization/InfiniLore/1"
           PROJECTS_SECRET: "${{ secrets.PROJECTS_SECRET }}"
           ISSUE_TEMPLATE: |
             ### 📝 Todo : ** {{ title }} **
