@@ -5,6 +5,7 @@ using InfiniLore.Clients.Kiota;
 using InfiniLore.Clients.Kiota.Extensions;
 using InfiniLore.Clients.Wasm.Services;
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
+using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -41,7 +42,12 @@ public static class Program {
         ).AttachKiotaHandlers();
 
         builder.Services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
-
+            
+        #region InfiniBlazor
+        builder.Services.AddInfiniBlazor(config => {
+            config.AddMarkdown();
+        });
+        #endregion
         // -------------------------------------------------------------------------------------------------------------
         // App
         // -------------------------------------------------------------------------------------------------------------

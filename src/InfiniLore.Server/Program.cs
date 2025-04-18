@@ -5,9 +5,9 @@ using Auth0.AspNetCore.Authentication;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using InfiniLore.Blazor.Markdown;
 using InfiniLore.Clients.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
+using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Server.Api;
 using InfiniLore.Server.Api.Responses;
 using InfiniLore.Server.Components;
@@ -157,8 +157,8 @@ public static class Program {
         builder.RegisterDataSeedingServices();
         #endregion
 
-        #region InfiniLore.Blazor
-        builder.Services.AddInfiniLoreBlazor(config => {
+        #region InfiniBlazor
+        builder.Services.AddInfiniBlazor(config => {
             config.AddMarkdown();
         });
         #endregion
@@ -176,7 +176,6 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
         builder.Services.RegisterServicesFromInfiniLoreServerApi();
 
-        builder.Services.AddLucideIcons();
 
         return builder.Build();
     }
