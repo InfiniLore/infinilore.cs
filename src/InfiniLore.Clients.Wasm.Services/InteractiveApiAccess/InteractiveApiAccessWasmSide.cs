@@ -49,7 +49,7 @@ public class InteractiveApiAccessWasmSide(
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScopes for user {userId} because '{reason}'", userId, e.Message);
-            return Result<LoreScopesResponse>.FromError($"Failed to get LoreScopes for user {userId}");
+            return Result<LoreScopesResponse>.FromError($"Unknown failure");
         }
     }
 }

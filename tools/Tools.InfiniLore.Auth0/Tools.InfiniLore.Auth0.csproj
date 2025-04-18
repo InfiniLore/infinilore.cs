@@ -10,8 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="Auth0.ManagementApi" Version="7.36.0"/>
-        <PackageReference Include="CodeOfChaos.CliArgsParser" Version="4.9.0"/>
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.9.0">
+        <PackageReference Include="CodeOfChaos.CliArgsParser" Version="4.10.0" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.10.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
