@@ -18,14 +18,14 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.59.1" />
-        <PackageReference Include="InfiniLore.Credentials" Version="4.0.0"/>
+        <PackageReference Include="InfiniLore.Credentials" Version="4.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4"/>
         <PackageReference Include="Microsoft.JSInterop" Version="9.0.4"/>
-        <PackageReference Include="InfiniLore.Credentials.Generators" Version="4.0.0">
+        <PackageReference Include="InfiniLore.Credentials.Generators" Version="4.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
