@@ -11,8 +11,8 @@ namespace InfiniLore.ServerClient.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IJsSecureStorageJwtTokenProvider>(ServiceLifetime.Scoped)]
-public class JsSecureStorageJwtTokenProvider(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JsSecureStorageJwtTokenProvider> logger, IJwtTokenEncoder encoder) : IJsSecureStorageJwtTokenProvider {
+[InjectableService<IJwtTokenJsSecureStorage>(ServiceLifetime.Scoped)]
+public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenJsSecureStorage> logger, IJwtTokenEncoder encoder) : IJwtTokenJsSecureStorage {
     private const string StorageKey = "jwt_token";
 
     private const string JsSaveTokenAsync = "secureStorage.saveTokenAsync";
