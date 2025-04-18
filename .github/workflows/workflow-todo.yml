@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - core
+    paths-ignore:
+        - ".github/workflows/workflow-todo.yml" # Exclude this specific workflow file
 jobs:
   build:
     runs-on: "ubuntu-latest"
