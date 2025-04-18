@@ -47,6 +47,9 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
     }
 
     private async Task ExecuteDotNetUserSecretsCommandAsync(string arguments) {
+        string assemblyDirectory = AppContext.BaseDirectory; // or Assembly.GetExecutingAssembly().Location
+        string projectDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "../../../"));
+        
         var processStartInfo = new ProcessStartInfo {
             FileName = "dotnet",
             Arguments = $"user-secrets {arguments}",
@@ -54,7 +57,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
-            WorkingDirectory = @"C:\Data\Dev\infinilore.cs\tools\Tools.InfiniLore.Auth0"// Path to the directory containing the .csproj file
+            WorkingDirectory = projectDirectory
         };
 
         using Process? process = Process.Start(processStartInfo);
