@@ -53,6 +53,5 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
         return Result.FromState(!result);
-
     }
 }
