@@ -17,8 +17,7 @@ namespace InfiniLore.Server.Database.Repositories.Data.Project;
 public class MarkdownFileRepository : ProjectDataRepository<MarkdownFile>, IMarkdownFileRepository {
 
     public async ValueTask<Result> IsFileNameTakenAsync(string name, Guid loreScopeId, CancellationToken ct = default) {
-        if (name.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
-        if (loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (name.IsNullOrWhiteSpace() || loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
         DbSet<MarkdownFile> dbSet = GetCachedDbSet<MarkdownFile>();
@@ -34,9 +33,9 @@ public class MarkdownFileRepository : ProjectDataRepository<MarkdownFile>, IMark
         return Result.FromState(result);
         
     }
+    
     public async ValueTask<Result> IsFileNameNotTakenAsync(string name, Guid loreScopeId, CancellationToken ct = default) {
-        if (name.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
-        if (loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (name.IsNullOrWhiteSpace() || loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
         DbSet<MarkdownFile> dbSet = GetCachedDbSet<MarkdownFile>();
