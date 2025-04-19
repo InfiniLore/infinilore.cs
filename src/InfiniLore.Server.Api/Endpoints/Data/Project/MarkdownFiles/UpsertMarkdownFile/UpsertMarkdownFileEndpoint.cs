@@ -24,7 +24,7 @@ using Response=Results<
 >;
 
 public class UpsertMarkdownFileEndpoint(
-    ILogger<GetMarkdownFileEndpoint> logger,
+    ILogger<UpsertMarkdownFileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<UpsertMarkdownFileRequest, Response, MarkdownFileMapper> {
 
