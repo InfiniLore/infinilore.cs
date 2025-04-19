@@ -26,4 +26,8 @@
         <ProjectReference Include="..\InfiniLore.Clients.Wasm.Services\InfiniLore.Clients.Wasm.Services.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Library\MarkdownEditor.razor" />
+    </ItemGroup>
+
 </Project>
