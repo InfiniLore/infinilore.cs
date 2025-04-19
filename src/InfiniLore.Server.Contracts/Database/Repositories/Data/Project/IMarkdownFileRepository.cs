@@ -1,14 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
-using System.Diagnostics.CodeAnalysis;
+using InfiniLore.Server.Database.Models.Data.Project;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Contracts.Database.Repositories.Data.Project;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
+public interface IMarkdownFileRepository : IProjectDataRepository<MarkdownFile> {
+    
 }

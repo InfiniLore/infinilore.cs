@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Contracts;
+using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.User;
 
 namespace InfiniLore.Server.Services.Messaging.Queries.Data.User;

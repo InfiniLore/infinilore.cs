@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.System;
 using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.EntityFrameworkCore;

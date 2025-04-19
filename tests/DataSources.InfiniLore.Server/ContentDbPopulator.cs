@@ -5,6 +5,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.Extensions.DependencyInjection;
 

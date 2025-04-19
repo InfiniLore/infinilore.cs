@@ -1,14 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
-using System.Diagnostics.CodeAnalysis;
+using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Server.Contracts.Database.Repositories.Data.Project;
+using InfiniLore.Server.Database.Models.Data.Project;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Database.Repositories.Data.Project;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
+[InjectableService<IMarkdownFileRepository>(ServiceLifetime.Scoped)]
+public class MarkdownFileRepository : ProjectDataRepository<MarkdownFile>, IMarkdownFileRepository {
+    
 }

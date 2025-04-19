@@ -1,14 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel.DataAnnotations;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Database.Models.Data.Project;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
+public class MarkdownFile : ProjectData {
+    [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = string.Empty;
+    [MaxLength(Defaults.SourceMaxLength)] public string Source { get; set; } = string.Empty;
+    
+    public static class Defaults {
+        public const int NameMaxLength = 64;
+        public const int SourceMaxLength = int.MaxValue;
+    }
 }

@@ -1,14 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
-using System.Diagnostics.CodeAnalysis;
+using InfiniLore.Server.Contracts.Database.RepositoryMethods;
+using InfiniLore.Server.Database.Models;
 
-namespace InfiniLore.Server.Database.Models;
+namespace InfiniLore.Server.Contracts.Database.Repositories;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
-}
+public interface IProjectDataRepository<T> :
+    IBasicDataRepository<T>,
+    IHasGetByLoreScopeAsync<T>
+    where T : ProjectData;

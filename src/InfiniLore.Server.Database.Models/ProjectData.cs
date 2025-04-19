@@ -1,14 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.Data.User;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Server.Database.Models;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
+public class ProjectData : BasicData {
+    public Guid LoreScopeId { get; set; } = Guid.Empty;
+    [MaybeNull] public LoreScope LoreScope { get; set; } = null!;
 }
