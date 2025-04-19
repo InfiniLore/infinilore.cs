@@ -18,8 +18,8 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Data.Project;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class MarkdownFileCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileCreateHandler> logger, IValidator<MarkdownFile> validator) : CommandHandler<MarkdownFileCreateRequest, MessageResponse<Guid>> {
-    public override async Task<MessageResponse<Guid>> ExecuteAsync(MarkdownFileCreateRequest command, CancellationToken ct = new()) {
+public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileAddOrUpdateHandler> logger, IValidator<MarkdownFile> validator) : CommandHandler<MarkdownFileAddOrUpdateRequest, MessageResponse<Guid>> {
+    public override async Task<MessageResponse<Guid>> ExecuteAsync(MarkdownFileAddOrUpdateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
@@ -44,7 +44,7 @@ public class MarkdownFileCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         }
 
         // Save to Db
-        Result result = await markdownFileRepo.AddAsync(markdownFile, ct);
+        Result result = await markdownFileRepo.AddOrUpdateAsync(markdownFile, ct);
         if (result.IsError) return MessageResponse<Guid>.FromErrorString("Failed to save user to database");
 
         await new NewMarkdownFileCreatedEvent(markdownFile.Id).PublishAsync(Mode.WaitForAll, ct);

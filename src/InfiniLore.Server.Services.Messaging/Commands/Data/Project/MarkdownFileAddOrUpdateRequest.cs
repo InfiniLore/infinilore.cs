@@ -5,7 +5,8 @@ namespace InfiniLore.Server.Services.Messaging.Commands.Data.Project;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record MarkdownFileCreateRequest(
+public record MarkdownFileAddOrUpdateRequest(
+    Guid MarkdownFileId,
     Guid LoreScopeId,
     string FileName,
     string Source
