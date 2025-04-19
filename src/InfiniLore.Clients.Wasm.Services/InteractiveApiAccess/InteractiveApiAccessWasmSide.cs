@@ -9,7 +9,6 @@ using InfiniLore.ServerClient.Services;
 using InfiniLore.ServerClient.Shared.JwtToken;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Serialization;
 using System.Text.Json;
 

@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
-using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.Extensions.DependencyInjection;
 

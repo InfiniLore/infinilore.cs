@@ -23,7 +23,6 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task PopulateAsync() {
-
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
@@ -38,6 +37,15 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
                 Owner = owner,
                 Name = "KNOWN NAME",
                 ShortDescription = LoreScopeFaker.Generate().ShortDescription
+            }
+        );
+
+        await dbContext.MarkdownFiles.AddRangeAsync(
+            new MarkdownFile {
+                Id = GuidStore.GetGuid("markdownfile-lorescope-forUser2"),
+                LoreScopeId = GuidStore.GetGuid("lorescope-forUser2"),
+                Name = "TestFile.md",
+                Source = "**I Am Bold**"
             }
         );
 

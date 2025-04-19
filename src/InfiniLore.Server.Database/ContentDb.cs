@@ -15,20 +15,18 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
 public class ContentDb : DbContext, IReadonlyCapableDbContext {
+    public DbSet<KeyValueEntry> KeyValueEntries { get; set; } = null!;
+
+    public DbSet<InfiniLoreUser> Users { get; set; } = null!;
+    public DbSet<LoreScope> LoreScopes { get; set; } = null!;
+    public DbSet<MarkdownFile> MarkdownFiles { get; set; } = null!;
+    public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
     public ContentDb() {}
     public ContentDb(DbContextOptions<ContentDb> options) : base(options) {}
-    // -----------------------------------------------------------------------------------------------------------------
-    // DbSets
-    // -----------------------------------------------------------------------------------------------------------------
-    public DbSet<KeyValueEntry> KeyValueEntries { get; set; } = null!;
-
-    public DbSet<InfiniLoreUser> Users { get; set; } = null!;
-    public DbSet<LoreScope> LoreScopes { get; set; } = null!;
-    public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
