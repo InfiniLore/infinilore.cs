@@ -42,7 +42,8 @@ public class GetMarkdownFilesEndpoint(
 
         // Form Query
         var query = new GetMarkdownFilesQuery(
-            req.LoreScopeId
+            req.LoreScopeId,
+            new PaginationInfo(1)
         ) {
             AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
         };

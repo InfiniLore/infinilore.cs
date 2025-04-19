@@ -95,8 +95,6 @@ public class InteractiveApiAccessWasmSide(
                 Source = markdown
             };
             var result = await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
-            if (result is null) return Result.FromError("Could not post data to theAPI");
-
             return true;
         }
         catch (Exception e) {

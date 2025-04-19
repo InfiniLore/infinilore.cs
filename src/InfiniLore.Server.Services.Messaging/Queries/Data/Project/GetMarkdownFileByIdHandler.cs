@@ -23,7 +23,7 @@ public class GetMarkdownFileByIdHandler(IReadonlyUnitOfWorkFactory factory, ILog
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
 
         var queryConfig = new QueryConfig(AutoInclude: command.AutoInclude);
-        Result<MarkdownFile> response = await markdownFileRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
+        Result<MarkdownFile> response = await markdownFileRepository.GetByIdAsync(command.MarkdownFileId, queryConfig, ct);
 
         if (!response.TryGetAsSuccess(out MarkdownFile value)) {
             logger.Warning("Failed to get lorescope");

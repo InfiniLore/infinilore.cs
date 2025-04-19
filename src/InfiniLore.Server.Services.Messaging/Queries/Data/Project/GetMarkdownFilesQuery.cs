@@ -11,7 +11,7 @@ namespace InfiniLore.Server.Services.Messaging.Queries.Data.Project;
 // ---------------------------------------------------------------------------------------------------------------------
 public record GetMarkdownFilesQuery(
     Guid LorescopeId,
-    PaginationInfo PaginationInfo = default,
+    PaginationInfo PaginationInfo,
     bool AutoInclude = false,
     bool Reverse = false
 ) : MessageRequest<PaginatedData<MarkdownFile>>;

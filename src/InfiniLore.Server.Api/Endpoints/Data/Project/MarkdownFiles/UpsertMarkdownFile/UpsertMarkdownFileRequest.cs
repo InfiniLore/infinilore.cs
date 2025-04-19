@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Api.Endpoints.Data.Project.MarkdownFiles.UpsertMarkd
 // ---------------------------------------------------------------------------------------------------------------------
 public record UpsertMarkdownFileRequest(
     Guid LoreScopeId,
+    Guid MarkdownFileId,
     string FileName,
-    string Source,
-    Guid MarkdownFileId = default
+    string Source
 );

@@ -24,9 +24,7 @@ public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Result markdownFileNameTakenResult = await markdownFileRepo.IsFileNameTakenAsync(command.FileName, command.LoreScopeId, ct);
         Result userIdExistsResult = await loreScopeRepo.IsIdTakenAsync(command.LoreScopeId, ct);
-        if (markdownFileNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MessageResponse<Guid>.FromErrorString("MarkdownFile name already taken for this user");
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new markdownFIle based on the request

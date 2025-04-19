@@ -66,7 +66,8 @@ public class InteractiveApiAccessServerSide(
         
         // Form message
         var query = new GetMarkdownFilesQuery(
-            parsedLoreScopeId
+            parsedLoreScopeId,
+            new PaginationInfo(1)
         ) {
             AccessData = RequestAccessData.FromClaims(claims, ct)
         };
@@ -87,7 +88,7 @@ public class InteractiveApiAccessServerSide(
         if (!Guid.TryParse(markdownFileId, out Guid parsedMarkdownFileId)) return Result<MarkdownFileResponse>.FromError("Invalid markdownFileId");
         
         // Form Query
-        var query = new GetMarkdownFileByIdQuery(parsedMarkdownFileId, parsedLoreScopeId) {
+        var query = new GetMarkdownFileByIdQuery(MarkdownFileId: parsedMarkdownFileId, LorescopeId: parsedLoreScopeId) {
             AccessData = RequestAccessData.FromClaims(httpContextAccessor.HttpContext?.User, ct)
         };
         
