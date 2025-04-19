@@ -6,8 +6,8 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
-using InfiniLore.Server.Contracts.Database.Repositories.Account;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.Project;
+using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Services.Messaging.Notifications.Data.Project;
 using JetBrains.Annotations;
@@ -22,21 +22,22 @@ public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory
     public override async Task<MessageResponse<Guid>> ExecuteAsync(MarkdownFileAddOrUpdateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
-        var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
+        var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         Result markdownFileNameTakenResult = await markdownFileRepo.IsFileNameTakenAsync(command.FileName, command.LoreScopeId, ct);
-        Result userIdExistsResult = await userRepo.IsIdTakenAsync(command.LoreScopeId, ct);
+        Result userIdExistsResult = await loreScopeRepo.IsIdTakenAsync(command.LoreScopeId, ct);
         if (markdownFileNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MessageResponse<Guid>.FromErrorString("MarkdownFile name already taken for this user");
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
-        // Create a new lorescope based on the request
+        // Create a new markdownFIle based on the request
         var markdownFile = new MarkdownFile {
+            Id = command.MarkdownFileId != Guid.Empty ? command.MarkdownFileId : Guid.CreateVersion7(),
             Name = command.FileName,
             LoreScopeId = command.LoreScopeId,
             Source = command.Source
         };
 
-        // Validate the lorescope model
+        // Validate the markdownFIle model
         ValidationResult validationResult = await validator.ValidateAsync(markdownFile, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors);
