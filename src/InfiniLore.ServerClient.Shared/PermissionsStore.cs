@@ -29,5 +29,10 @@ public static partial class PermissionsStore {
     [Prefix(DataUser)] public static partial string LorescopeDelete { get; }
     [Prefix(DataUser)] public static partial string LorescopeCreate { get; }
 
+    [Prefix(DataUser)] public static partial string MarkdownFileRead { get; }
+    [Prefix(DataUser)] public static partial string MarkdownFileWrite { get; }
+    [Prefix(DataUser)] public static partial string MarkdownFileDelete { get; }
+    [Prefix(DataUser)] public static partial string MarkdownFileCreate { get; }
+
     [Prefix(DataUser)] public static partial string ProfileRead { get; }
 }
