@@ -5,6 +5,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,7 +23,6 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task PopulateAsync() {
-
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
@@ -37,6 +37,15 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
                 Owner = owner,
                 Name = "KNOWN NAME",
                 ShortDescription = LoreScopeFaker.Generate().ShortDescription
+            }
+        );
+
+        await dbContext.MarkdownFiles.AddRangeAsync(
+            new MarkdownFile {
+                Id = GuidStore.GetGuid("markdownfile-lorescope-forUser2"),
+                LoreScopeId = GuidStore.GetGuid("lorescope-forUser2"),
+                Name = "TestFile.md",
+                Source = "**I Am Bold**"
             }
         );
 

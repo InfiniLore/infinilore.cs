@@ -9,7 +9,7 @@ using System;
 namespace InfiniLore.Clients.Kiota.Models
 {
     /// <summary>
-    /// RFC7807 compatible problem details/ error response class. this can be used by configuring startup like so:    app.UseFastEndpoints(x =&gt; x.Errors.ResponseBuilder = ProblemDetails.ResponseBuilder);
+    /// RFC7807 compatible problem details/ error response class. this can be used by configuring startup like so:app.UseFastEndpoints(c =&gt; c.Errors.UseProblemDetails())
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class FastEndpointsProblemDetails : ApiException, IParsable

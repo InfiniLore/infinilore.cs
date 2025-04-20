@@ -13,9 +13,11 @@ public static partial class PermissionsStore {
     private const string Data = nameof(Data);
     private const string System = nameof(System);
     private const string User = nameof(User);
+    private const string Project = nameof(Project);
 
     private const string DataUser = nameof(DataUser);
     private const string DataSystem = nameof(DataSystem);
+    private const string DataProject = nameof(DataProject);
 
     public static partial string AccountRead { get; }
     public static partial string AccountWrite { get; }
@@ -28,6 +30,11 @@ public static partial class PermissionsStore {
     [Prefix(DataUser)] public static partial string LorescopeWrite { get; }
     [Prefix(DataUser)] public static partial string LorescopeDelete { get; }
     [Prefix(DataUser)] public static partial string LorescopeCreate { get; }
+
+    [Prefix(DataProject)] public static partial string MarkdownFileRead { get; }
+    [Prefix(DataProject)] public static partial string MarkdownFileWrite { get; }
+    [Prefix(DataProject)] public static partial string MarkdownFileDelete { get; }
+    [Prefix(DataProject)] public static partial string MarkdownFileCreate { get; }
 
     [Prefix(DataUser)] public static partial string ProfileRead { get; }
 }

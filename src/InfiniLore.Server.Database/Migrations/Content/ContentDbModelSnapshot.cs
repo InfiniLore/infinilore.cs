@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -77,6 +77,43 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.Project.MarkdownFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LoreScopeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoreScopeId");
+
+                    b.ToTable("MarkdownFiles");
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.System.KeyValueEntry", b =>
                 {
                     b.Property<string>("Key")
@@ -132,6 +169,17 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("LoreScopes");
 
                     b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.Project.MarkdownFile", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Database.Models.Data.User.LoreScope", "LoreScope")
+                        .WithMany()
+                        .HasForeignKey("LoreScopeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LoreScope");
                 });
 
             modelBuilder.Entity("InfiniLore.Server.Database.Models.Data.User.LoreScope", b =>

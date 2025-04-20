@@ -20,8 +20,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
         DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
@@ -38,8 +37,7 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
 
     }
     public async ValueTask<Result> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
-        if (loreScopeName.IsNullOrWhiteSpace()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
-        if (ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
         DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
@@ -53,6 +51,5 @@ public class LoreScopeRepository : UserDataRepository<LoreScope>, ILoreScopeRepo
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
         return Result.FromState(!result);
-
     }
 }

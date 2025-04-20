@@ -4,12 +4,12 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Clients.Kiota;
+using InfiniLore.Clients.Kiota.Models;
+using InfiniLore.Server.Api.Responses.Data.Project.MarkdownFiles;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.ServerClient.Services;
-using InfiniLore.ServerClient.Shared.JwtToken;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Serialization;
 using System.Text.Json;
 
@@ -20,7 +20,6 @@ namespace InfiniLore.Clients.Wasm.Services;
 [InjectableService<IInteractiveApiAccess>(ServiceLifetime.Scoped)]
 public class InteractiveApiAccessWasmSide(
     ILogger<InteractiveApiAccessWasmSide> logger,
-    IJwtTokenJsSecureStorage tokenProvider,
     InfiniLoreApiClient apiClient
 ) : IInteractiveApiAccess {
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
@@ -28,6 +27,7 @@ public class InteractiveApiAccessWasmSide(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    #region LoreScopes
     public async ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         // ReSharper disable twice SuggestVarOrType_SimpleTypes
         try {
@@ -49,4 +49,58 @@ public class InteractiveApiAccessWasmSide(
             return Result<LoreScopesResponse>.FromError($"Unknown failure");
         }
     }
+    #endregion
+
+    public async ValueTask<Result<MarkdownFilesResponse>> GetMarkdownFilesAsync(string loreScopeId, CancellationToken ct = default) {
+        try {
+            var requestBuilder = apiClient.Api.V1.Data.Project[loreScopeId].MarkdownFile;
+            var result = await requestBuilder
+                .GetAsync(cancellationToken: ct);
+            
+            if (result is null) return Result<MarkdownFilesResponse>.FromError("Could not get data from API");
+            Stream jsonStream = result.SerializeAsJsonStream();
+            var response = await JsonSerializer.DeserializeAsync<MarkdownFilesResponse>(jsonStream, Options, ct);
+            if (response is null) return Result<MarkdownFilesResponse>.FromError("Could not deserialize data from API");
+            return Result<MarkdownFilesResponse>.FromSuccess(response);
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to get MarkdownFiles for loreScopeId {loreScopeId} because '{reason}'", loreScopeId, e.Message);
+            return Result<MarkdownFilesResponse>.FromError($"Unknown failure");
+        }
+    }
+    
+    public async ValueTask<Result<MarkdownFileResponse>> GetMarkdownFileAsync(string loreScopeId, string markdownFileId, CancellationToken ct = default) {
+        try {
+            var requestBuilder = apiClient.Api.V1.Data.Project[loreScopeId].MarkdownFile[markdownFileId];
+            var result = await requestBuilder
+                .GetAsync(cancellationToken: ct);
+            
+            if (result is null) return Result<MarkdownFileResponse>.FromError("Could not get data from API");
+            Stream jsonStream = result.SerializeAsJsonStream();
+            var response = await JsonSerializer.DeserializeAsync<MarkdownFileResponse>(jsonStream, Options, ct);
+            if (response is null) return Result<MarkdownFileResponse>.FromError("Could not deserialize data from API");
+            return Result<MarkdownFileResponse>.FromSuccess(response);
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to get MarkdownFile for loreScopeId {loreScopeId} because '{reason}'", loreScopeId, e.Message);
+            return Result<MarkdownFileResponse>.FromError("Unknown failure");
+        }
+    }
+    
+    public async ValueTask<Result> UpsertMarkdownFileAsync(string loreScopeId, string markdownFileId, string fileName, string markdown, CancellationToken ct = default) {
+        try {
+            var requestBuilder = apiClient.Api.V1.Data.Project[loreScopeId].MarkdownFile[markdownFileId];
+            var requestBody = new InfiniLoreServerApiEndpointsDataProjectMarkdownFilesUpsertMarkdownFileUpsertMarkdownFileRequest() {
+                FileName = fileName,
+                Source = markdown
+            };
+            var result = await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
+            return true;
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            throw;
+        }    
+    }
+
 }

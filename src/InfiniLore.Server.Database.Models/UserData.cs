@@ -11,6 +11,4 @@ namespace InfiniLore.Server.Database.Models;
 public class UserData : BasicData {
     public Guid OwnerId { get; set; } = Guid.Empty;
     [MaybeNull] public InfiniLoreUser Owner { get; set; } = null!;
-
-    // public bool IsPublic { get; set; } = false;
 }

@@ -24,7 +24,8 @@ public static partial class RolesStore {
     // -----------------------------------------------------------------------------------------------------------------
     public static partial string User { get; }
     public static Lazy<string[]> UserPermissions { get; } = new(() => [
-        PermissionsStoreConstants.LorescopeRead
+        PermissionsStoreConstants.LorescopeRead,
+        PermissionsStoreConstants.MarkdownFileRead,
     ]);
 
     public static partial string Consumer { get; }
@@ -36,7 +37,9 @@ public static partial class RolesStore {
     public static Lazy<string[]> ProducerPermissions { get; } = new(() => [
         ..ConsumerPermissions.Value,
         PermissionsStoreConstants.LorescopeWrite,
-        PermissionsStoreConstants.LorescopeDelete
+        PermissionsStoreConstants.LorescopeDelete,
+        PermissionsStoreConstants.MarkdownFileWrite,
+        PermissionsStoreConstants.MarkdownFileDelete,
     ]);
 
     public static partial string InfiniloreAdmin { get; }

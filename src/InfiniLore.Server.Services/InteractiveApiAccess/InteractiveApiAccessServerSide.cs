@@ -4,11 +4,16 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Api.Mappers.Data.Project.MarkdownFiles;
 using InfiniLore.Server.Api.Mappers.Data.User.LoreScopes;
+using InfiniLore.Server.Api.Responses.Data.Project.MarkdownFiles;
 using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.Server.Contracts;
+using InfiniLore.Server.Database.Models.Data.Project;
 using InfiniLore.Server.Database.Models.Data.User;
 using InfiniLore.Server.Services.Messaging;
+using InfiniLore.Server.Services.Messaging.Commands.Data.Project;
+using InfiniLore.Server.Services.Messaging.Queries.Data.Project;
 using InfiniLore.Server.Services.Messaging.Queries.Data.User;
 using InfiniLore.ServerClient.Services;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +29,9 @@ namespace InfiniLore.Server.Services;
 public class InteractiveApiAccessServerSide(
     ILogger<InteractiveApiAccessServerSide> logger,
     IHttpContextAccessor httpContextAccessor,
-    LoreScopesMapper loreScopesMapper
+    LoreScopesMapper loreScopesMapper,
+    MarkdownFilesMapper markdownFilesMapper,
+    MarkdownFileMapper markdownFileMapper
 ) : IInteractiveApiAccess {
     public async ValueTask<Result<LoreScopesResponse>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<LoreScopesResponse>.FromError("Invalid userId");
@@ -51,5 +58,64 @@ public class InteractiveApiAccessServerSide(
 
         LoreScopesResponse data = loreScopesMapper.FromEntity(paginatedData);
         return Result<LoreScopesResponse>.FromSuccess(data);
+    }
+    
+    public async ValueTask<Result<MarkdownFilesResponse>> GetMarkdownFilesAsync(string loreScopeId, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result<MarkdownFilesResponse>.FromError("Invalid loreScopeId");
+        ClaimsPrincipal? claims = httpContextAccessor.HttpContext?.User;
+        
+        // Form message
+        var query = new GetMarkdownFilesQuery(
+            parsedLoreScopeId,
+            new PaginationInfo(1)
+        ) {
+            AccessData = RequestAccessData.FromClaims(claims, ct)
+        };
+
+        // Execute Query
+        MessageResponse<PaginatedData<MarkdownFile>> result = await query.ExecuteAsync(ct);
+        if (!result.TryGetAsSuccess(out PaginatedData<MarkdownFile> paginatedData)) {
+            logger.Warning("Failed to get MarkdownFiles for loreScopeId {loreScopeId} because '{reason}'", loreScopeId, result.AsError.Value);
+            return Result<MarkdownFilesResponse>.FromError($"Failed to get MarkdownFiles for loreScopeId {loreScopeId}");
+        }
+        
+        // Map to response
+        MarkdownFilesResponse data = markdownFilesMapper.FromEntity(paginatedData);
+        return Result<MarkdownFilesResponse>.FromSuccess(data);
+    }
+    public async ValueTask<Result<MarkdownFileResponse>> GetMarkdownFileAsync(string loreScopeId, string markdownFileId, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result<MarkdownFileResponse>.FromError("Invalid loreScopeId");
+        if (!Guid.TryParse(markdownFileId, out Guid parsedMarkdownFileId)) return Result<MarkdownFileResponse>.FromError("Invalid markdownFileId");
+        
+        // Form Query
+        var query = new GetMarkdownFileByIdQuery(MarkdownFileId: parsedMarkdownFileId, LorescopeId: parsedLoreScopeId) {
+            AccessData = RequestAccessData.FromClaims(httpContextAccessor.HttpContext?.User, ct)
+        };
+        
+        // Execute Query
+        MessageResponse<MarkdownFile> result = await query.ExecuteAsync(ct);
+        if (!result.TryGetAsSuccess(out MarkdownFile markdownFile)) {
+            logger.Warning("Failed to get MarkdownFile for loreScopeId {loreScopeId} and markdownFileId {markdownFileId} because '{reason}'", loreScopeId, markdownFileId, result.AsError.Value);
+            return Result<MarkdownFileResponse>.FromError($"Failed to get MarkdownFile for loreScopeId {loreScopeId} and markdownFileId {markdownFileId}");
+        }
+        
+        // Map to response
+        MarkdownFileResponse data = markdownFileMapper.FromEntity(markdownFile);
+        return Result<MarkdownFileResponse>.FromSuccess(data);
+    }
+
+    public async ValueTask<Result> UpsertMarkdownFileAsync(string loreScopeId, string markdownFileId, string fileName, string markdown, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid loreScopeId");
+        if (!Guid.TryParse(markdownFileId, out Guid parsedMarkdownFileId)) return Result.FromError("Invalid markdownFileId");
+        
+        // Form Command
+        var command = new MarkdownFileAddOrUpdateRequest(
+            parsedMarkdownFileId, parsedLoreScopeId, fileName, markdown
+        ) {
+            AccessData = RequestAccessData.FromClaims(httpContextAccessor.HttpContext?.User, ct)
+        };
+        
+        await command.ExecuteAsync(ct);
+        return true;
     }
 }
