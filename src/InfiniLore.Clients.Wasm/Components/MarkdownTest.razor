@@ -24,7 +24,6 @@
     <ul>
         @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
             <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1">Editor</a></li>
-            
         }
         <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li>
     </ul>
@@ -59,10 +58,6 @@
             (Guid, string)[] files = await GetMarkdownFilesAsync(scope.Id);
             MarkdownFileMap[scope.Id] = files;
         }
-        
-        Logger.Information("data: {count}", LoreScopeResponses.Length);
-        Logger.Information("records; {@data}", MarkdownFileMap.Where(pair => !pair.Value.IsEmpty()));
-        
     }
 
     private async Task<(Guid, string)[]> GetMarkdownFilesAsync(Guid loreScopeId) {
