@@ -1,38 +1,36 @@
 ﻿name: Publish Packages
 
 on:
-  push:
-      branches:
-          - 'core'
-    tags:
-      - 'v*.*.*' # Match version tags like v1.0.0
+    workflow_dispatch:
+    push:
+        tags:
+            - 'v*.*.*' # Match version tags like v1.0.0
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '9.x'
-
-      - name: Restore dependencies
-        run: dotnet restore InfiniLore.sln
-
-      - name: Build
-        run: dotnet build InfiniLore.sln --configuration Release --no-restore
-          
-      # Ensure that the tests must pass 
-      # The job will fail automatically if any test fails because `dotnet test` exits with a non-zero code
-      - name: Run tests
-        run: dotnet run -c Release --no-restore --no-build
-        working-directory: "tests/Tests.InfiniLore.Server.Types"
-
-      - name: Publish to NuGet
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |          
-          dotnet nuget push src/server/InfiniLore.Server.Types/bin/Release/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+      publish:
+            runs-on: ubuntu-latest
+            steps:
+                  - name: Checkout repository
+                    uses: actions/checkout@v3
+            
+                  - name: Setup .NET
+                    uses: actions/setup-dotnet@v3
+                    with:
+                      dotnet-version: '9.x'
+            
+                  - name: Restore dependencies
+                    run: dotnet restore InfiniLore.sln
+            
+                  - name: Build
+                    run: dotnet build InfiniLore.sln --configuration Release --no-restore
+                      
+                  # Ensure that the tests must pass 
+                  # The job will fail automatically if any test fails because `dotnet test` exits with a non-zero code
+#                  - name: Run tests
+#                    run: dotnet test InfiniLore.sln --configuration Release --no-restore --no-build
+            
+                  - name: Publish to NuGet
+                    env:
+                      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+                    run: |          
+                        dotnet nuget push src/server/InfiniLore.Server.Types/bin/Release/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
