@@ -76,6 +76,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.ServerClient.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota.Extensions", "src\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj", "{8D707686-342B-495D-A85D-F577B1AB6800}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{58968158-6202-497E-A70A-E64027AA5B7B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\release.yml = .github\workflows\release.yml
+		.github\workflows\onPullRequest-TestDotnet.yml = .github\workflows\onPullRequest-TestDotnet.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,5 +215,6 @@ Global
 		{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{859E6C9D-2EEB-485C-9735-9A3CA484A3DA} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 		{8D707686-342B-495D-A85D-F577B1AB6800} = {B7C12299-7FB3-488E-89FB-B30DDB7480B3}
+		{58968158-6202-497E-A70A-E64027AA5B7B} = {EEF7820D-10E1-4D6F-A56E-33C2DCB7A6EF}
 	EndGlobalSection
 EndGlobal
