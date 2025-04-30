@@ -159,7 +159,7 @@ public static class Program {
 
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
-            config.AddMarkdown();
+            config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
         });
         #endregion
 
