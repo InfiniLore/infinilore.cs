@@ -89,7 +89,7 @@
                             </NavLink>
                         }
                         else {
-                            <LucideIcon Name="user" class="w-12 h-12 text-gray-400"/>
+                            <LiCircleUser class="w-12 h-12 text-gray-400"/>
                         }
 
                     </NavLink>
@@ -97,7 +97,6 @@
                     <div class="@($"{(MenuCollapsed ? "w-0 opacity-0 delay-0" : "delay-300 w-auto ml-2 opacity-100")}") text-black flex flex-col space-y-1">
                         <a href="/account/profile" class="font-semibold">@UserName</a>
 
-                        @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
                         <NavLink @onclick="LogoutCallbackAsync" href="/account/logout"
                                  class="text-sm text-black hover:text-gray-200 hover:font-bold">logout
                         </NavLink>
