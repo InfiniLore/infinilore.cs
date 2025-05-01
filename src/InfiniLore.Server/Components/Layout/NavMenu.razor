@@ -13,49 +13,49 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<CollapsibleMenu @bind-IsMenuCollapsed="@IsMenuCollapsed">
+<SideNavMenu @bind-MenuCollapsed="@MenuCollapsed">
     <Header>
         <a href="/"
-           class="@(!IsMenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
+           class="@(!MenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
             InfiniLore
         </a>
     </Header>
 
-    <NavigationMenu>
-        <CollapsibleMenuButton Href="/about">
+    <Body>
+        <SideNavMenuLink Href="/about">
             <Icon>
                 <LiEqualApproximately/>
             </Icon>
             <Text>About</Text>
-        </CollapsibleMenuButton>
+        </SideNavMenuLink>
 
-        <CollapsibleMenuButton Href="/api-test">
+        <SideNavMenuLink Href="/api-test">
             <Icon>
                 <LiPlus/>
             </Icon>
             <Text>Api Test</Text>
-        </CollapsibleMenuButton>
+        </SideNavMenuLink>
 
-        <CollapsibleMenuButton Href="/markdown-test">
+        <SideNavMenuLink Href="/markdown-test">
             <Icon>
                 <LiSignature/>
             </Icon>
             <Text>Markdown Test</Text>
-        </CollapsibleMenuButton>
+        </SideNavMenuLink>
 
         <AuthorizeView>
             <NotAuthorized></NotAuthorized>
             <Authorized>
-                <CollapsibleMenuButton Href="/claims-viewer">
+                <SideNavMenuLink Href="/claims-viewer">
                     <Icon>
                         <LiView/>
                     </Icon>
                     <Text>Claims</Text>
-                </CollapsibleMenuButton>
+                </SideNavMenuLink>
             </Authorized>
         </AuthorizeView>
 
-    </NavigationMenu>
+    </Body>
 
     <Footer>
         <AuthorizeView>
@@ -65,31 +65,30 @@
 
             <Authorized>
                 <!-- Profile Icon -->
-                <NavLink href="/account/profile"
-                         class="@($"transition-all duration-300 {(IsMenuCollapsed ? "w-8 h-8 mx-auto" : "w-10 h-10")}")">
-                    @if (!string.IsNullOrEmpty(ProfileImage)) {
-                        <img src="@ProfileImage" alt="Profile" class="rounded-full" crossorigin="anonymous">
-                    } else {
-                        <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
-                    }
+                <div class="w-full flex flex-nowrap items-center justify-left gap-1">
+                    
+                    <NavLink href="/account/profile" class="w-12 h-12  flex-shrink-0">
+                        @if (!string.IsNullOrEmpty(ProfileImage)) {
+                            <img src="@ProfileImage" alt="Profile" class="rounded-full" crossorigin="anonymous">
+                        } else {
+                            <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
+                        }
 
-                </NavLink>
-                <!-- User Info -->
-                <div class="@(!IsMenuCollapsed ? "ml-4" : "hidden") text-white flex flex-col space-y-1">
-                    <p class="font-semibold">@UserName</p>
-
-                    <NavLink href="/account/profile" class="text-sm text-gray-400 hover:text-gray-200">settings
                     </NavLink>
+                    <!-- User Info -->
+                    <div class="@($"{(MenuCollapsed ? "w-0 opacity-0 delay-0" : "delay-300 w-auto ml-2 opacity-100")}") text-black flex flex-col space-y-1">
+                        <a href="/account/profile" class="font-semibold">@UserName</a>
 
-                    @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
-                    <NavLink @onclick="LogoutCallbackAsync" href="/account/logout"
-                             class="text-sm text-gray-400 hover:text-gray-200">logout
-                    </NavLink>
+                        @* TODO Make it so that when the logout is pressed, we also remove the api token from storage *@
+                        <NavLink @onclick="LogoutCallbackAsync" href="/account/logout"
+                                 class="text-sm text-black hover:text-gray-200 hover:font-bold">logout
+                        </NavLink>
+                    </div>
                 </div>
             </Authorized>
         </AuthorizeView>
     </Footer>
-</CollapsibleMenu>
+</SideNavMenu>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code *@
@@ -103,7 +102,8 @@
     // State for user details
     private string UserName { get; set; } = "Guest";
     private string ProfileImage { get; set; } = "";// Fallback image
-    private bool IsMenuCollapsed { get; set; } = false;// Tracks whether the menu is collapsed
+    private bool MenuCollapsed { get; set; } // Tracks whether the menu is collapsed
+    private bool _imageLoadFailed;
 
     protected override async Task OnInitializedAsync() {
         if (AuthenticationStateTask is null) return;
@@ -130,4 +130,11 @@
     private async Task LogoutCallbackAsync() {
         await JsTokenProvider.RemoveTokenAsync();
     }
+    
+    private async Task HandleImageError()
+    {
+        _imageLoadFailed = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
 }
