@@ -79,10 +79,17 @@
                 <div class="w-full flex flex-nowrap items-center justify-left gap-1">
                     
                     <NavLink href="/account/profile" class="w-12 h-12  flex-shrink-0">
-                        @if (!string.IsNullOrEmpty(ProfileImage)) {
-                            <img src="@ProfileImage" alt="Profile" class="rounded-full" crossorigin="anonymous">
-                        } else {
-                            <LucideIcon Name="user" class="w-full h-full text-gray-400"/>
+                        @if (!_imageLoadFailed) {
+                            <NavLink href="/account/profile">
+                                <img src="@ProfileImage"
+                                     alt="Profile"
+                                     class="rounded-full"
+                                     crossorigin="anonymous"
+                                     @onerror="@(HandleImageError)" />
+                            </NavLink>
+                        }
+                        else {
+                            <LucideIcon Name="user" class="w-12 h-12 text-gray-400"/>
                         }
 
                     </NavLink>
