@@ -50,7 +50,7 @@
                     <Icon>
                         <LiView/>
                     </Icon>
-                    <Text>Claims</Text>
+                    
                 </SideNavMenuLink>
             </Authorized>
         </AuthorizeView>
@@ -60,7 +60,18 @@
     <Footer>
         <AuthorizeView>
             <NotAuthorized>
-                <NavLink href="Account/Login?redirectUri=/">Log in</NavLink>
+                <SideNavMenuLink Href="Account/Login?redirectUri=/">
+                    <Icon>
+                        <LiKeyRound class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/> 
+                    </Icon>
+                    <Text>Login</Text>
+                </SideNavMenuLink>
+                <SideNavMenuLink Href="Account/Login?redirectUri=/">
+                    <Icon>
+                        <LiSignpost class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                    </Icon>
+                    <Text>SignUp</Text>
+                </SideNavMenuLink>
             </NotAuthorized>
 
             <Authorized>
