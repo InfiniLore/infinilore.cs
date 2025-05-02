@@ -13,47 +13,47 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<SideNavMenu @bind-MenuCollapsed="@MenuCollapsed">
+<SideNavMenu @bind-MenuCollapsed="@MenuCollapsed" Size="SideNavMenuSize.Large">
     <Header>
         <a href="/"
-           class="@(!MenuCollapsed ? "text-2xl font-bold text-white hover:text-gray-300 no-underline" : "hidden")">
+           class="@(!MenuCollapsed ? "text-1xl font-bold text-(--color-base-00) hover:text-(--color-accent) no-underline" : "hidden")">
             InfiniLore
         </a>
     </Header>
 
     <Body>
-        <SideNavMenuLink Href="/about">
-            <Icon>
-                <LiEqualApproximately/>
-            </Icon>
-            <Text>About</Text>
-        </SideNavMenuLink>
+    <SideNavMenuLink Href="/about">
+        <Icon>
+            <LiEqualApproximately/>
+        </Icon>
+        <Text>About</Text>
+    </SideNavMenuLink>
 
-        <SideNavMenuLink Href="/api-test">
-            <Icon>
-                <LiPlus/>
-            </Icon>
-            <Text>Api Test</Text>
-        </SideNavMenuLink>
+    <SideNavMenuLink Href="/api-test">
+        <Icon>
+            <LiPlus/>
+        </Icon>
+        <Text>Api Test</Text>
+    </SideNavMenuLink>
 
-        <SideNavMenuLink Href="/markdown-test">
-            <Icon>
-                <LiSignature/>
-            </Icon>
-            <Text>Markdown Test</Text>
-        </SideNavMenuLink>
+    <SideNavMenuLink Href="/markdown-test">
+        <Icon>
+            <LiSignature/>
+        </Icon>
+        <Text>Markdown Test</Text>
+    </SideNavMenuLink>
 
-        <AuthorizeView>
-            <NotAuthorized></NotAuthorized>
-            <Authorized>
-                <SideNavMenuLink Href="/claims-viewer">
-                    <Icon>
-                        <LiView/>
-                    </Icon>
-                    <Text>Claims viewer</Text>
-                </SideNavMenuLink>
-            </Authorized>
-        </AuthorizeView>
+    <AuthorizeView>
+        <NotAuthorized></NotAuthorized>
+        <Authorized>
+            <SideNavMenuLink Href="/claims-viewer">
+                <Icon>
+                    <LiView/>
+                </Icon>
+                <Text>Claims viewer</Text>
+            </SideNavMenuLink>
+        </Authorized>
+    </AuthorizeView>
 
     </Body>
 
@@ -76,32 +76,18 @@
 
             <Authorized>
                 <!-- Profile Icon -->
-                <div class="w-full flex flex-nowrap items-center justify-left gap-1">
-                    
-                    <NavLink href="/account/profile" class="w-12 h-12  flex-shrink-0">
-                        @if (!_imageLoadFailed) {
-                            <NavLink href="/account/profile">
-                                <img src="@ProfileImage"
-                                     alt="Profile"
-                                     class="rounded-full"
-                                     crossorigin="anonymous"
-                                     @onerror="HandleImageError" />
-                            </NavLink>
-                        }
-                        else {
-                            <LiCircleUser class="w-12 h-12 text-gray-400"/>
-                        }
-
-                    </NavLink>
-                    <!-- User Info -->
-                    <div class="@($"{(MenuCollapsed ? "w-0 opacity-0 delay-0" : "delay-300 w-auto ml-2 opacity-100")}") text-black flex flex-col space-y-1">
-                        <a href="/account/profile" class="font-semibold">@UserName</a>
-
-                        <NavLink @onclick="LogoutCallbackAsync" href="/account/logout"
-                                 class="text-sm text-black hover:text-gray-200 hover:font-bold">logout
+                <SideNavMenuUser
+                    HrefUserProfile="/account/profile"
+                    UserName="@UserName"
+                    UserImageUrl="@ProfileImage">
+                    <AdditionalLinks>
+                        <NavLink @onclick="LogoutCallbackAsync"
+                                 href="/account/logout"
+                                 class="@(SideNavMenuUser.AdditionalLinkClasses)">
+                            logout
                         </NavLink>
-                    </div>
-                </div>
+                    </AdditionalLinks>
+                </SideNavMenuUser>
             </Authorized>
         </AuthorizeView>
     </Footer>
@@ -119,8 +105,7 @@
     // State for user details
     private string UserName { get; set; } = "Guest";
     private string ProfileImage { get; set; } = "";// Fallback image
-    private bool MenuCollapsed { get; set; } // Tracks whether the menu is collapsed
-    private bool _imageLoadFailed;
+    private bool MenuCollapsed { get; set; }// Tracks whether the menu is collapsed
 
     protected override async Task OnInitializedAsync() {
         if (AuthenticationStateTask is null) return;
@@ -138,7 +123,7 @@
 
             // Set username and profile image
             UserName = nameClaim ?? "User";
-            ProfileImage = imageClaim ?? "";// Fallback if no image is available
+            ProfileImage = imageClaim ?? string.Empty;
         }
 
         await InvokeAsync(StateHasChanged);
@@ -147,11 +132,4 @@
     private async Task LogoutCallbackAsync() {
         await JsTokenProvider.RemoveTokenAsync();
     }
-    
-    private async Task HandleImageError()
-    {
-        _imageLoadFailed = true;
-        await InvokeAsync(StateHasChanged);
-    }
-
 }

@@ -10,9 +10,9 @@
   "license": "GNUv3",
   "description": "",
   "devDependencies": {
-    "tailwindcss": "^4.0.9"
+    "tailwindcss": "^4.1.5"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.9"
+    "@tailwindcss/cli": "^4.1.5"
   }
 }
