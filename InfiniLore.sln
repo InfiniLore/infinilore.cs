@@ -8,10 +8,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{56F59020
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{EB00BE10-6020-4E39-A00F-C202A0165920}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tailwind", "tailwind", "{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{C5914BEF-3CBF-428C-9B1B-AD371CD2D5D4}"
 	ProjectSection(SolutionItems) = preProject
 		package.json = package.json
 		tailwind.config.js = tailwind.config.js
+		tsconfig.json = tsconfig.json
+		webpack.config.js = webpack.config.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9837BD46-BACA-4E98-8C3A-52C045FD848F}"
