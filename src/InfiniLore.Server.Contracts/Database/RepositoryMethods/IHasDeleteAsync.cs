@@ -4,11 +4,11 @@
 using AterraEngine.Unions;
 using InfiniLore.Server.Database.Models;
 
-namespace InfiniLore.Server.Contracts.Database.RepositoryMethods;
+namespace InfiniLore.Server.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IHasDeleteAsync<in T> where T : BasicData {
+public interface IHasDeleteAsync<in T> where T : IBasicData {
     ValueTask<Result> DeleteAsync(T model, CancellationToken ct = default);
     ValueTask<Result> DeleteByIdAsync(Guid id, CancellationToken ct = default);
 

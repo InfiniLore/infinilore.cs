@@ -26,7 +26,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Services.Messaging\InfiniLore.Server.Services.Messaging.csproj"/>
     </ItemGroup>
 
 </Project>

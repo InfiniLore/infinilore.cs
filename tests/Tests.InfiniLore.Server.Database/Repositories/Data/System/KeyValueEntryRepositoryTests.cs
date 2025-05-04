@@ -7,8 +7,10 @@ using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.Database.Migrations.Content;
 using InfiniLore.Server.Database.Models.Data.System;
 using InfiniLore.Server.Database.Repositories.Data.System;
+using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;

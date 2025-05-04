@@ -6,7 +6,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
-using InfiniLore.Server.Database.Repositories.Data.User;
+using InfiniLore.Server.Modules.LoreScopes.Database;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------

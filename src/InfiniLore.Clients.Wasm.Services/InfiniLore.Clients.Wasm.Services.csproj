@@ -18,7 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj"/>
         <ProjectReference Include="..\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj"/>
-        <ProjectReference Include="..\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
 </Project>

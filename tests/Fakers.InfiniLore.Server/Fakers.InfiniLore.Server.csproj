@@ -10,8 +10,4 @@
         <PackageReference Include="Bogus"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
-    </ItemGroup>
-
 </Project>

@@ -2,10 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
-using InfiniLore.Server.Database.Models.Account;
-using InfiniLore.Server.Database.Models.Data.Project;
-using InfiniLore.Server.Database.Models.Data.System;
-using InfiniLore.Server.Database.Models.Data.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -15,11 +11,6 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
 public class ContentDb : DbContext, IReadonlyCapableDbContext {
-    public DbSet<KeyValueEntry> KeyValueEntries { get; set; } = null!;
-
-    public DbSet<InfiniLoreUser> Users { get; set; } = null!;
-    public DbSet<LoreScope> LoreScopes { get; set; } = null!;
-    public DbSet<MarkdownFile> MarkdownFiles { get; set; } = null!;
     public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------

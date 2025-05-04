@@ -5,8 +5,6 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Clients.Kiota;
 using InfiniLore.Clients.Kiota.Models;
-using InfiniLore.Server.Api.Responses.Data.Project.MarkdownFiles;
-using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 using InfiniLore.ServerClient.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>InfiniLore.Server</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,10 +17,6 @@
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts"/>
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -6,12 +6,14 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/register"
 @using AterraEngine.Unions
+@using Auth0.ManagementApi.Models
 @using FastEndpoints
 @using InfiniLore.Server.Services.Messaging
 @using InfiniLore.Server.Services.Messaging.Commands.Account
 @using InfiniLore.Server.Services.Messaging.Queries.Account
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
+@using MessageResponse = InfiniLore.Server.Modules.Core.Messaging.MessageResponse
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -174,7 +176,7 @@
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MessageResponse<Guid> result = await new UserCreateRequest(Auth0UserId, userModel.Username).ExecuteAsync();
+        Modules.Core.Messaging.MessageResponse<Guid> result = await new UserCreateRequest(Auth0UserId, userModel.Username).ExecuteAsync();
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry
