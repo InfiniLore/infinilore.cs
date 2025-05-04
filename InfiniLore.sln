@@ -81,6 +81,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.Users", "src\InfiniLore.Server.Modules.Users\InfiniLore.Server.Modules.Users.csproj", "{E0EEAB7E-5ECE-49D1-821C-AE2BA3D918A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.Core.Contracts", "src\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj", "{4441D8CD-C197-41F0-9838-937E74200681}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.LoreScopes.Contracts", "src\InfiniLore.Server.Modules.LoreScopes.Contracts\InfiniLore.Server.Modules.LoreScopes.Contracts.csproj", "{D955FA17-3B7E-48C7-9B35-D810525C5821}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.MarkdownFiles.Contracts", "src\InfiniLore.Server.Modules.MarkdownFiles.Contracts\InfiniLore.Server.Modules.MarkdownFiles.Contracts.csproj", "{66AC0253-0E52-481C-BB39-63A371AC2A8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.Users.Contracts", "src\InfiniLore.Server.Modules.Users.Contracts\InfiniLore.Server.Modules.Users.Contracts.csproj", "{BAEC63CB-9BB4-42C0-B198-761DC404661C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +183,22 @@ Global
 		{E0EEAB7E-5ECE-49D1-821C-AE2BA3D918A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0EEAB7E-5ECE-49D1-821C-AE2BA3D918A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0EEAB7E-5ECE-49D1-821C-AE2BA3D918A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4441D8CD-C197-41F0-9838-937E74200681}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4441D8CD-C197-41F0-9838-937E74200681}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4441D8CD-C197-41F0-9838-937E74200681}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4441D8CD-C197-41F0-9838-937E74200681}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D955FA17-3B7E-48C7-9B35-D810525C5821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D955FA17-3B7E-48C7-9B35-D810525C5821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D955FA17-3B7E-48C7-9B35-D810525C5821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D955FA17-3B7E-48C7-9B35-D810525C5821}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66AC0253-0E52-481C-BB39-63A371AC2A8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66AC0253-0E52-481C-BB39-63A371AC2A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66AC0253-0E52-481C-BB39-63A371AC2A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66AC0253-0E52-481C-BB39-63A371AC2A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAEC63CB-9BB4-42C0-B198-761DC404661C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAEC63CB-9BB4-42C0-B198-761DC404661C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAEC63CB-9BB4-42C0-B198-761DC404661C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAEC63CB-9BB4-42C0-B198-761DC404661C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB00BE10-6020-4E39-A00F-C202A0165920} = {7304F551-466C-4016-A729-CDA819CE9983}
@@ -208,5 +232,9 @@ Global
 		{52D15B5E-1BCF-4346-B4A0-14AEA39F2E7B} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 		{CF14A158-1E2A-4ECA-8D7E-84462084CE17} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 		{01FDB0C5-85E7-41F9-8F00-82F3025FC46A} = {EB00BE10-6020-4E39-A00F-C202A0165920}
+		{4441D8CD-C197-41F0-9838-937E74200681} = {4390246B-F6EB-49D7-A057-F7370113D72B}
+		{D955FA17-3B7E-48C7-9B35-D810525C5821} = {4390246B-F6EB-49D7-A057-F7370113D72B}
+		{66AC0253-0E52-481C-BB39-63A371AC2A8A} = {4390246B-F6EB-49D7-A057-F7370113D72B}
+		{BAEC63CB-9BB4-42C0-B198-761DC404661C} = {4390246B-F6EB-49D7-A057-F7370113D72B}
 	EndGlobalSection
 EndGlobal
