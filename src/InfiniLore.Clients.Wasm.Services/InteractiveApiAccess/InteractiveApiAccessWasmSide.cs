@@ -5,7 +5,7 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Clients.Kiota;
 using InfiniLore.Clients.Kiota.Models;
-using InfiniLore.ServerClient.Services;
+using InfiniLore.Shared.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Serialization;

@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScope : UserData {
+public class LoreScope : UserData, ILoreScope {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
     [MaxLength(Defaults.ShortDescriptionMaxLength)] public string ShortDescription { get; set; } = "";
     

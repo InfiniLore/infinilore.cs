@@ -9,37 +9,39 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataRepository<T> where T : UserData {
-
+public abstract class UserDataRepository<TModel, TInterface> : BasicDataRepository<TModel, TInterface>, IUserDataRepository<TInterface> 
+    where TModel : UserData, TInterface 
+    where TInterface: IUserData 
+{
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<T[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<Result<TInterface[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
-        DbSet<T> dbSet = GetDbSet<T>();
+        DbSet<TModel> dbSet = GetDbSet<TModel>();
 
         // Query
-        IQueryable<T> query = dbSet
+        IQueryable<TInterface> query = dbSet
             .ConditionalWith(config.AutoInclude, AutoInclude)
             .ConditionalReverse(config.Reverse)
             .Where(ls => ls.OwnerId == userId);
 
         // Retrieve
-        T[] result = await query.ToArrayAsync(cancellationToken: ct);
-        return Result<T[]>.FromSuccess(result);
+        TInterface[] result = await query.ToArrayAsync(cancellationToken: ct);
+        return Result<TInterface[]>.FromSuccess(result);
     }
 
-    public async ValueTask<Server.Database.PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<Server.Database.PaginatedResult<TInterface>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
-        DbSet<T> dbSet = GetDbSet<T>();
+        DbSet<TModel> dbSet = GetDbSet<TModel>();
 
         // Query
-        IQueryable<T> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
+        IQueryable<TModel> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
 
         int totalCount = await baseQuery.CountAsync(ct);
-        if (totalCount == 0) return PaginatedData<T>.Empty;
+        if (totalCount == 0) return PaginatedData<TInterface>.Empty;
 
-        IQueryable<T> query = baseQuery
+        IQueryable<TInterface> query = baseQuery
             .ConditionalWith(config.AutoInclude, AutoInclude)
             .ConditionalReverse(config.Reverse)
             .OrderByDescending(ls => ls.Id)
@@ -47,8 +49,8 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
             .Take(pageInfo.PageSize);
 
         // Retrieve
-        T[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return new PaginatedData<T>(
+        TInterface[] data = await query.ToArrayAsync(cancellationToken: ct);
+        return new PaginatedData<TInterface>(
             data,
             totalCount,
             pageInfo.PageNumber,
@@ -56,6 +58,6 @@ public abstract class UserDataRepository<T> : BasicDataRepository<T>, IUserDataR
         );
     }
 
-    protected override IQueryable<T> AutoInclude(IQueryable<T> query)
+    protected override IQueryable<TModel> AutoInclude(IQueryable<TModel> query)
         => query.Include(ls => ls.Owner);
 }

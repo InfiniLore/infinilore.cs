@@ -2,14 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Server.Contracts;
-using InfiniLore.Server.Contracts.Services.Auth0;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Server.Services.Messaging;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

@@ -11,7 +11,7 @@ using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
-using InfiniLore.ServerClient.Services;
+using InfiniLore.Shared.Contracts.Services;
 using System.Security.Claims;
 
 namespace InfiniLore.Server.Services;

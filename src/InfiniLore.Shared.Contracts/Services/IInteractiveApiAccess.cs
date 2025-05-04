@@ -2,10 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Server.Api.Responses.Data.Project.MarkdownFiles;
-using InfiniLore.Server.Api.Responses.Data.User.LoreScopes;
 
-namespace InfiniLore.ServerClient.Services;
+namespace InfiniLore.Shared.Contracts.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
