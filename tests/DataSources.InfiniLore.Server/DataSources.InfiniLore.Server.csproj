@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" Version="0.65.0" />
-        <PackageReference Include="Testcontainers.MsSql" Version="4.4.0"/>
-        <PackageReference Include="TUnit.Core" Version="0.19.116" />
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" />
+        <PackageReference Include="Testcontainers.MsSql"/>
+        <PackageReference Include="TUnit.Core" />
     </ItemGroup>
 
     <ItemGroup>

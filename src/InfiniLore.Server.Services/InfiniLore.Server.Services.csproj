@@ -9,26 +9,26 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
 
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.65.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.65.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.Serilog" Version="0.65.0" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.65.0">
+        <PackageReference Include="CodeOfChaos.Extensions" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="4.13.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.4"/>
-        <PackageReference Include="Serilog" Version="4.2.0"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server"/>
+        <PackageReference Include="Microsoft.CodeAnalysis"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Scripting"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Identity.Core"/>
+        <PackageReference Include="Serilog"/>
     </ItemGroup>
 
     <ItemGroup>
