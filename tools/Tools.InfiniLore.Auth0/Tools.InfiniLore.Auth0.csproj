@@ -9,18 +9,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Auth0.ManagementApi" Version="7.36.0"/>
-        <PackageReference Include="CodeOfChaos.CliArgsParser" Version="4.10.0" />
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.10.0">
+        <PackageReference Include="Auth0.ManagementApi"/>
+        <PackageReference Include="CodeOfChaos.CliArgsParser"/>
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="InfiniLore.Credentials.Auth0" Version="4.1.1" />
-        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.1.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4"/>
-        <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Serilog.Extensions.Hosting"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
     </ItemGroup>
 
     <ItemGroup>

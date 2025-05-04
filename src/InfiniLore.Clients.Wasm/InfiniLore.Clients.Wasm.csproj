@@ -9,16 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.65.0" />
-        <PackageReference Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.18" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.18" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.18" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.18" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.4"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1"/>
-        <PackageReference Include="Serilog.Sinks.BrowserConsole" Version="8.0.0"/>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
+        <PackageReference Include="InfiniLore.InfiniBlazor" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.BrowserConsole" />
     </ItemGroup>
 
     <ItemGroup>

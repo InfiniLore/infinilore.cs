@@ -9,17 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" Version="4.10.0" />
-        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators" Version="4.10.0">
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="CodeOfChaos.Extensions" Version="0.65.0" />
-        <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.17.2"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0"/>
-        <PackageReference Include="LibGit2Sharp" Version="0.31.0"/>
-        <PackageReference Include="NuGet.Protocol" Version="6.13.2"/>
-        <PackageReference Include="TextCopy" Version="6.2.1"/>
+        <PackageReference Include="CodeOfChaos.Extensions" />
+        <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary"/>
+        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="LibGit2Sharp"/>
+        <PackageReference Include="NuGet.Protocol"/>
+        <PackageReference Include="TextCopy"/>
     </ItemGroup>
 
     <ItemGroup>
