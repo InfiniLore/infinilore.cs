@@ -1,8 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models;
-using InfiniLore.Server.Modules.Users.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Server.Modules.Core.Database;

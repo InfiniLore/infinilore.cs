@@ -4,6 +4,20 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>InfiniLore.Server.Modules.Core</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" />
+        <PackageReference Include="AterraEngine.Unions"/>
+        <PackageReference Include="AterraEngine.Unions.Generators">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+    </ItemGroup>
 
 </Project>

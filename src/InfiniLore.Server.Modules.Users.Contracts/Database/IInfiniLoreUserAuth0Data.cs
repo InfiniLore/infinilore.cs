@@ -3,13 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database.Models;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Users.Database;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
+public interface IInfiniLoreUserAuth0Data : IBasicData {
+    string? Auth0IdGoogle { get; set; }
+    string? Auth0Github { get; set; }
+    string? Auth0MailPassword { get; set; }
 
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+    public string[] GetAuth0Ids();
+}

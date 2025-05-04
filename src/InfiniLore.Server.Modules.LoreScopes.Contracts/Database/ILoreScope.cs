@@ -3,13 +3,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database.Models;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.LoreScopes.Database;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
-
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+public interface ILoreScope : IUserData {
+    public string Name { get; set; }
+}

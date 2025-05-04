@@ -1,15 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using InfiniLore.Server.Modules.Core.Database.Models;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
-
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+public interface IHasAddAsync<in T> where T : IBasicData {
+    ValueTask<Result> AddAsync(T model, CancellationToken ct = default);
+    ValueTask<Result> AddRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
+}

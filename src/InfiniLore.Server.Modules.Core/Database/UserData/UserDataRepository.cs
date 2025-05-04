@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Server.Database.Models;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Modules.Core.Database;
@@ -31,7 +31,7 @@ public abstract class UserDataRepository<TModel, TInterface> : BasicDataReposito
         return Result<TInterface[]>.FromSuccess(result);
     }
 
-    public async ValueTask<Server.Database.PaginatedResult<TInterface>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<TInterface>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 

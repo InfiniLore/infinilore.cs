@@ -1,15 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
+using InfiniLore.Server.Modules.Core.Database.RepositoryMethods;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
-
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+public interface IUserDataRepository<T> :
+    IBasicDataRepository<T>,
+    IHasGetByUserAsync<T>
+    where T : IUserData;

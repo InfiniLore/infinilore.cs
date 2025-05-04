@@ -1,15 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
+using System.Diagnostics.CodeAnalysis;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.Models;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
+public interface IKeyValueEntry {
+    string Key { get; }
+    string? Value { get; set; }
 
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+    public bool TryGetConvertJsonValueToObject<TJsonObject>([NotNullWhen(true)] out TJsonObject? decodedObject) where TJsonObject : class;
+    
+    [MemberNotNullWhen(true, nameof(Value))]
+    public bool TrySetObjectAsJsonValue<TJsonObject>(in TJsonObject objectToEncode) where TJsonObject : class;
+}

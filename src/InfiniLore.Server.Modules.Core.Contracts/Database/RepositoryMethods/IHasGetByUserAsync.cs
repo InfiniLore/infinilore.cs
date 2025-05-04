@@ -1,15 +1,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using InfiniLore.Server.Modules.Core.Database.Models;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
+public interface IHasGetByUserAsync<T> where T : IUserData {
+    ValueTask<Result<T[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default);
 
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+    ValueTask<PaginatedResult<T>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default);
+}

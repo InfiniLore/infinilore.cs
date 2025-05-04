@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Database.Models;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore.Query;
 using System.ComponentModel.DataAnnotations.Schema;
 

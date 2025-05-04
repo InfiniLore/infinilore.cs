@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using InfiniLore.Server.Modules.Core.Services;
-using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.ServerClient.Shared;
 using Newtonsoft.Json;
 using System.Security.Claims;

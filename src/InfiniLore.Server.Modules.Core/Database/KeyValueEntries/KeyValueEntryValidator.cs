@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.Core.Database;

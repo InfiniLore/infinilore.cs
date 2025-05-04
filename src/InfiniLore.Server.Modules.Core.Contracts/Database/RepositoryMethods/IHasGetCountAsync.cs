@@ -1,15 +1,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
+using AterraEngine.Unions;
 
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.RepositoryMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
-
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+public interface IHasGetCountAsync {
+    ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default);
+}

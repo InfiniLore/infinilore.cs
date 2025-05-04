@@ -1,15 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
+using AterraEngine.Unions;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
+[UnionAliases("Success", "Error")]
+[UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
+public readonly partial struct PaginatedResult<T>() : IUnion<PaginatedData<T>, Error<string>> {
+    public static implicit operator bool(PaginatedResult<T> value) => value.IsSuccess;
 
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+    public static PaginatedResult<T> FromError(string failure) => FromError(new Error<string>(failure));
+}

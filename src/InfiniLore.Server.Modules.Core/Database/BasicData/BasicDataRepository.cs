@@ -4,7 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Modules.Core.Database;
@@ -146,15 +146,14 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        TModel[] content = models as TModel[] ?? throw new ArgumentNullException(nameof(models));
+        TInterface[] content = models as TInterface[] ?? models.ToArray();
         if (await IsNotUniqueAsync(content, ct)) return Result.FromError(RepositoryFailures.ModelFailedUniqueConstraint);
 
         // Query
-        foreach (TModel model in content) {
+        foreach (TInterface model in content) {
             model.UpdateLastModifiedDate();
+            await dbSet.AddAsync((model as TModel)!, ct);
         }
-
-        await dbSet.AddRangeAsync(content, ct);
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
@@ -201,7 +200,7 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         return true;
     }
 
-    public async ValueTask<Result> AddOrUpdateAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<Result> AddOrUpdateAsync(TInterface model, CancellationToken ct = default) {
         if (model.Id == Guid.Empty) return await AddAsync(model, ct);// If no ID, always add
         if (await IsNotUniqueAsync(model, ct)) return await UpdateAsync(model, ct);// If ID exists, update
 
@@ -239,12 +238,12 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         return true;
     }
 
-    public async ValueTask<Result> DeleteAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<Result> DeleteAsync(TInterface model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        T? existing = await dbSet.FindAsync([model.Id], ct);
+        TModel? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return Result.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
@@ -261,7 +260,7 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        T? existing = await dbSet.FindAsync([id], ct);
+        TModel? existing = await dbSet.FindAsync([id], ct);
         if (existing == null) return Result.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
@@ -302,12 +301,12 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         return true;
     }
 
-    public async ValueTask<Result> RemoveAsync(T model, CancellationToken ct = default) {
+    public async ValueTask<Result> RemoveAsync(TInterface model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        T? existing = await dbSet.FindAsync([model.Id], ct);
+        TModel? existing = await dbSet.FindAsync([model.Id], ct);
         if (existing == null) return Result.FromError(RepositoryFailures.ModelNotFound);
 
         // Query
@@ -323,7 +322,7 @@ public abstract class BasicDataRepository<TModel, TInterface> : UnitOfWorkReposi
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        T? existing = await dbSet.FindAsync([id], ct);
+        TModel? existing = await dbSet.FindAsync([id], ct);
         if (existing == null) return Result.FromError(RepositoryFailures.ModelNotFound);
 
         // Query

@@ -1,15 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
-
-namespace InfiniLore.Server.Modules.Core.Database;
+namespace InfiniLore.Server.Modules.Core.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class SystemDataRepository<TModel, TInterface> :
-    BasicDataRepository<TModel, TInterface>,
-    ISystemDataRepository<TInterface>
+public interface IBasicData {
+    public Guid Id { get; init; }
+    public DateTime CreatedDate { get; }
+    public DateTime LastModifiedDate { get;  }
+    public void UpdateLastModifiedDate();
 
-    where TModel : SystemData, TInterface 
-    where TInterface : ISystemData ;
+    public bool IsSoftDeleted { get; }
+    public DateTime? SoftDeleteDate { get; }
+    public void SoftDelete();
+}
