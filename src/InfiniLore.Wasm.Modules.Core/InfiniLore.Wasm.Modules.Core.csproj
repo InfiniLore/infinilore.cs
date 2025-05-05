@@ -6,13 +6,17 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup>        
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        
+        <PackageReference Include="Serilog" />
     </ItemGroup>
 
 </Project>

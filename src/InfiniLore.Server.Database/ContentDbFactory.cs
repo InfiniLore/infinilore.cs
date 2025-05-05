@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Reflection;
 using Testcontainers.MsSql;
 using ILogger=Microsoft.Extensions.Logging.ILogger;
 
@@ -15,7 +16,7 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ContentDbFactory {
     private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
-    private static Action<ModelBuilder>? _modelConfigurationAction;
+    private static IEnumerable<Assembly> _assembliesToImport = [];
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -41,10 +42,10 @@ public static class ContentDbFactory {
 
     public static void RegisterDatabase(
         IServiceCollection services, 
-        Action<DbContextOptionsBuilder> optionsAction,
-        Action<ModelBuilder>? modelConfigurationAction = null) 
-    {
-        _modelConfigurationAction = modelConfigurationAction;
+        IEnumerable<Assembly> assembliesToImport,
+        Action<DbContextOptionsBuilder> optionsAction
+    ) {
+        _assembliesToImport = assembliesToImport;
         
         services.AddDbContextFactory<ContentDb>(options => {
             ILoggerFactory databaseLoggerFactory = LoggerFactory.Create(builder =>
@@ -61,6 +62,8 @@ public static class ContentDbFactory {
     }
     
     internal static void ConfigureModel(ModelBuilder modelBuilder) {
-        _modelConfigurationAction?.Invoke(modelBuilder);
+        foreach (Assembly assembly in _assembliesToImport) {
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+        }
     }
 }
