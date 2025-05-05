@@ -1,20 +1,21 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Modules.Core;
+using InfiniLore.Shared.Modules.Users;
+using InfiniLore.Wasm.Modules.Core.Services;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace InfiniLore.Server.Modules.Core;
+namespace InfiniLore.Wasm.Modules.Users;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class CoreModuleSetup : IServerModuleSetup {
+public class UsersModuleSetup : IWasmModuleSetup {
 
-    public void Setup(WebApplicationBuilder builder) {
-        builder.Services.RegisterServicesFromInfiniLoreSharedModulesCore();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
+    public void Setup(WebAssemblyHostBuilder builder) {
+        builder.Services.RegisterServicesFromInfiniLoreSharedModulesUsers();
+        builder.Services.RegisterServicesFromInfiniLoreWasmModulesUsers();
     }
 }

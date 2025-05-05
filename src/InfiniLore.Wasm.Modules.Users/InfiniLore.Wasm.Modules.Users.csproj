@@ -13,6 +13,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Shared.Modules.Users\InfiniLore.Shared.Modules.Users.csproj" />
+      <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
     </ItemGroup>
 
 </Project>

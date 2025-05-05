@@ -1,20 +1,21 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Modules.Core;
+using InfiniLore.Shared.Modules.MarkdownFiles;
+using InfiniLore.Wasm.Modules.Core.Services;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace InfiniLore.Server.Modules.Core;
+namespace InfiniLore.Wasm.Modules.MarkdownFiles;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class CoreModuleSetup : IServerModuleSetup {
+public class MarkdownFilesModuleSetup : IWasmModuleSetup {
 
-    public void Setup(WebApplicationBuilder builder) {
-        builder.Services.RegisterServicesFromInfiniLoreSharedModulesCore();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
+    public void Setup(WebAssemblyHostBuilder builder) {
+        builder.Services.RegisterServicesFromInfiniLoreSharedModulesMarkdownFiles();
+        builder.Services.RegisterServicesFromInfiniLoreWasmModulesMarkdownFiles();
     }
 }
