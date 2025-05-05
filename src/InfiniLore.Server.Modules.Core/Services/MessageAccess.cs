@@ -1,14 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Security.Claims;
+using Newtonsoft.Json;
+using System.Collections.Immutable;
 
-namespace InfiniLore.Server.Modules.Core.Services;
+namespace InfiniLore.Server.Modules.Core.Messaging;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IRequestDataFactory {
-    ValueTask<IAccessData> FromJwtTokenAsync(CancellationToken ct = default);
-    IAccessData FromClaims(CancellationToken ct = default);
+public record MessageAccess(
+    [JsonProperty("user_id")] Guid UserId,
+    [JsonProperty("roles")] ImmutableArray<string> Roles,
+    [JsonProperty("permissions")] ImmutableArray<string> Permissions
+) : IMessageAccess {
+    public static readonly IMessageAccess Empty = new MessageAccess(Guid.Empty, [], []);
 }

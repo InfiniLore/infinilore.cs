@@ -22,7 +22,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Services;
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
     IInteractiveApiServer interactiveApi,
-    IRequestDataFactory requestDataFactory
+    IMessageAccessFactory requestDataFactory
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<PaginatedData<ILoreScopeModel>>.FromError("Invalid userId");
@@ -33,7 +33,7 @@ public class LoreScopeInteractiveApi(
             false,
             PaginationInfo.Default
         ) {
-            AccessData = requestDataFactory.FromClaims(ct)
+            Access = requestDataFactory.FromClaims(ct)
         };
 
         // Execute Message

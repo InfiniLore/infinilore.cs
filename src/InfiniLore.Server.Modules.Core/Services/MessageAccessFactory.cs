@@ -14,35 +14,37 @@ namespace InfiniLore.Server.Modules.Core.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IRequestDataFactory>]
-public class RequestDataFactory(
-    IJwtTokenHelper jwtTokenHelper,
-    IHttpContextAccessor httpContextAccessor
-) : IRequestDataFactory {
+[InjectableScoped<IMessageAccessFactory>]
+public class MessageAccessFactory(IJwtTokenHelper jwtTokenHelper, IHttpContextAccessor httpContextAccessor) : IMessageAccessFactory {
+    public IMessageAccess Empty { get; } = MessageAccess.Empty;
     
-    public async ValueTask<IAccessData> FromJwtTokenAsync(CancellationToken ct = default) {
-        if (jwtTokenHelper.IsNotAuthenticated) return RequestAccessData.Empty;
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public async ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default) {
+        if (jwtTokenHelper.IsNotAuthenticated) return MessageAccess.Empty;
 
         Guid userId = await jwtTokenHelper.TryGetUserIdFromClaimsAsync(ct);
-        if (userId == Guid.Empty) return RequestAccessData.Empty;
+        if (userId == Guid.Empty) return MessageAccess.Empty;
 
-        return new RequestAccessData(
+        return new MessageAccess(
             userId,
             jwtTokenHelper.GetRoles().ToImmutableArray(),
             jwtTokenHelper.GetPermissions().ToImmutableArray()
         );
     }
 
-    public IAccessData FromClaims(CancellationToken ct = default) {
+    public IMessageAccess FromClaims(CancellationToken ct = default) {
         ClaimsPrincipal? claims = httpContextAccessor.HttpContext?.User;
         
         string? userIdString = claims?.FindFirstOrDefault(InfiniLoreClaimsStore.UserId)?.Value;
-        if (!Guid.TryParse(userIdString, out Guid userId)) return RequestAccessData.Empty;
+        if (!Guid.TryParse(userIdString, out Guid userId)) return MessageAccess.Empty;
 
         ImmutableArray<string>? roles = claims?
             .FindAll(ClaimTypes.Role)
             .Select(claim => claim.Value)
             .ToImmutableArray();
+        
         ImmutableArray<string>? permissions = claims?
             .FindAll("permissions")
             .Select(claim => claim.Value)
@@ -50,7 +52,7 @@ public class RequestDataFactory(
 
         ct.ThrowIfCancellationRequested();
 
-        return new RequestAccessData(
+        return new MessageAccess(
             userId,
             roles ?? ImmutableArray<string>.Empty,
             permissions ?? ImmutableArray<string>.Empty

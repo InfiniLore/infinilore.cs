@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.Users.Database;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using InfiniLore.Shared;
@@ -21,7 +22,11 @@ namespace InfiniLore.Server.Modules.Users.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
-public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHelper claimsPrincipalHelper) : IOpenIdConnectEventHelper<TokenValidatedContext> {
+public class OnTokenValidatedHandler(
+    ILoggerFactory loggerFactory,
+    IClaimsDtoHelper claimsPrincipalHelper,
+    IMessageAccessFactory messageAccessFactory
+) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -46,8 +51,9 @@ public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHel
         }
 
         // Run all checks and return to new user page if needed
-        Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId).ExecuteAsync();
-        Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
+        IMessageAccess access = messageAccessFactory.FromClaims();
+        Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
+        Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
 
         (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 

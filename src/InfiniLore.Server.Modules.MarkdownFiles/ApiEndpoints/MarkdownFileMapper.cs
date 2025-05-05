@@ -19,6 +19,6 @@ public class MarkdownFileMapper : ResponseMapper<MarkdownFileResponse, MarkdownF
         Id = markdownFile.Id,
         CreatedDate = markdownFile.CreatedDate,
         LastModifiedDate = markdownFile.LastModifiedDate,
-        LoreScopeId = markdownFile.OwnerId
+        OwnerId = markdownFile.OwnerId
     };
 }

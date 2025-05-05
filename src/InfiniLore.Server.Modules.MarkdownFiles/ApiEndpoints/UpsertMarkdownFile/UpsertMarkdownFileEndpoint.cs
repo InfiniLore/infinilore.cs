@@ -24,6 +24,7 @@ using Response=Results<
 
 public class UpsertMarkdownFileEndpoint(
     ILogger<UpsertMarkdownFileEndpoint> logger,
+    IMessageAccessFactory messageAccessFactory,
     IJwtTokenHelper jwtTokenHelper
 ) : Endpoint<UpsertMarkdownFileRequest, Response, MarkdownFileMapper> {
 
@@ -42,7 +43,9 @@ public class UpsertMarkdownFileEndpoint(
             req.LoreScopeId,
             req.FileName,
             req.Source
-        );
+        ) {
+            Access = await messageAccessFactory.FromJwtTokenAsync(ct)
+        };
 
         // Execute Command
         await command.ExecuteAsync(ct);

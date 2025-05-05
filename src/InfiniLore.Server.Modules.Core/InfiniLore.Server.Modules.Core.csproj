@@ -31,4 +31,8 @@
       <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Messaging\" />
+    </ItemGroup>
+
 </Project>
