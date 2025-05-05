@@ -4,8 +4,8 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Users.Database;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;

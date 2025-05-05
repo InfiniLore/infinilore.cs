@@ -8,6 +8,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetLorescopeByIdQuery(Guid LorescopeId, Guid UserId = default, bool AutoInclude = false) : MessageRequest<LoreScope> {
+public record GetLorescopeByIdQuery(Guid LorescopeId, Guid UserId = default, bool AutoInclude = false) : MessageRequest<ILoreScope> {
     public bool IsLoreScopeOnly => UserId == Guid.Empty;
 }

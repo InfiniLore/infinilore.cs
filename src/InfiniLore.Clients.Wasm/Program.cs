@@ -6,7 +6,6 @@ using InfiniLore.Clients.Kiota.Extensions;
 using InfiniLore.Clients.Wasm.Services;
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
-using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;

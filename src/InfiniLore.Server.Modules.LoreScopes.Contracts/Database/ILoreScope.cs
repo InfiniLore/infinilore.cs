@@ -8,6 +8,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILoreScope : IUserData {
-    public string Name { get; set; }
+public interface ILoreScope : IOwnedData<IInfiniLoreUser> {
+    string Name { get; set; }
+    string ShortDescription { get; set; }
 }

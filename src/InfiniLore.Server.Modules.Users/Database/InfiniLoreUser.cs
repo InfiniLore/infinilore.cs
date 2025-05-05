@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfiniLore.Server.Modules.Users.Database;
@@ -15,9 +16,8 @@ public class InfiniLoreUser : BasicData, IInfiniLoreUser {
     [MaxLength(Defaults.UsernameMaxLength)] public string Username { get; set; } = string.Empty;
 
     // I have no clue why I didn't do this with a list
-    public string[] GetAuth0Ids() => new[] { Auth0IdGoogle, Auth0Github, Auth0MailPassword }
-        .Where(id => id is not null)!
-        .ToArray<string>();
+    public IEnumerable<string> GetAuth0Ids() => new[] { Auth0IdGoogle, Auth0Github, Auth0MailPassword }
+        .Where(id => id is not null)!;
 
     public static class Defaults {
         public const int Auth0IdGoogleMaxLength = 256;

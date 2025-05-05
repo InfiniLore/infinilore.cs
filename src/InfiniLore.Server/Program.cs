@@ -22,10 +22,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
+using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
+using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
+using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
+using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -63,9 +68,16 @@ public static class Program {
         // Most of the DB registration is handled through the Factory class
         //      Some extra setup is required on this end though
         //      We need to register what db we are using, this way we can reuse the factory for testing, etc...
-        ContentDbFactory.RegisterDatabase(builder.Services, optionsAction: options => {
-            options.UseSqlServer(connectionString);
-        });
+        ContentDbFactory.RegisterDatabase(
+            builder.Services, 
+            options => options.UseSqlServer(connectionString),
+            static modelBuilder => modelBuilder
+                .ApplyConfigurationsFromAssembly(typeof(CoreAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(LoreScopesAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(MarkdownFilesAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(UsersAssemblyEntry).Assembly)
+        );
+
         #endregion
 
         #region Auth
@@ -164,8 +176,6 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
-        builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
 
 
         return builder.Build();

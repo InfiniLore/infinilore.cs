@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -47,10 +48,7 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
 
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
-
-        // Everything has been moved into ModelConfiguration files
-        //      This is due to more extensibility and ease of use
-        builder.ApplyConfigurationsFromAssembly(typeof(IInfiniLoreServerDatabaseEntrypoint).Assembly);
+        ContentDbFactory.ConfigureModel(builder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {

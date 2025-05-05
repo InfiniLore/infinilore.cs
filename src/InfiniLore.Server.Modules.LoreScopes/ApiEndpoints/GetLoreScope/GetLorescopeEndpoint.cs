@@ -11,7 +11,6 @@ using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using  InfiniLore.Server.Modules.Users.Services;
 
 namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -50,10 +49,10 @@ public class GetLorescopeEndpoint(
         };
 
         // Execute Query
-        MessageResponse<LoreScope> result = await query.ExecuteAsync(ct);
+        MessageResponse<ILoreScope> result = await query.ExecuteAsync(ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out LoreScope? loreScope)) {
+        if (!result.TryGetAsSuccess(out ILoreScope loreScope)) {
             logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }

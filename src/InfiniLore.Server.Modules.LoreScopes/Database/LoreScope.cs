@@ -2,13 +2,14 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScope : UserData, ILoreScope {
+public class LoreScope : OwnedData<IInfiniLoreUser>, ILoreScope {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
     [MaxLength(Defaults.ShortDescriptionMaxLength)] public string ShortDescription { get; set; } = "";
     

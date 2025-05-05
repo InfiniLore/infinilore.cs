@@ -1,12 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.RepositoryMethods;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Server.Modules.Core.Database.Models;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILoreScopeDataRepository<T> :
-    IBasicDataRepository<T>,
-    IHasGetByLoreScopeAsync<T> where T : ILoreScopeData;
+public interface IOwnedData<TOwner> : IBasicData {
+    Guid OwnerId { get; set; }
+    TOwner? Owner { get; set; }
+    [MemberNotNullWhen(true, nameof(Owner))] bool IsOwnerIncluded { get; }
+}

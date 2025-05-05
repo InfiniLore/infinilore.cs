@@ -50,10 +50,10 @@ public class GetLoreScopesEndpoint(
         };
 
         // Execute Query
-        MessageResponse<PaginatedData<LoreScope>> result = await query.ExecuteAsync(ct);
+        MessageResponse<PaginatedData<ILoreScope>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out PaginatedData<LoreScope> paginatedResult)) {
+        if (!result.TryGetAsSuccess(out PaginatedData<ILoreScope> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
             return TypedResults.NotFound();
         }

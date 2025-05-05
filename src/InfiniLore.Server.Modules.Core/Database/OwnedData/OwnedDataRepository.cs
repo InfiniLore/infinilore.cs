@@ -9,14 +9,18 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class UserDataRepository<TModel, TInterface> : BasicDataRepository<TModel, TInterface>, IUserDataRepository<TInterface> 
-    where TModel : UserData, TInterface 
-    where TInterface: IUserData 
+public abstract class OwnedDataRepository<TOwner, TModel, TInterface> : BasicDataRepository<TModel, TInterface>, IOwnedDataRepository<TOwner, TInterface> 
+    where TModel : OwnedData<TOwner>, TInterface 
+    where TInterface: IOwnedData<TOwner>
+    where TOwner : class, IBasicData 
 {
+    protected override IQueryable<TModel> AutoInclude(IQueryable<TModel> query)
+        => query.Include(ls => ls.Owner);
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<TInterface[]>> GetByUserAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<Result<TInterface[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
@@ -31,7 +35,7 @@ public abstract class UserDataRepository<TModel, TInterface> : BasicDataReposito
         return Result<TInterface[]>.FromSuccess(result);
     }
 
-    public async ValueTask<PaginatedResult<TInterface>> GetByUserAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<TInterface>> GetByOwnerAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
@@ -57,7 +61,4 @@ public abstract class UserDataRepository<TModel, TInterface> : BasicDataReposito
             (int)Math.Ceiling(totalCount / (double)pageInfo.PageSize)
         );
     }
-
-    protected override IQueryable<TModel> AutoInclude(IQueryable<TModel> query)
-        => query.Include(ls => ls.Owner);
 }

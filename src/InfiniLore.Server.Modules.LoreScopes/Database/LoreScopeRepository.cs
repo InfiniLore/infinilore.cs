@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
-public class LoreScopeRepository : UserDataRepository<LoreScope, ILoreScope>, ILoreScopeRepository {
+public class LoreScopeRepository : OwnedDataRepository<IInfiniLoreUser, LoreScope, ILoreScope>, ILoreScopeRepository {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

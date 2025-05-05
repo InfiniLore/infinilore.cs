@@ -8,8 +8,10 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserData : BasicData, IUserData {
+public class OwnedData<TOwner> : BasicData, IOwnedData<TOwner>
+    where TOwner : class, IBasicData 
+{
     public Guid OwnerId { get; set; } = Guid.Empty;
-    public IInfiniLoreUser? Owner { get; set; } = null;
+    public TOwner? Owner { get; set; } = default;
     [MemberNotNullWhen(true, nameof(Owner))] public bool IsOwnerIncluded => Owner != null; 
 }

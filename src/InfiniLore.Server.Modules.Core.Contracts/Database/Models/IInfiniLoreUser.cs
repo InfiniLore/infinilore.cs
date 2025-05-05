@@ -8,4 +8,5 @@ namespace InfiniLore.Server.Modules.Core.Database.Models;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInfiniLoreUser : IBasicData {
     string Username { get; set; }
+    IEnumerable<string> GetAuth0Ids();
 }

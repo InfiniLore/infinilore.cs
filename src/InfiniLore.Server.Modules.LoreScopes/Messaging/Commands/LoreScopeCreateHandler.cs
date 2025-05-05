@@ -6,10 +6,10 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
-using InfiniLore.Server.Contracts.Database.Repositories.Data.User;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Noticiations;
+using InfiniLore.Server.Modules.Users.Database;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +22,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
     public override async Task<MessageResponse<Guid>> ExecuteAsync(LoreScopeCreateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        var userRepo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
+        var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(command.LoreScopeName, command.OwnerId, ct);
         Result userIdExistsResult = await userRepo.IsIdTakenAsync(command.OwnerId, ct);

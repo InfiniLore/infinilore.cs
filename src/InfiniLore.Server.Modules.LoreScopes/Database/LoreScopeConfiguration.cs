@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +10,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeConfiguration : UserDataConfiguration<LoreScope> {
+public class LoreScopeConfiguration : OwnedDataConfiguration<IInfiniLoreUser, LoreScope> {
     public override void Configure(EntityTypeBuilder<LoreScope> builder) {
         base.Configure(builder);
 

@@ -2,9 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
+using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Messaging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 

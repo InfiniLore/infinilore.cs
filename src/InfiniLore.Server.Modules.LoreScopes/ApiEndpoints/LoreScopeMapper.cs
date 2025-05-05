@@ -10,8 +10,8 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableSingleton<LoreScopeMapper>]
-public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, LoreScope> {
-    public override LoreScopeResponse FromEntity(LoreScope loreScope) => new() {
+public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, ILoreScope> {
+    public override LoreScopeResponse FromEntity(ILoreScope loreScope) => new() {
         Name = loreScope.Name,
         Description = loreScope.ShortDescription,
         Id = loreScope.Id,

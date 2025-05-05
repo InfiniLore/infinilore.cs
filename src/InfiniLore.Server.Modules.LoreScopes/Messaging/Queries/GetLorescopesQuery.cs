@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Contracts;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
@@ -14,4 +13,4 @@ public record GetLoreScopesQuery(
     bool AutoInclude = false,
     PaginationInfo PaginationInfo = default,
     bool Reverse = false
-) : MessageRequest<PaginatedData<LoreScope>>;
+) : MessageRequest<PaginatedData<ILoreScope>>;

@@ -25,7 +25,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
     // ReSharper disable once InvertIf
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
         MessageResponse<IAuth0AccessToken> mediatorResponse = await _request.ExecuteAsync(ct);
-        if (!mediatorResponse.TryGetAsSuccess(out Credentials.Auth0.IAuth0AccessToken token)) {
+        if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken token)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;
             logger.Warning("Failed to retrieve access token. Errors: {Errors}", errors);
             return Auth0AccessToken.Empty;
@@ -34,7 +34,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
         return token;
     }
 
-    public async ValueTask SetAccessTokenAsync(Credentials.Auth0.IAuth0AccessToken token, CancellationToken ct = default) {
+    public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
         MessageResponse<bool> mediatorResponse = await new StoreAuth0AccessTokenRequest(token).ExecuteAsync(ct);
         if (!mediatorResponse.TryGetAsSuccess(out bool success)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;

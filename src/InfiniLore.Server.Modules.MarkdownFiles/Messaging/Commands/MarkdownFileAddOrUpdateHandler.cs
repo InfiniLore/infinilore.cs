@@ -19,7 +19,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileAddOrUpdateHandler> logger, IValidator<MarkdownFile> validator) : CommandHandler<MarkdownFileAddOrUpdateRequest, MessageResponse<Guid>> {
+public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileAddOrUpdateHandler> logger, IValidator<IMarkdownFile> validator) : CommandHandler<MarkdownFileAddOrUpdateRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(MarkdownFileAddOrUpdateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
@@ -32,7 +32,7 @@ public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory
         var markdownFile = new MarkdownFile {
             Id = command.MarkdownFileId != Guid.Empty ? command.MarkdownFileId : Guid.CreateVersion7(),
             Name = command.FileName,
-            LoreScopeId = command.LoreScopeId,
+            OwnerId = command.LoreScopeId,
             Source = command.Source
         };
 

@@ -5,7 +5,6 @@ using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
-using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

@@ -3,9 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +13,7 @@ namespace InfiniLore.Server.Modules.Users.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IInfiniLoreUserRepository>(ServiceLifetime.Scoped)]
-public class InfiniLoreUserRepository : BasicDataRepository<InfiniLoreUser>, IInfiniLoreUserRepository<InfiniLoreUser> {
+public class InfiniLoreUserRepository : BasicDataRepository<InfiniLoreUser, IInfiniLoreUser>, IInfiniLoreUserRepository {
 
     public async ValueTask<Result<Guid>> TryGetIdByAuth0IdAsync(string auth0Id, CancellationToken ct = default) {
         if (auth0Id.IsNullOrWhiteSpace()) return Result<Guid>.FromError(RepositoryFailures.ModelFailedValidation);

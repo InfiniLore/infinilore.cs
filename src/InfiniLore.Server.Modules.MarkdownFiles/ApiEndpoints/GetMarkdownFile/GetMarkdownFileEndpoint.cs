@@ -5,10 +5,8 @@ using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Services;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
-using InfiniLore.Server.Modules.Users.Services;
-using InfiniLore.Server.Services.Messaging;
 using InfiniLore.ServerClient.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -49,10 +47,10 @@ public class GetMarkdownFileEndpoint(
         };
 
         // Execute Query
-        MessageResponse<MarkdownFile> result = await query.ExecuteAsync(ct);
+        MessageResponse<IMarkdownFile> result = await query.ExecuteAsync(ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out MarkdownFile loreScope)) {
+        if (!result.TryGetAsSuccess(out IMarkdownFile loreScope)) {
             logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }

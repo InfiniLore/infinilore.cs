@@ -2,8 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
-using InfiniLore.Server.Database.Models.Data.Project;
-using InfiniLore.Server.Database.Models.Data.User;
 using System.Collections.Concurrent;
 
 namespace Fakers.InfiniLore.Server;

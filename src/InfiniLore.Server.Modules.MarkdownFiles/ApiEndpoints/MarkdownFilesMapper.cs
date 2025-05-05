@@ -3,8 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
-using InfiniLore.Server.Modules.Contracts;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
@@ -13,8 +12,8 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<MarkdownFilesMapper>(ServiceLifetime.Singleton)]
-public class MarkdownFilesMapper : ResponseMapper<MarkdownFilesResponse, PaginatedData<MarkdownFile>> {
-    public override MarkdownFilesResponse FromEntity(PaginatedData<MarkdownFile> entities) {
+public class MarkdownFilesMapper : ResponseMapper<MarkdownFilesResponse, PaginatedData<IMarkdownFile>> {
+    public override MarkdownFilesResponse FromEntity(PaginatedData<IMarkdownFile> entities) {
         var singleMapper = Resolve<MarkdownFileMapper>();
 
         MarkdownFileResponse[] items = entities.Items.Select(singleMapper.FromEntity).ToArray();

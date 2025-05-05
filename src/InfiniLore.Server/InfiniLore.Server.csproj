@@ -35,6 +35,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Scripting"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
     </ItemGroup>
 

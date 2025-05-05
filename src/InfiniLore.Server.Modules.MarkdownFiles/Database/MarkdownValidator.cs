@@ -3,14 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<MarkdownFile>>(ServiceLifetime.Singleton)]
-public class MarkdownValidator : AbstractValidator<MarkdownFile> {
+[InjectableService<IValidator<IMarkdownFile>>(ServiceLifetime.Singleton)]
+public class MarkdownValidator : AbstractValidator<IMarkdownFile> {
     public MarkdownValidator() {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The Name field is required.")

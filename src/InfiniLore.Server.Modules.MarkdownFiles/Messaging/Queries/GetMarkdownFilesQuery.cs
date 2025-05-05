@@ -1,9 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Contracts;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
 
@@ -15,4 +14,4 @@ public record GetMarkdownFilesQuery(
     PaginationInfo PaginationInfo,
     bool AutoInclude = false,
     bool Reverse = false
-) : MessageRequest<PaginatedData<MarkdownFile>>;
+) : MessageRequest<PaginatedData<IMarkdownFile>>;
