@@ -25,7 +25,8 @@ using Response=Results<
 
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper
+    IJwtTokenHelper jwtTokenHelper,
+    IRequestDataFactory requestDataFactory
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
@@ -45,7 +46,7 @@ public class GetLorescopeEndpoint(
             req.LoreScopeId,
             req.UserId
         ) {
-            AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
+            AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
         };
 
         // Execute Query

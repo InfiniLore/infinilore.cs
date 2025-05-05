@@ -13,7 +13,7 @@ namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IJwtTokenHelper>(ServiceLifetime.Scoped)]
+[InjectableScoped<IJwtTokenHelper>]
 public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtTokenHelper {
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 

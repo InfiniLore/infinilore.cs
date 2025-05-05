@@ -26,7 +26,8 @@ using Response=Results<
 
 public class GetLoreScopesEndpoint(
     ILogger<GetLoreScopesEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper
+    IJwtTokenHelper jwtTokenHelper,
+    IRequestDataFactory requestDataFactory
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
     public override void Configure() {
         Get("/data/{UserId:guid}/lorescope");
@@ -46,7 +47,7 @@ public class GetLoreScopesEndpoint(
             false,
             new PaginationInfo(1)
         ) {
-            AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
+            AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
         };
 
         // Execute Query

@@ -26,7 +26,8 @@ using Response=Results<
 
 public class GetMarkdownFileEndpoint(
     ILogger<GetMarkdownFileEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper
+    IJwtTokenHelper jwtTokenHelper,
+    IRequestDataFactory requestDataFactory
 ) : Endpoint<GetMarkdownFileRequest, Response, MarkdownFileMapper> {
 
     public override void Configure() {
@@ -43,7 +44,7 @@ public class GetMarkdownFileEndpoint(
             req.MarkdownFileId,
             req.LoreScopeId
         ) {
-            AccessData = await RequestAccessData.FromJwtTokenAsync(jwtTokenHelper, ct)
+            AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
         };
 
         // Execute Query
