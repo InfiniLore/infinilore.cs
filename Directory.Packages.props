@@ -13,12 +13,15 @@
     <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="4.10.0" />
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="4.10.0" />
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="4.10.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.65.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.65.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.65.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.65.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.65.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.65.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.66.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.66.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.66.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.66.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.66.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.66.0" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.65.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1" />

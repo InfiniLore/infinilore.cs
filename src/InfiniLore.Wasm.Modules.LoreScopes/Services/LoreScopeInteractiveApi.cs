@@ -31,7 +31,6 @@ public class LoreScopeInteractiveApi(
                 .GetAsync(cancellationToken: ct);
 
             if (result is null) return Result<PaginatedData<ILoreScopeModel>>.FromError("Could not get data from API");
-
             Stream jsonStream = result.SerializeAsJsonStream();
             var response = await JsonSerializer.DeserializeAsync<PaginatedData<ILoreScopeModel>>(jsonStream, interactiveApi.JsonOptions, ct);
             return Result<PaginatedData<ILoreScopeModel>>.FromSuccess(response);
