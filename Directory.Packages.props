@@ -26,7 +26,7 @@
     <PackageVersion Include="FastEndpoints" Version="6.0.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.0.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.0.0" />
-    <PackageVersion Include="FluentValidation" Version="12.0.0-preview1" />
+    <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="InfiniLore.Credentials" Version="4.1.1" />
     <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.1.1" />
     <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.1.1" />
