@@ -2,13 +2,14 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class OwnedDataRepository<TOwner, TModel> : BasicModelRepository<TModel>, IOwnedModelRepository<TOwner, TModel> 
+public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepository<TModel>, IOwnedModelRepository<TOwner, TModel> 
     where TModel : OwnedModel<TOwner>, new()
     where TOwner : BasicModel 
 {

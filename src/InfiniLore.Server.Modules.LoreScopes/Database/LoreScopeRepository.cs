@@ -13,7 +13,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
-public class LoreScopeRepository : OwnedDataRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
+public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

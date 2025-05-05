@@ -5,7 +5,7 @@ using Auth0.AspNetCore.Authentication;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using InfiniLore.Clients.Wasm;
+using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Server.Components;
@@ -18,9 +18,9 @@ using InfiniLore.Server.Modules.Users;
 using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.Server.Modules.Users.Services.Encryption;
 using InfiniLore.Server.Modules.Users.Services.TokenStore;
-using InfiniLore.ServerClient.Shared;
-using InfiniLore.ServerClient.Shared.JwtToken;
 using InfiniLore.Shared;
+using InfiniLore.Shared.JwtToken;
+using InfiniLore.Shared.Services.JwtToken;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +31,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
+using IAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
@@ -210,7 +211,7 @@ public static class Program {
 
         // Reference the library containing the static files
         var embeddedProvider = new EmbeddedFileProvider(
-            typeof(IEntryPointInfiniLoreServerClientShared).Assembly,// Replace with a type from the external library
+            typeof(IAssemblyEntry).Assembly,// Replace with a type from the external library
             "InfiniLore.Shared.wwwroot"// The root path defined in the library
         );
 

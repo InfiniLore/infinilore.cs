@@ -20,6 +20,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Shared.Modules.Core\InfiniLore.Shared.Modules.Core.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

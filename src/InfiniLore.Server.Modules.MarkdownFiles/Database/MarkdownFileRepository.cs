@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMarkdownFileRepository>]
-public class MarkdownFileRepository : OwnedDataRepository<LoreScopeModel, MarkdownFileModel>, IMarkdownFileRepository {
+public class MarkdownFileRepository : OwnedModelRepository<LoreScopeModel, MarkdownFileModel>, IMarkdownFileRepository {
 
     public async ValueTask<Result> IsFileNameTakenAsync(string name, Guid loreScopeId, CancellationToken ct = default) {
         if (name.IsNullOrWhiteSpace() || loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);

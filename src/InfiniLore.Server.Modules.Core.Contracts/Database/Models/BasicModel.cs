@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore.Query;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +9,7 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BasicModel {
+public class BasicModel : IBasicModel {
     public Guid Id { get; init; } = Guid.CreateVersion7();
     public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
     public DateTime LastModifiedDate { get; private set; } = DateTime.UtcNow;

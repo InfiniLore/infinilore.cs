@@ -1,13 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared.Modules.Core.Database;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class OwnedModel<TOwner> : BasicModel
+public class OwnedModel<TOwner> : BasicModel, IOwnedModel
     where TOwner : BasicModel 
 {
     public Guid OwnerId { get; set; } = Guid.Empty;

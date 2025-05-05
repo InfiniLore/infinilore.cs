@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
+using InfiniLore.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Modules.Core.Database;

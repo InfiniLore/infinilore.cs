@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
-using InfiniLore.ServerClient.Shared;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InfiniLore.Server.Modules.Users.ApiEndpoints;

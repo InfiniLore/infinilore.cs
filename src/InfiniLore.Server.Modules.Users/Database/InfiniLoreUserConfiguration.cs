@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUserConfiguration : BasicDataConfiguration<InfiniLoreUserModel> {
+public class InfiniLoreUserConfiguration : BasicModelConfiguration<InfiniLoreUserModel> {
 
     public override void Configure(EntityTypeBuilder<InfiniLoreUserModel> builder) {
         base.Configure(builder);

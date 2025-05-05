@@ -3,12 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Shared.Services.ClaimsHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace InfiniLore.ServerClient.Shared.ClaimsHelper;
+namespace InfiniLore.Shared.ClaimsHelper;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +18,7 @@ public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelp
     public IClaimsDto GetClaimsDto(ClaimsPrincipal principal) {
         if (principal.Identity?.IsAuthenticated != true) return ClaimsDto.Empty;
 
-        // Yes I know you could easily store the entire object as json and then just map over all the claims.
+        // Yes I know you could store the entire object as json and then map over all the claims.
         //      But we don't want to send over all the claims to the "unsecure" client 
         string? auth0UserId = principal.FindFirstValue(options.Value.ClaimsIdentity.UserIdClaimType);
         string? infiniloreUserId = principal.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);

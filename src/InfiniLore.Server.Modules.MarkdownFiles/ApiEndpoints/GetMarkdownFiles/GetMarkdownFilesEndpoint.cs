@@ -7,10 +7,11 @@ using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
-using InfiniLore.ServerClient.Shared;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using PermissionsStore = InfiniLore.Shared.PermissionsStore;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints.GetMarkdownFiles;
 
@@ -42,7 +43,7 @@ public class GetMarkdownFilesEndpoint(
         // Form Query
         var query = new GetMarkdownFilesQuery(
             req.LoreScopeId,
-            new PaginationInfo(1)
+            PaginationInfo.Default
         ) {
             AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
         };

@@ -7,7 +7,7 @@ using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.ServerClient.Shared;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;

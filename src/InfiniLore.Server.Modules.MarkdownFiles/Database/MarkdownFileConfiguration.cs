@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class MarkdownFileConfiguration : OwnedDataConfiguration<LoreScopeModel, MarkdownFileModel> {
+public class MarkdownFileConfiguration : OwnedModelConfiguration<LoreScopeModel, MarkdownFileModel> {
     public override void Configure(EntityTypeBuilder<MarkdownFileModel> builder) {
         base.Configure(builder);
         

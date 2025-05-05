@@ -8,7 +8,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Users.Database;
-using InfiniLore.Server.Modules.Users.Messaging.Noticiations;
+using InfiniLore.Server.Modules.Users.Messaging.Notifications;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;

@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeConfiguration : OwnedDataConfiguration<InfiniLoreUserModel, LoreScopeModel> {
+public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserModel, LoreScopeModel> {
     public override void Configure(EntityTypeBuilder<LoreScopeModel> builder) {
         base.Configure(builder);
 

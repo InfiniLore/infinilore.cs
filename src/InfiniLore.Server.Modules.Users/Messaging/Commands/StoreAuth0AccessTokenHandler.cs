@@ -23,7 +23,7 @@ public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(command.Token);
 
         Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        KeyValueEntryModel store = storeResult.TryGetAsSuccess(out KeyValueEntryModel? foundStore)
+        KeyValueEntryModel store = storeResult.TryGetAsSuccess(out KeyValueEntryModel foundStore)
             ? foundStore
             : new KeyValueEntryModel { Key = "Auth0AccessToken" };
 

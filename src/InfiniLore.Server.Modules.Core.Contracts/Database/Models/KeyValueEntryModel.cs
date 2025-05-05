@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared.Modules.Core.Database;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -9,7 +10,7 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueEntryModel {
+public class KeyValueEntryModel : IKeyValueEntryModel {
     [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; init; } = string.Empty;
     [MaxLength(Defaults.ValueMaxLength)] public string? Value { get; set; }
 

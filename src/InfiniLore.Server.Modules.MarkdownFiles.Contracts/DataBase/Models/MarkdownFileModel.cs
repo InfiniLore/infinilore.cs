@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Shared.Modules.MarkdownFiles.Database;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
@@ -10,7 +11,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class MarkdownFileModel : OwnedModel<LoreScopeModel> {
+public class MarkdownFileModel : OwnedModel<LoreScopeModel>, IMarkdownFileModel {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = string.Empty;
     [MaxLength(Defaults.SourceMaxLength)] public string Source { get; set; } = string.Empty;
 
