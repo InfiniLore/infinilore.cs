@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Clients.Kiota;
-using InfiniLore.Clients.Kiota.Extensions;
+using InfiniLore.Kiota;
+using InfiniLore.Kiota.Extensions;
 using InfiniLore.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Shared;

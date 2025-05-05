@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Clients.Kiota;
+using InfiniLore.Kiota;
 using InfiniLore.Shared.Services.InteractiveApi;
 using System.Text.Json;
 

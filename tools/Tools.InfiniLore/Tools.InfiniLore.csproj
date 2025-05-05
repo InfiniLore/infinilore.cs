@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj"/>
+        <ProjectReference Include="..\..\src\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
     </ItemGroup>
 
     <ItemGroup>

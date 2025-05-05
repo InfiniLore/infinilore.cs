@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Clients.Kiota.Models;
+using InfiniLore.Kiota.Models;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.MarkdownFiles.Database;
 using InfiniLore.Shared.Modules.MarkdownFiles.Services;
@@ -67,7 +67,7 @@ public class MarkdownFileInteractiveApi(
                 FileName = fileName,
                 Source = markdown
             };
-            Stream? result = await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
+            await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
             return true;
         }
         catch (Exception e) {

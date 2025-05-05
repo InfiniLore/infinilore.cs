@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj" />
+      <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
       <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
     </ItemGroup>
 

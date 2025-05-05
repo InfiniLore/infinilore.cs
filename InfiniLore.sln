@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9837
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kiota", "Kiota", "{B7C12299-7FB3-488E-89FB-B30DDB7480B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota", "src\InfiniLore.Clients.Kiota\InfiniLore.Clients.Kiota.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Kiota", "src\InfiniLore.Kiota\InfiniLore.Kiota.csproj", "{9081D485-0279-4D05-BD39-2F427C35F79A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore", "tools\Tools.InfiniLore\Tools.InfiniLore.csproj", "{3827E79C-C5A8-4C5E-A0D9-09F28DB745C3}"
 EndProject
@@ -59,7 +59,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools.InfiniLore.Auth0", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Shared.Contracts", "src\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj", "{DC28BF56-9489-40DD-876A-47FEA935369D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Clients.Kiota.Extensions", "src\InfiniLore.Clients.Kiota.Extensions\InfiniLore.Clients.Kiota.Extensions.csproj", "{8D707686-342B-495D-A85D-F577B1AB6800}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Kiota.Extensions", "src\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj", "{8D707686-342B-495D-A85D-F577B1AB6800}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{58968158-6202-497E-A70A-E64027AA5B7B}"
 	ProjectSection(SolutionItems) = preProject
