@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Shared.Modules.Core\InfiniLore.Shared.Modules.Core.csproj" />
+      <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
 </Project>

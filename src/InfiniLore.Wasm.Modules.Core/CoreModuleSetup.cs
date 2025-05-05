@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.Core;
 using InfiniLore.Wasm.Modules.Core.Services;
 using JetBrains.Annotations;
@@ -19,6 +20,7 @@ public class CoreModuleSetup : IWasmModuleSetup {
     }
     
     public void SetupServices(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreShared();
         services.RegisterServicesFromInfiniLoreSharedModulesCore();
         services.RegisterServicesFromInfiniLoreWasmModulesCore();
     }

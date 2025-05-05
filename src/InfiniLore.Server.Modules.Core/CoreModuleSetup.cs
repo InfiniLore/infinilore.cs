@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.Core;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +20,8 @@ public class CoreModuleSetup : IServerModuleSetup {
     }
     
     public void SetupServices(IServiceCollection services) {
-       services.RegisterServicesFromInfiniLoreSharedModulesCore();
-       services.RegisterServicesFromInfiniLoreServerModulesCore();
+        services.RegisterServicesFromInfiniLoreShared();
+        services.RegisterServicesFromInfiniLoreSharedModulesCore();
+        services.RegisterServicesFromInfiniLoreServerModulesCore();
     }
 }
