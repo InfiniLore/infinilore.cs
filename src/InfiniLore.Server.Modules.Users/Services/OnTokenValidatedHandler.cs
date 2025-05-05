@@ -4,10 +4,11 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.Users.Database;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
+using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Modules.Users.Services;
+namespace InfiniLore.Server.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

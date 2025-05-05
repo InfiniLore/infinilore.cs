@@ -4,7 +4,7 @@
 using Newtonsoft.Json;
 using System.Collections.Immutable;
 
-namespace InfiniLore.Server.Modules.Core.Messaging;
+namespace InfiniLore.Server.Modules.Core;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

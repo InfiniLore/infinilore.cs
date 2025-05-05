@@ -4,8 +4,8 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Server.Services;
@@ -14,7 +14,7 @@ using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Modules.LoreScopes.Services;
+namespace InfiniLore.Server.Modules.LoreScopes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

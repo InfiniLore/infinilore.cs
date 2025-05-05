@@ -7,7 +7,7 @@ using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Modules.Core.Services;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

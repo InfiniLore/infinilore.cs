@@ -6,6 +6,4 @@ namespace InfiniLore.Shared.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInfiniLoreUserModel {
-    
-}
+public interface IInfiniLoreUserModel;

@@ -5,14 +5,14 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.Users.Messaging.Commands;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Modules.Users.Services.TokenStore;
+namespace InfiniLore.Server.Modules.Users.TokenStore;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

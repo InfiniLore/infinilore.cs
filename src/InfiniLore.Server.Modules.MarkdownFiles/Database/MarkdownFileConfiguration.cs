@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.Database;

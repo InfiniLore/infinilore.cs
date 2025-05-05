@@ -6,7 +6,7 @@ using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.MarkdownFiles.Database;
 using System.ComponentModel.DataAnnotations;
 
-namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
+namespace InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

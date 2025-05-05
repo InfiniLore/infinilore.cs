@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Modules.Users.Services;
+namespace InfiniLore.Server.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -3,21 +3,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Immutable;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Modules.Core.Services;
+namespace InfiniLore.Server.Modules.Core;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMessageAccessFactory>]
 public class MessageAccessFactory(IJwtTokenHelper jwtTokenHelper, IHttpContextAccessor httpContextAccessor) : IMessageAccessFactory {
-    public IMessageAccess Empty { get; } = MessageAccess.Empty;
-    
+    public IMessageAccess Empty => MessageAccess.Empty;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
