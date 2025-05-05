@@ -5,4 +5,4 @@ namespace InfiniLore.Server.DataSeeder;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class IEntrypointInfiniLoreServerDataSeeder;
+public class IAssemblyEntry;
