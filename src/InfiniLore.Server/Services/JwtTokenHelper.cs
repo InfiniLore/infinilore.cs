@@ -4,11 +4,12 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Modules.Core.Services;
+namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

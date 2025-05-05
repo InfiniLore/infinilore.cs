@@ -37,6 +37,11 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Scripting"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

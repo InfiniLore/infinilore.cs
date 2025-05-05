@@ -13,6 +13,11 @@
 
     <ItemGroup>
       <PackageReference Include="InfiniLore.Credentials.Auth0" />
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>

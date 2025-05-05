@@ -13,6 +13,9 @@ using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Modules.Auth0.Services.Encryption;
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Server.Modules.MarkdownFiles;
+using InfiniLore.Server.Modules.Users;
 using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.Server.Modules.Users.Services.TokenStore;
 using InfiniLore.ServerClient.Shared;
@@ -146,7 +149,10 @@ public static class Program {
             options.DisableAutoDiscovery = true;
 
             options.Assemblies = [
-                // typeof(IEntrypointInfiniLoreServerServicesMessaging).Assembly
+                typeof(CoreAssemblyEntry).Assembly,
+                typeof(LoreScopesAssemblyEntry).Assembly,
+                typeof(MarkdownFilesAssemblyEntry).Assembly,
+                typeof(UsersAssemblyEntry).Assembly,
             ];
         });
 
@@ -177,8 +183,13 @@ public static class Program {
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
         
-        
+        builder.Services.RegisterServicesFromInfiniLoreServer();
         builder.Services.RegisterServicesFromInfiniLoreShared();
+
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesLoreScopes();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesMarkdownFiles();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesUsers();
 
         return builder.Build();
     }

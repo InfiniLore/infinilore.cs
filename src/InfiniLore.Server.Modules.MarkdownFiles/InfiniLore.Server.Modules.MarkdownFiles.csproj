@@ -14,6 +14,11 @@
     <ItemGroup>
       <PackageReference Include="FastEndpoints" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
