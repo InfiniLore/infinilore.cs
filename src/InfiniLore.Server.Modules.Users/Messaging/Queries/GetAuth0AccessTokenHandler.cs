@@ -5,7 +5,7 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
-using InfiniLore.Server.Modules.Core.Database.Models;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Users.Services;
 using JetBrains.Annotations;
@@ -21,13 +21,13 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
-        Result<IKeyValueEntry> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return MessageResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Key not found.");
         }
 
-        IKeyValueEntry store = storeResult.AsSuccess;
+        KeyValueEntryModel store = storeResult.AsSuccess;
         if (store.Value.IsNullOrEmpty()) {
             logger.Warning("Auth0 access token value is empty.");
             return MessageResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Value is empty.");

@@ -18,7 +18,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScope> validator) : CommandHandler<LoreScopeCreateRequest, MessageResponse<Guid>> {
+public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<LoreScopeCreateRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(LoreScopeCreateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
@@ -30,7 +30,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new lorescope based on the request
-        var loreScope = new LoreScope {
+        var loreScope = new LoreScopeModel {
             Name = command.LoreScopeName,
             OwnerId = command.OwnerId,
             ShortDescription = command.LoreScopeDescription ?? string.Empty

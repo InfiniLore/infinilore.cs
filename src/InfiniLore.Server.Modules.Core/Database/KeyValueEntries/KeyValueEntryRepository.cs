@@ -5,7 +5,6 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,13 +14,13 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IKeyValueEntryRepository>(ServiceLifetime.Scoped)]
 public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValueEntryRepository {
-    public async ValueTask<Result> TryAddOrUpdateAsync(IKeyValueEntry model, CancellationToken ct = default) {
+    public async ValueTask<Result> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
-        DbSet<IKeyValueEntry> dbSet = GetCachedDbSet<IKeyValueEntry>();
+        DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
         // Query & Retrieve
-        IKeyValueEntry? existing = await dbSet.FindAsync([model.Key], ct);
+        KeyValueEntryModel? existing = await dbSet.FindAsync([model.Key], ct);
         if (existing is null) dbSet.Add(model);
         else dbContext.Entry(existing).CurrentValues.SetValues(model);
 
@@ -29,23 +28,23 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         return true;
     }
 
-    public async ValueTask<Result<IKeyValueEntry>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
+    public async ValueTask<Result<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
         // Access
-        DbSet<IKeyValueEntry> dbSet = GetCachedDbSet<IKeyValueEntry>();
+        DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
         // Query
-        IKeyValueEntry? result = await dbSet.AsNoTracking()
+        KeyValueEntryModel? result = await dbSet.AsNoTracking()
             .FirstOrDefaultAsync(predicate: ls => ls.Key == key, ct);
 
         // Retrieve
-        if (result is null) return Result<IKeyValueEntry>.FromError(RepositoryFailures.ModelNotFound);
+        if (result is null) return Result<KeyValueEntryModel>.FromError(RepositoryFailures.ModelNotFound);
 
-        return Result<IKeyValueEntry>.FromSuccess(result);
+        return Result<KeyValueEntryModel>.FromSuccess(result);
     }
 
     public async ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
-        DbSet<IKeyValueEntry> dbSet = GetCachedDbSet<IKeyValueEntry>();
+        DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
         // Query
         int result = await dbSet.CountAsync(cancellationToken: ct);

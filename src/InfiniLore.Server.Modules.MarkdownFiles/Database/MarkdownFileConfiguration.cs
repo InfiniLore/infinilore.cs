@@ -10,15 +10,15 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class MarkdownFileConfiguration : OwnedDataConfiguration<ILoreScope, MarkdownFile> {
-    public override void Configure(EntityTypeBuilder<MarkdownFile> builder) {
+public class MarkdownFileConfiguration : OwnedDataConfiguration<LoreScopeModel, MarkdownFileModel> {
+    public override void Configure(EntityTypeBuilder<MarkdownFileModel> builder) {
         base.Configure(builder);
         
         builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(MarkdownFile.Defaults.NameMaxLength);
+            .HasMaxLength(MarkdownFileModel.Defaults.NameMaxLength);
 
         builder.Property(x => x.Source)
-            .HasMaxLength(MarkdownFile.Defaults.SourceMaxLength);
+            .HasMaxLength(MarkdownFileModel.Defaults.SourceMaxLength);
     }
 }

@@ -11,8 +11,8 @@ namespace InfiniLore.Server.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<InfiniLoreUser>>(ServiceLifetime.Scoped)]
-public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
+[InjectableService<IValidator<InfiniLoreUserModel>>(ServiceLifetime.Scoped)]
+public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUserModel> {
     private readonly ILogger _logger;
     private readonly IReadonlyUnitOfWorkFactory _unitOfWorkFactory;
 
@@ -34,23 +34,23 @@ public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUser> {
 
         RuleFor(x => x.Auth0IdGoogle)
             .NotEmpty().When(x => x.Auth0IdGoogle is not null).WithMessage("Auth0 ID Google is required")
-            .MaximumLength(InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength).WithMessage($"Auth0 ID Google must be less than {InfiniLoreUser.Defaults.Auth0IdGoogleMaxLength} characters");
+            .MaximumLength(InfiniLoreUserModel.Defaults.Auth0IdGoogleMaxLength).WithMessage($"Auth0 ID Google must be less than {InfiniLoreUserModel.Defaults.Auth0IdGoogleMaxLength} characters");
 
         RuleFor(x => x.Auth0Github)
             .NotEmpty().When(x => x.Auth0Github is not null).WithMessage("Auth0 ID Github is required")
-            .MaximumLength(InfiniLoreUser.Defaults.Auth0IdGithubMaxLength).WithMessage($"Auth0 ID Github must be less than {InfiniLoreUser.Defaults.Auth0IdGithubMaxLength} characters");
+            .MaximumLength(InfiniLoreUserModel.Defaults.Auth0IdGithubMaxLength).WithMessage($"Auth0 ID Github must be less than {InfiniLoreUserModel.Defaults.Auth0IdGithubMaxLength} characters");
 
         RuleFor(x => x.Auth0MailPassword)
             .NotEmpty().When(x => x.Auth0MailPassword is not null).WithMessage("Auth0 Mail Password is required")
-            .MaximumLength(InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength).WithMessage($"Auth0 Mail Password must be less than {InfiniLoreUser.Defaults.Auth0MailPasswordMaxLength} characters");
+            .MaximumLength(InfiniLoreUserModel.Defaults.Auth0MailPasswordMaxLength).WithMessage($"Auth0 Mail Password must be less than {InfiniLoreUserModel.Defaults.Auth0MailPasswordMaxLength} characters");
 
         RuleFor(x => x.Username)
             .MustAsync(CheckValidUsernameAuth0).WithMessage("Username already exists")
             .NotEmpty().WithMessage("Username is required")
-            .MaximumLength(InfiniLoreUser.Defaults.UsernameMaxLength).WithMessage("Username must be less than 64 characters");
+            .MaximumLength(InfiniLoreUserModel.Defaults.UsernameMaxLength).WithMessage("Username must be less than 64 characters");
     }
 
-    private async Task<bool> CheckValidUsernameAuth0(InfiniLoreUser user, string userName, CancellationToken ct) {
+    private async Task<bool> CheckValidUsernameAuth0(InfiniLoreUserModel user, string userName, CancellationToken ct) {
         try {
             await using IReadonlyUnitOfWork unitOfWork = _unitOfWorkFactory.Create();
             var repo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);

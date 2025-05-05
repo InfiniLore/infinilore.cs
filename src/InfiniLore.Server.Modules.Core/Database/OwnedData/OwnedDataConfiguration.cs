@@ -1,8 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Database.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Modules.Core.Database;
@@ -10,16 +8,15 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 // Not used by EFC to make the configuration for BasicData, see class above
-public abstract class OwnedDataConfiguration<TOwner, TModel> : IEntityTypeConfiguration<TModel> 
-    where TModel : OwnedData<TOwner>
-    where TOwner : class, IBasicData 
+public abstract class OwnedDataConfiguration<TOwner, TModel> : BasicDataConfiguration<TModel> 
+    where TModel : OwnedModel<TOwner>
+    where TOwner : BasicModel 
 {
-    public virtual void Configure(EntityTypeBuilder<TModel> builder) {
-        builder.HasOne(x => x.Owner)
-            .WithMany()
-            .HasForeignKey(x => x.OwnerId)
-            .IsRequired();
+    public override void Configure(EntityTypeBuilder<TModel> builder) {
+        base.Configure(builder);
+        builder.Property(x => x.OwnerId).IsRequired();
+        builder.HasIndex(x => x.OwnerId);
 
-        builder.UseTptMappingStrategy();
+        builder.Ignore(x => x.Owner);
     }
 }

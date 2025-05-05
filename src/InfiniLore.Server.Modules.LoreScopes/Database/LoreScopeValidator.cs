@@ -9,16 +9,16 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<LoreScope>>(ServiceLifetime.Singleton)]
-public class LoreScopeValidator : AbstractValidator<LoreScope> {
+[InjectableService<IValidator<LoreScopeModel>>(ServiceLifetime.Singleton)]
+public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
     public LoreScopeValidator() {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The Name field is required.")
-            .MaximumLength(LoreScope.Defaults.NameMaxLength)
-            .WithMessage($"The Name cannot exceed {LoreScope.Defaults.NameMaxLength} characters.");
+            .MaximumLength(LoreScopeModel.Defaults.NameMaxLength)
+            .WithMessage($"The Name cannot exceed {LoreScopeModel.Defaults.NameMaxLength} characters.");
 
         RuleFor(x => x.ShortDescription)
-            .MaximumLength(LoreScope.Defaults.ShortDescriptionMaxLength)
-            .WithMessage($"The Short description cannot exceed {LoreScope.Defaults.ShortDescriptionMaxLength} characters.");
+            .MaximumLength(LoreScopeModel.Defaults.ShortDescriptionMaxLength)
+            .WithMessage($"The Short description cannot exceed {LoreScopeModel.Defaults.ShortDescriptionMaxLength} characters.");
     }
 }

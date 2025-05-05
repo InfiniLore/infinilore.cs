@@ -9,7 +9,7 @@ using InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
-using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
+using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
 using InfiniLore.Shared.Contracts.Services;
@@ -42,10 +42,10 @@ public class InteractiveApiAccessServerSide(
         };
 
         // Execute Message
-        MessageResponse<PaginatedData<ILoreScope>> result = await query.ExecuteAsync(ct);
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await query.ExecuteAsync(ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out PaginatedData<ILoreScope> paginatedData)) {
+        if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedData)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", userId, result.AsError.Value);
             return Result.FromError($"Failed to get LoreScopes for user {userId}");
         }
@@ -67,8 +67,8 @@ public class InteractiveApiAccessServerSide(
         };
 
         // Execute Query
-        MessageResponse<PaginatedData<IMarkdownFile>> result = await query.ExecuteAsync(ct);
-        if (!result.TryGetAsSuccess(out PaginatedData<IMarkdownFile> paginatedData)) {
+        MessageResponse<PaginatedData<MarkdownFileModel>> result = await query.ExecuteAsync(ct);
+        if (!result.TryGetAsSuccess(out PaginatedData<MarkdownFileModel> paginatedData)) {
             logger.Warning("Failed to get MarkdownFiles for loreScopeId {loreScopeId} because '{reason}'", loreScopeId, result.AsError.Value);
             return Result.FromError($"Failed to get MarkdownFiles for loreScopeId {loreScopeId}");
         }
@@ -87,8 +87,8 @@ public class InteractiveApiAccessServerSide(
         };
         
         // Execute Query
-        MessageResponse<IMarkdownFile> result = await query.ExecuteAsync(ct);
-        if (!result.TryGetAsSuccess(out IMarkdownFile markdownFile)) {
+        MessageResponse<MarkdownFileModel> result = await query.ExecuteAsync(ct);
+        if (!result.TryGetAsSuccess(out MarkdownFileModel markdownFile)) {
             logger.Warning("Failed to get MarkdownFile for loreScopeId {loreScopeId} and markdownFileId {markdownFileId} because '{reason}'", loreScopeId, markdownFileId, result.AsError.Value);
             return Result.FromError($"Failed to get MarkdownFile for loreScopeId {loreScopeId} and markdownFileId {markdownFileId}");
         }

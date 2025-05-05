@@ -12,4 +12,8 @@
       <ProjectReference Include="..\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Database\RepoMethods\" />
+    </ItemGroup>
+
 </Project>

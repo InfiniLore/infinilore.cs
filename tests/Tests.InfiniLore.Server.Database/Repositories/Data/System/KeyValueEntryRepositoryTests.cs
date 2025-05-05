@@ -7,7 +7,6 @@ using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Core.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
@@ -38,7 +37,7 @@ public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        KeyValueEntry model = faker.Faker.Generate();
+        KeyValueEntryModel model = faker.Faker.Generate();
         string key = model.Key;
         string? value = model.Value;
 
@@ -46,8 +45,8 @@ public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
         
-        DbSet<KeyValueEntry> keyValueEntries = dbContext.Set<KeyValueEntry>();
-        KeyValueEntry? actual = await keyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
+        DbSet<KeyValueEntryModel> keyValueEntries = dbContext.Set<KeyValueEntryModel>();
+        KeyValueEntryModel? actual = await keyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();

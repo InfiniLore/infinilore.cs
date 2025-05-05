@@ -19,7 +19,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileAddOrUpdateHandler> logger, IValidator<IMarkdownFile> validator) : CommandHandler<MarkdownFileAddOrUpdateRequest, MessageResponse<Guid>> {
+public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<MarkdownFileAddOrUpdateHandler> logger, IValidator<MarkdownFileModel> validator) : CommandHandler<MarkdownFileAddOrUpdateRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(MarkdownFileAddOrUpdateRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>(ct);
@@ -29,7 +29,7 @@ public class MarkdownFileAddOrUpdateHandler(IUnitOfWorkFactory unitOfWorkFactory
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new markdownFIle based on the request
-        var markdownFile = new MarkdownFile {
+        var markdownFile = new MarkdownFileModel {
             Id = command.MarkdownFileId != Guid.Empty ? command.MarkdownFileId : Guid.CreateVersion7(),
             Name = command.FileName,
             OwnerId = command.LoreScopeId,

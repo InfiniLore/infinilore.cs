@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Core.Database.Models;
+using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,16 +10,16 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeConfiguration : OwnedDataConfiguration<IInfiniLoreUser, LoreScope> {
-    public override void Configure(EntityTypeBuilder<LoreScope> builder) {
+public class LoreScopeConfiguration : OwnedDataConfiguration<InfiniLoreUserModel, LoreScopeModel> {
+    public override void Configure(EntityTypeBuilder<LoreScopeModel> builder) {
         base.Configure(builder);
 
         builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(LoreScope.Defaults.NameMaxLength);
+            .HasMaxLength(LoreScopeModel.Defaults.NameMaxLength);
 
         builder.Property(x => x.ShortDescription)
-            .HasMaxLength(LoreScope.Defaults.ShortDescriptionMaxLength);
+            .HasMaxLength(LoreScopeModel.Defaults.ShortDescriptionMaxLength);
 
         builder.HasIndex(x => new { x.OwnerId, x.Name })
             .IsUnique()

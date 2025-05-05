@@ -7,6 +7,7 @@ using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.Users.Database;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DataSources.InfiniLore.Server;
@@ -26,16 +27,16 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        InfiniLoreUser owner = InfiniLoreUserFaker.GetById(GuidStore.GetGuid(2));
+        InfiniLoreUserModel owner = InfiniLoreUserFaker.GetById(GuidStore.GetGuid(2));
         
-        var users = dbContext.Set<InfiniLoreUser>();
+        DbSet<InfiniLoreUserModel> users = dbContext.Set<InfiniLoreUserModel>();
         await users.AddRangeAsync(
             owner
         );
 
-        var lorescopes = dbContext.Set<LoreScope>();
+        DbSet<LoreScopeModel> lorescopes = dbContext.Set<LoreScopeModel>();
         await lorescopes.AddRangeAsync(
-            new LoreScope {
+            new LoreScopeModel {
                 Id = GuidStore.GetGuid("lorescope-forUser2"),
                 Owner = owner,
                 OwnerId = owner.Id,
@@ -44,9 +45,9 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
             }
         );
 
-        var markdownFiles = dbContext.Set<MarkdownFile>();
+        DbSet<MarkdownFileModel> markdownFiles = dbContext.Set<MarkdownFileModel>();
         await markdownFiles.AddRangeAsync(
-            new MarkdownFile {
+            new MarkdownFileModel {
                 Id = GuidStore.GetGuid("markdownfile-lorescope-forUser2"),
                 OwnerId = GuidStore.GetGuid("lorescope-forUser2"),
                 Name = "TestFile.md",

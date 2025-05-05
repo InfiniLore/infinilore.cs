@@ -8,16 +8,16 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueEntryConfiguration : IEntityTypeConfiguration<KeyValueEntry> {
-    public void Configure(EntityTypeBuilder<KeyValueEntry> builder) {
+public class KeyValueEntryConfiguration : IEntityTypeConfiguration<KeyValueEntryModel> {
+    public void Configure(EntityTypeBuilder<KeyValueEntryModel> builder) {
         builder.HasKey(x => x.Key);
         builder.HasIndex(x => x.Key).IsUnique();
 
         builder.Property(x => x.Key)
-            .HasMaxLength(KeyValueEntry.Defaults.KeyMaxLength)
+            .HasMaxLength(KeyValueEntryModel.Defaults.KeyMaxLength)
             .IsRequired();
 
         builder.Property(x => x.Value)
-            .HasMaxLength(KeyValueEntry.Defaults.ValueMaxLength);
+            .HasMaxLength(KeyValueEntryModel.Defaults.ValueMaxLength);
     }
 }

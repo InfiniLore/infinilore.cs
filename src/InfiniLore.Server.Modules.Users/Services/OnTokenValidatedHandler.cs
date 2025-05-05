@@ -4,8 +4,8 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
-using InfiniLore.Server.Modules.Core.Database.Models;
 using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Server.Modules.Users.Database;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.ClaimsHelper;
@@ -47,9 +47,9 @@ public class OnTokenValidatedHandler(ILoggerFactory loggerFactory, IClaimsDtoHel
 
         // Run all checks and return to new user page if needed
         Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId).ExecuteAsync();
-        Task<MessageResponse<IInfiniLoreUser>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
+        Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
 
-        (MessageResponse userExistsResponse, MessageResponse<IInfiniLoreUser> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
+        (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId

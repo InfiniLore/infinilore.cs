@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
-using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
+using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
@@ -12,8 +12,8 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<MarkdownFileMapper>(ServiceLifetime.Singleton)]
-public class MarkdownFileMapper : ResponseMapper<MarkdownFileResponse, IMarkdownFile> {
-    public override MarkdownFileResponse FromEntity(IMarkdownFile markdownFile) => new() {
+public class MarkdownFileMapper : ResponseMapper<MarkdownFileResponse, MarkdownFileModel> {
+    public override MarkdownFileResponse FromEntity(MarkdownFileModel markdownFile) => new() {
         Name = markdownFile.Name,
         Source = markdownFile.Source,
         Id = markdownFile.Id,

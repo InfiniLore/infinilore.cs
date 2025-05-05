@@ -32,7 +32,7 @@ public class MarkdownFileRepositoryTests(ContentDbInfrastructure infrastructure,
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>();
-        MarkdownFile markdownFile = faker.GetById(guidStore.GetGuid(1000),guidStore.GetGuid("lorescope-forUser2"));
+        MarkdownFileModel markdownFile = faker.GetById(guidStore.GetGuid(1000),guidStore.GetGuid("lorescope-forUser2"));
         
         // Act
         Result result = await repo.AddAsync(markdownFile);

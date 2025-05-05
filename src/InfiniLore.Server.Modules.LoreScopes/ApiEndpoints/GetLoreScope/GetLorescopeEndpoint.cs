@@ -49,10 +49,10 @@ public class GetLorescopeEndpoint(
         };
 
         // Execute Query
-        MessageResponse<ILoreScope> result = await query.ExecuteAsync(ct);
+        MessageResponse<LoreScopeModel> result = await query.ExecuteAsync(ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out ILoreScope loreScope)) {
+        if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) {
             logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }

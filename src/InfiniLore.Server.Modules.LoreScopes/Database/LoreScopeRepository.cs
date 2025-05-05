@@ -4,7 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Core.Database.Models;
+using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
-public class LoreScopeRepository : OwnedDataRepository<IInfiniLoreUser, LoreScope, ILoreScope>, ILoreScopeRepository {
+public class LoreScopeRepository : OwnedDataRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -21,10 +21,10 @@ public class LoreScopeRepository : OwnedDataRepository<IInfiniLoreUser, LoreScop
         if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
+        DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
 
         // Query
-        IQueryable<LoreScope> query = dbSet.Where(l =>
+        IQueryable<LoreScopeModel> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
         );
@@ -38,10 +38,10 @@ public class LoreScopeRepository : OwnedDataRepository<IInfiniLoreUser, LoreScop
         if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<LoreScope> dbSet = GetCachedDbSet<LoreScope>();
+        DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
 
         // Query
-        IQueryable<LoreScope> query = dbSet.Where(l =>
+        IQueryable<LoreScopeModel> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
         );

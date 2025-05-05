@@ -18,8 +18,8 @@ namespace InfiniLore.Server.Modules.Users.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUser> validator) : CommandHandler<UserCreateRequest, MessageResponse<Guid>> {
-    private static readonly Dictionary<string, Action<InfiniLoreUser, string>> Auth0Handlers = new() {
+public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUserModel> validator) : CommandHandler<UserCreateRequest, MessageResponse<Guid>> {
+    private static readonly Dictionary<string, Action<InfiniLoreUserModel, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },
         { "github", (user, id) => user.Auth0Github = id },
         { "auth0", (user, id) => user.Auth0MailPassword = id }
@@ -37,7 +37,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
 
         // Create a new used based on the request
         var newUserId = Guid.CreateVersion7();
-        var user = new InfiniLoreUser {
+        var user = new InfiniLoreUserModel {
             Id = newUserId,
             Username = command.UserName
         };
@@ -59,9 +59,9 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         return newUserId;
     }
 
-    private static void SetAuth0Id(InfiniLoreUser user, string auth0UserId, ILogger logger) {
+    private static void SetAuth0Id(InfiniLoreUserModel user, string auth0UserId, ILogger logger) {
         Match match = Auth0Regex.Match(auth0UserId.ToLowerInvariant());
-        if (!match.Success || !Auth0Handlers.TryGetValue(match.Groups[1].Value, out Action<InfiniLoreUser, string>? handler)) {
+        if (!match.Success || !Auth0Handlers.TryGetValue(match.Groups[1].Value, out Action<InfiniLoreUserModel, string>? handler)) {
             logger.Warning("Unknown auth0 id: {Auth0Id}", auth0UserId);
             return;
         }

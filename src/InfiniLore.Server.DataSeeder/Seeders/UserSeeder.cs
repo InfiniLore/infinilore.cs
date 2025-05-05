@@ -2,13 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using Auth0.ManagementApi.Models;
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Modules.Core.Database.Models;
 using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,8 +33,8 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Result<IInfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
-        if (!result.TryGetAsSuccess(out IInfiniLoreUser[] foundUsers)) return logger.InformationAsTrue("User seeding is {State}", true);
+        Result<InfiniLoreUserModel[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
+        if (!result.TryGetAsSuccess(out InfiniLoreUserModel[] foundUsers)) return logger.InformationAsTrue("User seeding is {State}", true);
 
         HashSet<string> foundUserAuth0Ids = foundUsers.SelectMany(user => user.GetAuth0Ids()).ToHashSet();
 

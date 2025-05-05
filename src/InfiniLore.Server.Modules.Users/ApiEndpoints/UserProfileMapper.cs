@@ -8,8 +8,8 @@ namespace InfiniLore.Server.Modules.Users.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreUser> {
-    public override UserProfileResponse FromEntity(InfiniLoreUser entity) => new() {
+public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreUserModel> {
+    public override UserProfileResponse FromEntity(InfiniLoreUserModel entity) => new() {
         Username = entity.Username,
         Id = entity.Id,
         CreatedDate = entity.CreatedDate,

@@ -14,16 +14,16 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMarkdownFileRepository>]
-public class MarkdownFileRepository : OwnedDataRepository<ILoreScope, MarkdownFile, IMarkdownFile>, IMarkdownFileRepository {
+public class MarkdownFileRepository : OwnedDataRepository<LoreScopeModel, MarkdownFileModel>, IMarkdownFileRepository {
 
     public async ValueTask<Result> IsFileNameTakenAsync(string name, Guid loreScopeId, CancellationToken ct = default) {
         if (name.IsNullOrWhiteSpace() || loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<IMarkdownFile> dbSet = GetCachedDbSet<IMarkdownFile>();
+        DbSet<MarkdownFileModel> dbSet = GetCachedDbSet<MarkdownFileModel>();
 
         // Query
-        IQueryable<IMarkdownFile> query = dbSet.Where(l =>
+        IQueryable<MarkdownFileModel> query = dbSet.Where(l =>
             l.Name == name
             && l.OwnerId == loreScopeId
         );
@@ -38,10 +38,10 @@ public class MarkdownFileRepository : OwnedDataRepository<ILoreScope, MarkdownFi
         if (name.IsNullOrWhiteSpace() || loreScopeId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
-        DbSet<IMarkdownFile> dbSet = GetCachedDbSet<IMarkdownFile>();
+        DbSet<MarkdownFileModel> dbSet = GetCachedDbSet<MarkdownFileModel>();
 
         // Query
-        IQueryable<IMarkdownFile> query = dbSet.Where(l =>
+        IQueryable<MarkdownFileModel> query = dbSet.Where(l =>
             l.Name == name
             && l.OwnerId == loreScopeId
         );

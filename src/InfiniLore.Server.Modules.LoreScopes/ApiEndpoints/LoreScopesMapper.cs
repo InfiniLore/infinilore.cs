@@ -10,8 +10,8 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : ResponseMapper<LoreScopesResponse, PaginatedData<ILoreScope>> {
-    public override LoreScopesResponse FromEntity(PaginatedData<ILoreScope> entities) {
+public class LoreScopesMapper : ResponseMapper<LoreScopesResponse, PaginatedData<LoreScopeModel>> {
+    public override LoreScopesResponse FromEntity(PaginatedData<LoreScopeModel> entities) {
         var singleMapper = Resolve<LoreScopeMapper>();
 
         LoreScopeResponse[] items = entities.Items.Select(singleMapper.FromEntity).ToArray();

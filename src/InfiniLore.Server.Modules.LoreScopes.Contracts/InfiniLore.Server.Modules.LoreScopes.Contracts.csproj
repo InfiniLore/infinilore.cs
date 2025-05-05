@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Server.Modules.Users.Contracts\InfiniLore.Server.Modules.Users.Contracts.csproj" />
     </ItemGroup>
 
 </Project>
