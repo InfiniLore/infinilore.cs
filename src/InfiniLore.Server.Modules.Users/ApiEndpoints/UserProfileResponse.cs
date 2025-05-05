@@ -8,6 +8,6 @@ namespace InfiniLore.Server.Modules.Users.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserProfileResponse : BasicDataResponse {
+public record UserProfileResponse : BasicResponse {
     public required string Username { [UsedImplicitly] get; init; }
 }
