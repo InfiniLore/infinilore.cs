@@ -31,4 +31,8 @@
         <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\Content\" />
+    </ItemGroup>
+
 </Project>
