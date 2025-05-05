@@ -12,10 +12,11 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ServerModuleBuilder {
-    private IServiceCollection? Services { get; init; }
     private WebApplicationBuilder? AppBuilder { get; init; }
-    private ServerModuleBuilder() {}
+    private IServiceCollection? Services { get; init; }
     public List<Assembly> ModuleAssemblies { get; } = new();
+    
+    private ServerModuleBuilder() {}
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

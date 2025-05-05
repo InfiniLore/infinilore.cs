@@ -33,7 +33,7 @@ public static class Program {
 
         builder.Logging.AddSerilog();
         
-        WasmModuleBuilder moduleBuilder = WasmModuleBuilder.CreateFromBuilder(builder)
+        WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
             .AddModule<CoreAssemblyEntry>()
             .AddModule<LoreScopesAssemblyEntry>()
             .AddModule<MarkdownFilesAssemblyEntry>()

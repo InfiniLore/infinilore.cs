@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Reflection;
 
@@ -11,15 +12,26 @@ namespace InfiniLore.Wasm.Modules.Core.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class WasmModuleBuilder {
-    private WebAssemblyHostBuilder WasmBuilder { get; init; } = null!;
+    private WebAssemblyHostBuilder? WasmBuilder { get; init; }
+    private IServiceCollection? Services { get; init; }
+    public List<Assembly> ModuleAssemblies { get; } = new();
+
     private WasmModuleBuilder() {}
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static WasmModuleBuilder CreateFromBuilder(WebAssemblyHostBuilder builder) {
+    public static WasmModuleBuilder Create(WebAssemblyHostBuilder builder) {
         return new WasmModuleBuilder {
-            WasmBuilder = builder
+            WasmBuilder = builder,
+            Services = builder.Services
+        };
+    }
+
+    public static WasmModuleBuilder Create(IServiceCollection services) {
+        return new WasmModuleBuilder {
+            WasmBuilder = null,
+            Services = services
         };
     }
 
@@ -33,7 +45,10 @@ public class WasmModuleBuilder {
         }
         
         var serverModuleSetup = (IWasmModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
-        serverModuleSetup.Setup(WasmBuilder); 
+        if (WasmBuilder is not null) serverModuleSetup.SetupBuilder(WasmBuilder);
+        if (Services is not null) serverModuleSetup.SetupServices(Services);
+        
+        ModuleAssemblies.Add(assembly);
         
         return this;
     }
