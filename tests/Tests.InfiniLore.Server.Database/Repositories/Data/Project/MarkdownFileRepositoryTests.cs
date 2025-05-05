@@ -5,9 +5,8 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
-using InfiniLore.Server.Contracts.Database.Repositories.Data.Project;
-using InfiniLore.Server.Database.Models.Data.Project;
-using InfiniLore.Server.Database.Repositories.Data.Project;
+using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.Project;
 
@@ -33,7 +32,7 @@ public class MarkdownFileRepositoryTests(ContentDbInfrastructure infrastructure,
         // Arrange
         await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
         var repo = await unitOfWork.GetRepositoryAsync<IMarkdownFileRepository>();
-        MarkdownFile markdownFile = faker.GetById(guidStore.GetGuid(1000),guidStore.GetGuid("lorescope-forUser2"));
+        MarkdownFileModel markdownFile = faker.GetById(guidStore.GetGuid(1000),guidStore.GetGuid("lorescope-forUser2"));
         
         // Act
         Result result = await repo.AddAsync(markdownFile);

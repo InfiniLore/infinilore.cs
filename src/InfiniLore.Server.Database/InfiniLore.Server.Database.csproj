@@ -28,14 +28,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.Database.Models\InfiniLore.Server.Database.Models.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Configurations\Data\Project\" />
-        <Folder Include="Configurations\Data\User\" />
-        <Folder Include="Migrations\"/>
+      <Folder Include="Migrations\Content\" />
     </ItemGroup>
 
 </Project>

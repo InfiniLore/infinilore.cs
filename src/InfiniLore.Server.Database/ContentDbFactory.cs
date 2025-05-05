@@ -19,6 +19,7 @@ namespace InfiniLore.Server.Database;
 /// </summary>
 public static class ContentDbFactory {
     private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
+    private static Action<ModelBuilder>? _modelConfigurationAction;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -58,22 +59,30 @@ public static class ContentDbFactory {
     /// <param name="optionsAction">
     ///     An action to configure the database context options.
     /// </param>
-    public static void RegisterDatabase(IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction) {
+    public static void RegisterDatabase(
+        IServiceCollection services, 
+        Action<DbContextOptionsBuilder> optionsAction,
+        Action<ModelBuilder>? modelConfigurationAction = null) 
+    {
+        _modelConfigurationAction = modelConfigurationAction;
+        
         services.AddDbContextFactory<ContentDb>(options => {
             ILoggerFactory databaseLoggerFactory = LoggerFactory.Create(builder =>
                 builder.AddSerilog(Log.Logger.ForContext("Section", "EFCORE ContentDb"))
             );
 
             options.UseLoggerFactory(databaseLoggerFactory);
-
             optionsAction.Invoke(options);
         });
 
         // Our UnitOfWork is integral to the correct execution of the repo pattern
         services.AddReadonlyUnitOfWork<ContentDb>();
-        // services.AddReadonlyUnitOfWork<ContentDb>("ContentDb");
-
-        // These services are required for the db to work correctly
         services.RegisterServicesFromInfiniLoreServerDatabase();
     }
+    
+    internal static void ConfigureModel(ModelBuilder modelBuilder) {
+        _modelConfigurationAction?.Invoke(modelBuilder);
+    }
+
+
 }

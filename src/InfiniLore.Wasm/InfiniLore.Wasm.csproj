@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+        <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
+        <PackageReference Include="InfiniLore.InfiniBlazor" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.BrowserConsole" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
+        <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
+        <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
+        <ProjectReference Include="..\InfiniLore.Wasm.Modules.LoreScopes\InfiniLore.Wasm.Modules.LoreScopes.csproj" />
+        <ProjectReference Include="..\InfiniLore.Wasm.Modules.MarkdownFiles\InfiniLore.Wasm.Modules.MarkdownFiles.csproj" />
+        <ProjectReference Include="..\InfiniLore.Wasm.Modules.Users\InfiniLore.Wasm.Modules.Users.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Library\MarkdownEditor.razor" />
+    </ItemGroup>
+
+</Project>

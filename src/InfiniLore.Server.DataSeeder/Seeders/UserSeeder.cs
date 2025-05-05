@@ -6,14 +6,13 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
-using InfiniLore.Server.Contracts.Database.Repositories.Account;
-using InfiniLore.Server.Database.Models.Account;
 using InfiniLore.Server.DataSeeder.Options;
-using InfiniLore.Server.Services.Messaging.Commands.Account;
+using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
+using UserCreateRequest = InfiniLore.Server.Modules.Users.Messaging.Commands.UserCreateRequest;
 
 namespace InfiniLore.Server.DataSeeder.Seeders;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -32,10 +31,10 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         if (users.IsEmpty()) return logger.InformationAsFalse("User seeding is {State}", false);
 
         await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
-        var repo = await unitOfWork.GetRepositoryAsync<IUserRepository>(ct);
+        var repo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Result<InfiniLoreUser[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
-        if (!result.TryGetAsSuccess(out InfiniLoreUser[]? foundUsers)) return logger.InformationAsTrue("User seeding is {State}", true);
+        Result<InfiniLoreUserModel[]> result = await repo.TryGetAllByAuth0IdsAsync(default, ct, users.Select(u => u.Auth0Id).ToHashSet());
+        if (!result.TryGetAsSuccess(out InfiniLoreUserModel[] foundUsers)) return logger.InformationAsTrue("User seeding is {State}", true);
 
         HashSet<string> foundUserAuth0Ids = foundUsers.SelectMany(user => user.GetAuth0Ids()).ToHashSet();
 

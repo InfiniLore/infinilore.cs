@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
-using InfiniLore.Server.Database.Models.Account;
+using InfiniLore.Server.Modules.Users.Database;
 using System.Collections.Concurrent;
 
 namespace Fakers.InfiniLore.Server;
@@ -12,9 +12,9 @@ namespace Fakers.InfiniLore.Server;
 public class InfiniLoreUserFaker {
     private static readonly ConcurrentBag<string> UsedUsernames = [];
     private static readonly ConcurrentBag<string> UsedAuth0MailPasswords = [];
-    private readonly ConcurrentDictionary<Guid, InfiniLoreUser> Entries = new();
+    private readonly ConcurrentDictionary<Guid, InfiniLoreUserModel> Entries = new();
 
-    private static Faker<InfiniLoreUser> Faker { get; } = new Faker<InfiniLoreUser>()
+    private static Faker<InfiniLoreUserModel> Faker { get; } = new Faker<InfiniLoreUserModel>()
         .RuleFor(property: x => x.Id, setter: f => f.Random.Guid())
         .RuleFor(property: x => x.Username, GenerateUniqueUsername)
         .RuleFor(property: x => x.Auth0MailPassword, GenerateUniqueAuth0MailPassword);
@@ -40,13 +40,13 @@ public class InfiniLoreUserFaker {
     }
 
 
-    private static InfiniLoreUser EntryWithFixedId(Guid fixedId) => new() {
+    private static InfiniLoreUserModel EntryWithFixedId(Guid fixedId) => new() {
         Id = fixedId,
         Username = Faker.Generate().Username,
         Auth0MailPassword = Faker.Generate().Auth0MailPassword
     };
 
-    public InfiniLoreUser GetById(Guid id) => Entries.GetOrAdd(
+    public InfiniLoreUserModel GetById(Guid id) => Entries.GetOrAdd(
         id,
         EntryWithFixedId
     );

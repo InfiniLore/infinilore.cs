@@ -7,11 +7,12 @@
 @page "/account/register"
 @using AterraEngine.Unions
 @using FastEndpoints
-@using InfiniLore.Server.Services.Messaging
-@using InfiniLore.Server.Services.Messaging.Commands.Account
-@using InfiniLore.Server.Services.Messaging.Queries.Account
+@using InfiniLore.Server.Modules.Core.Messaging
+@using InfiniLore.Server.Modules.Users.Messaging.Queries
 @using System.ComponentModel.DataAnnotations
 @using System.Diagnostics
+@using MessageResponse = InfiniLore.Server.Modules.Core.Messaging.MessageResponse
+@using UserCreateRequest = InfiniLore.Server.Modules.Users.Messaging.Commands.UserCreateRequest
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@

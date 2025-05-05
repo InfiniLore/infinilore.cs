@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Frozen;
 using Tools.InfiniLore.Auth0.Setup;
-using RolesStore=InfiniLore.ServerClient.Shared.RolesStore;
+using RolesStore=InfiniLore.Shared.RolesStore;
 
 namespace Tools.InfiniLore.Auth0.Commands.SyncRoles;
 // ---------------------------------------------------------------------------------------------------------------------

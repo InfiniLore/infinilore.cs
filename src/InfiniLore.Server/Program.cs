@@ -5,21 +5,22 @@ using Auth0.AspNetCore.Authentication;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using InfiniLore.Clients.Wasm;
+using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
-using InfiniLore.Server.Api;
-using InfiniLore.Server.Api.Responses;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
-using InfiniLore.Server.Services;
-using InfiniLore.Server.Services.Auth0.Encryption;
-using InfiniLore.Server.Services.Auth0.TokenStore;
-using InfiniLore.Server.Services.Messaging;
-using InfiniLore.Server.Services.OpenIdConnect;
-using InfiniLore.ServerClient.Shared;
-using InfiniLore.ServerClient.Shared.JwtToken;
+using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Server.Modules.MarkdownFiles;
+using InfiniLore.Server.Modules.Users;
+using InfiniLore.Server.Modules.Users.Services;
+using InfiniLore.Server.Modules.Users.Services.Encryption;
+using InfiniLore.Server.Modules.Users.Services.TokenStore;
+using InfiniLore.Shared;
+using InfiniLore.Shared.JwtToken;
+using InfiniLore.Shared.Services.JwtToken;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,6 +30,11 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
+using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
+using IAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
+using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
+using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
+using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -66,9 +72,16 @@ public static class Program {
         // Most of the DB registration is handled through the Factory class
         //      Some extra setup is required on this end though
         //      We need to register what db we are using, this way we can reuse the factory for testing, etc...
-        ContentDbFactory.RegisterDatabase(builder.Services, optionsAction: options => {
-            options.UseSqlServer(connectionString);
-        });
+        ContentDbFactory.RegisterDatabase(
+            builder.Services, 
+            options => options.UseSqlServer(connectionString),
+            static modelBuilder => modelBuilder
+                .ApplyConfigurationsFromAssembly(typeof(CoreAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(LoreScopesAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(MarkdownFilesAssemblyEntry).Assembly)
+                .ApplyConfigurationsFromAssembly(typeof(UsersAssemblyEntry).Assembly)
+        );
+
         #endregion
 
         #region Auth
@@ -137,15 +150,14 @@ public static class Program {
             options.DisableAutoDiscovery = true;
 
             options.Assemblies = [
-                typeof(IEntrypointInfiniLoreServerApi).Assembly,
-                typeof(IEntrypointInfiniLoreServerApiResponses).Assembly,
-                typeof(IEntrypointInfiniLoreServerServicesMessaging).Assembly
+                typeof(CoreAssemblyEntry).Assembly,
+                typeof(LoreScopesAssemblyEntry).Assembly,
+                typeof(MarkdownFilesAssemblyEntry).Assembly,
+                typeof(UsersAssemblyEntry).Assembly,
             ];
         });
 
         builder.Services.SwaggerDocument();
-
-        builder.Services.RegisterServicesFromInfiniLoreServerServicesMessaging();
         #endregion
 
         #region DataSeeding
@@ -171,11 +183,14 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
+        
+        builder.Services.RegisterServicesFromInfiniLoreServer();
+        builder.Services.RegisterServicesFromInfiniLoreShared();
 
-        builder.Services.RegisterServicesFromInfiniLoreServerServices();
-        builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
-        builder.Services.RegisterServicesFromInfiniLoreServerApi();
-
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesLoreScopes();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesMarkdownFiles();
+        builder.Services.RegisterServicesFromInfiniLoreServerModulesUsers();
 
         return builder.Build();
     }
@@ -196,8 +211,8 @@ public static class Program {
 
         // Reference the library containing the static files
         var embeddedProvider = new EmbeddedFileProvider(
-            typeof(IEntryPointInfiniLoreServerClientShared).Assembly,// Replace with a type from the external library
-            "InfiniLore.ServerClient.Shared.wwwroot"// The root path defined in the library
+            typeof(IAssemblyEntry).Assembly,// Replace with a type from the external library
+            "InfiniLore.Shared.wwwroot"// The root path defined in the library
         );
 
         app.UseStaticFiles(new StaticFileOptions {

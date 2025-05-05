@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\InfiniLore.ServerClient.Shared\InfiniLore.ServerClient.Shared.csproj"/>
+        <ProjectReference Include="..\..\src\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
 </Project>

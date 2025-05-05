@@ -7,11 +7,10 @@
 @page "/account/profile"
 @using FastEndpoints
 @using InfiniLore.Server.Components.Layout
-@using InfiniLore.Server.Services.Messaging
-@using InfiniLore.Server.Services.Messaging.Commands.Data.User
-@using InfiniLore.Server.Services.Messaging.Queries.Account
-@using InfiniLore.ServerClient.Shared
-@using InfiniLore.ServerClient.Shared.ClaimsHelper
+@using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands
+@using InfiniLore.Server.Modules.Users.Messaging.Queries
+@using InfiniLore.Shared
+@using InfiniLore.Shared.Services.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveServer
@@ -78,14 +77,14 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
+        Modules.Core.Messaging.MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
             Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
             return;
         }
 
         var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
-        MessageResponse<Guid> createResult = await request.ExecuteAsync();
+        Modules.Core.Messaging.MessageResponse<Guid> createResult = await request.ExecuteAsync();
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);
             return;

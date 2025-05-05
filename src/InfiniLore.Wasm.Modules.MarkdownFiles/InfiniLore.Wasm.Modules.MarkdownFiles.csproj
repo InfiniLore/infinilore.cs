@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Shared.Modules.MarkdownFiles\InfiniLore.Shared.Modules.MarkdownFiles.csproj" />
+      <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

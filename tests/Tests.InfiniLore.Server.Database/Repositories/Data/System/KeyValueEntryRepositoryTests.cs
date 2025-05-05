@@ -5,10 +5,8 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
-using InfiniLore.Server.Contracts.Database.Repositories.Data.System;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Models.Data.System;
-using InfiniLore.Server.Database.Repositories.Data.System;
+using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
@@ -39,14 +37,16 @@ public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        KeyValueEntry model = faker.Faker.Generate();
+        KeyValueEntryModel model = faker.Faker.Generate();
         string key = model.Key;
         string? value = model.Value;
 
         // Act
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueEntry? actual = await dbContext.KeyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
+        
+        DbSet<KeyValueEntryModel> keyValueEntries = dbContext.Set<KeyValueEntryModel>();
+        KeyValueEntryModel? actual = await keyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();
