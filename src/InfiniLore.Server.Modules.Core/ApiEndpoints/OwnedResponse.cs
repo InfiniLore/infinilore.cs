@@ -7,6 +7,6 @@ namespace InfiniLore.Server.Modules.Core.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record ProjectDataResponse : BasicDataResponse {
-    public required Guid LoreScopeId { [UsedImplicitly] get; init; }
+public abstract record OwnedResponse : BasicResponse {
+    public required Guid OwnerId { [UsedImplicitly] get; init; }
 }

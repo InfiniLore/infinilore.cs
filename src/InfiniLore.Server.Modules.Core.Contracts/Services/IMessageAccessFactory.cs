@@ -1,10 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server;
+namespace InfiniLore.Server.Modules.Core;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IAccessData {
-    Guid UserId { get; }
+public interface IMessageAccessFactory {
+    IMessageAccess Empty { get; }
+    ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default);
+    IMessageAccess FromClaims(CancellationToken ct = default);
+    
 }

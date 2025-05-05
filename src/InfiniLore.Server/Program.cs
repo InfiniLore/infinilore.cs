@@ -12,12 +12,9 @@ using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.LoreScopes;
-using InfiniLore.Server.Modules.MarkdownFiles;
 using InfiniLore.Server.Modules.Users;
-using InfiniLore.Server.Modules.Users.Services;
-using InfiniLore.Server.Modules.Users.Services.Encryption;
-using InfiniLore.Server.Modules.Users.Services.TokenStore;
+using InfiniLore.Server.Modules.Users.Encryption;
+using InfiniLore.Server.Modules.Users.TokenStore;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
 using InfiniLore.Shared.Services.JwtToken;
@@ -30,8 +27,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
+using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
-using IAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
@@ -64,22 +61,21 @@ public static class Program {
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
+        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
+            .AddModule<CoreAssemblyEntry>()
+            .AddModule<LoreScopesAssemblyEntry>()
+            .AddModule<MarkdownFilesAssemblyEntry>()
+            .AddModule<UsersAssemblyEntry>();
+        
         #region Database
         // Technically we need to wrap this as a `IsDevelopment`
         //      And have another value for when we don't pull from our own container 
+        //      Most of it is made through a factory which sets up the docker instance
         string connectionString = await ContentDbFactory.CreateDockerMsSqlContainer();
-
-        // Most of the DB registration is handled through the Factory class
-        //      Some extra setup is required on this end though
-        //      We need to register what db we are using, this way we can reuse the factory for testing, etc...
         ContentDbFactory.RegisterDatabase(
-            builder.Services, 
-            options => options.UseSqlServer(connectionString),
-            static modelBuilder => modelBuilder
-                .ApplyConfigurationsFromAssembly(typeof(CoreAssemblyEntry).Assembly)
-                .ApplyConfigurationsFromAssembly(typeof(LoreScopesAssemblyEntry).Assembly)
-                .ApplyConfigurationsFromAssembly(typeof(MarkdownFilesAssemblyEntry).Assembly)
-                .ApplyConfigurationsFromAssembly(typeof(UsersAssemblyEntry).Assembly)
+            builder.Services,
+            moduleBuilder.ModuleAssemblies, 
+            options => options.UseSqlServer(connectionString)
         );
 
         #endregion
@@ -149,12 +145,7 @@ public static class Program {
         builder.Services.AddFastEndpoints(options => {
             options.DisableAutoDiscovery = true;
 
-            options.Assemblies = [
-                typeof(CoreAssemblyEntry).Assembly,
-                typeof(LoreScopesAssemblyEntry).Assembly,
-                typeof(MarkdownFilesAssemblyEntry).Assembly,
-                typeof(UsersAssemblyEntry).Assembly,
-            ];
+            options.Assemblies = moduleBuilder.ModuleAssemblies;
         });
 
         builder.Services.SwaggerDocument();
@@ -162,10 +153,7 @@ public static class Program {
 
         #region DataSeeding
         // Everything is handled by the DataSeeding project
-        //      This is to make sure we don't have any issues with the seeding process
-        //      And to make sure we've enabled overloading of the method
-        //      We also migrate the db in this step, if required.
-        //          (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
+        //    (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
         builder.RegisterDataSeedingServices();
         #endregion
 
@@ -187,11 +175,6 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreServer();
         builder.Services.RegisterServicesFromInfiniLoreShared();
 
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesLoreScopes();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesMarkdownFiles();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesUsers();
-
         return builder.Build();
     }
 
@@ -211,7 +194,7 @@ public static class Program {
 
         // Reference the library containing the static files
         var embeddedProvider = new EmbeddedFileProvider(
-            typeof(IAssemblyEntry).Assembly,// Replace with a type from the external library
+            typeof(SharedAssemblyEntry).Assembly,// Replace with a type from the external library
             "InfiniLore.Shared.wwwroot"// The root path defined in the library
         );
 

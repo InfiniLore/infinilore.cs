@@ -33,7 +33,7 @@ public static class WebApplicationBuilderExtensions {
             seeder.AddSeeder<UserSeeder>();
 
             // To ensure we don't forget one
-            seeder.AddRemainderSeedersAsOneGroup(typeof(IEntrypointInfiniLoreServerDataSeeder).Assembly);
+            seeder.AddRemainderSeedersAsOneGroup(typeof(IAssemblyEntry).Assembly);
         });
     }
 }

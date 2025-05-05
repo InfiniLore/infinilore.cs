@@ -1,14 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Security.Claims;
-
-namespace InfiniLore.Server.Modules.Core.Services;
+namespace InfiniLore.Wasm.Modules.Users;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IRequestDataFactory {
-    ValueTask<IAccessData> FromJwtTokenAsync(CancellationToken ct = default);
-    IAccessData FromClaims(CancellationToken ct = default);
-}
+public interface IAssemblyEntry;

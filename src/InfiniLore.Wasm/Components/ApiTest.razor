@@ -5,14 +5,17 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/api-test"
+@using AterraEngine.Unions
 @using InfiniLore.Shared
-@using InfiniLore.Shared.Services.InteractiveApi
+@using InfiniLore.Shared.Modules.LoreScopes.Database
+@using InfiniLore.Shared.Modules.LoreScopes.Services
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using System.Text.Json
 @attribute [Authorize]
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveServer
 @inject ILogger<ApiTest> Logger
-@inject IInteractiveApi InteractiveApiAccess
+@inject ILoreScopeInteractiveApi LoreScopeInteractiveApi
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -50,12 +53,12 @@
             return;
         }
 
-        // Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
-        // if (result.TryGetAsErrorValue(out string? value)) {
-        //     _apiResponse = value;
-        // }
+        Result<PaginatedData<ILoreScopeModel>> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
+        if (result.TryGetAsErrorValue(out string? value)) {
+            _apiResponse = value;
+        }
 
-        // string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
-        // _apiResponse = dataAsJson;
+        string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
+        _apiResponse = dataAsJson;
     }
 }

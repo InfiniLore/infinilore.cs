@@ -14,11 +14,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Shared.Modules.MarkdownFiles\InfiniLore.Shared.Modules.MarkdownFiles.csproj" />
       <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
     </ItemGroup>
 
 </Project>

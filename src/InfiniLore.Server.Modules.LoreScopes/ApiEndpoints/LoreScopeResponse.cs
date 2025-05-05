@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeResponse : UserDataResponse {
+public record LoreScopeResponse : OwnedResponse {
     public required string Name { [UsedImplicitly] get; init; }
     public string? Description { [UsedImplicitly] get; init; }
 }

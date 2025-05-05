@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Modules.Core.Services;
+namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

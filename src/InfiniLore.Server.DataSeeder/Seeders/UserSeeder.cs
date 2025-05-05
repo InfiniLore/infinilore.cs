@@ -7,6 +7,7 @@ using CodeOfChaos.Types;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Server.DataSeeder.Options;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,12 @@ namespace InfiniLore.Server.DataSeeder.Seeders;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<UserSeeder>(ServiceLifetime.Scoped)]
-public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, ILogger<UserSeeder> logger) : Seeder {
+public class UserSeeder(
+    IOptions<SeedingConfig> options,
+    IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory, 
+    ILogger<UserSeeder> logger,
+    IMessageAccessFactory messageAccessFactory
+) : Seeder {
     private readonly SeedingConfig _options = options.Value;
     private readonly ConcurrentQueue<SeedingUser> _usersToSeed = new();
 
@@ -56,7 +62,9 @@ public class UserSeeder(IOptions<SeedingConfig> options, IReadonlyUnitOfWorkFact
         var tasks = new Task[totalUsersToSeed];
         int i = 0;
         while (_usersToSeed.TryDequeue(out SeedingUser? userToBeSeeded)) {
-            tasks[i++] = new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username).ExecuteAsync(ct: ct);
+            tasks[i++] = new UserCreateRequest(userToBeSeeded.Auth0Id, userToBeSeeded.Username) {
+                Access = messageAccessFactory.Empty
+            }.ExecuteAsync(ct: ct);
         }
 
         await Task.WhenAny(tasks);

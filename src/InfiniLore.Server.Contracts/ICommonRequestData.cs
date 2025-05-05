@@ -6,6 +6,6 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ICommonRequestData {
-    IAccessData AccessData { get; }
+    IMessageAccess Access { get; }
     DateTime CreatedAt { get; }
 }

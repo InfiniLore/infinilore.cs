@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Shared;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -6,9 +6,14 @@ using InfiniLore.Kiota.Extensions;
 using InfiniLore.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Shared;
+using InfiniLore.Wasm.Modules.Core.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
+using CoreAssemblyEntry = InfiniLore.Wasm.Modules.Core.IAssemblyEntry;
+using LoreScopesAssemblyEntry = InfiniLore.Wasm.Modules.LoreScopes.IAssemblyEntry;
+using MarkdownFilesAssemblyEntry = InfiniLore.Wasm.Modules.MarkdownFiles.IAssemblyEntry;
+using UsersAssemblyEntry = InfiniLore.Wasm.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,11 +25,6 @@ public static class Program {
         // Builder
         // -------------------------------------------------------------------------------------------------------------
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        builder.Services.AddAuthorizationCore();
-        builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddSingleton<AuthenticationStateProvider, WasmClientAuthenticationStateProvider>();
-
-        builder.Services.AddHttpClient();
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
@@ -32,6 +32,18 @@ public static class Program {
             .CreateLogger();
 
         builder.Logging.AddSerilog();
+        
+        WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
+            .AddModule<CoreAssemblyEntry>()
+            .AddModule<LoreScopesAssemblyEntry>()
+            .AddModule<MarkdownFilesAssemblyEntry>()
+            .AddModule<UsersAssemblyEntry>();
+        
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddSingleton<AuthenticationStateProvider, WasmClientAuthenticationStateProvider>();
+
+        builder.Services.AddHttpClient();
         builder.Services.RegisterServicesFromInfiniLoreShared();
         builder.Services.RegisterServicesFromInfiniLoreWasm();
 

@@ -1,14 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using JetBrains.Annotations;
-
-namespace InfiniLore.Server.Modules.Core.ApiEndpoints;
+namespace InfiniLore.Server.DataSeeder;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record BasicDataResponse {
-    public required Guid Id { [UsedImplicitly] get; init; }
-    public required DateTime CreatedDate { [UsedImplicitly] get; init; }
-    public required DateTime LastModifiedDate { [UsedImplicitly] get; init; }
-}
+public class IAssemblyEntry;

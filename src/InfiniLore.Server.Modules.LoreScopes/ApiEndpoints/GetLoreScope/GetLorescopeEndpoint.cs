@@ -4,7 +4,6 @@
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Shared;
@@ -26,7 +25,7 @@ using Response=Results<
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    IRequestDataFactory requestDataFactory
+    IMessageAccessFactory requestDataFactory
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
@@ -46,7 +45,7 @@ public class GetLorescopeEndpoint(
             req.LoreScopeId,
             req.UserId
         ) {
-            AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
+            Access = await requestDataFactory.FromJwtTokenAsync(ct)
         };
 
         // Execute Query

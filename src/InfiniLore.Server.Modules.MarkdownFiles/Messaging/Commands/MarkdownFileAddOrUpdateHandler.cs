@@ -10,7 +10,7 @@ using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
-using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Noticiations;
+using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Notifications;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 

@@ -7,6 +7,7 @@
 @page "/account/profile"
 @using FastEndpoints
 @using InfiniLore.Server.Components.Layout
+@using InfiniLore.Server.Modules.Core
 @using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands
 @using InfiniLore.Server.Modules.Users.Messaging.Queries
 @using InfiniLore.Shared
@@ -19,6 +20,7 @@
 @layout MainLayout
 @inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
+@inject IMessageAccessFactory MessageAccessFactory
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -77,13 +79,19 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        Modules.Core.Messaging.MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId).ExecuteAsync();
+        IMessageAccess access = MessageAccessFactory.FromClaims();
+        
+        Modules.Core.Messaging.MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId){
+            Access = access
+        }.ExecuteAsync();
         if (!resultUserId.TryGetAsSuccess(out Guid userId)) {
-            Logger.Warning($"User could not be found with auth0Id {auth0Info.Auth0UserId}");
+            Logger.Warning("User could not be found with auth0Id {Auth0InfoAuth0UserId}", auth0Info.Auth0UserId);
             return;
         }
 
-        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString());
+        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString()){
+            Access = access
+        };
         Modules.Core.Messaging.MessageResponse<Guid> createResult = await request.ExecuteAsync();
         if (!createResult.TryGetAsSuccess(out Guid lorescopeId)) {
             Logger.Warning("Something horribly went wrong with creating the lorescope: {err}", createResult.AsError.Value);

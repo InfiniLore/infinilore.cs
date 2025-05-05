@@ -8,6 +8,4 @@ namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInteractiveApiServer : IInteractiveApi {
-    
-}
+public interface IInteractiveApiServer : IInteractiveApi;

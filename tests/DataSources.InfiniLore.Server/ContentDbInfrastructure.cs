@@ -4,11 +4,17 @@
 using CodeOfChaos.Extensions.AspNetCore;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.Modules.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Testcontainers.MsSql;
 using TUnit.Core.Interfaces;
+
+using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
+using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
+using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
+using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -52,9 +58,18 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
 
         var services = new ServiceCollection();
         services.AddLogging();
-        ContentDbFactory.RegisterDatabase(services, optionsAction: builder => {
-            builder.UseSqlServer(ConnectionString);
-        });
+        
+        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
+            .AddModule<CoreAssemblyEntry>()
+            .AddModule<LoreScopesAssemblyEntry>()
+            .AddModule<MarkdownFilesAssemblyEntry>()
+            .AddModule<UsersAssemblyEntry>();
+        
+        ContentDbFactory.RegisterDatabase(
+            services,
+            moduleBuilder.ModuleAssemblies, 
+            optionsAction: builder => builder.UseSqlServer(ConnectionString)
+        );
 
         ServiceProvider = services.BuildServiceProvider();
 

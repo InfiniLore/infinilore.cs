@@ -4,8 +4,8 @@
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -27,7 +27,7 @@ using Response=Results<
 public class GetMarkdownFileEndpoint(
     ILogger<GetMarkdownFileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    IRequestDataFactory requestDataFactory
+    IMessageAccessFactory requestDataFactory
 ) : Endpoint<GetMarkdownFileRequest, Response, MarkdownFileMapper> {
 
     public override void Configure() {
@@ -44,7 +44,7 @@ public class GetMarkdownFileEndpoint(
             req.MarkdownFileId,
             req.LoreScopeId
         ) {
-            AccessData = await requestDataFactory.FromJwtTokenAsync(ct)
+            Access = await requestDataFactory.FromJwtTokenAsync(ct)
         };
 
         // Execute Query

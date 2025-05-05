@@ -4,9 +4,9 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Commands;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
 using InfiniLore.Server.Services;
@@ -15,7 +15,7 @@ using InfiniLore.Shared.Modules.MarkdownFiles.Database;
 using InfiniLore.Shared.Modules.MarkdownFiles.Services;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Modules.MarkdownFiles.Services;
+namespace InfiniLore.Server.Modules.MarkdownFiles;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -24,7 +24,7 @@ namespace InfiniLore.Server.Modules.MarkdownFiles.Services;
 public class MarkdownFileInteractiveApi(
     ILogger<MarkdownFileInteractiveApi> logger,
     IInteractiveApiServer interactiveApi,
-    IRequestDataFactory requestDataFactory
+    IMessageAccessFactory requestDataFactory
 ) : IMarkdownFileInteractiveApi {
 
     public async ValueTask<Result<PaginatedData<IMarkdownFileModel>>> GetMarkdownFilesAsync(string loreScopeId, CancellationToken ct = default) {
@@ -35,7 +35,7 @@ public class MarkdownFileInteractiveApi(
             parsedLoreScopeId,
             PaginationInfo.Default
         ) {
-            AccessData = requestDataFactory.FromClaims(ct)
+            Access = requestDataFactory.FromClaims(ct)
         };
 
         // Execute Query
@@ -55,7 +55,7 @@ public class MarkdownFileInteractiveApi(
         
         // Form Query
         var query = new GetMarkdownFileByIdQuery(MarkdownFileId: parsedMarkdownFileId, LorescopeId: parsedLoreScopeId) {
-            AccessData = requestDataFactory.FromClaims(ct)
+            Access = requestDataFactory.FromClaims(ct)
         };
         
         // Execute Query
@@ -78,7 +78,7 @@ public class MarkdownFileInteractiveApi(
         var command = new MarkdownFileAddOrUpdateRequest(
             parsedMarkdownFileId, parsedLoreScopeId, fileName, markdown
         ) {
-            AccessData = requestDataFactory.FromClaims(ct)
+            Access = requestDataFactory.FromClaims(ct)
         };
         
         await command.ExecuteAsync(ct);

@@ -9,6 +9,4 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IInteractiveApiServer>]
-public class InteractiveApiServer : IInteractiveApiServer{
-    
-}
+public class InteractiveApiServer : IInteractiveApiServer;

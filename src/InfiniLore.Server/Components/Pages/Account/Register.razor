@@ -7,6 +7,7 @@
 @page "/account/register"
 @using AterraEngine.Unions
 @using FastEndpoints
+@using InfiniLore.Server.Modules.Core
 @using InfiniLore.Server.Modules.Core.Messaging
 @using InfiniLore.Server.Modules.Users.Messaging.Queries
 @using System.ComponentModel.DataAnnotations
@@ -14,6 +15,7 @@
 @using MessageResponse = InfiniLore.Server.Modules.Core.Messaging.MessageResponse
 @using UserCreateRequest = InfiniLore.Server.Modules.Users.Messaging.Commands.UserCreateRequest
 @inject NavigationManager Navigation
+@inject IMessageAccessFactory MessageAccessFactory
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -152,7 +154,9 @@
         }
 
         // Call the backend to check username availability
-        MessageResponse mediatorResponse = await new UsernameExistsQuery(username).ExecuteAsync();
+        MessageResponse mediatorResponse = await new UsernameExistsQuery(username) {
+            Access = MessageAccessFactory.Empty
+        }.ExecuteAsync();
 
         if (!mediatorResponse.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
@@ -175,7 +179,9 @@
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MessageResponse<Guid> result = await new UserCreateRequest(Auth0UserId, userModel.Username).ExecuteAsync();
+        MessageResponse<Guid> result = await new UserCreateRequest(Auth0UserId, userModel.Username){
+            Access = MessageAccessFactory.Empty
+        }.ExecuteAsync();
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry

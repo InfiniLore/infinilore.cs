@@ -6,6 +6,7 @@ using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

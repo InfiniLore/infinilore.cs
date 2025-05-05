@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Server.Modules.MarkdownFiles.Database;
+using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints;
@@ -19,6 +20,6 @@ public class MarkdownFileMapper : ResponseMapper<MarkdownFileResponse, MarkdownF
         Id = markdownFile.Id,
         CreatedDate = markdownFile.CreatedDate,
         LastModifiedDate = markdownFile.LastModifiedDate,
-        LoreScopeId = markdownFile.OwnerId
+        OwnerId = markdownFile.OwnerId
     };
 }

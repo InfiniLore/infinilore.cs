@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Services;
 using InfiniLore.Server.Modules.Users.Messaging.Queries;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
@@ -60,8 +60,9 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtToke
 
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
-        // TODO maybe not use mediator here? I dont know
-        MessageResponse<Guid> result = await new GetUserIdByAuth0IdQuery(auth0UserId).ExecuteAsync(ct);
+        MessageResponse<Guid> result = await new GetUserIdByAuth0IdQuery(auth0UserId) {
+            Access = MessageAccess.Empty
+        }.ExecuteAsync(ct);
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
 
         return userId != Guid.Empty
