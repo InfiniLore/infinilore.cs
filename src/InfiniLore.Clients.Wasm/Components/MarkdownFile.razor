@@ -37,14 +37,14 @@
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
         if (MarkdownFileId == Guid.Empty) return;
-        Result<MarkdownFileResponse> markdownFileResult = await InteractiveApiAccess.GetMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString());
-        if (!markdownFileResult.TryGetAsSuccess(out MarkdownFileResponse response)) {
-            IsEnabled = false;
-            return;
-        }
+        // Result<MarkdownFileResponse> markdownFileResult = await InteractiveApiAccess.GetMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString());
+        // if (!markdownFileResult.TryGetAsSuccess(out MarkdownFileResponse response)) {
+            // IsEnabled = false;
+            // return;
+        // }
 
-        FileName = response.Name;
-        TextSource.Text = response.Source;
+        // FileName = response.Name;
+        // TextSource.Text = response.Source;
     }
     private async Task SaveAsync() {
         if (MarkdownFileId == Guid.Empty) MarkdownFileId = Guid.NewGuid();

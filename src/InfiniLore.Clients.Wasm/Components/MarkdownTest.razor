@@ -17,22 +17,22 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@foreach (LoreScopeResponse loreScope in LoreScopeResponses) {
-    <h3>@loreScope.Name</h3>
-    <ul>
-        @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
-            <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1">Editor</a></li>
-        }
-        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li>
-    </ul>
-}
+@* @foreach (LoreScopeResponse loreScope in LoreScopeResponses) { *@
+@*     <h3>@loreScope.Name</h3> *@
+@*     <ul> *@
+@*         @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) { *@
+@*             <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1">Editor</a></li> *@
+@*         } *@
+@*         <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li> *@
+@*     </ul> *@
+@* } *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }
-    private LoreScopeResponse[] LoreScopeResponses { get; set; } = [];
+    // private LoreScopeResponse[] LoreScopeResponses { get; set; } = [];
     private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -44,24 +44,24 @@
         string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
         if (userId.IsNullOrWhiteSpace()) return;
         
-        Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
-        if (!result.TryGetAsSuccess(out LoreScopesResponse response)) {
-            return;
-        }
-
-        MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
-        LoreScopeResponses = response.Items;
-        
-        foreach (LoreScopeResponse scope in LoreScopeResponses) {
-            (Guid, string)[] files = await GetMarkdownFilesAsync(scope.Id);
-            MarkdownFileMap[scope.Id] = files;
-        }
+        // Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
+        // if (!result.TryGetAsSuccess(out LoreScopesResponse response)) {
+        //     return;
+        // }
+        //
+        // MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
+        // LoreScopeResponses = response.Items;
+        //
+        // foreach (LoreScopeResponse scope in LoreScopeResponses) {
+        //     (Guid, string)[] files = await GetMarkdownFilesAsync(scope.Id);
+        //     MarkdownFileMap[scope.Id] = files;
+        // }
     }
 
-    private async Task<(Guid, string)[]> GetMarkdownFilesAsync(Guid loreScopeId) {
-        Result<MarkdownFilesResponse> result = await InteractiveApiAccess.GetMarkdownFilesAsync(loreScopeId.ToString());
-        if (!result.TryGetAsSuccess(out MarkdownFilesResponse response)) return [];
-
-        return response.Items.Select(r => (r.Id, r.Name)).ToArray();
-    }
+    // private async Task<(Guid, string)[]> GetMarkdownFilesAsync(Guid loreScopeId) {
+        // Result<MarkdownFilesResponse> result = await InteractiveApiAccess.GetMarkdownFilesAsync(loreScopeId.ToString());
+        // if (!result.TryGetAsSuccess(out MarkdownFilesResponse response)) return [];
+        //
+        // return response.Items.Select(r => (r.Id, r.Name)).ToArray();
+    @* } *@
 }

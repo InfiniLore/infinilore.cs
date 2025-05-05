@@ -6,7 +6,9 @@ using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Database.Migrations.Content;
+using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,7 +45,9 @@ public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure
         // Act
         Result result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
-        KeyValueEntry? actual = await dbContext.KeyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
+        
+        DbSet<KeyValueEntry> keyValueEntries = dbContext.Set<KeyValueEntry>();
+        KeyValueEntry? actual = await keyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
         await Assert.That(result.IsState).IsTrue();

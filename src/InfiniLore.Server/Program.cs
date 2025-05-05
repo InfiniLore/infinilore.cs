@@ -17,12 +17,12 @@ using InfiniLore.Server.Modules.Users.Services;
 using InfiniLore.Server.Modules.Users.Services.TokenStore;
 using InfiniLore.ServerClient.Shared;
 using InfiniLore.ServerClient.Shared.JwtToken;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -176,7 +176,9 @@ public static class Program {
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
-
+        
+        
+        builder.Services.RegisterServicesFromInfiniLoreShared();
 
         return builder.Build();
     }

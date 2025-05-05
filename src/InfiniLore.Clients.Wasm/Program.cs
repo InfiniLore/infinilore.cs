@@ -6,6 +6,7 @@ using InfiniLore.Clients.Kiota.Extensions;
 using InfiniLore.Clients.Wasm.Services;
 using InfiniLore.Clients.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
@@ -32,7 +33,7 @@ public static class Program {
             .CreateLogger();
 
         builder.Logging.AddSerilog();
-        builder.Services.RegisterServicesFromInfiniLoreServerClientShared();
+        builder.Services.RegisterServicesFromInfiniLoreShared();
         builder.Services.RegisterServicesFromInfiniLoreClientsWasmServices();
 
         builder.Services.AddKiotaHandlers();

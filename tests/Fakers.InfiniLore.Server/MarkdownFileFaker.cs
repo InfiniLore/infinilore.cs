@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
+using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using System.Collections.Concurrent;
 
 namespace Fakers.InfiniLore.Server;
@@ -14,14 +15,14 @@ public class MarkdownFileFaker {
     
     private static Faker<MarkdownFile> Faker { get; } = new Faker<MarkdownFile>()
         .RuleFor(property: x => x.Id, setter: f => f.Random.Guid())
-        .RuleFor(property: x => x.LoreScopeId, setter: f => f.Random.Guid())
+        .RuleFor(property: x => x.OwnerId, setter: f => f.Random.Guid())
         .RuleFor(property: x => x.Name, setter: f => f.Random.AlphaNumeric(MarkdownFile.Defaults.NameMaxLength))
         .RuleFor(property: x => x.Source, setter: f => f.Lorem.Paragraphs(2)// Random string
         );
     
     private static MarkdownFile EntryWithFixedId(Guid fixedId, Guid loreScopeId) => new() {
         Id = fixedId,
-        LoreScopeId = loreScopeId,
+        OwnerId = loreScopeId,
         Name = Faker.Generate().Name,
         Source = Faker.Generate().Source
     };

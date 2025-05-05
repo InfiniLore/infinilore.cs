@@ -52,12 +52,12 @@
             return;
         }
 
-        Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
-        if (result.TryGetAsErrorValue(out string? value)) {
-            _apiResponse = value;
-        }
+        // Result<LoreScopesResponse> result = await InteractiveApiAccess.GetLoreScopesAsync(userId);
+        // if (result.TryGetAsErrorValue(out string? value)) {
+        //     _apiResponse = value;
+        // }
 
-        string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
-        _apiResponse = dataAsJson;
+        // string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
+        // _apiResponse = dataAsJson;
     }
 }
