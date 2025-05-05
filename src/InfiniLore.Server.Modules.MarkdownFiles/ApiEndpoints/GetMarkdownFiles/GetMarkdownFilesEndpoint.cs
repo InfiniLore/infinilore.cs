@@ -31,7 +31,7 @@ public class GetMarkdownFilesEndpoint(
 ) : Endpoint<GetMarkdownFilesRequest, Response, MarkdownFilesMapper> {
 
     public override void Configure() {
-        Get("/data/project/{LoreScopeId:guid}/markdown-file");
+        Get("/data-lorescope/{LoreScopeId:guid}/markdown-file");
         Permissions(PermissionsStore.MarkdownFileRead);
         Policies(ApiPolicies.JwtProtected);
     }

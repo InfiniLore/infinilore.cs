@@ -30,7 +30,7 @@ public class GetLorescopeEndpoint(
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
-        Get("/data/{UserId:guid}/lorescope/{LoreScopeId:guid}");
+        Get("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
     }

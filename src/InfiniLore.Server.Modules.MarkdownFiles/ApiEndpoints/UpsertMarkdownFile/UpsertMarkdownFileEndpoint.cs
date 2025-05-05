@@ -28,7 +28,7 @@ public class UpsertMarkdownFileEndpoint(
 ) : Endpoint<UpsertMarkdownFileRequest, Response, MarkdownFileMapper> {
 
     public override void Configure() {
-        Post("/data/project/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
+        Post("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
         Permissions(PermissionsStore.MarkdownFileWrite, PermissionsStore.MarkdownFileCreate);
         Policies(ApiPolicies.JwtProtected);
     }

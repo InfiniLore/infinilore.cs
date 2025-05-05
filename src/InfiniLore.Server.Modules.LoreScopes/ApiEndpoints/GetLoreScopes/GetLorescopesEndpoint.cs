@@ -30,7 +30,7 @@ public class GetLoreScopesEndpoint(
     IRequestDataFactory requestDataFactory
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
     public override void Configure() {
-        Get("/data/{UserId:guid}/lorescope");
+        Get("/data-user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
     }
