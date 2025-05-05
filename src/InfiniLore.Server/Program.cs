@@ -61,7 +61,7 @@ public static class Program {
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
-        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.CreateFromBuilder(builder)
+        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<CoreAssemblyEntry>()
             .AddModule<LoreScopesAssemblyEntry>()
             .AddModule<MarkdownFilesAssemblyEntry>()

@@ -16,7 +16,7 @@ using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 
-var moduleBuilder = ServerModuleBuilder.CreateFromBuilder(builder)
+var moduleBuilder = ServerModuleBuilder.Create(builder)
     .AddModule<CoreAssemblyEntry>()
     .AddModule<LoreScopesAssemblyEntry>()
     .AddModule<MarkdownFilesAssemblyEntry>()

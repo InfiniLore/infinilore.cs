@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.Core;
 
@@ -9,5 +10,6 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IServerModuleSetup {
-    public void Setup(WebApplicationBuilder builder);
+    public void SetupBuilder(WebApplicationBuilder builder);
+    public void SetupServices(IServiceCollection services);
 }

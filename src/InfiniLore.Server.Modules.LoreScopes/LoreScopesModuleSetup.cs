@@ -5,6 +5,7 @@ using InfiniLore.Server.Modules.Core;
 using InfiniLore.Shared.Modules.LoreScopes;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.LoreScopes;
 
@@ -14,8 +15,12 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [UsedImplicitly]
 public class LoreScopesModuleSetup : IServerModuleSetup {
 
-    public void Setup(WebApplicationBuilder builder) {
-        builder.Services.RegisterServicesFromInfiniLoreSharedModulesLoreScopes();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesLoreScopes();
+    public void SetupBuilder(WebApplicationBuilder builder) {
+        
+    }
+    
+    public void SetupServices(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreSharedModulesLoreScopes();
+        services.RegisterServicesFromInfiniLoreServerModulesLoreScopes();
     }
 }

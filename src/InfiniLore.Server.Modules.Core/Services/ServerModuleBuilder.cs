@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Reflection;
 
@@ -11,16 +12,25 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ServerModuleBuilder {
-    private WebApplicationBuilder AppBuilder { get; init; } = null!;
+    private IServiceCollection? Services { get; init; }
+    private WebApplicationBuilder? AppBuilder { get; init; }
     private ServerModuleBuilder() {}
     public List<Assembly> ModuleAssemblies { get; } = new();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static ServerModuleBuilder CreateFromBuilder(WebApplicationBuilder builder) {
+    public static ServerModuleBuilder Create(WebApplicationBuilder builder) {
         return new ServerModuleBuilder {
-            AppBuilder = builder
+            AppBuilder = builder,
+            Services = builder.Services
+        };
+    }
+
+    public static ServerModuleBuilder Create(IServiceCollection services) {
+        return new ServerModuleBuilder {
+            AppBuilder = null,
+            Services = services
         };
     }
 
@@ -35,7 +45,9 @@ public class ServerModuleBuilder {
         
         Log.Logger.Information("Found server module setup type {ServerModuleSetupType} in assembly {AssemblyName}.", serverModuleSetupType.Name, assembly.GetName().Name);
         var serverModuleSetup = (IServerModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
-        serverModuleSetup.Setup(AppBuilder); 
+        
+        if (AppBuilder is not null) serverModuleSetup.SetupBuilder(AppBuilder);
+        if (Services is not null) serverModuleSetup.SetupServices(Services);
         
         ModuleAssemblies.Add(assembly);
         

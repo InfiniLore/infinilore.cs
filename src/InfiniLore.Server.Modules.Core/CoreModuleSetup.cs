@@ -4,6 +4,7 @@
 using InfiniLore.Shared.Modules.Core;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.Core;
 
@@ -13,8 +14,12 @@ namespace InfiniLore.Server.Modules.Core;
 [UsedImplicitly]
 public class CoreModuleSetup : IServerModuleSetup {
 
-    public void Setup(WebApplicationBuilder builder) {
-        builder.Services.RegisterServicesFromInfiniLoreSharedModulesCore();
-        builder.Services.RegisterServicesFromInfiniLoreServerModulesCore();
+    public void SetupBuilder(WebApplicationBuilder builder) {
+        
+    }
+    
+    public void SetupServices(IServiceCollection services) {
+       services.RegisterServicesFromInfiniLoreSharedModulesCore();
+       services.RegisterServicesFromInfiniLoreServerModulesCore();
     }
 }
