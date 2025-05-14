@@ -38,14 +38,14 @@ public class ServerModuleBuilder {
     public ServerModuleBuilder AddModule<TAssemblyEntry>() {
         Assembly assembly = typeof(TAssemblyEntry).Assembly;
         
-        TypeInfo? serverModuleSetupType = assembly.DefinedTypes.FirstOrDefault(t => t.IsAssignableTo(typeof(IServerModuleSetup)));
+        TypeInfo? serverModuleSetupType = assembly.DefinedTypes.FirstOrDefault(t => t.IsAssignableTo(typeof(ServerModuleSetup)));
         if (serverModuleSetupType is null) {
             Log.Logger.Error("Could not find a server module setup type in assembly {AssemblyName}.", assembly.GetName().Name);
             return this;
         }
         
         Log.Logger.Information("Found server module setup type {ServerModuleSetupType} in assembly {AssemblyName}.", serverModuleSetupType.Name, assembly.GetName().Name);
-        var serverModuleSetup = (IServerModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
+        var serverModuleSetup = (ServerModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
         
         if (AppBuilder is not null) serverModuleSetup.SetupBuilder(AppBuilder);
         if (Services is not null) serverModuleSetup.SetupServices(Services);

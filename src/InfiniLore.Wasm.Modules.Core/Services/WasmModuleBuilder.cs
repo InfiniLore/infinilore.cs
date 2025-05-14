@@ -38,13 +38,13 @@ public class WasmModuleBuilder {
     public WasmModuleBuilder AddModule<TAssemblyEntry>() {
         Assembly assembly = typeof(TAssemblyEntry).Assembly;
         
-        TypeInfo? serverModuleSetupType = assembly.DefinedTypes.FirstOrDefault(t => t.IsAssignableTo(typeof(IWasmModuleSetup)));
+        TypeInfo? serverModuleSetupType = assembly.DefinedTypes.FirstOrDefault(t => t.IsAssignableTo(typeof(WasmModuleSetup)));
         if (serverModuleSetupType is null) {
             Log.Logger.Error("Could not find a server module setup type in assembly {AssemblyName}.", assembly.GetName().Name);
             return this;
         }
         
-        var serverModuleSetup = (IWasmModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
+        var serverModuleSetup = (WasmModuleSetup)Activator.CreateInstance(serverModuleSetupType.AsType())!;
         if (WasmBuilder is not null) serverModuleSetup.SetupBuilder(WasmBuilder);
         if (Services is not null) serverModuleSetup.SetupServices(Services);
         

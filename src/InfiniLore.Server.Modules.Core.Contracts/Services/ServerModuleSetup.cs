@@ -1,15 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Wasm.Modules.Core.Services;
+namespace InfiniLore.Server.Modules.Core;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IWasmModuleSetup {
-    public void SetupBuilder(WebAssemblyHostBuilder builder);
-    public void SetupServices(IServiceCollection services);
+public abstract class ServerModuleSetup {
+    public virtual void SetupBuilder(WebApplicationBuilder builder) {}
+    public virtual void SetupServices(IServiceCollection services) {}
 }
