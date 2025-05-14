@@ -11,6 +11,7 @@
 @page "/markdown-file/{LoreScopeId:guid}/{MarkdownFileId:guid}/editor"
 @inject IMarkdownFileInteractiveApi MarkdownFileApi
 @inject IToastStorage ToastStorage
+@inject IToastAppearanceProvider ToastAppearanceProvider
 @rendermode InteractiveWebAssembly
 @attribute [Authorize]
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -42,7 +43,8 @@
         Result<IMarkdownFileModel> markdownFileResult = await MarkdownFileApi.GetMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString());
         if (!markdownFileResult.TryGetAsSuccess(out IMarkdownFileModel response)) {
             IsEnabled = false;
-            var toast = new ToastData("Error: Retrieval failed", -1, ToastAppearance.Default, Body: "Could not retrieve markdown file from api");
+            IToastAppearance appearance = ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error);
+            var toast = new ToastData("Error: Retrieval failed", -1,appearance, Body: "Could not retrieve markdown file from api");
             await ToastStorage.AddToastAsync(toast);
             return;
         }
