@@ -23,4 +23,8 @@
       <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\" />
+    </ItemGroup>
+
 </Project>

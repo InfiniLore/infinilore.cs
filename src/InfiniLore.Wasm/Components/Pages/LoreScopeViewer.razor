@@ -12,10 +12,10 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/markdown-test"
+@page "/lorescopes"
 @inject ILoreScopeInteractiveApi LoreScopeApi
 @inject IMarkdownFileInteractiveApi MarkdownFileApi
-@inject ILogger<MarkdownTest> Logger
+@inject ILogger<LoreScopeViewer> Logger
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -25,7 +25,7 @@
     <h3>@loreScope.Name</h3>
     <ul>
         @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
-            <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1">Editor</a></li>
+            <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1/editor">Editor</a></li>
         }
         <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li>
     </ul>

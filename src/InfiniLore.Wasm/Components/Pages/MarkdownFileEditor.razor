@@ -2,15 +2,16 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using AterraEngine.Unions
+@using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Shared.Modules.MarkdownFiles.Database
 @using InfiniLore.Shared.Modules.MarkdownFiles.Services
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/markdown-file/{LoreScopeId:guid}/{MarkdownFileId:guid}"
+@page "/markdown-file/{LoreScopeId:guid}/{MarkdownFileId:guid}/editor"
 @inject IMarkdownFileInteractiveApi MarkdownFileApi
-@rendermode InteractiveServer
+@inject IToastStorage ToastStorage
+@rendermode InteractiveWebAssembly
 @attribute [Authorize]
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -41,6 +42,8 @@
         Result<IMarkdownFileModel> markdownFileResult = await MarkdownFileApi.GetMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString());
         if (!markdownFileResult.TryGetAsSuccess(out IMarkdownFileModel response)) {
             IsEnabled = false;
+            var toast = new ToastData("Error: Retrieval failed", -1, ToastAppearance.Default, Body: "Could not retrieve markdown file from api");
+            await ToastStorage.AddToastAsync(toast);
             return;
         }
 
