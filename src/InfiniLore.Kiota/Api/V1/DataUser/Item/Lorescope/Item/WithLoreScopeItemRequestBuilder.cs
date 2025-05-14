@@ -9,41 +9,41 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-namespace InfiniLore.Kiota.Api.V1.Data.User.Item.Lorescope.Item
+namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item
 {
     /// <summary>
-    /// Builds and executes requests for operations under \api\v1\data\user\{userId}\lorescope\{loreScopeId}
+    /// Builds and executes requests for operations under \api\v1\data-user\{userId}\lorescope\{loreScopeId}
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public partial class WithLoreScopeItemRequestBuilder : BaseRequestBuilder
     {
         /// <summary>
-        /// Instantiates a new <see cref="WithLoreScopeItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithLoreScopeItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data/user/{userId}/lorescope/{loreScopeId}", pathParameters)
+        public WithLoreScopeItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope/{loreScopeId}", pathParameters)
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="WithLoreScopeItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WithLoreScopeItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data/user/{userId}/lorescope/{loreScopeId}", rawUrl)
+        public WithLoreScopeItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope/{loreScopeId}", rawUrl)
         {
         }
-        /// <returns>A <see cref="InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopeResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="FastEndpointsProblemDetails">When receiving a 400 status code</exception>
+        /// <exception cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails">When receiving a 400 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopeResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopeResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
@@ -51,7 +51,7 @@ namespace InfiniLore.Kiota.Api.V1.Data.User.Item.Lorescope.Item
             {
                 { "400", global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopeResponse>(requestInfo, global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopeResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse>(requestInfo, global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -72,11 +72,11 @@ namespace InfiniLore.Kiota.Api.V1.Data.User.Item.Lorescope.Item
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="WithLoreScopeItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
-        public global::InfiniLore.Kiota.Api.V1.Data.User.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder WithUrl(string rawUrl)
+        public global::InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder WithUrl(string rawUrl)
         {
-            return new global::InfiniLore.Kiota.Api.V1.Data.User.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder(rawUrl, RequestAdapter);
+            return new global::InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.WithLoreScopeItemRequestBuilder(rawUrl, RequestAdapter);
         }
     }
 }

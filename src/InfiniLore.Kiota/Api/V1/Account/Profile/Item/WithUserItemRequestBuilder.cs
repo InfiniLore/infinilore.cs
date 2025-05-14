@@ -18,7 +18,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile.Item
     public partial class WithUserItemRequestBuilder : BaseRequestBuilder
     {
         /// <summary>
-        /// Instantiates a new <see cref="WithUserItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -26,24 +26,24 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile.Item
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="WithUserItemRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
         public WithUserItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/account/profile/{userId}", rawUrl)
         {
         }
-        /// <returns>A <see cref="InfiniLoreServerApiResponsesAccountUserProfileResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesUsersApiEndpointsUserProfileResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
-        /// <exception cref="FastEndpointsProblemDetails">When receiving a 400 status code</exception>
+        /// <exception cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails">When receiving a 400 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesAccountUserProfileResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesUsersApiEndpointsUserProfileResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesAccountUserProfileResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesUsersApiEndpointsUserProfileResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
@@ -51,7 +51,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile.Item
             {
                 { "400", global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesAccountUserProfileResponse>(requestInfo, global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesAccountUserProfileResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesUsersApiEndpointsUserProfileResponse>(requestInfo, global::InfiniLore.Kiota.Models.InfiniLoreServerModulesUsersApiEndpointsUserProfileResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
@@ -72,7 +72,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile.Item
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="WithUserItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         public global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder WithUrl(string rawUrl)
         {

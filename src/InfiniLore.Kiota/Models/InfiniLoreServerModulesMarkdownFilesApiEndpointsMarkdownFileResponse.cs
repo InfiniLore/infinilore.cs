@@ -9,27 +9,43 @@ namespace InfiniLore.Kiota.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse : global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesPaginatedResponseOfLoreScopeResponse, IAdditionalDataHolder, IParsable
+    public partial class InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse : global::InfiniLore.Kiota.Models.InfiniLoreServerModulesCoreApiEndpointsOwnedResponse, IAdditionalDataHolder, IParsable
     #pragma warning restore CS1591
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The name property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Name { get; set; }
+#nullable restore
+#else
+        public string Name { get; set; }
+#endif
+        /// <summary>The source property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? Source { get; set; }
+#nullable restore
+#else
+        public string Source { get; set; }
+#endif
         /// <summary>
-        /// Instantiates a new <see cref="InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse"/> and sets the default values.
         /// </summary>
-        public InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse() : base()
+        public InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse() : base()
         {
             AdditionalData = new Dictionary<string, object>();
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static new global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static new global::InfiniLore.Kiota.Models.InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.Kiota.Models.InfiniLoreServerApiResponsesDataUserLoreScopesLoreScopesResponse();
+            return new global::InfiniLore.Kiota.Models.InfiniLoreServerModulesMarkdownFilesApiEndpointsMarkdownFileResponse();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -39,6 +55,8 @@ namespace InfiniLore.Kiota.Models
         {
             return new Dictionary<string, Action<IParseNode>>(base.GetFieldDeserializers())
             {
+                { "name", n => { Name = n.GetStringValue(); } },
+                { "source", n => { Source = n.GetStringValue(); } },
             };
         }
         /// <summary>
@@ -49,6 +67,8 @@ namespace InfiniLore.Kiota.Models
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             base.Serialize(writer);
+            writer.WriteStringValue("name", Name);
+            writer.WriteStringValue("source", Source);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

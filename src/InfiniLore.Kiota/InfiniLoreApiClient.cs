@@ -31,7 +31,7 @@ namespace InfiniLore.Kiota
             get => new global::InfiniLore.Kiota.Api.ApiRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
-        /// Instantiates a new <see cref="InfiniLoreApiClient"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.InfiniLoreApiClient"/> and sets the default values.
         /// </summary>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
         public InfiniLoreApiClient(IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}", new Dictionary<string, object>())

@@ -26,7 +26,7 @@ public class LoreScopeInteractiveApi(
         // ReSharper disable twice SuggestVarOrType_SimpleTypes
         try {
             var client = interactiveApi.ApiClient;
-            var requestBuilder = client.Api.V1.Data.User[userId].Lorescope;
+            var requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
             var result = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 

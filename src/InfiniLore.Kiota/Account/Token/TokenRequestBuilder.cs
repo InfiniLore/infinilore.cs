@@ -17,7 +17,7 @@ namespace InfiniLore.Kiota.Account.Token
     public partial class TokenRequestBuilder : BaseRequestBuilder
     {
         /// <summary>
-        /// Instantiates a new <see cref="TokenRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Account.Token.TokenRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -25,7 +25,7 @@ namespace InfiniLore.Kiota.Account.Token
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="TokenRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Account.Token.TokenRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -65,7 +65,7 @@ namespace InfiniLore.Kiota.Account.Token
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="TokenRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Account.Token.TokenRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         public global::InfiniLore.Kiota.Account.Token.TokenRequestBuilder WithUrl(string rawUrl)
         {
