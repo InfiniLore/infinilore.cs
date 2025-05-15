@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
         <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj"/>
         <ProjectReference Include="..\InfiniLore.Wasm\InfiniLore.Wasm.csproj" />
@@ -19,6 +20,7 @@
     <ItemGroup>
         <PackageReference Include="AterraEngine.Unions"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication"/>
+        <PackageReference Include="CodeOfChaos.CliArgsParser" />
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore"/>
         <PackageReference Include="FastEndpoints"/>
         <PackageReference Include="FastEndpoints.Swagger"/>

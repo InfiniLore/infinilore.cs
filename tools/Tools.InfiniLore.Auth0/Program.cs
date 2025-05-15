@@ -11,9 +11,9 @@ public static class Program {
     public static async Task Main(string[] args) {
         // Register & Build the parser
         //      Don't forget to add the current assembly if you built more tools for the current project
-        ICliParser parser = CliParser.FromBuilder()
-            .AddCommandsFromAssembly<IAssemblyEntrypoint>()
-            .AddCommandsFromAssembly(typeof(Program).Assembly)
+        ICliParser parser = CliParser.CreateBuilder()
+            .AddFromAssembly<IAssemblyEntrypoint>()
+            .AddFromAssembly(typeof(Program).Assembly)
             .Build();
 
         // We are doing this here because else the launchSettings.json file becomes a humongous issue to deal with.

@@ -19,12 +19,6 @@ public static class WebApplicationBuilderExtensions {
         builder.Services.RegisterServicesFromInfiniLoreServerDataSeeder();
 
         builder.Services.AddDataSeederService<OneTimeDataSeederService>(seeder => {
-            // Always start with migrating the DB if necessary
-            //      I've debated a bit over if this is the correct location or not for this to happen
-            //      In the end I've decided that this is a clear step in the "seeding" process of the server,
-            //      and through a Seeder method overload we can also set up a system to ignore this seeder step if needed.
-            seeder.AddSeeder<DatabaseMigrator>();
-
             // One SeederGroup has their seeders run in concurrency
             //      This means they can execute data in "parallel" and therefor can't rely on each-other's data 
             // seeder.AddSeederGroup(group => group.) );

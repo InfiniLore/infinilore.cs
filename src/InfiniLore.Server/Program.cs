@@ -2,12 +2,14 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
+using CodeOfChaos.CliArgsParser;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.DataSeeder;
@@ -15,6 +17,7 @@ using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Users;
 using InfiniLore.Server.Modules.Users.Encryption;
 using InfiniLore.Server.Modules.Users.TokenStore;
+using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
 using InfiniLore.Shared.Services.JwtToken;
@@ -29,6 +32,7 @@ using Serilog;
 using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
@@ -53,6 +57,21 @@ public static class Program {
             );
 
             WebApplication app = await BuildApp(builder);
+
+            if (!args.IsEmpty()) {
+                ICliParser parser = CliParser.CreateBuilder()
+                    .WithServiceProvider(() => app.Services)
+                    .AddFromAssembly<ICliAssemblyEntrypoint>()
+                    .Build();
+                await parser.ExecuteAsync(args);
+                var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunStatus>();
+                if (cliPostRunStatus.ShouldExit) {
+                    var logger = app.Services.GetRequiredService<ILogger>();
+                    logger.Information("Exit requested by CLI tool");
+                    return;
+                }
+            }
+            
             await Start(app);
         });
     }
@@ -122,6 +141,7 @@ public static class Program {
             .AddJwtProtectedPolicy();
 
         builder.Services.AddCascadingAuthenticationState();
+        builder.Services.RegisterServicesFromInfiniLoreServerCli();
         #endregion
 
         #region Auth0 Management Services
