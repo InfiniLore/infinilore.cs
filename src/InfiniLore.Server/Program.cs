@@ -2,19 +2,21 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Auth0.AspNetCore.Authentication;
+using CodeOfChaos.CliArgsParser;
 using CodeOfChaos.Extensions.AspNetCore;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Users;
 using InfiniLore.Server.Modules.Users.Encryption;
 using InfiniLore.Server.Modules.Users.TokenStore;
+using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
 using InfiniLore.Shared.Services.JwtToken;
@@ -53,8 +55,25 @@ public static class Program {
             );
 
             WebApplication app = await BuildApp(builder);
+            if (!args.IsEmpty()) await ExecuteCliCommands(args, app); // Has to option to quit before starting of the app
             await Start(app);
         });
+    }
+    
+    private static async Task ExecuteCliCommands(string[] args, WebApplication app) {
+        ICliParser parser = CliParser.CreateBuilder()
+            .WithServiceProvider(() => app.Services)
+            .AddFromAssembly<ICliAssemblyEntrypoint>()
+            .Build();
+        
+        await parser.ExecuteAsync(args);
+        var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunEffects>();
+        if (!cliPostRunStatus.ShouldExit) return;
+
+        // If we get here, we should exit with a specific code
+        var logger = app.Services.GetRequiredService<ILogger<CliParser>>();
+        logger.Information("Exit requested by CLI tool");
+        Environment.Exit(200);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -122,6 +141,7 @@ public static class Program {
             .AddJwtProtectedPolicy();
 
         builder.Services.AddCascadingAuthenticationState();
+        builder.Services.RegisterServicesFromInfiniLoreServerCli();
         #endregion
 
         #region Auth0 Management Services
@@ -149,12 +169,6 @@ public static class Program {
         });
 
         builder.Services.SwaggerDocument();
-        #endregion
-
-        #region DataSeeding
-        // Everything is handled by the DataSeeding project
-        //    (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
-        builder.RegisterDataSeedingServices();
         #endregion
 
         #region InfiniBlazor

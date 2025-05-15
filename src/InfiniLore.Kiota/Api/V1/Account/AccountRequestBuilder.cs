@@ -21,7 +21,7 @@ namespace InfiniLore.Kiota.Api.V1.Account
             get => new global::InfiniLore.Kiota.Api.V1.Account.Profile.ProfileRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
-        /// Instantiates a new <see cref="AccountRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.AccountRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -29,7 +29,7 @@ namespace InfiniLore.Kiota.Api.V1.Account
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="AccountRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.AccountRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>

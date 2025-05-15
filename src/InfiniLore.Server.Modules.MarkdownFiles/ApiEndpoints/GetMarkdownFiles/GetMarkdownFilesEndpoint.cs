@@ -4,7 +4,6 @@
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using InfiniLore.Server.Modules.MarkdownFiles.Messaging.Queries;
 using InfiniLore.Shared;
@@ -14,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using PermissionsStore = InfiniLore.Shared.PermissionsStore;
 
 namespace InfiniLore.Server.Modules.MarkdownFiles.ApiEndpoints.GetMarkdownFiles;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

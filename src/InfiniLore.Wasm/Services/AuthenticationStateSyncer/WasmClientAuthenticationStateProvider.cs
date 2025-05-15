@@ -5,7 +5,6 @@ using InfiniLore.Shared.ClaimsHelper;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace InfiniLore.Wasm.Services.AuthenticationStateSyncer;

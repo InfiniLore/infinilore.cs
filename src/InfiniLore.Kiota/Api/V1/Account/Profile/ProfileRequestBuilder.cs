@@ -17,7 +17,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
     {
         /// <summary>Gets an item from the InfiniLore.Kiota.api.v1.account.profile.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>
-        /// <returns>A <see cref="WithUserItemRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder"/></returns>
         public global::InfiniLore.Kiota.Api.V1.Account.Profile.Item.WithUserItemRequestBuilder this[string position]
         {
             get
@@ -28,7 +28,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
             }
         }
         /// <summary>
-        /// Instantiates a new <see cref="ProfileRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.ProfileRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -36,7 +36,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="ProfileRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Api.V1.Account.Profile.ProfileRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>

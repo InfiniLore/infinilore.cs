@@ -17,14 +17,14 @@ namespace Tools.InfiniLore.Auth0.Commands.SyncRoles;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-[CliArgsCommand("sync-roles")]
-public partial class SyncRolesCommand : ICommand<SyncRolesParameters> {
+[CliData("sync-roles")]
+public partial class SyncRolesCommand : ICliCommand<SyncRolesParameters> {
     private IServiceProvider Provider { get; } = CommandEnvironmentFactory.Create();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task ExecuteAsync(SyncRolesParameters parameters) {
+    public async ValueTask ExecuteAsync(SyncRolesParameters parameters, CancellationToken ct = default) {
         var auth0Utility = Provider.GetRequiredService<IAuth0Utility>();
         var logger = Provider.GetRequiredService<ILogger<SyncRolesCommand>>();
         var rateLimiter = Provider.GetRequiredService<IRateLimiterService>();

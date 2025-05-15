@@ -6,7 +6,6 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.MarkdownFiles.Database;
 using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;

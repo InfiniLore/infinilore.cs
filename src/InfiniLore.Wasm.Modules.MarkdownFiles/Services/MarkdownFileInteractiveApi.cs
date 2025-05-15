@@ -3,6 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Kiota;
+using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile.Item;
 using InfiniLore.Kiota.Models;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.MarkdownFiles.Database;
@@ -26,7 +28,7 @@ public class MarkdownFileInteractiveApi(
     public async ValueTask<Result<PaginatedData<IMarkdownFileModel>>> GetMarkdownFilesAsync(string loreScopeId, CancellationToken ct = default) {
         try {
             var client = interactiveApi.ApiClient;
-            var requestBuilder = client.Api.V1.Data.Project[loreScopeId].MarkdownFile;
+            var requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
             var result = await requestBuilder
                 .GetAsync(cancellationToken: ct);
             
@@ -44,7 +46,7 @@ public class MarkdownFileInteractiveApi(
     public async ValueTask<Result<IMarkdownFileModel>> GetMarkdownFileAsync(string loreScopeId, string markdownFileId, CancellationToken ct = default) {
         try {
             var client = interactiveApi.ApiClient;
-            var requestBuilder = client.Api.V1.Data.Project[loreScopeId].MarkdownFile[markdownFileId];
+            var requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[markdownFileId];
             var result = await requestBuilder
                 .GetAsync(cancellationToken: ct);
             
@@ -61,9 +63,9 @@ public class MarkdownFileInteractiveApi(
     
     public async ValueTask<Result> UpsertMarkdownFileAsync(string loreScopeId, string markdownFileId, string fileName, string markdown, CancellationToken ct = default) {
         try {
-            var client = interactiveApi.ApiClient;
-            var requestBuilder = client.Api.V1.Data.Project[loreScopeId].MarkdownFile[markdownFileId];
-            var requestBody = new InfiniLoreServerApiEndpointsDataProjectMarkdownFilesUpsertMarkdownFileUpsertMarkdownFileRequest() {
+            InfiniLoreApiClient client = interactiveApi.ApiClient;
+            WithMarkdownFileItemRequestBuilder? requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[markdownFileId];
+            var requestBody = new InfiniLoreServerModulesMarkdownFilesApiEndpointsUpsertMarkdownFileUpsertMarkdownFileRequest {
                 FileName = fileName,
                 Source = markdown
             };

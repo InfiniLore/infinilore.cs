@@ -12,24 +12,20 @@ public static class Program {
     public static async Task Main(string[] args) {
         // Register & Build the parser
         //      Don't forget to add the current assembly if you built more tools for the current project
-        CliArgsParser parser = CliArgsBuilder.CreateFromConfig(
-            config => {
-                config.AddCommandsFromAssemblyEntrypoint<IAssemblyEntry>();
-                config.AddCommandsFromAssembly(typeof(Program).Assembly);
-            }
-        ).Build();
+        ICliParser parser = CliParser.CreateBuilder()
+            .AddFromAssembly<IAssemblyEntry>()
+            .AddFromAssembly(typeof(Program).Assembly)
+            .Build();
 
         // We are doing this here because else the launchSettings.json file becomes a humongous issue to deal with.
-        //      Sometimes CLI params is not the answer.
-        //      Code is the true saviour
+        //      Sometimes CLI params are not the answer.
+        //      Code is the true savior
         string projects = string.Join(";",
             "Old.InfiniLore.Server.Types",
             "Old.InfiniLore.Contracts"
         );
 
-        string oneLineArgs = InputHelper.ToOneLine(args).Replace("%PROJECTS%", projects);
-
-        // Finally start executing
-        await parser.ParseAsync(oneLineArgs);
+        string oneLineArgs = ArgsInputHelper.ToOneLine(args).Replace("%PROJECTS%", projects);
+        await parser.ExecuteAsync(oneLineArgs);
     }
 }

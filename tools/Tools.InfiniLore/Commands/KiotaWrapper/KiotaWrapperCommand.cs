@@ -11,19 +11,10 @@ namespace Tools.InfiniLore.Commands.KiotaWrapper;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-[CliArgsCommand("kiota-wrapper")]
-public partial class KiotaWrapperCommand : ICommand<KiotaWrapperParameters> {
-    /// <summary>
-    ///     Executes the Kiota process to generate the OpenAPI client based on the provided parameters.
-    /// </summary>
-    /// <param name="parameters">
-    ///     An instance of <see cref="KiotaWrapperParameters" /> containing necessary variables like namespace, language, and
-    ///     output location.
-    /// </param>
-    /// <returns>
-    ///     A task that represents the asynchronous operation.
-    /// </returns>
-    public async Task ExecuteAsync(KiotaWrapperParameters parameters) {
+[CliData("kiota-wrapper")]
+public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
+
+    public async ValueTask ExecuteAsync(KiotaWrapperParameters parameters, CancellationToken ct = default) {
         // Resolve paths relative to the Root
         string root = Path.GetFullPath(parameters.Root);
         string outputFolder = Path.Combine(root, parameters.OutputFolder);
@@ -87,7 +78,7 @@ public partial class KiotaWrapperCommand : ICommand<KiotaWrapperParameters> {
 
             await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }
-        catch (Win32Exception ex) {
+        catch (Win32Exception ) {
             Console.WriteLine("Failed to run Kiota, this is most likely due to a missing kiota as a global tool.");
             Console.WriteLine("To install Kiota, run the following command:");
             Console.WriteLine("dotnet tool install --global Microsoft.OpenApi.Kiota");

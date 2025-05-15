@@ -46,7 +46,7 @@ namespace InfiniLore.Kiota.Models
         public string Severity { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="FastEndpointsProblemDetails_Error"/> and sets the default values.
+        /// Instantiates a new <see cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails_Error"/> and sets the default values.
         /// </summary>
         public FastEndpointsProblemDetails_Error()
         {
@@ -56,7 +56,7 @@ namespace InfiniLore.Kiota.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="FastEndpointsProblemDetails_Error"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails_Error"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
         public static global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails_Error CreateFromDiscriminatorValue(IParseNode parseNode)
         {

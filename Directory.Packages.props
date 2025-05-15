@@ -10,9 +10,13 @@
     <PackageVersion Include="Auth0.AuthenticationApi" Version="7.36.0" />
     <PackageVersion Include="Auth0.ManagementApi" Version="7.36.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="4.10.0" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="4.10.0" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="4.10.0" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0-preview.6" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0-preview.6" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.0.0-preview.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0-preview.6" />
     <PackageVersion Include="CodeOfChaos.Extensions" Version="0.66.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.66.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.66.1" />
@@ -80,8 +84,8 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.19.148" />
-    <PackageVersion Include="TUnit.Core" Version="0.19.148" />
+    <PackageVersion Include="TUnit" Version="0.20.0" />
+    <PackageVersion Include="TUnit.Core" Version="0.20.0" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
