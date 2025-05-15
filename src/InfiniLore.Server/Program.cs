@@ -32,7 +32,6 @@ using Serilog;
 using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
@@ -57,23 +56,25 @@ public static class Program {
             );
 
             WebApplication app = await BuildApp(builder);
-
-            if (!args.IsEmpty()) {
-                ICliParser parser = CliParser.CreateBuilder()
-                    .WithServiceProvider(() => app.Services)
-                    .AddFromAssembly<ICliAssemblyEntrypoint>()
-                    .Build();
-                await parser.ExecuteAsync(args);
-                var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunStatus>();
-                if (cliPostRunStatus.ShouldExit) {
-                    var logger = app.Services.GetRequiredService<ILogger>();
-                    logger.Information("Exit requested by CLI tool");
-                    return;
-                }
-            }
-            
+            if (!args.IsEmpty()) await ExecuteCliCommands(args, app); // Has to option to quit before starting of the app
             await Start(app);
         });
+    }
+    
+    private static async Task ExecuteCliCommands(string[] args, WebApplication app) {
+        ICliParser parser = CliParser.CreateBuilder()
+            .WithServiceProvider(() => app.Services)
+            .AddFromAssembly<ICliAssemblyEntrypoint>()
+            .Build();
+        
+        await parser.ExecuteAsync(args);
+        var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunEffects>();
+        if (!cliPostRunStatus.ShouldExit) return;
+
+        // If we get here, we should exit with a specific code
+        var logger = app.Services.GetRequiredService<ILogger<CliParser>>();
+        logger.Information("Exit requested by CLI tool");
+        Environment.Exit(200);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

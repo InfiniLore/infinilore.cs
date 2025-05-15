@@ -13,11 +13,11 @@ namespace InfiniLore.Server.Cli.DbMigrations;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CliData("database-migrate", "db-mg")]
+[CliData("database-migrate")]
 public partial class MigrateDatabaseCommand(
     ILogger<MigrateDatabaseCommand> logger,
     IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory,
-    ICliPostRunStatus cliPostRunStatus
+    ICliPostRunEffects cliPostRunStatus
 ) : ICliCommand<MigrateDatabaseParameters> {
     public async ValueTask ExecuteAsync(MigrateDatabaseParameters parameters, CancellationToken ct = new()) {
         await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
@@ -42,7 +42,7 @@ public partial class MigrateDatabaseCommand(
             return;
         }
 
-        logger.Information("Succesfully applied all pending migrations.");
+        logger.Information("Successfully applied all pending migrations.");
         cliPostRunStatus.ShouldExit = true;
     }
     

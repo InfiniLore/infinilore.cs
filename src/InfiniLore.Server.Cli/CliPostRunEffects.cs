@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Cli;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<ICliPostRunStatus>]
-public class CliPostRunStatus : ICliPostRunStatus {
+[InjectableSingleton<ICliPostRunEffects>]
+public class CliPostRunEffects : ICliPostRunEffects {
     public bool ShouldExit { get; set; } = false;
 }
