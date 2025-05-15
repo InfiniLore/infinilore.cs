@@ -1,17 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Services;
+using CodeOfChaos.CliArgsParser;
 
-namespace InfiniLore.Server.Cli;
+namespace InfiniLore.Server.Cli.DataSeeding;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<ICliPostRunEffects>]
-public class CliPostRunEffects : ICliPostRunEffects {
-    public bool ShouldExit { get; set; }
-    public void ExitOnCompletion() => ShouldExit = true;
-
-}
+public record DataSeedingStoreParameters : ICliParameters;

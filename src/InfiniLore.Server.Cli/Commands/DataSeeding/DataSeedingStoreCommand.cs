@@ -1,17 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Services;
+using CodeOfChaos.CliArgsParser;
+using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Cli;
+namespace InfiniLore.Server.Cli.DataSeeding;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<ICliPostRunEffects>]
-public class CliPostRunEffects : ICliPostRunEffects {
-    public bool ShouldExit { get; set; }
-    public void ExitOnCompletion() => ShouldExit = true;
-
+[CliData("seed-store")]
+public partial class DataSeedingStoreCommand(
+    ILogger<DataSeedingStoreCommand> logger
+) : ICliCommand<DataSeedingStoreParameters> {
+    
+    public async ValueTask ExecuteAsync(DataSeedingStoreParameters parameters, CancellationToken ct = default) {
+        logger.Critical("NOT YET IMPLEMENTED");
+        throw new NotImplementedException();
+    }
 }

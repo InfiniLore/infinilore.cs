@@ -20,30 +20,31 @@ public partial class MigrateDatabaseCommand(
     ICliPostRunEffects cliPostRunStatus
 ) : ICliCommand<MigrateDatabaseParameters> {
     public async ValueTask ExecuteAsync(MigrateDatabaseParameters parameters, CancellationToken ct = new()) {
-        await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
-        await using var db = await unitOfWork.GetDbContextAsync<ContentDb>(ct);
+        try {
+            await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
+            await using var db = await unitOfWork.GetDbContextAsync<ContentDb>(ct);
 
-        if (!await HasPendingMigrationsAsync(db, ct)) {
-            logger.Warning("Could not find migrations to apply");
-            cliPostRunStatus.ShouldExit = true;
-            return;
-        }
+            if (!await HasPendingMigrationsAsync(db, ct)) {
+                logger.Warning("Could not find migrations to apply");
+                return;
+            }
         
-        if (!await TryExecuteMigrations(db, ct)) {
-            logger.Error("Error while applying migrations");
-            cliPostRunStatus.ShouldExit = true;
-            return;
-        }
+            if (!await TryExecuteMigrations(db, ct)) {
+                logger.Error("Error while applying migrations");
+                return;
+            }
 
-        // Check if there are any pending migrations after the migration
-        if (await HasPendingMigrationsAsync(db, ct)) {
-            logger.Warning("Could not apply all pending migrations.");
-            cliPostRunStatus.ShouldExit = true;
-            return;
-        }
+            // Check if there are any pending migrations after the migration
+            if (await HasPendingMigrationsAsync(db, ct)) {
+                logger.Warning("Could not apply all pending migrations.");
+                return;
+            }
 
-        logger.Information("Successfully applied all pending migrations.");
-        cliPostRunStatus.ShouldExit = true;
+            logger.Information("Successfully applied all pending migrations.");
+        }
+        finally {
+            cliPostRunStatus.ExitOnCompletion();
+        }
     }
     
     private async ValueTask<bool> HasPendingMigrationsAsync(ContentDb db, CancellationToken ct) {

@@ -2,16 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Services;
 
-namespace InfiniLore.Server.Cli;
+namespace InfiniLore.Server.Cli.DataSeeding.Seeders;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<ICliPostRunEffects>]
-public class CliPostRunEffects : ICliPostRunEffects {
-    public bool ShouldExit { get; set; }
-    public void ExitOnCompletion() => ShouldExit = true;
-
+[InjectableSingleton<ISeeder>("user")]
+public class UserSeeder : ISeeder {
+    public Task StartSeedingAsync(CancellationToken ct = default) => throw new NotImplementedException();
 }

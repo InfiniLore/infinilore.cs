@@ -7,5 +7,7 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ICliPostRunEffects {
-    bool ShouldExit { get; set; }
+    bool ShouldExit { get; }
+    
+    void ExitOnCompletion();
 }
