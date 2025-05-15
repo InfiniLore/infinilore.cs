@@ -84,8 +84,8 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.19.148" />
-    <PackageVersion Include="TUnit.Core" Version="0.19.148" />
+    <PackageVersion Include="TUnit" Version="0.20.0" />
+    <PackageVersion Include="TUnit.Core" Version="0.20.0" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
