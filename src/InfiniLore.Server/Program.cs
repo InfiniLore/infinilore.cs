@@ -12,7 +12,6 @@ using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.DataSeeder;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Users;
 using InfiniLore.Server.Modules.Users.Encryption;
@@ -170,12 +169,6 @@ public static class Program {
         });
 
         builder.Services.SwaggerDocument();
-        #endregion
-
-        #region DataSeeding
-        // Everything is handled by the DataSeeding project
-        //    (Which could be a problem long term, if we have a lot of migrations that drop data, but those are future Anna's problems)
-        builder.RegisterDataSeedingServices();
         #endregion
 
         #region InfiniBlazor

@@ -10,7 +10,6 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
-        <ProjectReference Include="..\InfiniLore.Server.DataSeeder\InfiniLore.Server.DataSeeder.csproj"/>
         <ProjectReference Include="..\InfiniLore.Wasm\InfiniLore.Wasm.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Modules.MarkdownFiles\InfiniLore.Server.Modules.MarkdownFiles.csproj" />
