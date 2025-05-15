@@ -14,14 +14,14 @@ namespace Tools.InfiniLore.Auth0.Commands.SyncPermissions;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-[CliArgsCommand("sync-permission")]
-public partial class SyncPermissionsCommand : ICommand<SyncPermissionsParameters> {
+[CliData("sync-permission")]
+public partial class SyncPermissionsCommand : ICliCommand<SyncPermissionsParameters> {
     private IServiceProvider Provider { get; } = CommandEnvironmentFactory.Create();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task ExecuteAsync(SyncPermissionsParameters parameters) {
+    public async ValueTask ExecuteAsync(SyncPermissionsParameters parameters, CancellationToken ct = default) {
         var auth0PermissionService = Provider.GetRequiredService<IAuth0PermissionsUtility>();
         var logger = Provider.GetRequiredService<ILogger<SyncPermissionsCommand>>();
 

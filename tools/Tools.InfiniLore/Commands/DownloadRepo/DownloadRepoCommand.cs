@@ -19,8 +19,8 @@ namespace Tools.InfiniLore.Commands.DownloadRepo;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-[CliArgsCommand("download-repo")]
-public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
+[CliData("download-repo")]
+public partial class DownloadRepoCommand : ICliCommand<DownloadRepoParameters> {
     private readonly SourceCacheContext Cache = new();
     private readonly SourceRepository Repo = NuGetRepository.Factory.GetCoreV3("https://api.nuget.org/v3/index.json");
 
@@ -30,7 +30,7 @@ public partial class DownloadRepoCommand : ICommand<DownloadRepoParameters> {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task ExecuteAsync(DownloadRepoParameters parameters) {
+    public async ValueTask ExecuteAsync(DownloadRepoParameters parameters, CancellationToken ct = default) {
         string[] paths = GetProjectPaths(parameters);
         string tempDirectory = Path.Combine(parameters.Root, ".temp");
 
