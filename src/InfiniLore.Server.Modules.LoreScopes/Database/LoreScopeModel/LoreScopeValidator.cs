@@ -20,5 +20,11 @@ public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
         RuleFor(x => x.ShortDescription)
             .MaximumLength(LoreScopeModel.Defaults.ShortDescriptionMaxLength)
             .WithMessage($"The Short description cannot exceed {LoreScopeModel.Defaults.ShortDescriptionMaxLength} characters.");
+        
+        RuleFor(x => x.DocumentId)
+            .NotEqual(Guid.Empty)
+            .When(x => x.Document != null)
+            .WithMessage("Document ID must be set when a document is present.");
+
     }
 }

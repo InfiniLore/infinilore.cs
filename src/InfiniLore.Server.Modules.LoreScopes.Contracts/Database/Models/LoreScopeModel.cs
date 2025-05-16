@@ -15,7 +15,10 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     [MaxLength(Defaults.ShortDescriptionMaxLength)] public string ShortDescription { get; set; } = "";
     
     public LoreScopeDocumentModel? Document { get; set; }
-    public Guid DocumentId { get; set; }
+    public Guid DocumentId { get; set; } = Guid.Empty;
+    
+    
+    public bool HasDocument => DocumentId != Guid.Empty;
     
     public static class Defaults {
         public const int NameMaxLength = 100;

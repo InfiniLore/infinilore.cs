@@ -14,6 +14,7 @@ namespace InfiniLore.Server.Modules.Core.Database;
 public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<ContentDb>, IBasicModelRepository<TModel> 
     where TModel : BasicModel
 {
+    protected virtual IQueryable<TModel> AutoInclude(IQueryable<TModel> query) => query;
 
     public async ValueTask<Result<TModel>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
@@ -106,8 +107,6 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         return Result.FromState(!result);
     }
-
-    protected virtual IQueryable<TModel> AutoInclude(IQueryable<TModel> query) => query;
 
     protected virtual async ValueTask<bool> IsNotUniqueAsync(TModel[] modelsToValidate, CancellationToken ct = default) {
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();

@@ -158,7 +158,7 @@ public static class Program {
             config.Auth0Options.ClientSecret = builder.Configuration["Auth0:ClientSecret-Management"]!;
         });
 
-        builder.AddAuth0AccessTokenEncryptionOptions();// Required to set options correctly
+        builder.AddAuth0AccessTokenEncryptionOptions(); // Required to set options correctly
         #endregion
 
         #region FastEndpoints

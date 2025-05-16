@@ -15,5 +15,14 @@ public class LoreScopeDocumentConfiguration : OwnedModelConfiguration<LoreScopeM
         builder.Property(x => x.Content)
             .IsRequired()
             .HasMaxLength(LoreScopeModel.Defaults.NameMaxLength);
+
+        builder.Property(x => x.HtmlRenderedContent)
+            .IsRequired(false);
+
+        // Configure the one-to-one relationship with LoreScopeModel
+        builder.HasOne(x => x.Owner)
+            .WithOne(x => x.Document)
+            .HasForeignKey<LoreScopeModel>(x => x.DocumentId);
+
     }
 }

@@ -25,6 +25,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
 
         // Query
         IQueryable<TModel> query = dbSet
+            .ConditionalWith(config.AutoInclude, AutoInclude)
             .ConditionalReverse(config.Reverse)
             .Where(ls => ls.OwnerId == userId);
 
