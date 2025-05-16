@@ -73,8 +73,10 @@ public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
                 + $"--class-name {parameters.ClassName} "
                 + $"--output {resolvedOutputFolder} "
                 + "--backing-store false "
-                + "--exclude-backward-compatible "
-                + "--clean-output --clear-cache";
+                + "--exclude-backward-compatible true "
+                + "--additional-data true "
+                + "--clean-output "
+                + "--clear-cache";
 
             await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }

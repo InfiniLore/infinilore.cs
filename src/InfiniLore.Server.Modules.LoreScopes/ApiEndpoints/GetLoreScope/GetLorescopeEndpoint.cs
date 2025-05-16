@@ -23,7 +23,7 @@ using Response=Results<
 >;
 
 public class GetLorescopeEndpoint(
-    ILogger<GetLorescopeEndpoint> logger,
+    ILogger<GetLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
     IMessageAccessFactory requestDataFactory
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {

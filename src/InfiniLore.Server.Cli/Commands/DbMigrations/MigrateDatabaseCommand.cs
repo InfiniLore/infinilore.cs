@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Cli.DbMigrations;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [CliData("database-migrate")]
-public partial class  MigrateDatabaseCommand(
+public partial class MigrateDatabaseCommand(
     ILogger<MigrateDatabaseCommand> logger,
     IUnitOfWorkFactory unitOfWorkFactory,
     ICliPostRunEffects cliPostRunStatus
