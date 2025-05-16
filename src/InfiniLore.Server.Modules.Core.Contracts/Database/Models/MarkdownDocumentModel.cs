@@ -2,6 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 
@@ -10,10 +12,27 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public class MarkdownDocumentModel : BasicModel {
     [MaxLength(Defaults.TitleMaxLength)] public string? Title { get; set; }
-    public string? Content { get; set; }
-    public string? ContentHash { get; set; }
     
-    public string? CachedRenderedHtml { get; set; }
+    private string? _content;
+    public string Content {
+        get => _content ?? string.Empty;
+        set {
+            if (_content == value) return;
+            _content = value;
+            ContentHash = ComputeHash(_content);
+        }
+    }
+    public string? ContentHash { get; set; }
+
+    private string? _cachedRenderedHtml;
+    public string CachedRenderedHtml {
+        get => _cachedRenderedHtml ?? string.Empty;
+        set {
+            if (_cachedRenderedHtml == value) return;
+            _cachedRenderedHtml = value;
+            CachedRenderedHtmlHash = ComputeHash(_cachedRenderedHtml);
+        }
+    }
     public string? CachedRenderedHtmlHash { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -21,5 +40,11 @@ public class MarkdownDocumentModel : BasicModel {
     // -----------------------------------------------------------------------------------------------------------------
     public static class Defaults {
         public const int TitleMaxLength = 256;
+    }
+
+    private static string ComputeHash(string input) {
+        byte[] bytes = Encoding.UTF8.GetBytes(input);
+        byte[] hashBytes = SHA256.HashData(bytes);
+        return Convert.ToHexString(hashBytes);
     }
 }
