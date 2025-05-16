@@ -7,6 +7,7 @@ using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Server.Services;
 using InfiniLore.Shared;
@@ -49,4 +50,18 @@ public class LoreScopeInteractiveApi(
         return Result<PaginatedData<ILoreScopeModel>>.FromSuccess(paginatedData.CastTo<ILoreScopeModel>());
     }
 
+    public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+
+        var request = new LoreScopeCreateRequest(parsedUserId, newLoreScopeName) {
+            Access = requestDataFactory.FromClaims(ct)
+        };
+        MessageResponse<Guid> createResult = await request.ExecuteAsync(ct: ct);
+        if (!createResult.TryGetAsSuccess(out Guid loreScopeId)) {
+            logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
+            return Result.FromError($"Failed to create lorescope for user {userId}");
+        }
+
+        return true;
+    }
 }

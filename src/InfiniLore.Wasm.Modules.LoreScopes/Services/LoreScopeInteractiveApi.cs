@@ -40,4 +40,7 @@ public class LoreScopeInteractiveApi(
             return Result<PaginatedData<ILoreScopeModel>>.FromError($"Unknown failure");
         }
     }
+    public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
+        throw new NotImplementedException();
+    }
 }

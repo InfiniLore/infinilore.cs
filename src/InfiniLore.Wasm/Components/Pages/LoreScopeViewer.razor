@@ -2,6 +2,7 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using AterraEngine.Unions
+@using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Modules.LoreScopes.Database
 @using InfiniLore.Shared.Modules.LoreScopes.Services
@@ -15,12 +16,23 @@
 @page "/lorescopes"
 @inject ILoreScopeInteractiveApi LoreScopeApi
 @inject IMarkdownFileInteractiveApi MarkdownFileApi
+@inject IToastStorage ToastStorage
+@inject IToastAppearanceProvider ToastAppearanceProvider
 @inject ILogger<LoreScopeViewer> Logger
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
+<div>
+    <h1>Lore Scopes</h1>
+    <div>
+        Create New Lore Scope:
+        <InputText @bind-Value="@NewLoreScopeName"></InputText>
+        <button @onclick="CreateNewLoreScopeAsync">Create</button>
+    </div>
+</div>
+
 @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
     <h3>@loreScope.Name</h3>
     <ul>
@@ -39,6 +51,9 @@
     private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
     private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
     
+    private string? NewLoreScopeName { get; set; }
+    private string UserId { get; set; } = string.Empty;
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -47,8 +62,10 @@
         AuthenticationState state = await AuthenticationState;
         string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
         if (userId.IsNullOrWhiteSpace()) return;
+
+        UserId = userId;
         
-        Result<PaginatedData<ILoreScopeModel>> result = await LoreScopeApi.GetLoreScopesAsync(userId);
+        Result<PaginatedData<ILoreScopeModel>> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
         if (!result.TryGetAsSuccess(out PaginatedData<ILoreScopeModel> response)) {
             return;
         }
@@ -67,5 +84,32 @@
         if (!result.TryGetAsSuccess(out PaginatedData<IMarkdownFileModel> response)) return [];
         
         return response.Items.Select(r => (r.Id, r.Name)).ToArray();
+    }
+    
+    private async Task CreateNewLoreScopeAsync() {
+        if (NewLoreScopeName.IsNullOrWhiteSpace()) return;
+        
+        Result result = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
+        if (result.AsState) {
+            var toast = new ToastData(
+                "LoreScope Created",
+                10,
+                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
+                Body: NewLoreScopeName
+            );
+            await ToastStorage.AddToastAsync(toast);
+            await InvokeAsync(StateHasChanged);
+            return;
+        } 
+        
+        var toastFail = new ToastData(
+            "Could not create LoreScope",
+            10,
+            ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
+            Body: result.IsError ? result.AsError.Value : "UNKNOWN"
+        );
+        
+        await ToastStorage.AddToastAsync(toastFail);
+        await InvokeAsync(StateHasChanged);
     }
 }
