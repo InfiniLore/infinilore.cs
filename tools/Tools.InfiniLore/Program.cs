@@ -18,7 +18,7 @@ public static class Program {
             .Build();
 
         // We are doing this here because else the launchSettings.json file becomes a humongous issue to deal with.
-        //      Sometimes CLI params are not the answer.
+        //      Sometimes CLI params are not the answer.    
         //      Code is the true savior
         string projects = string.Join(";",
             "Old.InfiniLore.Server.Types",
