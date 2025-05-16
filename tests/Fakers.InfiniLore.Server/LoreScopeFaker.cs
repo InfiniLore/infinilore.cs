@@ -20,7 +20,10 @@ public class LoreScopeFaker {
     private static LoreScopeModel EntryWithFixedId(Guid fixedId, Guid ownerId) => new() {
         Id = fixedId,
         OwnerId = ownerId,
-        Name = Faker.Generate().Name
+        Name = Faker.Generate().Name,
+        Description = new LoreScopeDescriptionModel {
+            OwnerId = fixedId
+        }
     };
 
     public LoreScopeModel GetById(Guid id, Guid ownerId) => Entries.GetOrAdd(

@@ -17,6 +17,9 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
     protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<TModel>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
@@ -30,7 +33,6 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         // Retrieve
         if (result is null) return Result<TModel>.FromError(RepositoryFailures.ModelNotFound);
-
         return Result<TModel>.FromSuccess(result);
     }
 

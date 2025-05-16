@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class MarkdownDocumentModel<TOwner> : OwnedModel<TOwner>
+public abstract class MarkdownDocumentModel<TOwner> : OwnedModel<TOwner>
     where TOwner : BasicModel 
 {
     [MaxLength(Defaults.TitleMaxLength)] public string? Title { get; set; }
@@ -44,7 +44,7 @@ public class MarkdownDocumentModel<TOwner> : OwnedModel<TOwner>
         public const int TitleMaxLength = 256;
     }
 
-    private static string ComputeHash(string input) {
+    protected static string ComputeHash(string input) {
         byte[] bytes = Encoding.UTF8.GetBytes(input);
         byte[] hashBytes = SHA256.HashData(bytes);
         return Convert.ToHexString(hashBytes);

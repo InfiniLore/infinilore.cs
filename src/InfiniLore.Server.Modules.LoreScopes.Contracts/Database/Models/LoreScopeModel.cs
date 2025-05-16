@@ -16,9 +16,9 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     private LoreScopeDescriptionModel _description = null!;
     public required LoreScopeDescriptionModel Description {
         get => _description;
-        set  {
+        set {
             _description = value;
-            DescriptionId = value?.Id;
+            DescriptionId = value.Id;
         }
     }
     public Guid? DescriptionId { get; set; }
