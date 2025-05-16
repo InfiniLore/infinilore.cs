@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Database;
+
+namespace InfiniLore.Server.Modules.LoreScopes.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMarkdownDocumentRepository<TOwner, TModel> : IOwnedModelRepository<TOwner, TModel> 
-    where TModel : MarkdownDocumentModel<TOwner>
-    where TOwner : BasicModel ;
+public interface ILoreScopeDescriptionRepository : IMarkdownDocumentRepository<LoreScopeModel, LoreScopeDescriptionModel>;

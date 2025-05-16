@@ -1,10 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core.Database;
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
+using InfiniLore.Server.Modules.Core.Database;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class MarkdownDocumentRepository<TOwner, TModel> : OwnedModelRepository<TOwner, TModel>, IMarkdownDocumentRepository<TOwner, TModel>
-    where TModel : MarkdownDocumentModel<TOwner>, new()
-    where TOwner : BasicModel ;
+[InjectableService<IValidator<LoreScopeDescriptionModel>>(ServiceLifetime.Singleton)]
+public class LoreScopeDescriptionValidator : MarkdownDocumentValidator<LoreScopeModel, LoreScopeDescriptionModel>;

@@ -8,13 +8,16 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class MarkdownDocumentValidator<TOwner, TModel> : OwnedModelValidator<TOwner, TModel> 
-    where TModel : MarkdownDocumentModel<TOwner> 
-    where TOwner : BasicModel 
-{
-    protected MarkdownDocumentValidator() {
-        RuleFor(x => x.Title)
-            .MaximumLength(MarkdownDocumentModel<TOwner>.Defaults.TitleMaxLength)
-            .WithMessage($"The {nameof(MarkdownDocumentModel<TOwner>.Title)} cannot exceed {MarkdownDocumentModel<TOwner>.Defaults.TitleMaxLength} characters.");
+public abstract class OwnedModelValidator<TOwner, TModel> : BasicModelValidator<TModel> 
+    where TModel : OwnedModel<TOwner>
+    where TOwner : BasicModel {
+    
+    protected OwnedModelValidator() : base() {
+        RuleFor(x => x.OwnerId)
+            .NotEqual(Guid.Empty)
+            .WithMessage($"{nameof(OwnedModel<TOwner>.OwnerId)} cannot be empty. {nameof(OwnedModel<TOwner>.OwnerId)} must be set to a valid GUID value");
+
+        RuleFor(x => x)
+            .Must(x => x.Owner == null || x.Owner.Id == x.OwnerId).When(x => x.Owner != null);
     }
 }

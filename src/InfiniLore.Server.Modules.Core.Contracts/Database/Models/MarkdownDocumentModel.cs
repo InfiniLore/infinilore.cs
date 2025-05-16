@@ -10,7 +10,9 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class MarkdownDocumentModel : BasicModel {
+public class MarkdownDocumentModel<TOwner> : OwnedModel<TOwner>
+    where TOwner : BasicModel 
+{
     [MaxLength(Defaults.TitleMaxLength)] public string? Title { get; set; }
     
     private string? _content;
