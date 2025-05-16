@@ -30,9 +30,14 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new lorescope based on the request
+        var id = Guid.CreateVersion7();
         var loreScope = new LoreScopeModel {
+            Id = id,
             Name = command.LoreScopeName,
-            OwnerId = command.OwnerId
+            OwnerId = command.OwnerId,
+            Description = new LoreScopeDescriptionModel {
+                Id = id
+            }
         };
 
         // Validate the lorescope model

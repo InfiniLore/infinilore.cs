@@ -14,8 +14,9 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
 public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
-    protected override IQueryable<LoreScopeModel> AutoInclude(IQueryable<LoreScopeModel> query) 
-        => base.AutoInclude(query)
+
+    protected override IQueryable<LoreScopeModel> AlwaysInclude(IQueryable<LoreScopeModel> query)
+        => base.AlwaysInclude(query)
             .Include(x => x.Description);
 
     // -----------------------------------------------------------------------------------------------------------------

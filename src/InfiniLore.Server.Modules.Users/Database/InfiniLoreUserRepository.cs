@@ -91,7 +91,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         // Query
         IQueryable<InfiniLoreUserModel> query = dbSet
             .AsNoTracking()
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .ConditionalReverse(config.Reverse)
             .Where(model =>
                 model.Auth0MailPassword != null && authIds.Contains(model.Auth0MailPassword)
@@ -120,7 +120,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
 
         // Query
         IQueryable<InfiniLoreUserModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .With(ByAuth0IdQuery, auth0Id);
 
         InfiniLoreUserModel? result = await query
@@ -138,7 +138,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
 
         // Query
         IQueryable<InfiniLoreUserModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .ConditionalReverse(config.Reverse)
             .With(ByAuth0IdQuery, auth0Id);
 

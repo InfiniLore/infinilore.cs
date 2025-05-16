@@ -6,6 +6,6 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public readonly record struct QueryConfig(
-    bool AutoInclude = false,
+    bool OptionalInclude = false,
     bool Reverse = false
 );

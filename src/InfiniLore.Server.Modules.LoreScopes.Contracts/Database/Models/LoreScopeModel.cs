@@ -13,8 +13,8 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
 
-    private LoreScopeDescriptionModel? _description;
-    public LoreScopeDescriptionModel? Description {
+    private LoreScopeDescriptionModel _description = null!;
+    public required LoreScopeDescriptionModel Description {
         get => _description;
         set  {
             _description = value;

@@ -14,7 +14,8 @@ namespace InfiniLore.Server.Modules.Core.Database;
 public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<ContentDb>, IBasicModelRepository<TModel> 
     where TModel : BasicModel
 {
-    protected virtual IQueryable<TModel> AutoInclude(IQueryable<TModel> query) => query;
+    protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
+    protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
     public async ValueTask<Result<TModel>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
@@ -22,7 +23,8 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         // Query
         TModel? result = await dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .With(AlwaysInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .Where(ls => ls.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
@@ -38,7 +40,8 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         // Query
         IOrderedQueryable<TModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .With(AlwaysInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .ConditionalReverse(config.Reverse)
             .OrderByDescending(ls => ls.Id);
 
@@ -56,7 +59,8 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
         IQueryable<TModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+            .With(AlwaysInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .ConditionalReverse(config.Reverse)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
