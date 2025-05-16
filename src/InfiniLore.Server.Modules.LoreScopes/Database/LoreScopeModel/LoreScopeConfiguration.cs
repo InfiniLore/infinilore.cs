@@ -25,5 +25,7 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .IsUnique()
             .HasDatabaseName("IX_OwnerId_Name_Unique");
 
+        builder.HasOne(x => x.Document)
+            .WithOne(x => x.Owner);
     }
 }
