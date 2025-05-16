@@ -21,7 +21,5 @@ public abstract class OwnedModelConfiguration<TOwner, TModel> : BasicModelConfig
         
         builder.Property(x => x.OwnerId).IsRequired();
         builder.HasIndex(x => x.OwnerId);
-
-        builder.Ignore(x => x.Owner);
     }
 }
