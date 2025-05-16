@@ -26,6 +26,6 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .HasDatabaseName("IX_OwnerId_Name_Unique"); 
 
         builder.Property(x => x.DocumentId)
-            .IsRequired();
+            .IsRequired(false);
     }
 }
