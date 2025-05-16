@@ -1,8 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
@@ -15,12 +17,14 @@ using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 // ---------------------------------------------------------------------------------------------------------------------
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-
-var moduleBuilder = ServerModuleBuilder.Create(builder)
+ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
     .AddModule<CoreAssemblyEntry>()
     .AddModule<LoreScopesAssemblyEntry>()
     .AddModule<MarkdownFilesAssemblyEntry>()
     .AddModule<UsersAssemblyEntry>();
+        
+builder.Services.RegisterServicesFromInfiniLoreServer();
+builder.Services.RegisterServicesFromInfiniLoreShared();
 
 // This is all that is required for EFC to generate the appropriate migrations
 ContentDbFactory.RegisterDatabase(
