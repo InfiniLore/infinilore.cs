@@ -35,7 +35,6 @@
         <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm.Modules.LoreScopes\InfiniLore.Wasm.Modules.LoreScopes.csproj" />
-        <ProjectReference Include="..\InfiniLore.Wasm.Modules.MarkdownFiles\InfiniLore.Wasm.Modules.MarkdownFiles.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm.Modules.Users\InfiniLore.Wasm.Modules.Users.csproj" />
     </ItemGroup>
 

@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
 using CoreAssemblyEntry = InfiniLore.Wasm.Modules.Core.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Wasm.Modules.LoreScopes.IAssemblyEntry;
-using MarkdownFilesAssemblyEntry = InfiniLore.Wasm.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Wasm.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Wasm;
@@ -36,7 +35,6 @@ public static class Program {
         WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
             .AddModule<CoreAssemblyEntry>()
             .AddModule<LoreScopesAssemblyEntry>()
-            .AddModule<MarkdownFilesAssemblyEntry>()
             .AddModule<UsersAssemblyEntry>();
         
         builder.Services.AddAuthorizationCore();

@@ -32,7 +32,6 @@ using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
-using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Server;
@@ -83,7 +82,6 @@ public static class Program {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<CoreAssemblyEntry>()
             .AddModule<LoreScopesAssemblyEntry>()
-            .AddModule<MarkdownFilesAssemblyEntry>()
             .AddModule<UsersAssemblyEntry>();
         
         #region Database

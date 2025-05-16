@@ -13,7 +13,6 @@ using TUnit.Core.Interfaces;
 
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
-using MarkdownFilesAssemblyEntry = InfiniLore.Server.Modules.MarkdownFiles.IAssemblyEntry;
 using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace DataSources.InfiniLore.Server;
@@ -62,7 +61,6 @@ public class ContentDbInfrastructure : IAsyncInitializer, IAsyncDisposable {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
             .AddModule<CoreAssemblyEntry>()
             .AddModule<LoreScopesAssemblyEntry>()
-            .AddModule<MarkdownFilesAssemblyEntry>()
             .AddModule<UsersAssemblyEntry>();
         
         ContentDbFactory.RegisterDatabase(

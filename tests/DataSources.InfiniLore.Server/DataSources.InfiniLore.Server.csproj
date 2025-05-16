@@ -17,7 +17,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
         <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
-        <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.MarkdownFiles\InfiniLore.Server.Modules.MarkdownFiles.csproj" />
         <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.Users\InfiniLore.Server.Modules.Users.csproj" />
         <ProjectReference Include="..\Fakers.InfiniLore.Server\Fakers.InfiniLore.Server.csproj"/>
     </ItemGroup>

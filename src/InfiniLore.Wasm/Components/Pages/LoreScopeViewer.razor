@@ -6,8 +6,6 @@
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Modules.LoreScopes.Database
 @using InfiniLore.Shared.Modules.LoreScopes.Services
-@using InfiniLore.Shared.Modules.MarkdownFiles.Database
-@using InfiniLore.Shared.Modules.MarkdownFiles.Services
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -15,10 +13,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/lorescopes"
 @inject ILoreScopeInteractiveApi LoreScopeApi
-@inject IMarkdownFileInteractiveApi MarkdownFileApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
-@inject ILogger<LoreScopeViewer> Logger
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -72,18 +68,6 @@
         
         MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
         LoreScopeResponses = response.Items;
-        
-        foreach (ILoreScopeModel scope in LoreScopeResponses) {
-            (Guid, string)[] files = await GetMarkdownFilesAsync(scope.Id);
-            MarkdownFileMap[scope.Id] = files;
-        }
-    }
-
-    private async Task<(Guid, string)[]> GetMarkdownFilesAsync(Guid loreScopeId) {
-        Result<PaginatedData<IMarkdownFileModel>> result = await MarkdownFileApi.GetMarkdownFilesAsync(loreScopeId.ToString());
-        if (!result.TryGetAsSuccess(out PaginatedData<IMarkdownFileModel> response)) return [];
-        
-        return response.Items.Select(r => (r.Id, r.Name)).ToArray();
     }
     
     private async Task CreateNewLoreScopeAsync() {

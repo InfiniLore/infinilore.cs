@@ -43,7 +43,8 @@ public class GetLorescopeEndpoint(
         // Form Query
         var query = new GetLorescopeByIdQuery(
             req.LoreScopeId,
-            req.UserId
+            req.UserId,
+            true
         ) {
             Access = await requestDataFactory.FromJwtTokenAsync(ct)
         };
