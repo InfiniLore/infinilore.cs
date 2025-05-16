@@ -17,9 +17,9 @@ public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
             .MaximumLength(LoreScopeModel.Defaults.NameMaxLength)
             .WithMessage($"The Name cannot exceed {LoreScopeModel.Defaults.NameMaxLength} characters.");
         
-        RuleFor(x => x.DocumentId)
+        RuleFor(x => x.DescriptionId)
             .NotEqual(Guid.Empty)
-            .When(x => x.Document != null)
+            .When(x => x.Description != null)
             .WithMessage("Document ID must be set when a document is present.");
 
     }

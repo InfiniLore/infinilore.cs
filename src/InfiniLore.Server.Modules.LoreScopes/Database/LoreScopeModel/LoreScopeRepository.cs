@@ -16,7 +16,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
     protected override IQueryable<LoreScopeModel> AutoInclude(IQueryable<LoreScopeModel> query) 
         => base.AutoInclude(query)
-            .Include(x => x.Document);
+            .Include(x => x.Description);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

@@ -13,10 +13,10 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
     
-    public LoreScopeDocumentModel? Document { get; set; }
-    public Guid? DocumentId { get; set; }
+    public MarkdownDocumentModel? Description { get; set; }
+    public Guid? DescriptionId { get; set; }
     
-    public bool HasDocument => DocumentId is not null && DocumentId != Guid.Empty;
+    public bool HasDescription => DescriptionId is not null && DescriptionId != Guid.Empty;
     
     public static class Defaults {
         public const int NameMaxLength = 100;

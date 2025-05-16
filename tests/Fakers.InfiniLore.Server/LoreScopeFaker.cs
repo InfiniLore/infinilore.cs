@@ -15,18 +15,12 @@ public class LoreScopeFaker {
     private static Faker<LoreScopeModel> Faker { get; } = new Faker<LoreScopeModel>()
         .RuleFor(property: x => x.Id, setter: f => f.Random.Guid())
         .RuleFor(property: x => x.OwnerId, setter: f => f.Random.Guid())
-        .RuleFor(property: x => x.Name, setter: f => f.Random.AlphaNumeric(LoreScopeModel.Defaults.NameMaxLength))
-        .RuleFor(property: x => x.ShortDescription, setter: f =>
-                f.Random.Bool(0.2f)// 20% chance of empty description
-                    ? string.Empty
-                    : f.Lorem.Letter(LoreScopeModel.Defaults.ShortDescriptionMaxLength)// Random string
-        );
+        .RuleFor(property: x => x.Name, setter: f => f.Random.AlphaNumeric(LoreScopeModel.Defaults.NameMaxLength));
 
     private static LoreScopeModel EntryWithFixedId(Guid fixedId, Guid ownerId) => new() {
         Id = fixedId,
         OwnerId = ownerId,
-        Name = Faker.Generate().Name,
-        ShortDescription = Faker.Generate().ShortDescription
+        Name = Faker.Generate().Name
     };
 
     public LoreScopeModel GetById(Guid id, Guid ownerId) => Entries.GetOrAdd(
