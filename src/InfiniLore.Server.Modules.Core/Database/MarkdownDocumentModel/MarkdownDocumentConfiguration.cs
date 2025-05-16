@@ -1,13 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Modules.Core.Database;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Shared.Modules.LoreScopes.Database;
-
+namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILoreScopeModel : IOwnedModel {
-    string Name { get; }
+public class MarkdownDocumentConfiguration : BasicModelConfiguration<MarkdownDocumentModel> {
+    public override void Configure(EntityTypeBuilder<MarkdownDocumentModel> builder) {
+        base.Configure(builder);
+    }
 }

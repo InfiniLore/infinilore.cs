@@ -16,10 +16,6 @@ public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
             .NotEmpty().WithMessage("The Name field is required.")
             .MaximumLength(LoreScopeModel.Defaults.NameMaxLength)
             .WithMessage($"The Name cannot exceed {LoreScopeModel.Defaults.NameMaxLength} characters.");
-
-        RuleFor(x => x.ShortDescription)
-            .MaximumLength(LoreScopeModel.Defaults.ShortDescriptionMaxLength)
-            .WithMessage($"The Short description cannot exceed {LoreScopeModel.Defaults.ShortDescriptionMaxLength} characters.");
         
         RuleFor(x => x.DocumentId)
             .NotEqual(Guid.Empty)

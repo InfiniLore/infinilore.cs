@@ -12,7 +12,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
-    [MaxLength(Defaults.ShortDescriptionMaxLength)] public string ShortDescription { get; set; } = "";
     
     public LoreScopeDocumentModel? Document { get; set; }
     public Guid? DocumentId { get; set; }
@@ -21,6 +20,5 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     
     public static class Defaults {
         public const int NameMaxLength = 100;
-        public const int ShortDescriptionMaxLength = 256;
     }
 }

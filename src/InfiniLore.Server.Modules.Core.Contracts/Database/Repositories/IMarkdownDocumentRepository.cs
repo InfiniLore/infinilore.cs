@@ -1,13 +1,9 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Modules.Core.Database;
-
-namespace InfiniLore.Shared.Modules.LoreScopes.Database;
+namespace InfiniLore.Server.Modules.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILoreScopeModel : IOwnedModel {
-    string Name { get; }
-}
+public interface IMarkdownDocumentRepository : IBasicModelRepository<MarkdownDocumentModel>;

@@ -28,6 +28,7 @@
     --color-zinc-200: oklch(92% 0.004 286.32);
     --color-zinc-400: oklch(70.5% 0.015 286.067);
     --color-zinc-900: oklch(21% 0.006 285.885);
+    --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
     --container-7xl: 80rem;
@@ -407,8 +408,23 @@
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
+  .bg-\(--color-base-0\) {
+    background-color: var(--color-base-0);
+  }
+  .bg-\(--color-base-00\) {
+    background-color: var(--color-base-00);
+  }
+  .bg-\(--color-base-20\) {
+    background-color: var(--color-base-20);
+  }
+  .bg-\(--color-base-90\) {
+    background-color: var(--color-base-90);
+  }
   .bg-amber-500 {
     background-color: var(--color-amber-500);
+  }
+  .bg-black {
+    background-color: var(--color-black);
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
@@ -565,6 +581,9 @@
   .opacity-0 {
     opacity: 0%;
   }
+  .opacity-10 {
+    opacity: 10%;
+  }
   .opacity-20 {
     opacity: 20%;
   }
@@ -574,8 +593,14 @@
   .opacity-50 {
     opacity: 50%;
   }
+  .opacity-70 {
+    opacity: 70%;
+  }
   .opacity-80 {
     opacity: 80%;
+  }
+  .opacity-90 {
+    opacity: 90%;
   }
   .opacity-100 {
     opacity: 100%;
