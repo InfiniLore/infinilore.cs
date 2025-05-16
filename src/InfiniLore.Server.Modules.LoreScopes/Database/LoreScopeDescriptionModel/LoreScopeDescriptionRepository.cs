@@ -9,5 +9,5 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
-public class LoreScopeDescriptionRepository : MarkdownDocumentRepository<LoreScopeModel, LoreScopeDescriptionModel>;
+[InjectableService<ILoreScopeDescriptionRepository>(ServiceLifetime.Scoped)]
+public class LoreScopeDescriptionRepository : MarkdownDocumentRepository<LoreScopeModel, LoreScopeDescriptionModel>, ILoreScopeDescriptionRepository;
