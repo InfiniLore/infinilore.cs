@@ -32,10 +32,13 @@
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task OnInitializedAsync() {
-        if (MarkdownFileId == Guid.Empty) return;
+    protected override Task OnInitializedAsync() {
+        if (MarkdownFileId == Guid.Empty) return Task.CompletedTask;
+
+        return Task.CompletedTask;
     }
-    private async Task SaveAsync() {
+    private Task SaveAsync() {
         if (MarkdownFileId == Guid.Empty) MarkdownFileId = Guid.NewGuid();
+        return Task.CompletedTask;
     }
 }

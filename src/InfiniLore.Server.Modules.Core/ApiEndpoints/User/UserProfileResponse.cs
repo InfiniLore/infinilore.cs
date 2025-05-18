@@ -1,11 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
+namespace InfiniLore.Server.Modules.Core.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record NewLoreScopeCreatedEvent([UsedImplicitly] Guid LoreScopeId) : IEvent;
+public record UserProfileResponse : BasicResponse {
+    public required string Username { [UsedImplicitly] get; init; }
+}

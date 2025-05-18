@@ -9,7 +9,6 @@ using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
@@ -22,7 +21,6 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    IInteractiveApiServer interactiveApi,
     IMessageAccessFactory requestDataFactory
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
@@ -57,7 +55,7 @@ public class LoreScopeInteractiveApi(
             Access = requestDataFactory.FromClaims(ct)
         };
         MessageResponse<Guid> createResult = await request.ExecuteAsync(ct: ct);
-        if (!createResult.TryGetAsSuccess(out Guid loreScopeId)) {
+        if (!createResult.TryGetAsSuccess(out Guid _)) {
             logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
             return Result.FromError($"Failed to create lorescope for user {userId}");
         }

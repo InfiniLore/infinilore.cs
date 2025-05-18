@@ -13,9 +13,8 @@ using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.Users;
-using InfiniLore.Server.Modules.Users.Encryption;
-using InfiniLore.Server.Modules.Users.TokenStore;
+using InfiniLore.Server.Modules.Core.Encryption;
+using InfiniLore.Server.Modules.Core.TokenStore;
 using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
@@ -32,7 +31,6 @@ using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
-using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -81,8 +79,7 @@ public static class Program {
     private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<CoreAssemblyEntry>()
-            .AddModule<LoreScopesAssemblyEntry>()
-            .AddModule<UsersAssemblyEntry>();
+            .AddModule<LoreScopesAssemblyEntry>();
         
         #region Database
         // Technically we need to wrap this as a `IsDevelopment`

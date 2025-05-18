@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
 using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
-using UsersAssemblyEntry = InfiniLore.Server.Modules.Users.IAssemblyEntry;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -19,8 +18,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
     .AddModule<CoreAssemblyEntry>()
-    .AddModule<LoreScopesAssemblyEntry>()
-    .AddModule<UsersAssemblyEntry>();
+    .AddModule<LoreScopesAssemblyEntry>();
 
 builder.Services.RegisterServicesFromInfiniLoreServer();
 builder.Services.RegisterServicesFromInfiniLoreShared();
