@@ -15,12 +15,11 @@ public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The Name field is required.")
             .MaximumLength(LoreScopeModel.Defaults.NameMaxLength)
-            .WithMessage($"The Name cannot exceed {LoreScopeModel.Defaults.NameMaxLength} characters.");
+            .WithMessage($"The {nameof(LoreScopeModel.Name)} cannot exceed {LoreScopeModel.Defaults.NameMaxLength} characters.");
         
-        RuleFor(x => x.DescriptionId)
-            .NotEqual(Guid.Empty)
-            .When(x => x.Description != null)
-            .WithMessage("Document ID must be set when a document is present.");
+        RuleFor(x => x.Description)
+            .MaximumLength(LoreScopeModel.Defaults.DescriptionMaxLength)
+            .WithMessage($"The {nameof(LoreScopeModel.Description)} cannot exceed {LoreScopeModel.Defaults.DescriptionMaxLength} characters.");
 
     }
 }

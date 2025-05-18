@@ -17,6 +17,6 @@ public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, LoreScopeModel>
         CreatedDate = loreScope.CreatedDate,
         LastModifiedDate = loreScope.LastModifiedDate,
         OwnerId = loreScope.OwnerId,
-        Description = loreScope.Description.Content,
+        Description = loreScope.Description,
     };
 }

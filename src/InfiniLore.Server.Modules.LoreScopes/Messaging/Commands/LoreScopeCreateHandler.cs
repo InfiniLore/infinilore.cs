@@ -35,9 +35,7 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
             Id = id,
             Name = command.LoreScopeName,
             OwnerId = command.OwnerId,
-            Description = new LoreScopeDescriptionModel {
-                Id = id
-            }
+            Description = command.LoreScopeDescription
         };
 
         // Validate the lorescope model

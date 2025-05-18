@@ -40,9 +40,7 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
                 Owner = owner,
                 OwnerId = owner.Id,
                 Name = "KNOWN NAME",
-                Description = new LoreScopeDescriptionModel() {
-                    OwnerId = GuidStore.GetGuid("lorescope-forUser2")
-                }
+                Description = null
             }
         );
 
