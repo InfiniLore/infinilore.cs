@@ -6,12 +6,12 @@ using InfiniLore.Kiota.Extensions;
 using InfiniLore.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Shared;
+using InfiniLore.Wasm.Modules.Core;
 using InfiniLore.Wasm.Modules.Core.Services;
+using InfiniLore.Wasm.Modules.LoreScopes;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
-using CoreAssemblyEntry = InfiniLore.Wasm.Modules.Core.IAssemblyEntry;
-using LoreScopesAssemblyEntry = InfiniLore.Wasm.Modules.LoreScopes.IAssemblyEntry;
 
 namespace InfiniLore.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -32,8 +32,8 @@ public static class Program {
         builder.Logging.AddSerilog();
 
         WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
-            .AddModule<CoreAssemblyEntry>()
-            .AddModule<LoreScopesAssemblyEntry>();
+            .AddModule<IWasmModuleEntryCore>()
+            .AddModule<IWasmModuleEntryLoreScopes>();
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();

@@ -4,12 +4,11 @@
 using InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.LoreScopes;
 using InfiniLore.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
-using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -17,8 +16,8 @@ using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEn
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
-    .AddModule<CoreAssemblyEntry>()
-    .AddModule<LoreScopesAssemblyEntry>();
+    .AddModule<IServerModuleEntryCore>()
+    .AddModule<IServerModuleEntryLoreScopes>();
 
 builder.Services.RegisterServicesFromInfiniLoreServer();
 builder.Services.RegisterServicesFromInfiniLoreShared();

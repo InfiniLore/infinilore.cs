@@ -16,6 +16,7 @@ using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Encryption;
 using InfiniLore.Server.Modules.Core.TokenStore;
+using InfiniLore.Server.Modules.LoreScopes;
 using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
@@ -30,8 +31,6 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
-using CoreAssemblyEntry = InfiniLore.Server.Modules.Core.IAssemblyEntry;
-using LoreScopesAssemblyEntry = InfiniLore.Server.Modules.LoreScopes.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -79,8 +78,8 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
-            .AddModule<CoreAssemblyEntry>()
-            .AddModule<LoreScopesAssemblyEntry>();
+            .AddModule<IServerModuleEntryCore>()
+            .AddModule<IServerModuleEntryLoreScopes>();
         
         #region Database
         // Technically we need to wrap this as a `IsDevelopment`
