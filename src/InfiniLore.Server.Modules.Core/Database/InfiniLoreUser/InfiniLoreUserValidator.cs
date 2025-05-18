@@ -12,7 +12,7 @@ namespace InfiniLore.Server.Modules.Core.Database.InfiniLoreUser;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IValidator<InfiniLoreUserModel>>(ServiceLifetime.Scoped)]
-public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUserModel> {
+public class InfiniLoreUserValidator : BasicModelValidator<InfiniLoreUserModel> {
     private readonly ILogger _logger;
     private readonly IReadonlyUnitOfWorkFactory _unitOfWorkFactory;
 
@@ -20,6 +20,7 @@ public class InfiniLoreUserValidator : AbstractValidator<InfiniLoreUserModel> {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public InfiniLoreUserValidator(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory) {
+        
         _unitOfWorkFactory = unitOfWorkFactory;
         _logger = factory.CreateLogger("VALIDATE InfiniLoreUser");
 

@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
+using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Database;
@@ -10,7 +11,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableService<IValidator<LoreScopeModel>>(ServiceLifetime.Singleton)]
-public class LoreScopeValidator : AbstractValidator<LoreScopeModel> {
+public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreScopeModel> {
     public LoreScopeValidator() {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The Name field is required.")
