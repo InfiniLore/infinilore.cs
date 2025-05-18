@@ -23,5 +23,7 @@ public class InfiniLoreUserConfiguration : BasicModelConfiguration<InfiniLoreUse
 
         builder.HasIndex(x => x.Username).IsUnique();
         builder.Property(x => x.Username).HasMaxLength(InfiniLoreUserModel.Defaults.UsernameMaxLength);
+
+        builder.Ignore(x => x.Auth0Id);
     }
 }

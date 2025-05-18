@@ -1,17 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared.Modules.Core.Database;
 using System.ComponentModel.DataAnnotations;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreUserModel : BasicModel {
+public class InfiniLoreUserModel : BasicModel, IInfiniLoreUserModel {
     [MaxLength(Defaults.Auth0IdGoogleMaxLength)] public string? Auth0IdGoogle { get; set; }
     [MaxLength(Defaults.Auth0IdGithubMaxLength)] public string? Auth0Github { get; set; }
     [MaxLength(Defaults.Auth0MailPasswordMaxLength)] public string? Auth0MailPassword { get; set; }
     [MaxLength(Defaults.UsernameMaxLength)] public string Username { get; set; } = string.Empty;
+    
+    public string? Auth0Id => Auth0IdGoogle ?? Auth0Github ?? Auth0MailPassword;
 
     // I have no clue why I didn't do this with a list
     public IEnumerable<string> GetAuth0Ids() => new[] { Auth0IdGoogle, Auth0Github, Auth0MailPassword }
