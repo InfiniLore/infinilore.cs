@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
@@ -13,7 +12,7 @@ namespace InfiniLore.Shared.ClaimsHelper;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IClaimsDtoHelper>(ServiceLifetime.Singleton)]
+[InjectableSingleton<IClaimsDtoHelper>]
 public class ClaimsDtoHelper(IOptions<IdentityOptions> options) : IClaimsDtoHelper {
     public IClaimsDto GetClaimsDto(ClaimsPrincipal principal) {
         if (principal.Identity?.IsAuthenticated != true) return ClaimsDto.Empty;

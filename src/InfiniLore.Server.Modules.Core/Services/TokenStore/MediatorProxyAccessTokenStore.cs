@@ -8,14 +8,13 @@ using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Messaging.Commands;
 using InfiniLore.Server.Modules.Core.Messaging.Queries;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.Core.TokenStore;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IAuth0AccessTokenStore>(ServiceLifetime.Scoped)]
+[InjectableScoped<IAuth0AccessTokenStore>]
 public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore> logger, IMessageAccessFactory messageAccessFactory) : IAuth0AccessTokenStore {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

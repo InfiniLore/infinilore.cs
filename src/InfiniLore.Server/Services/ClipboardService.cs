@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<ClipboardService>(ServiceLifetime.Scoped)]
+[InjectableScoped<ClipboardService>]
 public class ClipboardService(IJSRuntime jsRuntime) {
     public ValueTask WriteTextAsync(string text) => jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
 }

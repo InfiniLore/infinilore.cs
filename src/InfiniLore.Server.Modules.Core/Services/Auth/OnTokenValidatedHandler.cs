@@ -11,7 +11,6 @@ using InfiniLore.Shared;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
@@ -20,7 +19,7 @@ namespace InfiniLore.Server.Modules.Core.Auth;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-[InjectableService<IOpenIdConnectEventHelper<TokenValidatedContext>>(ServiceLifetime.Scoped)]
+[InjectableScoped<IOpenIdConnectEventHelper<TokenValidatedContext>>]
 public class OnTokenValidatedHandler(
     ILoggerFactory loggerFactory,
     IClaimsDtoHelper claimsPrincipalHelper,

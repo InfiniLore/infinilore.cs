@@ -5,13 +5,12 @@ using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<ILoreScopeRepository>(ServiceLifetime.Scoped)]
+[InjectableScoped<ILoreScopeRepository>]
 public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
 
     protected override IQueryable<LoreScopeModel> AlwaysInclude(IQueryable<LoreScopeModel> query)

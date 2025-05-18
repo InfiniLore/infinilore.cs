@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Shared.Services.JwtToken;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System.Text.Json;
@@ -12,7 +11,7 @@ namespace InfiniLore.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IJwtTokenJsSecureStorage>(ServiceLifetime.Scoped)]
+[InjectableScoped<IJwtTokenJsSecureStorage>]
 public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenJsSecureStorage> logger, IJwtTokenEncoder encoder) : IJwtTokenJsSecureStorage {
     private const string StorageKey = "jwt_token";
 

@@ -4,14 +4,13 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.Core.Database.InfiniLoreUser;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<InfiniLoreUserModel>>(ServiceLifetime.Scoped)]
+[InjectableScoped<IValidator<InfiniLoreUserModel>>]
 public class InfiniLoreUserValidator : BasicModelValidator<InfiniLoreUserModel> {
     private readonly ILogger _logger;
     private readonly IReadonlyUnitOfWorkFactory _unitOfWorkFactory;

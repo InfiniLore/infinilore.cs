@@ -16,7 +16,7 @@ namespace InfiniLore.Server.Modules.Core.Auth;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<AuthenticationStateProvider>(ServiceLifetime.Scoped)]
+[InjectableScoped<AuthenticationStateProvider>]
 public class ServerAuthenticationStateProvider : RevalidatingServerAuthenticationStateProvider {
     private readonly IClaimsDtoHelper _claimsPrincipalHelper;
     private readonly IServiceScopeFactory _scopeFactory;

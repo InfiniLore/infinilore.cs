@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<KeyValueEntryModel>>(ServiceLifetime.Singleton)]
+[InjectableSingleton<IValidator<KeyValueEntryModel>>]
 public class KeyValueEntryValidator : AbstractValidator<KeyValueEntryModel> {
     public KeyValueEntryValidator() {
         RuleFor(x => x.Key)

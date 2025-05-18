@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Shared.Services.JwtToken;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -13,7 +12,7 @@ namespace InfiniLore.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IJwtTokenEncoder>(ServiceLifetime.Singleton)]
+[InjectableSingleton<IJwtTokenEncoder>]
 public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder {
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 

@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
@@ -12,7 +11,7 @@ namespace InfiniLore.Server.Modules.Core.Encryption;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IAuth0AccessTokenEncryptionService>(ServiceLifetime.Singleton)]
+[InjectableSingleton<IAuth0AccessTokenEncryptionService>]
 public class Auth0AccessTokenEncryptionService(IOptions<Auth0AccessTokenEncryptionServiceOptions> options, ILogger<Auth0AccessTokenEncryptionService> logger) : IAuth0AccessTokenEncryptionService {
 
     private byte[] _ivCache = [];
