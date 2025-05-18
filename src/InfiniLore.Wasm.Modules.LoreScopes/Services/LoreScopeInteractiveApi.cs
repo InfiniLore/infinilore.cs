@@ -27,7 +27,7 @@ public class LoreScopeInteractiveApi(
         try {
             var client = interactiveApi.ApiClient;
             var requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
-            var result = await requestBuilder
+            var result  = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 
             if (result is null) return Result<PaginatedData<ILoreScopeModel>>.FromError("Could not get data from API");
