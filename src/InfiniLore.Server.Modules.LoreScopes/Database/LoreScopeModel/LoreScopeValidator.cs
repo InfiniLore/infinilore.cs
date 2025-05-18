@@ -4,15 +4,14 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
 using InfiniLore.Server.Modules.Core.Database;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<LoreScopeModel>>(ServiceLifetime.Singleton)]
+[InjectableSingleton<IValidator<LoreScopeModel>>]
 public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreScopeModel> {
-    public LoreScopeValidator() {
+    public LoreScopeValidator() : base() {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("The Name field is required.")
             .MaximumLength(LoreScopeModel.Defaults.NameMaxLength)
@@ -21,6 +20,5 @@ public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreS
         RuleFor(x => x.Description)
             .MaximumLength(LoreScopeModel.Defaults.DescriptionMaxLength)
             .WithMessage($"The {nameof(LoreScopeModel.Description)} cannot exceed {LoreScopeModel.Defaults.DescriptionMaxLength} characters.");
-
     }
 }
