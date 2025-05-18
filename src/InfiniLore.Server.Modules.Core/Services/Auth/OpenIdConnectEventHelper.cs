@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
-namespace InfiniLore.Server.Modules.Core;
+namespace InfiniLore.Server.Modules.Core.Auth;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

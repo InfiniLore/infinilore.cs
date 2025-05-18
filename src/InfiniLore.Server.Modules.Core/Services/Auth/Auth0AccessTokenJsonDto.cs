@@ -4,7 +4,7 @@
 using InfiniLore.Credentials.Auth0;
 using System.Text.Json.Serialization;
 
-namespace InfiniLore.Server.Modules.Core;
+namespace InfiniLore.Server.Modules.Core.Auth;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

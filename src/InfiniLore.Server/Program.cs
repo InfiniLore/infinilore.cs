@@ -13,6 +13,7 @@ using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Encryption;
 using InfiniLore.Server.Modules.Core.TokenStore;
 using InfiniLore.Server.Services;

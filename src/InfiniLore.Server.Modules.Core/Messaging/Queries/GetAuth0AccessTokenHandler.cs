@@ -5,6 +5,7 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
+using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Database;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
