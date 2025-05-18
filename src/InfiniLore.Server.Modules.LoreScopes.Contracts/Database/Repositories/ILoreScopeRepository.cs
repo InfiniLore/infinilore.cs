@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Users.Database;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------

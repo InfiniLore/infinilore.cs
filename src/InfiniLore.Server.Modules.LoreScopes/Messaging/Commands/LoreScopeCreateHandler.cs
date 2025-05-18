@@ -6,10 +6,10 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
-using InfiniLore.Server.Modules.Users.Database;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 

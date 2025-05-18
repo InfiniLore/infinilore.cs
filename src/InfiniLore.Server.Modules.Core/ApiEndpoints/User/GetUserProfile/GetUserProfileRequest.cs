@@ -7,6 +7,6 @@ namespace InfiniLore.Server.Modules.Core.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetProfileRequest {
+public record GetUserProfileRequest {
     public Guid UserId { [UsedImplicitly] get; init; }
 }

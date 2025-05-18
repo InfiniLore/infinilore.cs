@@ -2,9 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Credentials.Auth0;
-using InfiniLore.Server.Modules.Core.Messaging;
 
-namespace InfiniLore.Server.Modules.Users.Messaging.Commands;
+namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -4,8 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
-using InfiniLore.Server.Modules.Users.Database;
-using InfiniLore.Server.Modules.Users.Messaging.Queries;
+using InfiniLore.Server.Modules.Core.Database;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Server.Modules.Core.Messaging.Queries;

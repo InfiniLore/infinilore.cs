@@ -6,8 +6,6 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Users.Messaging.Commands;
-using InfiniLore.Server.Modules.Users.Services;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Server.Modules.Core.Messaging.Commands;

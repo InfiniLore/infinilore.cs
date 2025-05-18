@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
-using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

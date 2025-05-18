@@ -6,8 +6,6 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Users.Messaging.Queries;
-using InfiniLore.Server.Modules.Users.Services;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 

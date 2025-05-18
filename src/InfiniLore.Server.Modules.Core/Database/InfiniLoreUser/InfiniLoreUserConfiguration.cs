@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Modules.Core.Database.InfiniLoreUser;

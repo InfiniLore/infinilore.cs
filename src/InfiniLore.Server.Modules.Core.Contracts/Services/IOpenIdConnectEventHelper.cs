@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace InfiniLore.Server.Modules.Users.Services;
+namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

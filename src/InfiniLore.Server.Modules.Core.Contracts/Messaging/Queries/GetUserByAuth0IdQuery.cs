@@ -1,10 +1,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Users.Database;
+using InfiniLore.Server.Modules.Core.Database;
 
-namespace InfiniLore.Server.Modules.Users.Messaging.Queries;
+namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

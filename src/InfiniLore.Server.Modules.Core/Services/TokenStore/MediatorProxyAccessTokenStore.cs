@@ -6,8 +6,8 @@ using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Users.Messaging.Commands;
-using InfiniLore.Server.Modules.Users.Messaging.Queries;
+using InfiniLore.Server.Modules.Core.Messaging.Commands;
+using InfiniLore.Server.Modules.Core.Messaging.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

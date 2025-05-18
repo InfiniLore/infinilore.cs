@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

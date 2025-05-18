@@ -4,7 +4,6 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Modules.Core.Database;
-using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

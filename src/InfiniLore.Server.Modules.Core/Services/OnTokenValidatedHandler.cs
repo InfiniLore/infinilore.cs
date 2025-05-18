@@ -4,10 +4,9 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Users.Database;
-using InfiniLore.Server.Modules.Users.Messaging.Queries;
-using InfiniLore.Server.Modules.Users.Services;
+using InfiniLore.Server.Modules.Core.Messaging.Queries;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;
