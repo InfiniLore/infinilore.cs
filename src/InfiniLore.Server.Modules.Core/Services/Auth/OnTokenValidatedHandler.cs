@@ -48,7 +48,7 @@ public class OnTokenValidatedHandler(
             return;
         }
 
-        // Run all checks and return to new user page if needed
+        // Run all checks and return to the new user page if needed
         IMessageAccess access = messageAccessFactory.FromClaims();
         Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
         Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
@@ -74,14 +74,14 @@ public class OnTokenValidatedHandler(
                 return;
             }
 
-            // User does not exist, redirect to registration page
+            // User does not exist, redirect to the registration page
             case ({ IsState: true, State: true }, { IsSuccess: false }):
             case ({ IsState: true, State: false }, _): {
                 RedirectToUserRegistration(context, auth0Info);
                 return;
             }
 
-            // Something else happend, which means an error
+            // Something else happened, which means an error
             default: {
                 if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
