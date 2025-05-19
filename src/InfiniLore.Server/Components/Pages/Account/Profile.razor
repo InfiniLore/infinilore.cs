@@ -89,7 +89,7 @@
             return;
         }
 
-        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString()){
+        var request = new CreateLoreScopeRequest(userId, Guid.NewGuid().ToString()){
             Access = access
         };
         Modules.Core.Messaging.MessageResponse<Guid> createResult = await request.ExecuteAsync();

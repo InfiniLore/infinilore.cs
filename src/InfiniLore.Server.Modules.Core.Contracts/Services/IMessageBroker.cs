@@ -7,6 +7,9 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IMessageBroker {
-    IMessageAccessFactory AccessFactory { get; }
     ValueTask<IMessageAccess> GetMessageAccessAsync(CancellationToken ct = default);
+    
+    // Added here because it is kinda required by all those who use it as keyes for the services.
+    public const string Claims = nameof(Claims);
+    public const string JwtToken = nameof(JwtToken);
 }

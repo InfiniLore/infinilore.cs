@@ -18,8 +18,8 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<LoreScopeCreateRequest, MessageResponse<Guid>> {
-    public override async Task<MessageResponse<Guid>> ExecuteAsync(LoreScopeCreateRequest command, CancellationToken ct = new()) {
+public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<CreateLoreScopeRequest, MessageResponse<Guid>> {
+    public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);

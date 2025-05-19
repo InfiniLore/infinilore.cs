@@ -3,15 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
-using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.LoreScopes;
@@ -21,8 +19,7 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    IMessageAccessFactory requestDataFactory,
-    IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<PaginatedData<ILoreScopeModel>>.FromError("Invalid userId");
@@ -45,16 +42,13 @@ public class LoreScopeInteractiveApi(
 
     public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+        
+        
+        MessageResponse<Guid> createResult = await messageBroker.CreateLoreScopeAsync(parsedUserId, newLoreScopeName, ct: ct);
+        if (createResult.TryGetAsSuccess(out Guid _)) return true;
 
-        var request = new LoreScopeCreateRequest(parsedUserId, newLoreScopeName) {
-            Access = requestDataFactory.FromClaims(ct)
-        };
-        MessageResponse<Guid> createResult = await request.ExecuteAsync(ct: ct);
-        if (!createResult.TryGetAsSuccess(out Guid _)) {
-            logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
-            return Result.FromError($"Failed to create lorescope for user {userId}");
-        }
+        logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
+        return Result.FromError($"Failed to create lorescope for user {userId}");
 
-        return true;
     }
 }

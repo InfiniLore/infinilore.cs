@@ -15,8 +15,8 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Receivers;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : IEventHandler<NewUserCreatedEvent> {
-    public async Task HandleAsync(NewUserCreatedEvent eventModel, CancellationToken ct) {
+public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : IEventHandler<InfiniLoreUserCreatedEvent> {
+    public async Task HandleAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
         Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
 

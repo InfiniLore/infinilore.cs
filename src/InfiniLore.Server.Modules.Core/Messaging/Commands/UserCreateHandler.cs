@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUserModel> validator) : CommandHandler<UserCreateRequest, MessageResponse<Guid>> {
+public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUserModel> validator) : CommandHandler<CreateInfiniLoreUserRequest, MessageResponse<Guid>> {
     private static readonly Dictionary<string, Action<InfiniLoreUserModel, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },
         { "github", (user, id) => user.Auth0Github = id },
@@ -30,7 +30,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<MessageResponse<Guid>> ExecuteAsync(UserCreateRequest command, CancellationToken ct = default) {
+    public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
@@ -54,7 +54,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
         Result result = await userRepo.AddAsync(user, ct);
         if (result.IsError) return MessageResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await new NewUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
+        await new InfiniLoreUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
         return newUserId;
     }
 

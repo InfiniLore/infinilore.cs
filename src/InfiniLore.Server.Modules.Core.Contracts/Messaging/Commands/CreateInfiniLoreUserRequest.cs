@@ -5,7 +5,7 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserCreateRequest(
+public record CreateInfiniLoreUserRequest(
     string Auth0UserId,
     string UserName
 ) : MessageRequest<Guid>;
