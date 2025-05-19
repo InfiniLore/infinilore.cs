@@ -13,22 +13,22 @@
     <PackageVersion Include="Auth0.AuthenticationApi" Version="7.36.0" />
     <PackageVersion Include="Auth0.ManagementApi" Version="7.36.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0-preview.6" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0-preview.6" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.0.0-preview.6">
+    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0-preview.7" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0-preview.7" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.0.0-preview.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0-preview.6" />
-    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.67.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.67.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.67.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.67.0">
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0-preview.7" />
+    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.68.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.68.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.68.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.68.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.67.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.67.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.68.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.68.0" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.65.0" />
     <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.10.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
@@ -45,11 +45,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.23" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.23" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.23" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.23" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.23" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.28" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.28" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.28" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.28" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.28" />
     <PackageVersion Include="InfiniLore.Lucide" Version="0.26.509" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
@@ -94,8 +94,8 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.20.16" />
-    <PackageVersion Include="TUnit.Core" Version="0.20.16" />
+    <PackageVersion Include="TUnit" Version="0.20.18" />
+    <PackageVersion Include="TUnit.Core" Version="0.20.18" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />

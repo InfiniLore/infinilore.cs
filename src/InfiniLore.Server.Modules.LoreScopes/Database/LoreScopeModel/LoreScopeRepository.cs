@@ -13,10 +13,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 [InjectableScoped<ILoreScopeRepository>]
 public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
 
-    protected override IQueryable<LoreScopeModel> AlwaysInclude(IQueryable<LoreScopeModel> query)
-        => base.AlwaysInclude(query)
-            .Include(x => x.Description);
-
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
