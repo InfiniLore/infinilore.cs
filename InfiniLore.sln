@@ -91,7 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Wasm.Modules.Lor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Cli", "src\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj", "{A7B68546-67DE-4016-AFEE-B8A6ECA040C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.MessageBroker.Generators", "src\InfiniLore.Server.MessageBroker.Generators\InfiniLore.Server.MessageBroker.Generators.csproj", "{C3800ADF-ED2A-400E-B5F3-091045A0255D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.SourceGenerators", "src\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj", "{C3800ADF-ED2A-400E-B5F3-091045A0255D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

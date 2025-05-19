@@ -1,15 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.GeneratorTools;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Threading;
-using CodeOfChaos.GeneratorTools;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 
-namespace InfiniLore.Server.MessageBroker.Generators;
-
+namespace InfiniLore.Server.SourceGenerators.MessageBroker;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -45,7 +44,7 @@ public class MessageBrokerGenerator : IIncrementalGenerator {
             : null;
     }
     
-    private void GenerateSources(SourceProductionContext context, (Compilation Left, ImmutableArray<MessageDto> Right) tuple) {
+    private static void GenerateSources(SourceProductionContext context, (Compilation Left, ImmutableArray<MessageDto> Right) tuple) {
         (Compilation _, ImmutableArray<MessageDto> data) = tuple;
 
         var builder = new GeneratorStringBuilder();

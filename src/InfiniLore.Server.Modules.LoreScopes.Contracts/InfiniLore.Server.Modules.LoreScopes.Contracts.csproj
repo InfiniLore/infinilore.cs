@@ -11,7 +11,7 @@
       <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Shared.Modules.LoreScopes\InfiniLore.Shared.Modules.LoreScopes.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.MessageBroker.Generators\InfiniLore.Server.MessageBroker.Generators.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     
     <ItemGroup>

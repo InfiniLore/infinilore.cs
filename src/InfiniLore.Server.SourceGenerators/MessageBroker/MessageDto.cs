@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace InfiniLore.Server.MessageBroker.Generators;
+namespace InfiniLore.Server.SourceGenerators.MessageBroker;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
