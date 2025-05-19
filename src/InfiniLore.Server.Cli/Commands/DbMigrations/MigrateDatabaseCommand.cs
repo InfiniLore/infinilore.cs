@@ -16,12 +16,12 @@ namespace InfiniLore.Server.Cli.DbMigrations;
 [CliData("database-migrate")]
 public partial class MigrateDatabaseCommand(
     ILogger<MigrateDatabaseCommand> logger,
-    IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory,
+    IUnitOfWorkFactory unitOfWorkFactory,
     ICliPostRunEffects cliPostRunStatus
 ) : ICliCommand<MigrateDatabaseParameters> {
     public async ValueTask ExecuteAsync(MigrateDatabaseParameters parameters, CancellationToken ct = new()) {
         try {
-            await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
+            await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
             await using var db = await unitOfWork.GetDbContextAsync<ContentDb>(ct);
 
             if (!await HasPendingMigrationsAsync(db, ct)) {
