@@ -8,21 +8,30 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastEndpoints" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" />
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Modules.Core\InfiniLore.Shared.Modules.Core.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" /> 
+        <ProjectReference Include="..\InfiniLore.Server.MessageBroker.Generators\InfiniLore.Server.MessageBroker.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions" />
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" />
         <PackageReference Include="AterraEngine.Unions"/>
         <PackageReference Include="AterraEngine.Unions.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+
+        <!-- Ugly, but this is because of some weirdness with how analyzers are imported through a project reference -->
+        <PackageReference Include="CodeOfChaos.GeneratorTools" GeneratePathProperty="true" PrivateAssets="all">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <Analyzer Include="$(PkgCodeOfChaos_GeneratorTools)\lib\netstandard2.0\*.dll" />
+        
+        <PackageReference Include="FastEndpoints" />
         <PackageReference Include="FastEndpoints.Messaging.Core" />
         <PackageReference Include="JetBrains.Annotations" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
-      <ProjectReference Include="..\InfiniLore.Shared.Modules.Core\InfiniLore.Shared.Modules.Core.csproj" />
-        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

@@ -17,16 +17,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0-preview.6" />
-    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.66.1" />
-    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.66.1" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.66.1" />
-    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.66.1">
+    <PackageVersion Include="CodeOfChaos.Extensions" Version="0.67.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.67.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.67.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.67.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.66.1" />
-    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.66.1" />
+    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.67.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.67.0" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.65.0" />
+    <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.9.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1" />
@@ -34,16 +35,20 @@
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
-    <PackageVersion Include="InfiniLore.Credentials" Version="4.1.1" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.1.1" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.1.1" />
-    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.1.1" />
+    <PackageVersion Include="InfiniLore.Credentials" Version="4.2.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.2.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.2.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
     <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.23" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.23" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.23" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.23" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.23" />
     <PackageVersion Include="InfiniLore.Lucide" Version="0.26.509" />
+    <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
@@ -55,6 +60,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
@@ -79,13 +85,14 @@
     <PackageVersion Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.17.2" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NuGet.Protocol" Version="6.14.0" />
-    <PackageVersion Include="Serilog" Version="4.2.0" />
+    <PackageVersion Include="Nullable" Version="1.3.1" />
+    <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.20.0" />
-    <PackageVersion Include="TUnit.Core" Version="0.20.0" />
+    <PackageVersion Include="TUnit" Version="0.20.16" />
+    <PackageVersion Include="TUnit.Core" Version="0.20.16" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
