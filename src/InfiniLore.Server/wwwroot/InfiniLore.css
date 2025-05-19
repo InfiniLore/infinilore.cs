@@ -235,12 +235,6 @@
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
-  .-z-10 {
-    z-index: calc(10 * -1);
-  }
-  .-z-100 {
-    z-index: calc(100 * -1);
-  }
   .z-0 {
     z-index: 0;
   }
@@ -408,23 +402,11 @@
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
-  .bg-\(--color-base-0\) {
-    background-color: var(--color-base-0);
-  }
   .bg-\(--color-base-00\) {
     background-color: var(--color-base-00);
   }
-  .bg-\(--color-base-20\) {
-    background-color: var(--color-base-20);
-  }
-  .bg-\(--color-base-90\) {
-    background-color: var(--color-base-90);
-  }
   .bg-amber-500 {
     background-color: var(--color-amber-500);
-  }
-  .bg-black {
-    background-color: var(--color-black);
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
@@ -444,20 +426,11 @@
   .bg-white {
     background-color: var(--color-white);
   }
-  .bg-white\/60 {
-    background-color: color-mix(in srgb, #fff 60%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-white) 60%, transparent);
-    }
-  }
   .bg-yellow-100 {
     background-color: var(--color-yellow-100);
   }
   .bg-zinc-200 {
     background-color: var(--color-zinc-200);
-  }
-  .bg-\[url\(\'paper-texture\.jpg\'\)\] {
-    background-image: url('paper-texture.jpg');
   }
   .bg-\[url\(paper-texture\.jpg\)\] {
     background-image: url(paper-texture.jpg);
@@ -581,26 +554,8 @@
   .opacity-0 {
     opacity: 0%;
   }
-  .opacity-10 {
-    opacity: 10%;
-  }
-  .opacity-20 {
-    opacity: 20%;
-  }
-  .opacity-30 {
-    opacity: 30%;
-  }
   .opacity-50 {
     opacity: 50%;
-  }
-  .opacity-70 {
-    opacity: 70%;
-  }
-  .opacity-80 {
-    opacity: 80%;
-  }
-  .opacity-90 {
-    opacity: 90%;
   }
   .opacity-100 {
     opacity: 100%;
