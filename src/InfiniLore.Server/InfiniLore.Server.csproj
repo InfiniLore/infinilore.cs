@@ -10,6 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm\InfiniLore.Wasm.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
     </ItemGroup>
@@ -43,31 +44,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor"/>
-        <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor"/>
-        <_ContentIncludedByDefault Remove="wwwroot\images\auth0-dotnet-ebook.png"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.Development.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\BlazorDebugProxy\BrowserDebugHost.runtimeconfig.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.runtime.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.deps.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.runtimeconfig.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.runtime.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\InfiniLore.Server.sourcelink.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.development.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.pack.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenu.razor"/>
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenuButton.razor"/>
     </ItemGroup>
 
 </Project>

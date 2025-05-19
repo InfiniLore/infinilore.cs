@@ -1,12 +1,11 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core;
+using FastEndpoints;
+using JetBrains.Annotations;
 
+namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageBroker {
-    IMessageAccessFactory AccessFactory { get; }
-    ValueTask<IMessageAccess> GetMessageAccessAsync(CancellationToken ct = default);
-}
+public record NewLoreScopeCreatedEvent([UsedImplicitly] Guid LoreScopeId) : IEvent;

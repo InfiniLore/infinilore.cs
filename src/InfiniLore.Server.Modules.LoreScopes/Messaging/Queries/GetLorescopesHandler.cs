@@ -20,8 +20,7 @@ public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        var queryConfig = new QueryConfig(command.AutoInclude, command.Reverse);
-        PaginatedResult<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.PaginationInfo, queryConfig, ct);
+        PaginatedResult<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.PaginationInfo, command.QueryConfig, ct);
 
         // Todo lorescopes can be hidden so only the owner can access view it.
         //      Do we do that in the config level, or here?

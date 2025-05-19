@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
@@ -43,7 +44,7 @@ public class GetLoreScopesEndpoint(
         // Form Query
         var query = new GetLoreScopesQuery(
             req.UserId,
-            false,
+            QueryConfig.Default,
             PaginationInfo.Default
         ) {
             Access = await requestDataFactory.FromJwtTokenAsync(ct)

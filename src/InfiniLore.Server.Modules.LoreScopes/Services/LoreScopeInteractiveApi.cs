@@ -21,22 +21,17 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    IMessageAccessFactory requestDataFactory
+    IMessageAccessFactory requestDataFactory,
+    IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<PaginatedData<ILoreScopeModel>>.FromError("Invalid userId");
 
-        // Form Message
-        var query = new GetLoreScopesQuery(
+        // Form and Execute Query
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(
             parsedUserId,
-            false,
-            PaginationInfo.Default
-        ) {
-            Access = requestDataFactory.FromClaims(ct)
-        };
-
-        // Execute Message
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await query.ExecuteAsync(ct);
+            ct: ct
+        );
 
         // Verify Response
         // ReSharper disable once InvertIf
