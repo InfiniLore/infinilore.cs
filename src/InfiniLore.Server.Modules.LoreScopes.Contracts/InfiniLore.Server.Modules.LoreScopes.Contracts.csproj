@@ -20,8 +20,4 @@
         <Analyzer Include="$(PkgCodeOfChaos_GeneratorTools)\lib\netstandard2.0\*.dll" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Messaging\Receivers\" />
-    </ItemGroup>
-
 </Project>
