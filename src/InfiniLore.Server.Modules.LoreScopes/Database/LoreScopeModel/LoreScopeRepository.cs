@@ -31,8 +31,8 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
         return Result.FromState(result);
-
     }
+    
     public async ValueTask<Result> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
         if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 

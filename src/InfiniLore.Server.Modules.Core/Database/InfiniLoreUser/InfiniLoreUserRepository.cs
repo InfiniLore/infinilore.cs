@@ -87,10 +87,8 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
         // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet
+        IQueryable<InfiniLoreUserModel> query = GetConfiguredQueryable(dbSet, config)
             .AsNoTracking()
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
             .Where(model =>
                 model.Auth0MailPassword != null && authIds.Contains(model.Auth0MailPassword)
                 || model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
@@ -117,30 +115,11 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
         // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
+        IQueryable<InfiniLoreUserModel> query = GetConfiguredQueryable(dbSet, config)
             .With(ByAuth0IdQuery, auth0Id);
 
         InfiniLoreUserModel? result = await query
             .SingleOrDefaultAsync(cancellationToken: ct);
-
-        // Retrieve
-        if (result is null) return Result<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelNotFound);
-
-        return Result<InfiniLoreUserModel>.FromSuccess(result);
-    }
-
-    public async ValueTask<Result<InfiniLoreUserModel>> TryGetByAuth0IdWithAutoIncludeAsync(string auth0Id, QueryConfig config = default, CancellationToken ct = default) {
-        // Access
-        DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
-
-        // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
-            .With(ByAuth0IdQuery, auth0Id);
-
-        InfiniLoreUserModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve
         if (result is null) return Result<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelNotFound);

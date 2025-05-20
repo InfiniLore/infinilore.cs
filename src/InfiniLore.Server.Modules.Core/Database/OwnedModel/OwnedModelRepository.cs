@@ -24,10 +24,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
         // Query
-        IQueryable<TModel> query = dbSet
-            .With(AlwaysInclude)
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .Where(ls => ls.OwnerId == userId);
 
         // Retrieve
@@ -45,10 +42,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
-        IQueryable<TModel> query = baseQuery
-            .With(AlwaysInclude)
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);

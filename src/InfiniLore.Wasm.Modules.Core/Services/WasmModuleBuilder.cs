@@ -14,6 +14,7 @@ namespace InfiniLore.Wasm.Modules.Core.Services;
 public class WasmModuleBuilder {
     private WebAssemblyHostBuilder? WasmBuilder { get; init; }
     private IServiceCollection? Services { get; init; }
+    
     public List<Assembly> ModuleAssemblies { get; } = new();
 
     private WasmModuleBuilder() {}

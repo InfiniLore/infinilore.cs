@@ -17,6 +17,15 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
     protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
+    protected IQueryable<TModel> GetConfiguredQueryable(DbSet<TModel> dbSet, QueryConfig config) {
+        IQueryable<TModel> query = dbSet.With(AlwaysInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
+            .ConditionalReverse(config.Reverse)
+            .ConditionalWith(config.RetrieveSoftDeleted, model => model.IgnoreQueryFilters());
+
+        return query;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -25,9 +34,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         // Query
-        TModel? result = await dbSet
-            .With(AlwaysInclude)
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
+        TModel? result = await GetConfiguredQueryable(dbSet, config)
             .Where(ls => ls.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
@@ -41,10 +48,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         // Query
-        IOrderedQueryable<TModel> query = dbSet
-            .With(AlwaysInclude)
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
+        IOrderedQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id);
 
         // Query & Retrieve
@@ -60,10 +64,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
-        IQueryable<TModel> query = dbSet
-            .With(AlwaysInclude)
-            .ConditionalWith(config.OptionalInclude, OptionalInclude)
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
