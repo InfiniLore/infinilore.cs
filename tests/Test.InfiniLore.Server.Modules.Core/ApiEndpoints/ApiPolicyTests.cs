@@ -1,13 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.Core.ApiEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Test.InfiniLore.Server.Modules.Core;
+namespace Test.InfiniLore.Server.Modules.Core.ApiEndpoints;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
