@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMessageBroker>(IMessageBroker.Claims)]
-public class MessageBrokerClaims(IMessageAccessFactory accessFactory) : IMessageBroker {
+public class MessageBrokerClaims(IMessageAccessProvider accessFactory) : IMessageBroker {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

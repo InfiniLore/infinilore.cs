@@ -7,14 +7,18 @@ using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Immutable;
 using System.Security.Claims;
+using InfiniLoreClaimsStore = InfiniLore.Shared.Auth.InfiniLoreClaimsStore;
 
 namespace InfiniLore.Server.Modules.Core;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IMessageAccessFactory>]
-public class MessageAccessFactory(IJwtTokenHelper jwtTokenHelper, IHttpContextAccessor httpContextAccessor) : IMessageAccessFactory {
+[InjectableScoped<IMessageAccessProvider>]
+public class MessageAccessProvider(
+    IJwtTokenHelper jwtTokenHelper,
+    IHttpContextAccessor httpContextAccessor
+) : IMessageAccessProvider {
     public IMessageAccess Empty => MessageAccess.Empty;
 
     // -----------------------------------------------------------------------------------------------------------------

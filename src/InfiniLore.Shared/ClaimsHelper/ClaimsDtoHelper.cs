@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Shared.Auth;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

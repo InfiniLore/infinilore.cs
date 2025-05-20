@@ -8,6 +8,5 @@ namespace InfiniLore.Server.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ICliPostRunEffects {
     bool ShouldExit { get; }
-    
     void ExitOnCompletion();
 }

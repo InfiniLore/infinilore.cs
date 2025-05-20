@@ -4,6 +4,7 @@
 using FastEndpoints;
 using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
+using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
 
 namespace InfiniLore.Server.Modules.Core.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------

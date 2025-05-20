@@ -15,14 +15,14 @@ namespace InfiniLore.Server.Modules.Core.TokenStore;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IAuth0AccessTokenStore>]
-public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore> logger, IMessageAccessFactory messageAccessFactory) : IAuth0AccessTokenStore {
+public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore> logger, IMessageAccessProvider messageAccessProvider) : IAuth0AccessTokenStore {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     // ReSharper disable once InvertIf
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
         MessageResponse<IAuth0AccessToken> mediatorResponse = await new GetAuth0AccessTokenQuery {
-            Access = messageAccessFactory.Empty
+            Access = messageAccessProvider.Empty
         }.ExecuteAsync(ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken token)) {
@@ -36,7 +36,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
         MessageResponse<bool> mediatorResponse = await new StoreAuth0AccessTokenRequest(token){
-            Access = messageAccessFactory.Empty
+            Access = messageAccessProvider.Empty
         }.ExecuteAsync(ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out bool success)) {

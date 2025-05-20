@@ -10,6 +10,7 @@ using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
+using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
 
 namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -25,7 +26,7 @@ using Response=Results<
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
-    IMessageAccessFactory requestDataFactory
+    IMessageAccessProvider requestDataFactory
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {

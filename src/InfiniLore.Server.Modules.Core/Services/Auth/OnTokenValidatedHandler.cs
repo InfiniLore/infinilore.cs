@@ -8,6 +8,7 @@ using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Messaging.Queries;
 using InfiniLore.Shared;
+using InfiniLore.Shared.Auth;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -23,7 +24,7 @@ namespace InfiniLore.Server.Modules.Core.Auth;
 public class OnTokenValidatedHandler(
     ILoggerFactory loggerFactory,
     IClaimsDtoHelper claimsPrincipalHelper,
-    IMessageAccessFactory messageAccessFactory
+    IMessageAccessProvider messageAccessProvider
 ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
@@ -49,7 +50,7 @@ public class OnTokenValidatedHandler(
         }
 
         // Run all checks and return to the new user page if needed
-        IMessageAccess access = messageAccessFactory.FromClaims();
+        IMessageAccess access = messageAccessProvider.FromClaims();
         Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
         Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
 

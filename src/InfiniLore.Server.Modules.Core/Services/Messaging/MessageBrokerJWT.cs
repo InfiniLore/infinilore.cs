@@ -9,7 +9,7 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMessageBroker>(IMessageBroker.JwtToken)]
-public class MessageBrokerJwt(IMessageAccessFactory accessFactory) : IMessageBroker {
+public class MessageBrokerJwt(IMessageAccessProvider accessFactory) : IMessageBroker {
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
