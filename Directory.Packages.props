@@ -50,7 +50,7 @@
     <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.28" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.28" />
     <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.28" />
-    <PackageVersion Include="InfiniLore.Lucide" Version="0.26.509" />
+    <PackageVersion Include="InfiniLore.Lucide" Version="0.26.511" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
@@ -94,8 +94,8 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.20.18" />
-    <PackageVersion Include="TUnit.Core" Version="0.20.18" />
+    <PackageVersion Include="TUnit" Version="0.21.7" />
+    <PackageVersion Include="TUnit.Core" Version="0.21.7" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
