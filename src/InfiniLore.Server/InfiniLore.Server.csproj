@@ -24,7 +24,6 @@
         <PackageReference Include="FastEndpoints.Swagger" />
         <PackageReference Include="InfiniLore.Credentials" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" />
-        <PackageReference Include="InfiniLore.InfiniBlazor" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
