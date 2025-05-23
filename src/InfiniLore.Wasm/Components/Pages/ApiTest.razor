@@ -5,7 +5,6 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/api-test"
-@using AterraEngine.Unions
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Modules.LoreScopes.Database
@@ -14,7 +13,7 @@
 @using System.Security.Claims
 @using System.Text.Json
 @attribute [Authorize]
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 @inject ILogger<ApiTest> Logger
 @inject ILoreScopeInteractiveApi LoreScopeInteractiveApi
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -54,7 +53,7 @@
             return;
         }
 
-        PaginatedDataResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
         }

@@ -10,6 +10,6 @@ namespace InfiniLore.Shared.Modules.LoreScopes.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ILoreScopeInteractiveApi  {
-    ValueTask<PaginatedDataResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default);
+    ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default);
     ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default);
 }

@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Kiota.Extensions;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
 using InfiniLore.Wasm.Contracts.Services;
 using Microsoft.Extensions.Logging;
-using Microsoft.Kiota.Serialization;
-using System.Text.Json;
 
 namespace InfiniLore.Wasm.Modules.LoreScopes.Services;
 
@@ -22,7 +21,7 @@ public class LoreScopeInteractiveApi(
     IInteractiveApiWasm interactiveApi
 ) : ILoreScopeInteractiveApi {
 
-    public async ValueTask<PaginatedDataResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         // ReSharper disable twice SuggestVarOrType_SimpleTypes
         try {
             var client = interactiveApi.ApiClient;
@@ -30,14 +29,12 @@ public class LoreScopeInteractiveApi(
             var result  = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 
-            if (result is null) return PaginatedDataResult<ILoreScopeModel>.FromError("Could not get data from API");
-            Stream jsonStream = result.SerializeAsJsonStream();
-            var response = await JsonSerializer.DeserializeAsync<PaginatedData<ILoreScopeModel>>(jsonStream, interactiveApi.JsonOptions, ct);
-            return PaginatedDataResult<ILoreScopeModel>.FromData(response);
+            if (result is null) return PaginatedResult<ILoreScopeModel>.FromError("Could not get data from API");
+            return KiotaMapper.MapToPaginatedResult<ILoreScopeModel>(result);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScopes for user {userId} because '{reason}'", userId, e.Message);
-            return PaginatedDataResult<ILoreScopeModel>.FromError($"Unknown failure");
+            return PaginatedResult<ILoreScopeModel>.FromError($"Unknown failure");
         }
     }
     public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {

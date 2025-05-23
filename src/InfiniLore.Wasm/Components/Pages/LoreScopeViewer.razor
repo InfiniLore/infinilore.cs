@@ -62,7 +62,7 @@
 
         UserId = userId;
         
-        PaginatedDataResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel> response)) {
             return;
         }
