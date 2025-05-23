@@ -6,12 +6,11 @@ using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.ApiEndpoints;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Shared;
+using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
 
 namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,7 +26,7 @@ using Response=Results<
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
-    IMessageAccessProvider requestDataFactory
+    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
@@ -41,18 +40,8 @@ public class GetLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
-        // Form Query
-        var query = new GetLorescopeByIdQuery(
-            req.LoreScopeId,
-            req.UserId,
-            true
-        ) {
-            Access = await requestDataFactory.FromJwtTokenAsync(ct)
-        };
-
-        // Execute Query
-        MessageResponse<LoreScopeModel> result = await query.ExecuteAsync(ct);
+        
+        MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) {

@@ -54,12 +54,12 @@
             return;
         }
 
-        Result<PaginatedData<ILoreScopeModel>> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
+        PaginatedDataResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
         }
 
-        string dataAsJson = JsonSerializer.Serialize(result.AsSuccess);
+        string dataAsJson = JsonSerializer.Serialize(result.AsData);
         _apiResponse = dataAsJson;
     }
 }

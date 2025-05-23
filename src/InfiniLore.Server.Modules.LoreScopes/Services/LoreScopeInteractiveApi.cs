@@ -21,8 +21,8 @@ public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
     [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
-    public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<PaginatedData<ILoreScopeModel>>.FromError("Invalid userId");
+    public async ValueTask<PaginatedDataResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return PaginatedDataResult<ILoreScopeModel>.FromError("Invalid userId");
 
         // Form and Execute Query
         MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(
@@ -34,10 +34,10 @@ public class LoreScopeInteractiveApi(
         // ReSharper disable once InvertIf
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedData)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", userId, result.AsError.Value);
-            return Result<PaginatedData<ILoreScopeModel>>.FromError($"Failed to get LoreScopes for user {userId}");
+            return PaginatedDataResult<ILoreScopeModel>.FromError($"Failed to get LoreScopes for user {userId}");
         }
 
-        return Result<PaginatedData<ILoreScopeModel>>.FromSuccess(paginatedData.CastTo<ILoreScopeModel>());
+        return PaginatedDataResult<ILoreScopeModel>.FromData(paginatedData.CastTo<ILoreScopeModel>());
     }
 
     public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {

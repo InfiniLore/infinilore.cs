@@ -7,7 +7,6 @@ using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Messaging.Queries;
-using InfiniLore.Shared;
 using InfiniLore.Shared.Auth;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;

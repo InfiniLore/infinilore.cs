@@ -22,7 +22,7 @@ public class LoreScopeInteractiveApi(
     IInteractiveApiWasm interactiveApi
 ) : ILoreScopeInteractiveApi {
 
-    public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+    public async ValueTask<PaginatedDataResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         // ReSharper disable twice SuggestVarOrType_SimpleTypes
         try {
             var client = interactiveApi.ApiClient;
@@ -30,14 +30,14 @@ public class LoreScopeInteractiveApi(
             var result  = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 
-            if (result is null) return Result<PaginatedData<ILoreScopeModel>>.FromError("Could not get data from API");
+            if (result is null) return PaginatedDataResult<ILoreScopeModel>.FromError("Could not get data from API");
             Stream jsonStream = result.SerializeAsJsonStream();
             var response = await JsonSerializer.DeserializeAsync<PaginatedData<ILoreScopeModel>>(jsonStream, interactiveApi.JsonOptions, ct);
-            return Result<PaginatedData<ILoreScopeModel>>.FromSuccess(response);
+            return PaginatedDataResult<ILoreScopeModel>.FromData(response);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScopes for user {userId} because '{reason}'", userId, e.Message);
-            return Result<PaginatedData<ILoreScopeModel>>.FromError($"Unknown failure");
+            return PaginatedDataResult<ILoreScopeModel>.FromError($"Unknown failure");
         }
     }
     public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {

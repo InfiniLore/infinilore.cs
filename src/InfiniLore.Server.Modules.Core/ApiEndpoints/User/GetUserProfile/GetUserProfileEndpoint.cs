@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
 
@@ -16,7 +15,7 @@ using Response=Results<
     ProblemDetails
 >;
 
-public class GetUserProfileEndpoint : Endpoint<GetUserProfileRequest, Results<Ok<UserProfileResponse>, NotFound, ProblemDetails>, UserProfileMapper> {
+public class GetUserProfileEndpoint : Endpoint<GetUserProfileRequest, Response, UserProfileMapper> {
     public override void Configure() {
         Get("/account/profile/{UserId:guid}");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
