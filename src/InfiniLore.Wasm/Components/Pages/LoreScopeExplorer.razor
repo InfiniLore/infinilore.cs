@@ -23,11 +23,13 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <div class="bg-(--color-base-00) shadow-sm rounded-2xl p-4 border border-(--color-base-10) mt-4">
-    <h2 class="text-lg font-semibold text-gray-800 mb-4">Create New Lore Scope</h2>
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+        Create New Lorescope
+    </h2>
 
     <div class="flex items-center space-x-3">
         <InputText @bind-Value="@NewLoreScopeName"
-                   placeholder="Enter a lore scope name..."
+                   placeholder="Enter a new Lorescope name..."
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:outline-(--color-accent) text-sm p-2 shadow-sm transition" />
         
         <button @onclick="CreateNewLoreScopeAsync"
@@ -40,7 +42,7 @@
 <div class="my-8"></div>
 
 <div class="w-full flex flex-col items-center justify-center">
-    <div class="flex flex-row flex-wrap gap-2 text-center leading-none">
+    <div class="flex flex-row flex-wrap gap-2">
         <div class="bg-(--color-base-00) w-12 h-12 text-(--color-base-95) shadow-md flex items-center justify-center leading-none rounded-xl">00</div>
         <div class="bg-(--color-base-05) w-12 h-12 text-(--color-base-90) shadow-md flex items-center justify-center leading-none rounded-xl">05</div>
         <div class="bg-(--color-base-10) w-12 h-12 text-(--color-base-80) shadow-md flex items-center justify-center leading-none rounded-xl">10</div>
@@ -100,7 +102,7 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [CascadingParameter]
+    [CascadingParameter] 
     private Task<AuthenticationState>? AuthenticationState { get; set; }
     private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
     private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
@@ -129,7 +131,7 @@
         }
         
         MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
-        LoreScopeResponses = response.Items;
+        LoreScopeResponses = response.Items.OrderBy(i => i.Name).ToArray();
     }
 
     private async Task CreateNewLoreScopeAsync() {
