@@ -36,7 +36,7 @@
         @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
             <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1/editor">Editor</a></li>
         }
-        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li>
+        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty/editor">New</a></li>
     </ul>
 }
 @* ------------------------------------------------------------------------------------------------------------------ *@
