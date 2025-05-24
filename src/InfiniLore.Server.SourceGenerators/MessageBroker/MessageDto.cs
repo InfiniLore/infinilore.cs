@@ -25,6 +25,8 @@ public class MessageDto(INamedTypeSymbol symbol) {
         : MethodNameRegex.Replace(symbol.Name, "Async");
     
     private static readonly Regex MethodNameRegex = new(@"(?<=\w)(Query|Request|Command|Event|Async)", RegexOptions.Compiled);
+    
+    public bool HasPaginationInfoParameter => Constructor?.Parameters.Any(p => p.Type.IsDisplayName(TypeNames.PaginationInfo)) ?? false;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

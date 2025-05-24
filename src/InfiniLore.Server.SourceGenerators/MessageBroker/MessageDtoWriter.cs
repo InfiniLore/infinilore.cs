@@ -31,6 +31,10 @@ public static class MessageDtoWriter {
         } else {
             // ReSharper disable once HeapView.CanAvoidClosure
             builder.Indent(b => {
+                if (dto.HasPaginationInfoParameter) {
+                    b.AppendLine($"if (paginationInfo == default({TypeNames.PaginationInfo})) paginationInfo = {TypeNames.PaginationInfo}.Default;");
+                }
+                
                 b.AppendLine("IMessageAccess access = await broker.GetMessageAccessAsync(ct);");
                 b.AppendLine($"var request = new {requestType}({string.Join(", ", dto.GetArgNames())}) {{ Access = access }};");
                 b.AppendLine("return await request.ExecuteAsync(ct: ct);");
