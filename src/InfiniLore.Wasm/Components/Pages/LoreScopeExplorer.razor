@@ -84,10 +84,18 @@
                     </div>
 
                     @* Links *@
-                    <div>
+                    <div class="flex flex-row gap-2">
                         <button class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition">
                             + New File
                         </button>
+
+                        <button 
+                            class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition"
+                            @onclick="async () => await OnDeleteAsync(loreScope)"
+                            >
+                            - Delete
+                        </button>
+                        
                     </div>
                 </div>
 
@@ -162,6 +170,22 @@
         );
         
         await ToastStorage.AddToastAsync(toastFail);
+        StateHasChanged();
+    }
+    
+    private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
+        Result result = await LoreScopeApi.DeleteLoreScopesAsync(loreScope.Id.ToString());
+        if (result.AsState) {
+            var toast = new ToastData(
+                "LoreScope Deleted",
+                10,
+                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
+                Body: NewLoreScopeName
+            );
+            await ToastStorage.AddToastAsync(toast);
+        } 
+        
+        await RefreshLoreScopeListAsync();
         StateHasChanged();
     }
 }

@@ -21,6 +21,15 @@ public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
     [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
+    public async ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
+        
+        MessageResponse result = await messageBroker.DeleteLoreScopeAsync(parsedLoreScopeId, ct: ct);
+        
+        if (!result.TryGetAsState(out bool success)) Result.FromError("Failed to delete lorescope");
+        return success;
+    }
+    
     public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 

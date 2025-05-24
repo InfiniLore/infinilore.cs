@@ -17,7 +17,7 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .IsRequired()
             .HasMaxLength(LoreScopeModel.Defaults.NameMaxLength);
         
-        builder.HasIndex(x => new { x.OwnerId, x.Name })
+        builder.HasIndex(x => new { x.OwnerId, x.Name, x.SoftDeleteDate })
             .IsUnique()
             .HasDatabaseName("IX_OwnerId_Name_Unique"); 
     }
