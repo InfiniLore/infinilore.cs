@@ -16,7 +16,7 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
+    public async ValueTask<Result> IsLoreScopeNameTakenAsync(string loreScopeName, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) {
         if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
@@ -26,6 +26,7 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         IQueryable<LoreScopeModel> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
+            && l.Id != notIncludedId
         );
 
         // Retrieve
@@ -33,7 +34,7 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         return Result.FromState(result);
     }
     
-    public async ValueTask<Result> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, CancellationToken ct = default) {
+    public async ValueTask<Result> IsLoreScopeNameNotTakenAsync(string loreScopeName, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) {
         if (loreScopeName.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Result.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Access
@@ -43,6 +44,7 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         IQueryable<LoreScopeModel> query = dbSet.Where(l =>
             l.Name == loreScopeName
             && l.OwnerId == ownerId
+            && l.Id != notIncludedId
         );
 
         // Retrieve
