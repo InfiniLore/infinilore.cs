@@ -3,8 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Kiota.Extensions;
-using InfiniLore.Kiota.Models;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
@@ -27,7 +25,7 @@ public class LoreScopeInteractiveApi(
         try {
             var client = interactiveApi.ApiClient;
             var requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
-            InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopesResponse? result  = await requestBuilder
+            var result  = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 
             logger.LogInformation("{@result}", result);
