@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota.Extensions;
+using InfiniLore.Kiota.Models;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
@@ -26,12 +27,21 @@ public class LoreScopeInteractiveApi(
         try {
             var client = interactiveApi.ApiClient;
             var requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
-            var result  = await requestBuilder
+            InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopesResponse? result  = await requestBuilder
                 .GetAsync(cancellationToken: ct);
 
+            logger.LogInformation("{@result}", result);
+            
             if (result is null) return PaginatedResult<ILoreScopeModel>.FromError("Could not get data from API");
-            return KiotaMapper.MapToPaginatedResult<ILoreScopeModel>(result);
+            
+            return new PaginatedData<ILoreScopeModel>(
+                result.Items?.Select(WasmLoreScopeModel.FromKiotaModel).ToArray() ?? Array.Empty<ILoreScopeModel>(),
+                result.TotalCount ?? result.Items?.Count ?? -1,
+                result.CurrentPage ?? -1,
+                result.TotalPages ?? -1
+            );
         }
+        
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScopes for user {userId} because '{reason}'", userId, e.Message);
             return PaginatedResult<ILoreScopeModel>.FromError($"Unknown failure");
