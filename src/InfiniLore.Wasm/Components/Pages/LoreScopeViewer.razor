@@ -22,22 +22,22 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="bg-(--color-base-00) shadow-sm rounded-xl p-6 border border-(--color-base-10) ">
+<div class="bg-(--color-base-00) shadow-sm rounded-xl p-4 border border-(--color-base-10) mt-4">
     <h2 class="text-lg font-semibold text-gray-800 mb-4">Create New Lore Scope</h2>
 
     <div class="flex items-center space-x-3">
         <InputText @bind-Value="@NewLoreScopeName"
                    placeholder="Enter a lore scope name..."
-                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:outline-(--color-accent) text-sm px-3 py-2 shadow-sm transition" />
+                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:outline-(--color-accent) text-sm p-2 shadow-sm transition" />
         
         <button @onclick="CreateNewLoreScopeAsync"
-                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) px-3 py-2 text-sm font-medium shadow-sm transition">
+                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) p-2 text-sm font-medium shadow-sm transition">
             <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
         </button>
     </div>
 </div>
 
-<div class="m-4 h-1"></div>
+<div class="my-8"></div>
 
 <div class="w-full flex flex-col items-center justify-center">
     <div class="flex flex-row flex-wrap gap-2 text-center leading-none">
@@ -57,17 +57,42 @@
     </div>
 </div>
 
-<div class="m-4 h-1"></div>
+<div class="my-8"></div>
 
-@foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-    <h3>@loreScope.Name</h3>
-    <ul>
-        @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
-            <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1/editor">Editor</a></li>
-        }
-        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty/editor">New</a></li>
-    </ul>
-}
+<div class="flex flex-col gap-y-6 bg-(--color-base-00) shadow-sm rounded-xl p-4 border border-(--color-base-10)">
+    @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
+        <div class="bg-(--color-base-00) border border-(--color-base-10) rounded-lg p-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-base font-semibold text-(--color-base-95)">@loreScope.Name</h3>
+                <span class="text-xs text-(--color-base-40)">@MarkdownFileMap[loreScope.Id].Length file(s)</span>
+            </div>
+            
+            <ul class="space-y-2">
+                @if (!MarkdownFileMap[loreScope.Id].Any()) {
+                    <p class="text-sm text-(--color-base-40)">No files yet.</p>
+                }
+                
+                
+                @foreach ((Guid id, string name) in MarkdownFileMap[loreScope.Id]) {
+                    <li class="flex items-center justify-between p-3 rounded-md border border-(--color-base-10) bg-(--color-base-05) hover:bg-(--color-base-10) transition">
+                        <span class="text-sm text-gray-700">@name</span>
+                        <a class="text-sm font-medium text-(--color-accent) hover:text-(--color-accent-hover) transition"
+                           href="markdown-file/@loreScope.Id/@id/editor">
+                            Edit
+                        </a>
+                    </li>
+                }
+
+                <li class="mt-2">
+                    <a class="inline-flex items-center px-3 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition"
+                       href="markdown-file/@loreScope.Id/@Guid.Empty/editor">
+                        + New File
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
