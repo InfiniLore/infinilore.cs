@@ -8,9 +8,9 @@
 @using FastEndpoints
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Server.Modules.Core
+@using InfiniLore.Server.Modules.Core.Messaging.Queries
 @using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands
-@using InfiniLore.Server.Modules.Users.Messaging.Queries
-@using InfiniLore.Shared
+@using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Services.ClaimsHelper
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -20,7 +20,7 @@
 @layout MainLayout
 @inject IClaimsDtoHelper ClaimsPrincipalHelper
 @inject ILogger<Profile> Logger
-@inject IMessageAccessFactory MessageAccessFactory
+@inject IMessageAccessProvider MessageAccessProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -79,7 +79,7 @@
         AuthenticationState state = await AuthenticationStateTask;
 
         IClaimsDto auth0Info = ClaimsPrincipalHelper.GetClaimsDto(state.User);
-        IMessageAccess access = MessageAccessFactory.FromClaims();
+        IMessageAccess access = MessageAccessProvider.FromClaims();
         
         Modules.Core.Messaging.MessageResponse<Guid> resultUserId = await new GetUserIdByAuth0IdQuery(auth0Info.Auth0UserId){
             Access = access
@@ -89,7 +89,7 @@
             return;
         }
 
-        var request = new LoreScopeCreateRequest(userId, Guid.NewGuid().ToString()){
+        var request = new CreateLoreScopeRequest(userId, Guid.NewGuid().ToString()){
             Access = access
         };
         Modules.Core.Messaging.MessageResponse<Guid> createResult = await request.ExecuteAsync();

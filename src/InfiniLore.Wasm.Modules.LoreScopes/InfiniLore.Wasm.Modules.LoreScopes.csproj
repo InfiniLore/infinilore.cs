@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
+      <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
       <ProjectReference Include="..\InfiniLore.Shared.Modules.LoreScopes\InfiniLore.Shared.Modules.LoreScopes.csproj" />
       <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />

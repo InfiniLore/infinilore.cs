@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IValidator<GetLorescopeByIdQuery>>(ServiceLifetime.Scoped)]
+[InjectableScoped<IValidator<GetLorescopeByIdQuery>>]
 public class GetLorescopeByIdValidator : AbstractValidator<GetLorescopeByIdQuery> {
     // -----------------------------------------------------------------------------------------------------------------
     // Constructor

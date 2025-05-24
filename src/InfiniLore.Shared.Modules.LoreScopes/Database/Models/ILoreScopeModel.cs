@@ -10,5 +10,5 @@ namespace InfiniLore.Shared.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ILoreScopeModel : IOwnedModel {
     string Name { get; }
-    string ShortDescription { get; }
+    string? Description { get; }
 }

@@ -1,17 +1,11 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
-@using InfiniLore.InfiniBlazor.Toasting
-@using InfiniLore.Shared.Modules.MarkdownFiles.Database
-@using InfiniLore.Shared.Modules.MarkdownFiles.Services
+
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/markdown-file/{LoreScopeId:guid}/{MarkdownFileId:guid}/editor"
-@inject IMarkdownFileInteractiveApi MarkdownFileApi
-@inject IToastStorage ToastStorage
-@inject IToastAppearanceProvider ToastAppearanceProvider
 @rendermode InteractiveWebAssembly
 @attribute [Authorize]
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -38,23 +32,13 @@
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task OnInitializedAsync() {
-        if (MarkdownFileId == Guid.Empty) return;
-        Result<IMarkdownFileModel> markdownFileResult = await MarkdownFileApi.GetMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString());
-        if (!markdownFileResult.TryGetAsSuccess(out IMarkdownFileModel response)) {
-            IsEnabled = false;
-            IToastAppearance appearance = ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error);
-            var toast = new ToastData("Error: Retrieval failed", -1,appearance, Body: "Could not retrieve markdown file from api");
-            await ToastStorage.AddToastAsync(toast);
-            return;
-        }
+    protected override Task OnInitializedAsync() {
+        if (MarkdownFileId == Guid.Empty) return Task.CompletedTask;
 
-        FileName = response.Name;
-        TextSource.Text = response.Source;
+        return Task.CompletedTask;
     }
-    private async Task SaveAsync() {
+    private Task SaveAsync() {
         if (MarkdownFileId == Guid.Empty) MarkdownFileId = Guid.NewGuid();
-        Result result = await MarkdownFileApi.UpsertMarkdownFileAsync(LoreScopeId.ToString(), MarkdownFileId.ToString(), FileName, TextSource.Text);
-        IsEnabled = result is { IsState: true, AsState: true };
+        return Task.CompletedTask;
     }
 }

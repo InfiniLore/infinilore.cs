@@ -9,67 +9,40 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm\InfiniLore.Wasm.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.Modules.MarkdownFiles\InfiniLore.Server.Modules.MarkdownFiles.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.Modules.Users\InfiniLore.Server.Modules.Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions"/>
-        <PackageReference Include="Auth0.AspNetCore.Authentication"/>
+        <PackageReference Include="AterraEngine.Unions" />
+        <PackageReference Include="Auth0.AspNetCore.Authentication" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" />
-        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore"/>
-        <PackageReference Include="FastEndpoints"/>
-        <PackageReference Include="FastEndpoints.Swagger"/>
-        <PackageReference Include="InfiniLore.Credentials"/>
-        <PackageReference Include="InfiniLore.Credentials.Auth0"/>
-        <PackageReference Include="InfiniLore.InfiniBlazor"/>
+        <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" />
+        <PackageReference Include="FastEndpoints" />
+        <PackageReference Include="FastEndpoints.Swagger" />
+        <PackageReference Include="InfiniLore.Credentials" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown"/>
-        <PackageReference Include="InfiniLore.InfiniBlazor.Theming"/>
+        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />
-        <PackageReference Include="InfiniLore.Lucide"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server"/>
-        <PackageReference Include="Microsoft.CodeAnalysis"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Scripting"/>
+        <PackageReference Include="InfiniLore.Lucide" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+        <PackageReference Include="Microsoft.CodeAnalysis" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Scripting" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor"/>
-        <_ContentIncludedByDefault Remove="Components\Layout\NavMenu.razor"/>
-        <_ContentIncludedByDefault Remove="wwwroot\images\auth0-dotnet-ebook.png"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.Development.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\appsettings.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\BlazorDebugProxy\BrowserDebugHost.runtimeconfig.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Clients.Wasm.staticwebassets.runtime.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.deps.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.runtimeconfig.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\bin\Debug\net9.0\InfiniLore.Server.staticwebassets.runtime.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\InfiniLore.Server.sourcelink.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.endpoints.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.build.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.development.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\Debug\net9.0\staticwebassets.pack.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\InfiniLore.Server.csproj.nuget.dgspec.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.assets.json"/>
-        <_ContentIncludedByDefault Remove="InfiniLore.Server\obj\project.packagespec.json"/>
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenu.razor"/>
-        <_ContentIncludedByDefault Remove="Components\ComponentLibrary\CollapsibleMenuButton.razor"/>
     </ItemGroup>
 
 </Project>

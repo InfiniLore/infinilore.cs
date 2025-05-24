@@ -14,9 +14,12 @@ public abstract class OwnedModelConfiguration<TOwner, TModel> : BasicModelConfig
 {
     public override void Configure(EntityTypeBuilder<TModel> builder) {
         base.Configure(builder);
+        
+        builder.HasOne(x => x.Owner)
+            .WithMany()
+            .HasForeignKey(x => x.OwnerId);
+        
         builder.Property(x => x.OwnerId).IsRequired();
         builder.HasIndex(x => x.OwnerId);
-
-        builder.Ignore(x => x.Owner);
     }
 }

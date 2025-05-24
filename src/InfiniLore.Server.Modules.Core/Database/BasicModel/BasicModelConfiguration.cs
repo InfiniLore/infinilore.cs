@@ -13,9 +13,8 @@ public abstract class BasicModelConfiguration<TModel> : IEntityTypeConfiguration
     public virtual void Configure(EntityTypeBuilder<TModel> builder) {
         builder.HasKey(x => x.Id);
         builder.HasIndex(x => x.Id).IsUnique();
-
+        
         builder.HasQueryFilter(model => model.SoftDeleteDate == null);
-
         builder.Ignore(x => x.IsSoftDeleted);
         
         builder.UseTptMappingStrategy();

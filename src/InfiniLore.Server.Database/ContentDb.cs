@@ -52,7 +52,7 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        optionsBuilder.ConfigureWarnings(warnings =>
-            warnings.Ignore(CoreEventId.PossibleIncorrectRequiredNavigationWithQueryFilterInteractionWarning));
+        // Required to disable the query filter warning we have one "soft deleted" content
+        optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.PossibleIncorrectRequiredNavigationWithQueryFilterInteractionWarning));
     }
 }

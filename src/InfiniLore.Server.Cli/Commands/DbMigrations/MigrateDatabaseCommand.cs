@@ -64,9 +64,9 @@ public partial class MigrateDatabaseCommand(
     private async ValueTask<bool> TryExecuteMigrations(ContentDb db, CancellationToken ct) {
         try {
             await db.Database.MigrateAsync(cancellationToken: ct);
-            int result = await db.SaveChangesAsync(ct);
+            await db.SaveChangesAsync(ct);
             logger.Information("Finished {db} Database migration.", nameof(ContentDb));
-            return result > 0;
+            return true;
         }
         catch (Exception e) {
             logger.Error(e, "Error while migrating ContentDb Database.");

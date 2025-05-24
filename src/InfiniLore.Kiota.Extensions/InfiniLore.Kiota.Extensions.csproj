@@ -14,6 +14,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Shared.Modules.LoreScopes\InfiniLore.Shared.Modules.LoreScopes.csproj" />
     </ItemGroup>
 
 </Project>

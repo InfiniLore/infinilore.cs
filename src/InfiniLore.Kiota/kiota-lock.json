@@ -1,8 +1,8 @@
 {
-  "descriptionHash": "5ADC963B67DD74E09FCC0F4574FD8BFB4CC0E4F5C74E04FC95FD188912BB5DBECF9CB175F1A121F380E9F33146747573293FF8132BF1747E852B1091C92C58B8",
+  "descriptionHash": "5797BABF57D8FD4862CEF6E10B3A7DD9AA71DAA91EEF2A9FF1585C0E22409CCC2D8D771D8825F35A5652DD8A986D44FCF63274282CF6489D197FF94AFD7DFFA1",
   "descriptionLocation": "https://localhost:7059/swagger/v1/swagger.json",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.26.0",
+  "kiotaVersion": "1.26.1",
   "clientClassName": "InfiniLoreApiClient",
   "typeAccessModifier": "Public",
   "clientNamespaceName": "InfiniLore.Kiota",

@@ -6,10 +6,10 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
-using InfiniLore.Server.Modules.Users.Database;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -18,22 +18,24 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<LoreScopeCreateRequest, MessageResponse<Guid>> {
-    public override async Task<MessageResponse<Guid>> ExecuteAsync(LoreScopeCreateRequest command, CancellationToken ct = new()) {
+public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<CreateLoreScopeRequest, MessageResponse<Guid>> {
+    public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(command.LoreScopeName, command.OwnerId, ct);
+        Result loreScopeNameTakenResult = await loreScopeRepo.IsLoreScopeNameTakenAsync(command.LoreScopeName, command.OwnerId, ct:ct);
         Result userIdExistsResult = await userRepo.IsIdTakenAsync(command.OwnerId, ct);
         if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MessageResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new lorescope based on the request
+        var id = Guid.CreateVersion7();
         var loreScope = new LoreScopeModel {
+            Id = id,
             Name = command.LoreScopeName,
             OwnerId = command.OwnerId,
-            ShortDescription = command.LoreScopeDescription ?? string.Empty
+            Description = command.LoreScopeDescription
         };
 
         // Validate the lorescope model

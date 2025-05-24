@@ -5,7 +5,7 @@
         <entry key="DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION" value="1" />
       </map>
     </option>
-    <option name="exePath" value="$PROJECT_DIR$/src/InfiniLore.Server/bin/Debug/net9.0/InfiniLore.Server.exe" />
+    <option name="exePath" value="$PROJECT_DIR$/src/InfiniLore.Server/bin/Release/net9.0/InfiniLore.Server.exe" />
     <option name="programParameters" value="--launch-profile https" />
     <option name="projectFilePath" value="$PROJECT_DIR$/src/InfiniLore.Server/InfiniLore.Server.csproj" />
     <option name="projectTfm" value="net9.0" />

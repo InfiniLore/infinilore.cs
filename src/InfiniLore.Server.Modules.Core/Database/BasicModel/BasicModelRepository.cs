@@ -14,20 +14,32 @@ namespace InfiniLore.Server.Modules.Core.Database;
 public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<ContentDb>, IBasicModelRepository<TModel> 
     where TModel : BasicModel
 {
+    protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
+    protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
+    protected IQueryable<TModel> GetConfiguredQueryable(DbSet<TModel> dbSet, QueryConfig config) {
+        IQueryable<TModel> query = dbSet.With(AlwaysInclude)
+            .ConditionalWith(config.OptionalInclude, OptionalInclude)
+            .ConditionalReverse(config.Reverse)
+            .ConditionalWith(config.RetrieveSoftDeleted, model => model.IgnoreQueryFilters());
+
+        return query;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<TModel>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         // Query
-        TModel? result = await dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
+        TModel? result = await GetConfiguredQueryable(dbSet, config)
             .Where(ls => ls.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         // Retrieve
         if (result is null) return Result<TModel>.FromError(RepositoryFailures.ModelNotFound);
-
         return Result<TModel>.FromSuccess(result);
     }
 
@@ -36,9 +48,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         // Query
-        IOrderedQueryable<TModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .ConditionalReverse(config.Reverse)
+        IOrderedQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id);
 
         // Query & Retrieve
@@ -54,9 +64,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         int totalCount = await dbSet.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
-        IQueryable<TModel> query = dbSet
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
@@ -106,8 +114,6 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         return Result.FromState(!result);
     }
-
-    protected virtual IQueryable<TModel> AutoInclude(IQueryable<TModel> query) => query;
 
     protected virtual async ValueTask<bool> IsNotUniqueAsync(TModel[] modelsToValidate, CancellationToken ct = default) {
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();

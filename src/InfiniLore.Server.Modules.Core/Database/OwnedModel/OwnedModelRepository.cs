@@ -10,10 +10,10 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepository<TModel>, IOwnedModelRepository<TOwner, TModel> 
-    where TModel : OwnedModel<TOwner>, new()
+    where TModel : OwnedModel<TOwner>
     where TOwner : BasicModel 
 {
-    protected override IQueryable<TModel> AutoInclude(IQueryable<TModel> query)
+    protected override IQueryable<TModel> OptionalInclude(IQueryable<TModel> query)
         => query.Include(ls => ls.Owner);
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -24,8 +24,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
         // Query
-        IQueryable<TModel> query = dbSet
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .Where(ls => ls.OwnerId == userId);
 
         // Retrieve
@@ -43,9 +42,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
-        IQueryable<TModel> query = baseQuery
-            .ConditionalWith(config.AutoInclude, AutoInclude)
-            .ConditionalReverse(config.Reverse)
+        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);

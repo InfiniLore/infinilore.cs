@@ -2,11 +2,11 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using AterraEngine.Unions
+@using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Shared
+@using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Modules.LoreScopes.Database
 @using InfiniLore.Shared.Modules.LoreScopes.Services
-@using InfiniLore.Shared.Modules.MarkdownFiles.Database
-@using InfiniLore.Shared.Modules.MarkdownFiles.Services
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -14,20 +14,29 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/lorescopes"
 @inject ILoreScopeInteractiveApi LoreScopeApi
-@inject IMarkdownFileInteractiveApi MarkdownFileApi
-@inject ILogger<LoreScopeViewer> Logger
+@inject IToastStorage ToastStorage
+@inject IToastAppearanceProvider ToastAppearanceProvider
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
+<div>
+    <h1>Lore Scopes</h1>
+    <div>
+        Create New Lore Scope:
+        <InputText @bind-Value="@NewLoreScopeName"></InputText>
+        <button @onclick="CreateNewLoreScopeAsync">Create</button>
+    </div>
+</div>
+
 @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
     <h3>@loreScope.Name</h3>
     <ul>
         @foreach ((Guid, string)tuple in MarkdownFileMap[loreScope.Id]) {
             <li>@tuple.Item2 <a href="markdown-file/@loreScope.Id/@tuple.Item1/editor">Editor</a></li>
         }
-        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty">New</a></li>
+        <li><a href="markdown-file/@loreScope.Id/@Guid.Empty/editor">New</a></li>
     </ul>
 }
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -39,6 +48,9 @@
     private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
     private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
     
+    private string? NewLoreScopeName { get; set; }
+    private string UserId { get; set; } = string.Empty;
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -47,25 +59,42 @@
         AuthenticationState state = await AuthenticationState;
         string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
         if (userId.IsNullOrWhiteSpace()) return;
+
+        UserId = userId;
         
-        Result<PaginatedData<ILoreScopeModel>> result = await LoreScopeApi.GetLoreScopesAsync(userId);
-        if (!result.TryGetAsSuccess(out PaginatedData<ILoreScopeModel> response)) {
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
+        if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel> response)) {
             return;
         }
         
         MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
         LoreScopeResponses = response.Items;
-        
-        foreach (ILoreScopeModel scope in LoreScopeResponses) {
-            (Guid, string)[] files = await GetMarkdownFilesAsync(scope.Id);
-            MarkdownFileMap[scope.Id] = files;
-        }
     }
-
-    private async Task<(Guid, string)[]> GetMarkdownFilesAsync(Guid loreScopeId) {
-        Result<PaginatedData<IMarkdownFileModel>> result = await MarkdownFileApi.GetMarkdownFilesAsync(loreScopeId.ToString());
-        if (!result.TryGetAsSuccess(out PaginatedData<IMarkdownFileModel> response)) return [];
+    
+    private async Task CreateNewLoreScopeAsync() {
+        if (NewLoreScopeName.IsNullOrWhiteSpace()) return;
         
-        return response.Items.Select(r => (r.Id, r.Name)).ToArray();
+        Result result = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
+        if (result.AsState) {
+            var toast = new ToastData(
+                "LoreScope Created",
+                10,
+                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
+                Body: NewLoreScopeName
+            );
+            await ToastStorage.AddToastAsync(toast);
+            await InvokeAsync(StateHasChanged);
+            return;
+        } 
+        
+        var toastFail = new ToastData(
+            "Could not create LoreScope",
+            10,
+            ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
+            Body: result.IsError ? result.AsError.Value : "UNKNOWN"
+        );
+        
+        await ToastStorage.AddToastAsync(toastFail);
+        await InvokeAsync(StateHasChanged);
     }
 }

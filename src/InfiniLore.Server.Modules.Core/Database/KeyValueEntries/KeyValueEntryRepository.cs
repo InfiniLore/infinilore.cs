@@ -6,13 +6,12 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableService<IKeyValueEntryRepository>(ServiceLifetime.Scoped)]
+[InjectableScoped<IKeyValueEntryRepository>]
 public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValueEntryRepository {
     public async ValueTask<Result> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default) {
         // Access

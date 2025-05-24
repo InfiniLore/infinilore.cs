@@ -6,7 +6,6 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class RepositoryFailures {
-    public const string Unknown = nameof(Unknown);
     public const string ModelFailedValidation = nameof(ModelFailedValidation);
     public const string ModelFailedUniqueConstraint = nameof(ModelFailedUniqueConstraint);
     public const string ModelNotFound = nameof(ModelNotFound);

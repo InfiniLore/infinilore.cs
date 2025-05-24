@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />
       <PackageReference Include="FastEndpoints" />
+      <PackageReference Include="InfiniLore.Credentials.Auth0" />
       <PackageReference Include="JetBrains.Annotations" />
         <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />

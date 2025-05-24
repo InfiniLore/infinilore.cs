@@ -4,9 +4,8 @@
 using CodeOfChaos.Types.UnitOfWork;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Server.Modules.MarkdownFiles.DataBase;
-using InfiniLore.Server.Modules.Users.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,17 +40,7 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
                 Owner = owner,
                 OwnerId = owner.Id,
                 Name = "KNOWN NAME",
-                ShortDescription = LoreScopeFaker.Generate().ShortDescription
-            }
-        );
-
-        DbSet<MarkdownFileModel> markdownFiles = dbContext.Set<MarkdownFileModel>();
-        await markdownFiles.AddRangeAsync(
-            new MarkdownFileModel {
-                Id = GuidStore.GetGuid("markdownfile-lorescope-forUser2"),
-                OwnerId = GuidStore.GetGuid("lorescope-forUser2"),
-                Name = "TestFile.md",
-                Source = "**I Am Bold**"
+                Description = null
             }
         );
 

@@ -9,8 +9,9 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Collections.Frozen;
+using System.Collections.Immutable;
 using Tools.InfiniLore.Auth0.Setup;
-using RolesStore=InfiniLore.Shared.RolesStore;
+using RolesStore=InfiniLore.Shared.Auth.RolesStore;
 
 namespace Tools.InfiniLore.Auth0.Commands.SyncRoles;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ public partial class SyncRolesCommand : ICliCommand<SyncRolesParameters> {
         var logger = Provider.GetRequiredService<ILogger<SyncRolesCommand>>();
         var rateLimiter = Provider.GetRequiredService<IRateLimiterService>();
 
-        FrozenDictionary<string, string[]> rolesAndPermissions = RolesStore.PermissionsPerRoles.Value;
+        FrozenDictionary<string, ImmutableArray<string>> rolesAndPermissions = RolesStore.PermissionsPerRoles.Value;
         HashSet<string> allPermissions = rolesAndPermissions.SelectMany(role => role.Value).ToHashSet();
 
         // Check if auth0 is synced with our code-first permissions
@@ -51,16 +52,16 @@ public partial class SyncRolesCommand : ICliCommand<SyncRolesParameters> {
 
         // Sync Permissions to Roles
         List<Role> auth0Roles = await auth0Utility.Roles.GetAllRolesAsync();
-        IEnumerable<(string Id, string[] permissions)> mappedRolesToPermissions = auth0Roles.Select(static role => {
-            string[] permissions = RolesStore.PermissionsPerRoles.Value[role.Name];
+        IEnumerable<(string Id, ImmutableArray<string> permissions)> mappedRolesToPermissions = auth0Roles.Select(static role => {
+            ImmutableArray<string> permissions = RolesStore.PermissionsPerRoles.Value[role.Name];
             return (role.Id, permissions);
         });
 
         // Todo increase batch size when we have more roles
-        foreach ((string Id, string[] permissions)[] batch in mappedRolesToPermissions.Chunk(1)) {
+        foreach ((string Id, ImmutableArray<string> permissions)[] batch in mappedRolesToPermissions.Chunk(1)) {
             // Batch size of 1
             await rateLimiter.RetryWithRateLimit(async () => {
-                foreach ((string roleId, string[] permissionIds) in batch) {
+                foreach ((string roleId, ImmutableArray<string> permissionIds) in batch) {
                     List<PermissionIdentity> permissions = permissionIds.Select(p => new PermissionIdentity {
                         Identifier = parameters.ApiIdentifier,
                         Name = p

@@ -3,15 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using FastEndpoints;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Modules.LoreScopes.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.LoreScopes;
@@ -21,32 +19,37 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    IInteractiveApiServer interactiveApi,
-    IMessageAccessFactory requestDataFactory
+    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
-    public async ValueTask<Result<PaginatedData<ILoreScopeModel>>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<PaginatedData<ILoreScopeModel>>.FromError("Invalid userId");
+    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 
-        // Form Message
-        var query = new GetLoreScopesQuery(
+        // Form and Execute Query
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(
             parsedUserId,
-            false,
-            PaginationInfo.Default
-        ) {
-            Access = requestDataFactory.FromClaims(ct)
-        };
-
-        // Execute Message
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await query.ExecuteAsync(ct);
+            ct: ct
+        );
 
         // Verify Response
         // ReSharper disable once InvertIf
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedData)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", userId, result.AsError.Value);
-            return Result<PaginatedData<ILoreScopeModel>>.FromError($"Failed to get LoreScopes for user {userId}");
+            return PaginatedResult<ILoreScopeModel>.FromError($"Failed to get LoreScopes for user {userId}");
         }
 
-        return Result<PaginatedData<ILoreScopeModel>>.FromSuccess(paginatedData.CastTo<ILoreScopeModel>());
+        PaginatedData<ILoreScopeModel> casted = paginatedData.CastTo<ILoreScopeModel>();
+        return PaginatedResult<ILoreScopeModel>.FromData(casted);
     }
 
+    public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+        
+        
+        MessageResponse<Guid> createResult = await messageBroker.CreateLoreScopeAsync(parsedUserId, newLoreScopeName, ct: ct);
+        if (createResult.TryGetAsSuccess(out Guid _)) return true;
+
+        logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
+        return Result.FromError($"Failed to create lorescope for user {userId}");
+
+    }
 }

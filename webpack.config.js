@@ -6,7 +6,7 @@ module.exports = {
     // mode: "production",
     devtool: "inline-source-map",
     entry: {
-        main: "./src/InfiniLore.Server/TsLib/WindowDefinitions.ts",
+        main: "./src/InfiniLore.Server/TsLib/index.ts",
     },
     output: {
         path: path.resolve(__dirname, './src/InfiniLore.Server/wwwroot'),

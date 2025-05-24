@@ -20,7 +20,7 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        var queryConfig = new QueryConfig(AutoInclude: command.AutoInclude);
+        var queryConfig = new QueryConfig(OptionalInclude: command.AutoInclude);
         Result<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
 
         if (!response.TryGetAsSuccess(out LoreScopeModel value)) {

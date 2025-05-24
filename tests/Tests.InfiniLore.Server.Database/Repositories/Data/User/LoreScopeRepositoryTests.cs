@@ -4,15 +4,14 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
-using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
 namespace Tests.InfiniLore.Server.Database.Repositories.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, LoreScopeFaker, GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, LoreScopeFaker faker, GuidStore guidStore) {
+[ClassDataSource<ContentDbInfrastructure, GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
+public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, GuidStore guidStore) {
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange

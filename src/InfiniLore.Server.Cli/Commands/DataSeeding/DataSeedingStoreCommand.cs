@@ -14,7 +14,7 @@ public partial class DataSeedingStoreCommand(
     ILogger<DataSeedingStoreCommand> logger
 ) : ICliCommand<DataSeedingStoreParameters> {
     
-    public async ValueTask ExecuteAsync(DataSeedingStoreParameters parameters, CancellationToken ct = default) {
+    public ValueTask ExecuteAsync(DataSeedingStoreParameters parameters, CancellationToken ct = default) {
         logger.Critical("NOT YET IMPLEMENTED");
         throw new NotImplementedException();
     }

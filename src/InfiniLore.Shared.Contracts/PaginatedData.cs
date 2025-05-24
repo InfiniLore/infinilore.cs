@@ -19,7 +19,7 @@ public readonly record struct PaginatedData<T>(
     int TotalCount,
     int CurrentPage,
     int TotalPages
-) {
+) where T : class {
     public bool HasNextPage => CurrentPage < TotalPages;
     public bool HasPreviousPage => CurrentPage > 1;
     public bool IsFirstPage => CurrentPage == 1;
@@ -39,6 +39,7 @@ public readonly record struct PaginatedData<T>(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public PaginatedData<TInterface> CastTo<TInterface>() 
+        where TInterface : class
         => new(
             Items.Cast<TInterface>().ToArray(),
             TotalCount,
