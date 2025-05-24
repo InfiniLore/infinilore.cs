@@ -116,6 +116,10 @@
 
         UserId = userId;
         
+        await RefreshLoreScopeListAsync();
+    }
+    
+    private async Task RefreshLoreScopeListAsync() {
         PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel> response)) {
             return;
@@ -124,7 +128,7 @@
         MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
         LoreScopeResponses = response.Items;
     }
-    
+
     private async Task CreateNewLoreScopeAsync() {
         if (NewLoreScopeName.IsNullOrWhiteSpace()) return;
         
@@ -137,7 +141,9 @@
                 Body: NewLoreScopeName
             );
             await ToastStorage.AddToastAsync(toast);
-            await InvokeAsync(StateHasChanged);
+        
+            await RefreshLoreScopeListAsync();
+            StateHasChanged();
             return;
         } 
         
@@ -149,6 +155,6 @@
         );
         
         await ToastStorage.AddToastAsync(toastFail);
-        await InvokeAsync(StateHasChanged);
+        StateHasChanged();
     }
 }
