@@ -18,7 +18,7 @@ public record WasmLoreScopeModel(
     string? Description
 ) : ILoreScopeModel {
 
-    public static ILoreScopeModel FromKiotaModel(InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse response) {
+    public static ILoreScopeModel FromKiotaModel(KiotaLoreScopeResponse response) {
         return new WasmLoreScopeModel(
             Guid.Parse(response.Id!),
             response.CreatedDate?.DateTime ?? DateTime.MinValue,

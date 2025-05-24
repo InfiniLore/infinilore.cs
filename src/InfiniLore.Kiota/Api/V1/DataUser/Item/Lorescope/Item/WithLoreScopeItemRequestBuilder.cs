@@ -39,17 +39,17 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item
         public WithLoreScopeItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope/{loreScopeId}", rawUrl)
         {
         }
-        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse"/></returns>
         /// <param name="cancellationToken">Cancellation token to use when cancelling requests</param>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
         /// <exception cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails">When receiving a 400 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse?> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse> GetAsync(Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             var requestInfo = ToGetRequestInformation(requestConfiguration);
@@ -57,7 +57,7 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item
             {
                 { "400", global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails.CreateFromDiscriminatorValue },
             };
-            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse>(requestInfo, global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
+            return await RequestAdapter.SendAsync<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse>(requestInfo, global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse.CreateFromDiscriminatorValue, errorMapping, cancellationToken).ConfigureAwait(false);
         }
         /// <returns>A <see cref="RequestInformation"/></returns>
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
