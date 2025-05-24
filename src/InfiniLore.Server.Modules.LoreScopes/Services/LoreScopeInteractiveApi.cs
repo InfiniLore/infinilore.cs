@@ -27,6 +27,7 @@ public class LoreScopeInteractiveApi(
         // Form and Execute Query
         MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(
             parsedUserId,
+            paginationInfo: PaginationInfo.Default,
             ct: ct
         );
 
