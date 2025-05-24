@@ -37,8 +37,13 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
         // Run NuGet restore
         logger.Information("Restoring NuGet packages...");
         await RunDotNetRestoreAsync(csprojPath);
-
         logger.Information("Initial Kiota client generated");
+        
+        logger.Information("Starting Post Processing");
+        await ReplaceLongKiotaClassNamesAsync(csprojPath, [
+            "InfiniLoreServerModulesCoreApiEndpoints",
+            "InfiniLoreServerModulesLoreScopesApiEndpoints"
+        ]);
     }
 
     private void BackupCsproj(string csprojPath, string tempCsprojPath) {
@@ -113,6 +118,37 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
             logger.Error("Command failed: {error}", error);
             throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
         }
-
     }
+
+    private async Task ReplaceLongKiotaClassNamesAsync(string csprojPath, string[] namesToReplace) {
+        // collect all .cs files
+        string projectDirectory = Path.GetDirectoryName(csprojPath)!;
+        List<string> files = Directory.GetFiles(projectDirectory, "*.cs", SearchOption.AllDirectories)
+            .ToList();
+
+        await Parallel.ForEachAsync(files, async (fileName, ct) => {
+            bool isFileChanged = false;
+            string fileContent = await File.ReadAllTextAsync(fileName, ct);
+            foreach (string name in namesToReplace) {
+                if (!fileContent.Contains(name)) continue;
+
+                fileContent = fileContent.Replace(name, "Kiota");
+                isFileChanged = true;
+            }
+
+            if (!isFileChanged) return;
+
+            await File.WriteAllTextAsync(fileName, fileContent, ct);
+            logger.Information("Replaced long Kiota class names in {fileName}", fileName);
+            
+            foreach (string name in namesToReplace) {
+                if (!fileName.Contains(name)) continue;
+                
+                string newFileName = fileName.Replace(name, "Kiota");
+                File.Move(fileName, newFileName, true);
+                logger.Information("Renamed {fileName} to {newFileName}", fileName, newFileName);
+            }
+        });
+    }
+
 }
