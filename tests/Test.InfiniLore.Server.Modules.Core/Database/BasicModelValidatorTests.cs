@@ -28,7 +28,7 @@ public class BasicModelValidatorTests(IValidator<BasicModel> validator) {
     [Test]
     public async Task BasicModel_FailsOnEmptyGuid() {
         // Arrange
-        var entity = new BasicModel() {
+        var entity = new BasicModel {
             Id = Guid.Empty
         };
         

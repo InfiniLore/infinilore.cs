@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server.Modules.Core;
+using InfiniLore.Server.Modules.LoreScopes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DataSources.InfiniLore.Server;
@@ -21,10 +22,10 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
         var services = new ServiceCollection();
         services.AddLogging();
 
-        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
-            .AddModule<IServerModuleEntryCore>();
-
-
+        ServerModuleBuilder _ = ServerModuleBuilder.Create(services)
+            .AddModule<IServerModuleEntryCore>()
+            .AddModule<IServerModuleEntryLoreScopes>();
+        
         return services.BuildServiceProvider();
     }
 }
