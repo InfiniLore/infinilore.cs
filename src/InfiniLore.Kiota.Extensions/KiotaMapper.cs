@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Shared;
-using InfiniLore.Shared.Modules.LoreScopes.Database;
 using System.Text.Json;
 
 namespace InfiniLore.Kiota.Extensions;
@@ -10,7 +9,7 @@ namespace InfiniLore.Kiota.Extensions;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class KiotaMapper {
-    public static PaginatedResult<T> MapToPaginatedResult<T>(object? kiotaResponse) where T : notnull {
+    public static PaginatedResult<T> MapToPaginatedResult<T>(object? kiotaResponse) where T : class {
         if (kiotaResponse is null)
             return PaginatedResult<T>.FromError("Received null response from API");
 

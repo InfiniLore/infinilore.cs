@@ -37,7 +37,8 @@ public class LoreScopeInteractiveApi(
             return PaginatedResult<ILoreScopeModel>.FromError($"Failed to get LoreScopes for user {userId}");
         }
 
-        return PaginatedResult<ILoreScopeModel>.FromData(paginatedData.CastTo<ILoreScopeModel>());
+        PaginatedData<ILoreScopeModel> casted = paginatedData.CastTo<ILoreScopeModel>();
+        return PaginatedResult<ILoreScopeModel>.FromData(casted);
     }
 
     public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
