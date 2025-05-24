@@ -15,10 +15,14 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
+        <PackageReference Include="Microsoft.Extensions.Logging" />
         <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary"/>
         <PackageReference Include="JetBrains.Annotations"/>
         <PackageReference Include="LibGit2Sharp"/>
         <PackageReference Include="NuGet.Protocol"/>
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
         <PackageReference Include="TextCopy"/>
     </ItemGroup>
 
