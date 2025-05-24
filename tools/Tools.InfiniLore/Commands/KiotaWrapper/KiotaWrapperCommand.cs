@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -12,7 +13,7 @@ namespace Tools.InfiniLore.Commands.KiotaWrapper;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [CliData("kiota-wrapper")]
-public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
+public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : ICliCommand<KiotaWrapperParameters> {
 
     public async ValueTask ExecuteAsync(KiotaWrapperParameters parameters, CancellationToken ct = default) {
         // Resolve paths relative to the Root
@@ -22,48 +23,51 @@ public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
         string tempCsprojPath = Path.Combine(root, ".temp/temp.csproj");
 
         // Ensure the .csproj is backed up
-        Console.WriteLine("Backing up .csproj file...");
+        logger.Information("Backing up .csproj file...");
         BackupCsproj(csprojPath, tempCsprojPath);
 
         // Generate the Kiota client
-        Console.WriteLine("Generating the OpenAPI client...");
+        logger.Information("Generating the OpenAPI client...");
         await RunKiotaGenerateAsync(parameters, outputFolder);
 
         // Restore the .csproj file if needed
-        Console.WriteLine("Restoring the .csproj file...");
+        logger.Information("Restoring the .csproj file...");
         RestoreCsprojIfNeeded(csprojPath, tempCsprojPath);
 
         // Run NuGet restore
-        Console.WriteLine("Restoring NuGet packages...");
+        logger.Information("Restoring NuGet packages...");
         await RunDotNetRestoreAsync(csprojPath);
 
-        Console.WriteLine("Kiota generation completed successfully.");
+        logger.Information("Initial Kiota client generated");
     }
 
-    private static void BackupCsproj(string csprojPath, string tempCsprojPath) {
+    private void BackupCsproj(string csprojPath, string tempCsprojPath) {
         // Ensure backup folder exists
         string? tempDirectory = Path.GetDirectoryName(tempCsprojPath);
-        if (tempDirectory is null) throw new Exception("Failed to get temp directory.");
+        if (tempDirectory is null) {
+            logger.Error("Failed to get temp directory at {temp}", tempCsprojPath);
+            throw new Exception("Failed to get temp directory.");
+        }
 
         if (!Directory.Exists(tempDirectory)) Directory.CreateDirectory(tempDirectory);
 
-        // Backup the .csproj file if it exists
+        // Back up the .csproj file if it exists
         if (!File.Exists(csprojPath)) return;
 
         File.Copy(csprojPath, tempCsprojPath, true);
     }
 
-    private static void RestoreCsprojIfNeeded(string csprojPath, string tempCsprojPath) {
+    private void RestoreCsprojIfNeeded(string csprojPath, string tempCsprojPath) {
         if (File.Exists(csprojPath) || !File.Exists(tempCsprojPath)) {
-            Console.WriteLine("No restoration needed: .csproj exists or backup not found.");
+            logger.Information("No restoration needed: .csproj exists or backup not found.");
             return;
         }
 
         File.Copy(tempCsprojPath, csprojPath);
-        Console.WriteLine("Successfully restored .csproj file.");
+        logger.Information("Restored .csproj file from backup.");
     }
 
-    private static async Task RunKiotaGenerateAsync(KiotaWrapperParameters parameters, string resolvedOutputFolder) {
+    private async Task RunKiotaGenerateAsync(KiotaWrapperParameters parameters, string resolvedOutputFolder) {
         try {
             string arguments =
                 "generate "
@@ -81,17 +85,15 @@ public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
             await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }
         catch (Win32Exception ) {
-            Console.WriteLine("Failed to run Kiota, this is most likely due to a missing kiota as a global tool.");
-            Console.WriteLine("To install Kiota, run the following command:");
-            Console.WriteLine("dotnet tool install --global Microsoft.OpenApi.Kiota");
+            logger.Error("Failed to run Kiota, this is most likely due to a missing kiota as a global tool. To install Kiota, run the following command: {cmd}", "dotnet tool install --global Microsoft.OpenApi.Kiota");
             throw;
         }
     }
 
-    private static async Task RunDotNetRestoreAsync(string csprojPath)
+    private async Task RunDotNetRestoreAsync(string csprojPath)
         => await ExecuteCommandAsync("dotnet", $"restore \"{csprojPath}\"");
 
-    private static async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null) {
+    private async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null) {
         var processInfo = new ProcessStartInfo(fileName, arguments) {
             WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
@@ -100,13 +102,17 @@ public partial class KiotaWrapperCommand : ICliCommand<KiotaWrapperParameters> {
             CreateNoWindow = true
         };
 
+        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
         using Process? process = Process.Start(processInfo);
-        Console.WriteLine(await process?.StandardOutput.ReadToEndAsync()!);
+        
+        logger.LogInformation("Command output: {output}", await process?.StandardOutput.ReadToEndAsync()!);
         await process.WaitForExitAsync();
 
-        if (process.ExitCode == 0) return;
+        if (process.ExitCode != 0) {
+            string error = await process.StandardError.ReadToEndAsync();
+            logger.Error("Command failed: {error}", error);
+            throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
+        }
 
-        string error = await process.StandardError.ReadToEndAsync();
-        throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
     }
 }
