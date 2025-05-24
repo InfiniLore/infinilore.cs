@@ -9,6 +9,7 @@
 @using InfiniLore.Shared.Modules.LoreScopes.Services
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using InfiniLore.Lucide
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -21,14 +22,42 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div>
-    <h1>Lore Scopes</h1>
-    <div>
-        Create New Lore Scope:
-        <InputText @bind-Value="@NewLoreScopeName"></InputText>
-        <button @onclick="CreateNewLoreScopeAsync">Create</button>
+<div class="bg-(--color-base-00) shadow-sm rounded-xl p-6 border border-(--color-base-10) ">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">Create New Lore Scope</h2>
+
+    <div class="flex items-center space-x-3">
+        <InputText @bind-Value="@NewLoreScopeName"
+                   placeholder="Enter a lore scope name..."
+                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:outline-(--color-accent) text-sm px-3 py-2 shadow-sm transition" />
+        
+        <button @onclick="CreateNewLoreScopeAsync"
+                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) px-3 py-2 text-sm font-medium shadow-sm transition">
+            <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
+        </button>
     </div>
 </div>
+
+<div class="m-4 h-1"></div>
+
+<div class="w-full flex flex-col items-center justify-center">
+    <div class="flex flex-row flex-wrap gap-2 text-center leading-none">
+        <div class="bg-(--color-base-00) w-12 h-12 text-(--color-base-95) shadow-md flex items-center justify-center leading-none rounded-xl">00</div>
+        <div class="bg-(--color-base-05) w-12 h-12 text-(--color-base-90) shadow-md flex items-center justify-center leading-none rounded-xl">05</div>
+        <div class="bg-(--color-base-10) w-12 h-12 text-(--color-base-80) shadow-md flex items-center justify-center leading-none rounded-xl">10</div>
+        <div class="bg-(--color-base-20) w-12 h-12 text-(--color-base-70) shadow-md flex items-center justify-center leading-none rounded-xl">20</div>
+        <div class="bg-(--color-base-30) w-12 h-12 text-(--color-base-60) shadow-md flex items-center justify-center leading-none rounded-xl">30</div>
+        <div class="bg-(--color-base-40) w-12 h-12 text-(--color-base-50) shadow-md flex items-center justify-center leading-none rounded-xl">40</div>
+        <div class="bg-(--color-base-50) w-12 h-12 text-(--color-base-40) shadow-md flex items-center justify-center leading-none rounded-xl">50</div>
+        <div class="bg-(--color-base-60) w-12 h-12 text-(--color-base-30) shadow-md flex items-center justify-center leading-none rounded-xl">60</div>
+        <div class="bg-(--color-base-70) w-12 h-12 text-(--color-base-20) shadow-md flex items-center justify-center leading-none rounded-xl">70</div>
+        <div class="bg-(--color-base-80) w-12 h-12 text-(--color-base-10) shadow-md flex items-center justify-center leading-none rounded-xl">80</div>
+        <div class="bg-(--color-base-90) w-12 h-12 text-(--color-base-05) shadow-md flex items-center justify-center leading-none rounded-xl">90</div>
+        <div class="bg-(--color-base-95) w-12 h-12 text-(--color-base-00) shadow-md flex items-center justify-center leading-none rounded-xl">95</div>
+        <div class="bg-(--color-base-100) w-12 h-12 text-(--color-base-00) shadow-md flex items-center justify-center leading-none rounded-xl">100</div>
+    </div>
+</div>
+
+<div class="m-4 h-1"></div>
 
 @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
     <h3>@loreScope.Name</h3>
