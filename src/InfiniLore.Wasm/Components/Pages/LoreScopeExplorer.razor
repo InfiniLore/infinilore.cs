@@ -23,17 +23,17 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <div class="bg-(--color-base-00) shadow-sm rounded-2xl p-4 border border-(--color-base-10) mt-4">
-    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
         Create New Lorescope
     </h2>
 
     <div class="flex items-center space-x-3">
         <InputText @bind-Value="@NewLoreScopeName"
                    placeholder="Enter a new Lorescope name..."
-                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:outline-(--color-accent) text-sm p-2 shadow-sm transition" />
+                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
         
         <button @onclick="CreateNewLoreScopeAsync"
-                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) p-2 text-sm font-medium shadow-sm transition">
+                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) hover:ring-2 hover:ring-(--color-accent) p-2 text-sm font-medium shadow-sm transition">
             <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
         </button>
     </div>
@@ -63,38 +63,40 @@
 
 <div class="flex flex-col gap-y-6 bg-(--color-base-00) shadow-sm rounded-2xl p-4 border border-(--color-base-10)">
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-        <div class="flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64">
-
-            <!-- Poster Image -->
-            <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
-                POSTER IMAGE
-            </div>
-
-            <!-- Main Info Content -->
-            <div class="flex flex-col justify-between gap-2 flex-grow min-w-0 min-h-full">
-                @* Content *@
-                <div>
-                    <h3 class="text-lg font-semibold text-(--color-base-95) truncate">
-                        @loreScope.Name
-                    </h3>
-                    <p class="text-sm text-(--color-base-60) line-clamp-4">
-                        @loreScope.Description
-                    </p>
+        <div class="group/item">
+            <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
+                
+                <!-- Poster Image -->
+                <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
+                    POSTER IMAGE
                 </div>
-            
-                @* Links *@
-                <div>
-                    <button class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition">
-                        + New File
-                    </button>
-                </div>
-            </div>
 
-            <!-- Stats Section -->
-            <div class="flex flex-col items-end justify-between min-w-[100px] shrink-0 px-1">
-                <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div>
+                <!-- Main Info Content -->
+                <div class="flex flex-col justify-between gap-2 flex-grow min-w-0 min-h-full">
+                    @* Content *@
+                    <div>
+                        <h3 class="text-lg font-semibold text-(--color-base-95) truncate">
+                            @loreScope.Name
+                        </h3>
+                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                            @loreScope.Description
+                        </p>
+                    </div>
+
+                    @* Links *@
+                    <div>
+                        <button class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition">
+                            + New File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="flex flex-col items-end justify-between min-w-[100px] shrink-0 px-1">
+                    <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div>
+                </div>
+
             </div>
-            
         </div>
     }
 </div>
