@@ -9,7 +9,7 @@ namespace InfiniLore.Kiota.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class InfiniLoreServerModulesCoreApiEndpointsPaginatedResponseOfLoreScopeResponse : IParsable
+    public partial class KiotaPaginatedResponseOfLoreScopeResponse : IParsable
     #pragma warning restore CS1591
     {
         /// <summary>The currentPage property</summary>
@@ -17,10 +17,10 @@ namespace InfiniLore.Kiota.Models
         /// <summary>The items property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse>? Items { get; set; }
+        public List<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse>? Items { get; set; }
 #nullable restore
 #else
-        public List<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse> Items { get; set; }
+        public List<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse> Items { get; set; }
 #endif
         /// <summary>The totalCount property</summary>
         public int? TotalCount { get; set; }
@@ -29,12 +29,12 @@ namespace InfiniLore.Kiota.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreServerModulesCoreApiEndpointsPaginatedResponseOfLoreScopeResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaPaginatedResponseOfLoreScopeResponse"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::InfiniLore.Kiota.Models.InfiniLoreServerModulesCoreApiEndpointsPaginatedResponseOfLoreScopeResponse CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::InfiniLore.Kiota.Models.KiotaPaginatedResponseOfLoreScopeResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.Kiota.Models.InfiniLoreServerModulesCoreApiEndpointsPaginatedResponseOfLoreScopeResponse();
+            return new global::InfiniLore.Kiota.Models.KiotaPaginatedResponseOfLoreScopeResponse();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -45,7 +45,7 @@ namespace InfiniLore.Kiota.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "currentPage", n => { CurrentPage = n.GetIntValue(); } },
-                { "items", n => { Items = n.GetCollectionOfObjectValues<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse>(global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "items", n => { Items = n.GetCollectionOfObjectValues<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse>(global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "totalCount", n => { TotalCount = n.GetIntValue(); } },
                 { "totalPages", n => { TotalPages = n.GetIntValue(); } },
             };
@@ -58,7 +58,7 @@ namespace InfiniLore.Kiota.Models
         {
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             writer.WriteIntValue("currentPage", CurrentPage);
-            writer.WriteCollectionOfObjectValues<global::InfiniLore.Kiota.Models.InfiniLoreServerModulesLoreScopesApiEndpointsLoreScopeResponse>("items", Items);
+            writer.WriteCollectionOfObjectValues<global::InfiniLore.Kiota.Models.KiotaLoreScopeResponse>("items", Items);
             writer.WriteIntValue("totalCount", TotalCount);
             writer.WriteIntValue("totalPages", TotalPages);
         }
