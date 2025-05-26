@@ -316,9 +316,6 @@
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
-  .h-12 {
-    height: calc(var(--spacing) * 12);
-  }
   .h-60 {
     height: calc(var(--spacing) * 60);
   }
@@ -342,9 +339,6 @@
   }
   .w-2 {
     width: calc(var(--spacing) * 2);
-  }
-  .w-12 {
-    width: calc(var(--spacing) * 12);
   }
   .w-40 {
     width: calc(var(--spacing) * 40);
@@ -397,9 +391,6 @@
   }
   .flex-row {
     flex-direction: row;
-  }
-  .flex-wrap {
-    flex-wrap: wrap;
   }
   .items-center {
     align-items: center;
@@ -498,35 +489,8 @@
   .bg-\(--color-base-05\) {
     background-color: var(--color-base-05);
   }
-  .bg-\(--color-base-10\) {
-    background-color: var(--color-base-10);
-  }
-  .bg-\(--color-base-20\) {
-    background-color: var(--color-base-20);
-  }
-  .bg-\(--color-base-30\) {
-    background-color: var(--color-base-30);
-  }
-  .bg-\(--color-base-40\) {
-    background-color: var(--color-base-40);
-  }
-  .bg-\(--color-base-50\) {
-    background-color: var(--color-base-50);
-  }
-  .bg-\(--color-base-60\) {
-    background-color: var(--color-base-60);
-  }
-  .bg-\(--color-base-70\) {
-    background-color: var(--color-base-70);
-  }
-  .bg-\(--color-base-80\) {
-    background-color: var(--color-base-80);
-  }
   .bg-\(--color-base-90\) {
     background-color: var(--color-base-90);
-  }
-  .bg-\(--color-base-95\) {
-    background-color: var(--color-base-95);
   }
   .bg-\(--color-base-100\) {
     background-color: var(--color-base-100);
@@ -634,10 +598,6 @@
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
   }
-  .leading-none {
-    --tw-leading: 1;
-    line-height: 1;
-  }
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
@@ -659,32 +619,11 @@
   .text-\(--color-base-00\) {
     color: var(--color-base-00);
   }
-  .text-\(--color-base-05\) {
-    color: var(--color-base-05);
-  }
-  .text-\(--color-base-10\) {
-    color: var(--color-base-10);
-  }
-  .text-\(--color-base-20\) {
-    color: var(--color-base-20);
-  }
-  .text-\(--color-base-30\) {
-    color: var(--color-base-30);
-  }
-  .text-\(--color-base-40\) {
-    color: var(--color-base-40);
-  }
   .text-\(--color-base-50\) {
     color: var(--color-base-50);
   }
   .text-\(--color-base-60\) {
     color: var(--color-base-60);
-  }
-  .text-\(--color-base-70\) {
-    color: var(--color-base-70);
-  }
-  .text-\(--color-base-80\) {
-    color: var(--color-base-80);
   }
   .text-\(--color-base-90\) {
     color: var(--color-base-90);
@@ -1005,10 +944,6 @@
   inherits: false;
   initial-value: solid;
 }
-@property --tw-leading {
-  syntax: "*";
-  inherits: false;
-}
 @property --tw-font-weight {
   syntax: "*";
   inherits: false;
@@ -1183,7 +1118,6 @@
       --tw-space-y-reverse: 0;
       --tw-space-x-reverse: 0;
       --tw-border-style: solid;
-      --tw-leading: initial;
       --tw-font-weight: initial;
       --tw-shadow: 0 0 #0000;
       --tw-shadow-color: initial;
