@@ -73,18 +73,18 @@ else {
         <div class="flex flex-col gap-2">
             <div class="flex flex-row gap-4 justify-between w-full items-start h-192 max-h-192 ">
                 <!-- Access Token Section -->
-                <div class="flex flex-col w-1/2 max-w-1/2 h-full gap-2">
+                <div class="flex flex-col w-[calc(50%-0.5rem)] h-full gap-2">
                     <h5 class="text-lg font-medium text-gray-700">Original JWT</h5>
                     <p class="bg-gray-100 border border-gray-300 rounded px-4 py-2 break-words whitespace-pre-wrap overflow-y-auto">@_accessToken</p>
                 </div>
 
                 <!-- JWT Viewer Section -->
-                <div class="flex flex-col w-1/2 max-w-1/2 h-full">
+                <div class="flex flex-col w-[calc(50%-0.5rem)] h-full ">
                     <h5 class="text-lg font-medium text-gray-700">Decoded JWT Details</h5>
 
                     <div class="flex flex-col h-full">
                         <!-- Header Section -->
-                        <div class="h-2/7 w-full flex flex-col gap-2">
+                        <div class="h-2/8 w-full flex flex-col gap-2">
                             <h6 class="font-semibold text-gray-600 mb-1">Header</h6>
                             @if (!string.IsNullOrWhiteSpace(_header)) {
                                 <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_header</pre>
@@ -109,8 +109,8 @@ else {
                         </div>
 
                         <!-- Signature Section -->
-                        <div class="h-1/7 w-full flex flex-col gap-2">
-                            <h6 class="font-semibold text-gray-600 mb-1">Signature</h6>
+                        <div class="h-1/7 w-full flex flex-col gap-2 mt-2">
+                            <h6 class="font-semibold text-gray-600 ">Signature</h6>
                             @if (!string.IsNullOrWhiteSpace(_signature)) {
                                 <pre
                                     class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto">@_signature</pre>
@@ -122,7 +122,7 @@ else {
                     </div>
                 </div>
             </div>
-            <div class="border flex flex-row gap-2">
+            <div class="flex flex-row gap-2">
                 <div class="w-1/2">
                     <div class="flex justify-center">
                         <InfiniButton IconName="copy" OnClick="async () => await CopyToClipboardAsync(_accessToken)">
@@ -130,8 +130,9 @@ else {
                         </InfiniButton>
                     </div>
                 </div>
-                <div class="w-1/2 border">
+                <div class="w-1/2">
                 </div>
+            </div>
         </div>
     </InfiniSection>
 }

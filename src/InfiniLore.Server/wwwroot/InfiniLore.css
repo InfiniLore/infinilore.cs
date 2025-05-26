@@ -9,6 +9,7 @@
       "Courier New", monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
+    --color-red-700: oklch(50.5% 0.213 27.518);
     --color-amber-400: oklch(82.8% 0.189 84.429);
     --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-yellow-100: oklch(97.3% 0.071 103.193);
@@ -332,6 +333,9 @@
   .h-2\/7 {
     height: calc(2/7 * 100%);
   }
+  .h-2\/8 {
+    height: calc(2/8 * 100%);
+  }
   .h-3\/5 {
     height: calc(3/5 * 100%);
   }
@@ -428,6 +432,12 @@
   .w-40 {
     width: calc(var(--spacing) * 40);
   }
+  .w-\[calc\(50\%-0\.5rem\)\] {
+    width: calc(50% - 0.5rem);
+  }
+  .w-\[calc\(50\%-1rem\)\] {
+    width: calc(50% - 1rem);
+  }
   .w-fit {
     width: fit-content;
   }
@@ -446,11 +456,23 @@
   .min-w-0 {
     min-width: calc(var(--spacing) * 0);
   }
+  .min-w-1\/2 {
+    min-width: calc(1/2 * 100%);
+  }
   .min-w-\[100px\] {
     min-width: 100px;
   }
   .flex-1 {
     flex: 1;
+  }
+  .flex-\[0_0_calc\(50\%-0\.5rem\)\] {
+    flex: 0 0 calc(50% - 0.5rem);
+  }
+  .flex-\[0_0_calc\(50\%-1rem\)\] {
+    flex: 0 0 calc(50% - 1rem);
+  }
+  .flex-\[calc\(50\%-1rem\)\] {
+    flex: calc(50% - 1rem);
   }
   .shrink {
     flex-shrink: 1;
@@ -460,6 +482,9 @@
   }
   .grow {
     flex-grow: 1;
+  }
+  .basis-1\/2 {
+    flex-basis: calc(1/2 * 100%);
   }
   .table-auto {
     table-layout: auto;
@@ -545,6 +570,13 @@
       margin-inline-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-x-reverse)));
     }
   }
+  .space-x-2 {
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
+  }
   .space-x-3 {
     :where(& > :not(:last-child)) {
       --tw-space-x-reverse: 0;
@@ -578,6 +610,9 @@
   }
   .overflow-auto {
     overflow: auto;
+  }
+  .overflow-hidden {
+    overflow: hidden;
   }
   .overflow-visible {
     overflow: visible;
@@ -629,6 +664,9 @@
   }
   .border-gray-300 {
     border-color: var(--color-gray-300);
+  }
+  .border-red-700 {
+    border-color: var(--color-red-700);
   }
   .bg-\(--color-base-00\) {
     background-color: var(--color-base-00);
