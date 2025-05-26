@@ -1,10 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/api-test"
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Modules.LoreScopes.Database
@@ -12,6 +8,10 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using System.Text.Json
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/api-test"
 @attribute [Authorize]
 @rendermode InteractiveWebAssembly
 @inject ILogger<ApiTest> Logger
@@ -66,7 +66,7 @@
         }
 
         string dataAsJson = JsonSerializer.Serialize(result.AsData, new JsonSerializerOptions {
-            WriteIndented = true
+            WriteIndented = true,
         });
         _apiResponse = dataAsJson;
         StateHasChanged();
