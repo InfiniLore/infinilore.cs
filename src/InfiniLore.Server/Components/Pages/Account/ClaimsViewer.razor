@@ -24,47 +24,47 @@
     </InfiniSection>
 }
 else {
-    @* <InfiniSection> *@
-    @*     <h3 class="text-2xl font-bold text-gray-800 mb-4">Claims Viewer</h3> *@
-    @* *@
-    @*     <p class="text-lg"> *@
-    @*         <strong>Authenticated User:</strong> @_user.Identity?.Name *@
-    @*     </p> *@
-    @* *@
-    @*     <InfiniTable TItem="Claim" Items="@_user.Claims"> *@
-    @*         <Header> *@
-    @*             <InfiniTableHeader>Claim Type</InfiniTableHeader> *@
-    @*             <InfiniTableHeader>Claim Value</InfiniTableHeader> *@
-    @*             <InfiniTableHeader Class="w-min-128 flex flex-col items-center"> *@
-    @*                 <span>Actions</span> *@
-    @*                 <div class="flex flex-row gap-3.5 text-(--color-base-40)"> *@
-    @*                     <span>Copy Type</span> *@
-    @*                     <span>Copy Value</span> *@
-    @*                 </div> *@
-    @*             </InfiniTableHeader> *@
-    @*         </Header> *@
-    @*         <Content Context="claim"> *@
-    @*             <InfiniTableCell>@claim.Type</InfiniTableCell> *@
-    @*             <InfiniTableCell>@claim.Value</InfiniTableCell> *@
-    @* *@
-    @*             <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128"> *@
-    @*                 <InfiniButton *@
-    @*                     IconName="copy" *@
-    @*                     OnClick="async () => await CopyToClipboardAsync(claim.Type)" *@
-    @*                     TooltipAnchor="Anchor.Bottom | Anchor.Left" *@
-    @*                     Tooltip="Copy Type" *@
-    @*                 /> *@
-    @*                 <InfiniButton *@
-    @*                     IconName="copy" *@
-    @*                     OnClick="async () => await CopyToClipboardAsync(claim.Value)" *@
-    @*                     TooltipAnchor="Anchor.Bottom | Anchor.Left" *@
-    @*                     Tooltip="Copy Value" *@
-    @*                 /> *@
-    @*             </InfiniTableCell> *@
-    @*         </Content> *@
-    @*     </InfiniTable> *@
-    @* *@
-    @* </InfiniSection> *@
+    <InfiniSection>
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Claims Viewer</h3>
+    
+        <p class="text-lg">
+            <strong>Authenticated User:</strong> @_user.Identity?.Name
+        </p>
+    
+        <InfiniTable TItem="Claim" Items="@_user.Claims">
+            <Header>
+                <InfiniTableHeader>Claim Type</InfiniTableHeader>
+                <InfiniTableHeader>Claim Value</InfiniTableHeader>
+                <InfiniTableHeader Class="w-min-128 flex flex-col items-center">
+                    <span>Actions</span>
+                    <div class="flex flex-row gap-3.5 text-(--color-base-40)">
+                        <span>Copy Type</span>
+                        <span>Copy Value</span>
+                    </div>
+                </InfiniTableHeader>
+            </Header>
+            <Content Context="claim">
+                <InfiniTableCell>@claim.Type</InfiniTableCell>
+                <InfiniTableCell>@claim.Value</InfiniTableCell>
+    
+                <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128">
+                    <InfiniButton
+                        IconName="copy"
+                        OnClick="async () => await CopyToClipboardAsync(claim.Type)"
+                        TooltipAnchor="Anchor.Bottom | Anchor.Left"
+                        Tooltip="Copy Type"
+                    />
+                    <InfiniButton
+                        IconName="copy"
+                        OnClick="async () => await CopyToClipboardAsync(claim.Value)"
+                        TooltipAnchor="Anchor.Bottom | Anchor.Left"
+                        Tooltip="Copy Value"
+                    />
+                </InfiniTableCell>
+            </Content>
+        </InfiniTable>
+    
+    </InfiniSection>
 
     <div class="w-full h-4 bg-transparent"></div>
 
@@ -136,7 +136,6 @@ else {
         </div>
     </InfiniSection>
 }
-<div class="w-full h-128 bg-transparent"></div>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
