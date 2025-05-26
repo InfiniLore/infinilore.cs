@@ -40,11 +40,17 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
         logger.Information("Initial Kiota client generated");
         
         logger.Information("Starting Post Processing");
+        await RunPostProcessingAsync(parameters, csprojPath);
+    }
+    
+    private async ValueTask RunPostProcessingAsync(KiotaWrapperParameters parameters, string csprojPath) {
+        logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
             "InfiniLoreServerModulesCoreApiEndpoints",
             "InfiniLoreServerModulesLoreScopesApiEndpoints"
         ]);
-
+        
+        logger.Information("Fixing specific lines in generated files");
         Dictionary<string, (int Line, string Replacement)[]> data = new() {
             ["src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs"] = [
                 (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
@@ -53,6 +59,9 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
 
         IEnumerable<Task> tasks = data.Select(pair => FixSpecificFileIssues(Path.Join(parameters.Root, pair.Key), pair.Value));
         await Task.WhenAll(tasks);
+        
+        // End
+        logger.Information("Post Processing completed");
     }
 
     private void BackupCsproj(string csprojPath, string tempCsprojPath) {
