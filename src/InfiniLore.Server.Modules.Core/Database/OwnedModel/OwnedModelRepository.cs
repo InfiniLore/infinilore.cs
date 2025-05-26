@@ -42,7 +42,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
-        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
+        IQueryable<TModel> query = GetConfiguredQueryable(baseQuery, config)
             .OrderByDescending(ls => ls.Id)
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
