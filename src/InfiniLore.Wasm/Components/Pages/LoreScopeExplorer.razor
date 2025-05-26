@@ -22,7 +22,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="bg-(--color-base-00) shadow-sm rounded-2xl p-4 border border-(--color-base-10) mt-4">
+<InfiniSection>
     <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
         Create New Lorescope
     </h2>
@@ -31,21 +31,21 @@
         <InputText @bind-Value="@NewLoreScopeName"
                    placeholder="Enter a new Lorescope name..."
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
-        
+
         <button @onclick="CreateNewLoreScopeAsync"
                 class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) hover:ring-2 hover:ring-(--color-accent) p-2 text-sm font-medium shadow-sm transition">
             <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
         </button>
     </div>
-</div>
+</InfiniSection>
 
 <div class="my-8"></div>
 
-<div class="flex flex-col gap-y-6 bg-(--color-base-00) shadow-sm rounded-2xl p-4 border border-(--color-base-10)">
+<InfiniSection class="flex flex-col gap-4">
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
         <div class="group/item">
             <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
-                
+
                 <!-- Poster Image -->
                 <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
                     POSTER IMAGE
@@ -68,17 +68,8 @@
 
                     @* Links *@
                     <div class="flex flex-row gap-2">
-                        <button class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition">
-                            + New File
-                        </button>
-
-                        <button 
-                            class="inline-flex items-center w-fit px-4 py-2 rounded-md bg-(--color-base-90) text-(--color-base-00) hover:bg-(--color-base-70) hover:text-(--color-accent) text-sm font-medium transition"
-                            @onclick="async () => await OnDeleteAsync(loreScope)"
-                            >
-                            - Delete
-                        </button>
-                        
+                        <InfiniButton IconName="plus">New File</InfiniButton>
+                        <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
                     </div>
                 </div>
 
@@ -90,7 +81,7 @@
             </div>
         </div>
     }
-</div>
+</InfiniSection>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
