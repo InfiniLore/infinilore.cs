@@ -62,7 +62,7 @@
                             @loreScope.Description
                         </p>
                         <p class="text-sm text-(--color-base-60) line-clamp-4">
-                            @loreScope.OwnerId
+                            Owner: @loreScope.OwnerId
                         </p>
                     </div>
 
@@ -139,6 +139,7 @@
                 Body: NewLoreScopeName
             );
             await ToastStorage.AddToastAsync(toast);
+            NewLoreScopeName = string.Empty;
         
             await RefreshLoreScopeListAsync();
             StateHasChanged();
