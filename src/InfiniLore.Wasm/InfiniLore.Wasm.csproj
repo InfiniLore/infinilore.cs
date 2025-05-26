@@ -12,6 +12,7 @@
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
         <PackageReference Include="InfiniLore.InfiniBlazor" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Core" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />
@@ -38,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Components\Library\MarkdownEditor.razor" />
+        <_ContentIncludedByDefault Remove="Components\Library\MarkdownEditor.razor" />
     </ItemGroup>
 
 </Project>
