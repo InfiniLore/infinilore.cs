@@ -23,6 +23,10 @@ public class LoreScopeInteractiveApi(
     IInteractiveApiWasm interactiveApi
 ) : ILoreScopeInteractiveApi {
 
+    public ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
+        throw new NotImplementedException();
+    }
+    
     public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;

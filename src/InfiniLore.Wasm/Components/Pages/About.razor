@@ -5,43 +5,18 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/about"
-@using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveWebAssembly
-@inject ILogger<About> Logger
-
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<h3>About something</h3>
-
-<AuthorizeView>
-    <Authorized>
-        <p>@Data</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>You are not authorized to view this page.</p>
-    </NotAuthorized>
-</AuthorizeView>
-
-
+<InfiniSection>
+    <h2 class="text-lg font-semibold text-(--color-base-90)">
+        InfiniLore
+    </h2>
+</InfiniSection>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
-
-    private string Data { get; set; } = string.Empty;
-
-    protected override async Task OnInitializedAsync() {
-        if (AuthenticationStateTask is null) {
-            Logger.Warning("User is not authenticated");
-            return;
-        }
-
-        AuthenticationState state = await AuthenticationStateTask;
-        Data = state.User.FindFirst("name")?.Value ?? string.Empty;
-        await InvokeAsync(StateHasChanged);
-    }
+    
 }

@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Services.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
@@ -10,6 +11,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @rendermode InteractiveServer
 @inject IJwtTokenJsSecureStorage JsTokenProvider
+@inject IThemeSelector ThemeSelector
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -81,6 +83,10 @@
                     UserName="@UserName"
                     UserImageUrl="@ProfileImage">
                     <AdditionalLinks>
+                        <button class="@(SideNavMenuUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">
+                            theme
+                        </button>
+                        
                         <NavLink @onclick="LogoutCallbackAsync"
                                  href="/account/logout"
                                  class="@(SideNavMenuUser.AdditionalLinkClasses)">
@@ -130,5 +136,9 @@
 
     private async Task LogoutCallbackAsync() {
         await JsTokenProvider.RemoveTokenAsync();
+    }
+
+    private async Task OnThemeSwitchAsync() {
+        await ThemeSelector.TrySelectNextThemeModeAsync();
     }
 }

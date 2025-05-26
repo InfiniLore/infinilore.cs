@@ -1,0 +1,166 @@
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
+@using InfiniLore.InfiniBlazor.Toasting
+@using InfiniLore.Shared
+@using InfiniLore.Shared.Auth
+@using InfiniLore.Shared.Modules.LoreScopes.Database
+@using InfiniLore.Shared.Modules.LoreScopes.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using InfiniLore.Lucide
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/lorescopes"
+@inject ILoreScopeInteractiveApi LoreScopeApi
+@inject IToastStorage ToastStorage
+@inject IToastAppearanceProvider ToastAppearanceProvider
+@attribute [Authorize]
+@rendermode InteractiveServer
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniSection>
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+        Create New Lorescope
+    </h2>
+
+    <div class="flex items-center space-x-3">
+        <InputText @bind-Value="@NewLoreScopeName"
+                   placeholder="Enter a new Lorescope name..."
+                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
+
+        <button @onclick="CreateNewLoreScopeAsync"
+                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) hover:ring-2 hover:ring-(--color-accent) p-2 text-sm font-medium shadow-sm transition">
+            <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
+        </button>
+    </div>
+</InfiniSection>
+
+<div class="my-8"></div>
+
+<InfiniSection class="flex flex-col gap-4">
+    @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
+        <div class="group/item">
+            <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
+
+                <!-- Poster Image -->
+                <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
+                    POSTER IMAGE
+                </div>
+
+                <!-- Main Info Content -->
+                <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full">
+                    @* Content *@
+                    <div>
+                        <h3 class="text-lg font-semibold text-(--color-base-95) truncate">
+                            @loreScope.Name
+                        </h3>
+                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                            @loreScope.Description
+                        </p>
+                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                            Owner: @loreScope.OwnerId
+                        </p>
+                    </div>
+
+                    @* Links *@
+                    <div class="flex flex-row gap-2">
+                        <InfiniButton Disabled="true" IconName="plus">New File</InfiniButton>
+                        <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="flex flex-col items-end justify-between min-w-[100px] shrink-0 px-1">
+                    <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div>
+                </div>
+
+            </div>
+        </div>
+    }
+</InfiniSection>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [CascadingParameter] 
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
+    private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
+    
+    private string? NewLoreScopeName { get; set; }
+    private string UserId { get; set; } = string.Empty;
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        if (AuthenticationState is null) return;
+        AuthenticationState state = await AuthenticationState;
+        string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+        if (userId.IsNullOrWhiteSpace()) return;
+
+        UserId = userId;
+        
+        await RefreshLoreScopeListAsync();
+    }
+    
+    private async Task RefreshLoreScopeListAsync() {
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
+        if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel> response)) {
+            return;
+        }
+        
+        MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
+        LoreScopeResponses = response.Items.OrderBy(i => i.Name).ToArray();
+    }
+
+    private async Task CreateNewLoreScopeAsync() {
+        if (NewLoreScopeName.IsNullOrWhiteSpace()) return;
+        
+        Result result = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
+        if (result.AsState) {
+            var toast = new ToastData(
+                "LoreScope Created",
+                10,
+                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
+                Body: NewLoreScopeName
+            );
+            await ToastStorage.AddToastAsync(toast);
+            NewLoreScopeName = string.Empty;
+        
+            await RefreshLoreScopeListAsync();
+            StateHasChanged();
+            return;
+        } 
+        
+        var toastFail = new ToastData(
+            "Could not create LoreScope",
+            10,
+            ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
+            Body: result.IsError ? result.AsError.Value : "UNKNOWN"
+        );
+        
+        await ToastStorage.AddToastAsync(toastFail);
+        StateHasChanged();
+    }
+    
+    private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
+        Result result = await LoreScopeApi.DeleteLoreScopesAsync(loreScope.Id.ToString());
+        if (result.AsState) {
+            var toast = new ToastData(
+                "LoreScope Deleted",
+                10,
+                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
+                Body: NewLoreScopeName
+            );
+            await ToastStorage.AddToastAsync(toast);
+        } 
+        
+        await RefreshLoreScopeListAsync();
+        StateHasChanged();
+    }
+}

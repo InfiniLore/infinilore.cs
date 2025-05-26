@@ -25,6 +25,7 @@
         <PackageReference Include="InfiniLore.Credentials" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
+        <PackageReference Include="InfiniLore.InfiniBlazor.Core" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />

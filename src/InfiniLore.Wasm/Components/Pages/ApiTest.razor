@@ -1,10 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/api-test"
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Modules.LoreScopes.Database
@@ -12,6 +8,10 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using System.Text.Json
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/api-test"
 @attribute [Authorize]
 @rendermode InteractiveWebAssembly
 @inject ILogger<ApiTest> Logger
@@ -19,25 +19,32 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<PageTitle>API TEST</PageTitle>
-<div>
-    @RendererInfo.Name
-</div>
-<div>
-    <br>
-    <button class="btn btn-primary" @onclick="CallInternalApi">Call internal API</button>
-    <pre>@_apiResponse</pre>
-</div>
+<InfiniSection>
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+        API Test
+    </h2>
 
+    <div class="flex flex-col gap-4">
+        <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
+        
+        <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
+            Call Internal API
+        </InfiniButton>
+        
+        <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words">@_apiResponse</pre>
+    </div>
+</InfiniSection>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
-    private string _apiResponse = "";
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+    private string _apiResponse = "Nothing called yet";
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     private async Task CallInternalApi() {
         if (AuthenticationState is null) {
             _apiResponse = "NOT AUTHENTICATED";
@@ -58,7 +65,10 @@
             _apiResponse = value;
         }
 
-        string dataAsJson = JsonSerializer.Serialize(result.AsData);
+        string dataAsJson = JsonSerializer.Serialize(result.AsData, new JsonSerializerOptions {
+            WriteIndented = true,
+        });
         _apiResponse = dataAsJson;
+        StateHasChanged();
     }
 }

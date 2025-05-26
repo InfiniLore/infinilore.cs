@@ -26,32 +26,37 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <PageTitle>Profile</PageTitle>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="row">
-            <h2>Profile</h2>
+<InfiniSection>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <h2 class="text-lg font-semibold text-(--color-base-90)">
+                    Profile
+                </h2>
 
-            <div class="col-md-2">
-                <img src="@_picture"
-                     alt="" class="img-rounded img-responsive" style="display: block; margin: 0 auto;"/>
+                <div class="col-md-2">
+                    <img src="@_picture"
+                         alt="" class="img-rounded img-responsive" style="display: block; margin: 0 auto;"/>
+                </div>
+                <div class="col-md-4">
+                    <span>UserName: @_username</span>
+                </div>
             </div>
-            <div class="col-md-4">
-                <h3>@_username</h3>
-            </div>
-
-            <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
-                <Authorized>
-                    <button class="btn btn-primary" @onclick="CreateLorescopeCallbackAsync">Create Lorescope</button>
-                    <h3>Admin Dashboard</h3>
-                </Authorized>
-                <NotAuthorized>
-                    <h3>You do not have access to this page.</h3>
-                </NotAuthorized>
-            </AuthorizeView>
-
         </div>
     </div>
-</div>
+</InfiniSection>
+
+<AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
+    <Authorized>
+        <div class="my-8"></div>
+        <InfiniSection>
+
+            <h2 class="text-lg font-semibold text-(--color-base-90)">
+                Admin Dashboard
+            </h2>
+        </InfiniSection>
+    </Authorized>
+</AuthorizeView>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
