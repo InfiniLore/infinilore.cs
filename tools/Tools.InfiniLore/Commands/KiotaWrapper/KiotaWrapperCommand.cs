@@ -45,9 +45,12 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
             "InfiniLoreServerModulesLoreScopesApiEndpoints"
         ]);
 
-        await FixSpecificFileIssues("src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs", [
-            (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
-        ]);
+        await FixSpecificFileIssues(
+            Path.Join(parameters.Root, "src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs"), 
+            [
+                (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
+            ]
+        );
     }
 
     private void BackupCsproj(string csprojPath, string tempCsprojPath) {
