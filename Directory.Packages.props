@@ -29,7 +29,7 @@
     </PackageVersion>
     <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.68.0" />
     <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.68.0" />
-    <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.65.0" />
+    <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.68.0" />
     <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.11.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1" />
@@ -95,8 +95,8 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="TUnit" Version="0.22.0" />
-    <PackageVersion Include="TUnit.Core" Version="0.22.0" />
+    <PackageVersion Include="TUnit" Version="0.22.12" />
+    <PackageVersion Include="TUnit.Core" Version="0.22.12" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
