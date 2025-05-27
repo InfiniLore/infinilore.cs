@@ -19,6 +19,7 @@ public class MessageAccessProvider(
     IHttpContextAccessor httpContextAccessor
 ) : IMessageAccessProvider {
     public IMessageAccess Empty => MessageAccess.Empty;
+    public IMessageAccess Server => MessageAccess.Server;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

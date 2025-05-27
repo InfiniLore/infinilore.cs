@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
@@ -15,8 +15,16 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLorescopeByIdHandler> logger) : CommandHandler<GetLorescopeByIdQuery, MessageResponse<LoreScopeModel>> {
-    public override async Task<MessageResponse<LoreScopeModel>> ExecuteAsync(GetLorescopeByIdQuery command, CancellationToken ct = new()) {
+public class GetLorescopeByIdHandler(
+    IReadonlyUnitOfWorkFactory factory,
+    ILogger<GetLorescopeByIdHandler> logger
+) : AccessRestrictedCommandHandler<GetLorescopeByIdQuery, MessageResponse<LoreScopeModel>>(logger) {
+    protected override MessageResponse<LoreScopeModel> AccessDeniedResult => throw new NotImplementedException();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task<MessageResponse<LoreScopeModel>> HandleCommandAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
@@ -25,15 +33,20 @@ public class GetLorescopeByIdHandler(IReadonlyUnitOfWorkFactory factory, ILogger
 
         if (!response.TryGetAsSuccess(out LoreScopeModel value)) {
             logger.Warning("Failed to get lorescope");
-            return MessageResponse<LoreScopeModel>.FromErrorString("Failed to get lorescope");
+            return MessageResponse.FromErrorString("Failed to get lorescope");
         }
 
         // ReSharper disable once InvertIf
         if (!command.IsLoreScopeOnly && value.OwnerId != command.UserId) {
             logger.Warning("User does not own this lorescope");
-            return MessageResponse<LoreScopeModel>.FromErrorString("User does not own this lorescope");
+            return MessageResponse.FromErrorString("User does not own this lorescope");
         }
 
-        return MessageResponse<LoreScopeModel>.FromSuccess(value);
+        return MessageResponse.FromSuccess(value);
+    } 
+    
+    protected override ValueTask<bool> ValidateAccessAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
+        IMessageAccess access = command.Access;
+        return ValueTask.FromResult(true);
     }
 }

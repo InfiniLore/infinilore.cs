@@ -11,4 +11,5 @@ public interface IMessageAccess {
     Guid UserId { get; }
     ImmutableArray<string> Roles { get; }
     ImmutableArray<string> Permissions { get; }
+    bool IsServer { get; }
 }

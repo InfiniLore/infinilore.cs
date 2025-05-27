@@ -1,14 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core;
+using System.ComponentModel.DataAnnotations;
+
+namespace InfiniLore.Server.Modules.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageAccessProvider {
-    IMessageAccess Empty { get; }
-    IMessageAccess Server { get; }
-    ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default);
-    IMessageAccess FromClaims(CancellationToken ct = default);
+public class AccessProtectionRuleModel : OwnedModel<AccessProtectionModel> {
+    public Guid UserId { get; init; }
+    [MaxLength(Defaults.PermissionMaxLength)] public string Permission { get; set; } = null!;
+    
+    public static class Defaults {
+        public const int PermissionMaxLength = 256;
+    }
 }

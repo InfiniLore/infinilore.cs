@@ -1,14 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core;
+using CodeOfChaos.Extensions.DependencyInjection;
+
+namespace InfiniLore.Server.Modules.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageAccessProvider {
-    IMessageAccess Empty { get; }
-    IMessageAccess Server { get; }
-    ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default);
-    IMessageAccess FromClaims(CancellationToken ct = default);
+[InjectableScoped<IAccessProtectionRepository>]
+public class AccessProtectionRepository : BasicModelRepository<AccessProtectionModel>, IAccessProtectionRepository {
+    
 }

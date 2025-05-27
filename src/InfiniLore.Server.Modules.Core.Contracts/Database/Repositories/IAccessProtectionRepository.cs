@@ -1,14 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core;
+namespace InfiniLore.Server.Modules.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageAccessProvider {
-    IMessageAccess Empty { get; }
-    IMessageAccess Server { get; }
-    ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default);
-    IMessageAccess FromClaims(CancellationToken ct = default);
-}
+public interface IAccessProtectionRepository : IBasicModelRepository<AccessProtectionModel>;
