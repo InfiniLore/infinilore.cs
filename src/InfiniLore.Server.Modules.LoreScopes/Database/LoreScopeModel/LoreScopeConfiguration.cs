@@ -25,5 +25,7 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .WithOne()
             .HasForeignKey<LoreScopeModel>(x => x.AccessProtectionId)
             .IsRequired(false);
+        
+        builder.Ignore(x => x.HasAccessProtection);
     }
 }
