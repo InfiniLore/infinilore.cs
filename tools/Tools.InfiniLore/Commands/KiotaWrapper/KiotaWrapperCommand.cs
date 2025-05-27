@@ -40,10 +40,28 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
         logger.Information("Initial Kiota client generated");
         
         logger.Information("Starting Post Processing");
+        await RunPostProcessingAsync(parameters, csprojPath);
+    }
+    
+    private async ValueTask RunPostProcessingAsync(KiotaWrapperParameters parameters, string csprojPath) {
+        logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
             "InfiniLoreServerModulesCoreApiEndpoints",
             "InfiniLoreServerModulesLoreScopesApiEndpoints"
         ]);
+        
+        logger.Information("Fixing specific lines in generated files");
+        Dictionary<string, (int Line, string Replacement)[]> data = new() {
+            ["src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs"] = [
+                (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
+            ]
+        };
+
+        IEnumerable<Task> tasks = data.Select(pair => FixSpecificFileIssues(Path.Join(parameters.Root, pair.Key), pair.Value));
+        await Task.WhenAll(tasks);
+        
+        // End
+        logger.Information("Post Processing completed");
     }
 
     private void BackupCsproj(string csprojPath, string tempCsprojPath) {
@@ -151,4 +169,31 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
         });
     }
 
+    private async Task FixSpecificFileIssues(string fileName, IReadOnlyCollection<(int Line, string Replacement)> replacements) {
+        // Read all lines from the file
+        string[] lines = await File.ReadAllLinesAsync(fileName);
+        bool fileChanged = false;
+
+        // Process each replacement
+        foreach ((int Line, string Replacement) replacement in replacements) {
+            // Check if the line number is valid (remember that Line is 1-based, array is 0-based)
+            if (replacement.Line <= 0 || replacement.Line > lines.Length) {
+                logger.Warning("Invalid line number {line} for file {fileName}", replacement.Line, fileName);
+                continue;
+            }
+
+            // Replace the line (adjusting for 0-based array index)
+            int index = replacement.Line - 1;
+            if (lines[index] != replacement.Replacement) {
+                lines[index] = replacement.Replacement;
+                fileChanged = true;
+            }
+        }
+
+        // Only write the file if changes were made
+        if (fileChanged) {
+            await File.WriteAllLinesAsync(fileName, lines);
+            logger.Information("Updated specific lines in {fileName}", fileName);
+        }
+    }
 }
