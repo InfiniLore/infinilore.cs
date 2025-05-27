@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetLoreScopesQuery(
+public record GetLoreScopesByOwnerQuery(
     Guid UserId,
     QueryConfig QueryConfig = default,
     PaginationInfo PaginationInfo = default

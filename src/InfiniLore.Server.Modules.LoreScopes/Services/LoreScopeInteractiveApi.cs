@@ -34,7 +34,7 @@ public class LoreScopeInteractiveApi(
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 
         // Form and Execute Query
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
             parsedUserId,
             ct: ct
         );
