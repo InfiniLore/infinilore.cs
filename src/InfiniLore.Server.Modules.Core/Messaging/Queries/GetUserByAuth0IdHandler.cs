@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -15,7 +16,7 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 public class GetUserByAuth0IdHandler(
     IReadonlyUnitOfWorkFactory factory,
     ILogger<GetUserByAuth0IdHandler> logger
-) : AccessRestrictedCommandHandler<GetUserByAuth0IdQuery, MessageResponse<InfiniLoreUserModel>>(logger) {
+) : AccessRestrictedCommandHandler<GetUserByAuth0IdQuery, InfiniLoreUserModel>(logger) {
     protected override MessageResponse<InfiniLoreUserModel> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get user by auth0 id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------

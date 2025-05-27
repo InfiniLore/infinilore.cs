@@ -6,6 +6,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ public class GetAuth0AccessTokenHandler(
     ILogger<GetAuth0AccessTokenHandler> logger,
     IAuth0AccessTokenEncryptionService encryptionService,
     IMessageAccessProvider accessProvider
-) : AccessRestrictedCommandHandler<GetAuth0AccessTokenQuery, MessageResponse<IAuth0AccessToken>>(logger) {
+) : AccessRestrictedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
 
     protected override MessageResponse<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
     

@@ -5,6 +5,7 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Auth;
 using JetBrains.Annotations;
@@ -18,7 +19,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 public class GetLorescopeByIdHandler(
     IReadonlyUnitOfWorkFactory factory,
     ILogger<GetLorescopeByIdHandler> logger
-) : AccessRestrictedCommandHandler<GetLorescopeByIdQuery, MessageResponse<LoreScopeModel>>(logger) {
+) : AccessRestrictedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
     protected override MessageResponse<LoreScopeModel> AccessDeniedResult => MessageResponse.FromErrorString("Access denied");
     
     // -----------------------------------------------------------------------------------------------------------------
