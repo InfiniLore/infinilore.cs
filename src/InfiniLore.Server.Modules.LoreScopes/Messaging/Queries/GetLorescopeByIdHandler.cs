@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Messaging.Handlers;
@@ -49,25 +50,14 @@ public class GetLorescopeByIdHandler(
     protected override async ValueTask<bool> ValidateAccessAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        var accessRepo = await unitOfWork.GetRepositoryAsync<IAccessProtectionRepository>(ct);
-        
-        Result<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, ct:ct);
-        if (!response.TryGetAsSuccess(out LoreScopeModel loreScope)) {
-            logger.Warning("Failed to get lorescope");
-            return false;
-        }
 
-        if (!loreScope.HasAccessProtection) {
-            logger.Warning("LoreScope does not have access protection");
-            return false;
-        }
-        
-        Result<AccessProtectionModel> accessResult = await accessRepo.GetByIdAsync((Guid)loreScope.AccessProtectionId, ct:ct);
-        if (!accessResult.TryGetAsSuccess(out AccessProtectionModel accessProtection)) {
-            logger.Warning("Failed to get access protection");
-            return false;
-        }
-
-        return accessProtection.HasPermission(command.Access.UserId, PermissionsStore.LorescopeRead);
+        IMessageAccess access = command.Access;
+        if (access.IsServer) return true;
+        return await loreScopeRepository.HasAccessPermissionAsync(
+            command.LorescopeId,
+            access.UserId,
+            PermissionsStore.LorescopeRead, 
+            ct
+        );
     }
 }
