@@ -4,6 +4,7 @@ using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfiniLore.Server.Database.Migrations.Content
 {
     [DbContext(typeof(ContentDb))]
-    partial class ContentDbModelSnapshot : ModelSnapshot
+    [Migration("20250527132255_FixAgain")]
+    partial class FixAgain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,7 +189,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AccessProtectionId")
+                    b.Property<Guid>("AccessProtectionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -214,7 +217,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.HasIndex("AccessProtectionId")
                         .IsUnique()
-                        .HasFilter("[AccessProtectionId] IS NOT NULL");
+                        .HasDatabaseName("IX_LoreScopeModel_AccessProtectionId");
 
                     b.HasIndex("Id")
                         .IsUnique();

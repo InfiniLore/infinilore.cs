@@ -13,8 +13,8 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     [MaxLength(Defaults.NameMaxLength)] public string Name { get; set; } = "";
     [MaxLength(Defaults.DescriptionMaxLength)] public string? Description { get; set; }
     
-    public Guid AccessProtectionId { get; set; }
-    public AccessProtectionModel? AccessProtection { get; set; }
+    public Guid? AccessProtectionId { get; set; }
+    public AccessProtectionModel? AccessProtection { get; set; } 
     
     public static class Defaults {
         public const int NameMaxLength = 100;
