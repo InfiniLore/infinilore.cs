@@ -320,6 +320,9 @@
   .h-4\/7 {
     height: calc(4/7 * 100%);
   }
+  .h-12 {
+    height: calc(var(--spacing) * 12);
+  }
   .h-60 {
     height: calc(var(--spacing) * 60);
   }
@@ -346,6 +349,9 @@
   }
   .w-2 {
     width: calc(var(--spacing) * 2);
+  }
+  .w-12 {
+    width: calc(var(--spacing) * 12);
   }
   .w-40 {
     width: calc(var(--spacing) * 40);
