@@ -17,6 +17,7 @@
 @inject ILoreScopeInteractiveApi LoreScopeApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
+@inject NavigationManager Navigation
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -32,10 +33,7 @@
                    placeholder="Enter a new Lorescope name..."
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
 
-        <button @onclick="CreateNewLoreScopeAsync"
-                class="group inline-flex items-center justify-center rounded-md bg-(--color-base-90) group-hover:bg-(--color-base-70) hover:ring-2 hover:ring-(--color-accent) p-2 text-sm font-medium shadow-sm transition">
-            <LiCheck class="text-(--color-base-00) group-hover:text-(--color-accent)" />
-        </button>
+        <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="NewLoreScopeName.IsNullOrWhiteSpace()"/>
     </div>
 </InfiniSection>
 
@@ -43,7 +41,7 @@
 
 <InfiniSection class="flex flex-col gap-4">
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-        <div class="group/item">
+        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/lorescope/{loreScope.Id}/settings"))">
             <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
 
                 <!-- Poster Image -->

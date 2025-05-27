@@ -19,6 +19,13 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
         
         builder.HasIndex(x => new { x.OwnerId, x.Name, x.SoftDeleteDate })
             .IsUnique()
-            .HasDatabaseName("IX_OwnerId_Name_Unique"); 
+            .HasDatabaseName("IX_OwnerId_Name_Unique");
+        
+        builder.HasOne(x => x.AccessProtection)
+            .WithOne()
+            .HasForeignKey<LoreScopeModel>(x => x.AccessProtectionId)
+            .IsRequired(false);
+        
+        builder.Ignore(x => x.HasAccessProtection);
     }
 }

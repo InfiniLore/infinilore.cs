@@ -22,6 +22,89 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModelOwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProtectedModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("ModelOwnerId");
+
+                    b.HasIndex("ProtectedModelId")
+                        .IsUnique();
+
+                    b.ToTable("AccessProtectionModel");
+
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AccessProtectionModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Permission")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccessProtectionModelId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("UserId", "Permission")
+                        .IsUnique()
+                        .HasDatabaseName("IX_UserId_Permission_Unique");
+
+                    b.ToTable("AccessProtectionRuleModel");
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -103,6 +186,9 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccessProtectionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -126,6 +212,10 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccessProtectionId")
+                        .IsUnique()
+                        .HasFilter("[AccessProtectionId] IS NOT NULL");
+
                     b.HasIndex("Id")
                         .IsUnique();
 
@@ -141,15 +231,52 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "Owner")
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "ModelOwner")
+                        .WithMany()
+                        .HasForeignKey("ModelOwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ModelOwner");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", null)
+                        .WithMany("Rules")
+                        .HasForeignKey("AccessProtectionModelId");
+
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "AccessProtection")
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "AccessProtectionId");
+
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccessProtection");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+                {
+                    b.Navigation("Rules");
                 });
 #pragma warning restore 612, 618
         }

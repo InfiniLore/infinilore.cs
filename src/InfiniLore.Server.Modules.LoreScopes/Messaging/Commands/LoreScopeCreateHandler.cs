@@ -6,11 +6,12 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Database;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
@@ -18,7 +19,12 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<LoreScopeCreateHandler> logger, IValidator<LoreScopeModel> validator) : CommandHandler<CreateLoreScopeRequest, MessageResponse<Guid>> {
+public class LoreScopeCreateHandler(
+    IUnitOfWorkFactory unitOfWorkFactory, 
+    ILogger<LoreScopeCreateHandler> logger,
+    IValidator<LoreScopeModel> validator,
+    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+) : CommandHandler<CreateLoreScopeRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
@@ -49,7 +55,8 @@ public class LoreScopeCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         Result result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return MessageResponse<Guid>.FromErrorString("Failed to save user to database");
 
-        await new NewLoreScopeCreatedEvent(loreScope.Id).PublishAsync(Mode.WaitForAll, ct);
+
+        await messageBroker.InvokeNewLoreScopeCreatedAsync(loreScope.Id, Mode.WaitForAll, ct);
         logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }

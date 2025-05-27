@@ -18,7 +18,8 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
     protected IQueryable<TModel> GetConfiguredQueryable(IQueryable<TModel> baseQuery, QueryConfig config) {
-        IQueryable<TModel> query = baseQuery.With(AlwaysInclude)
+        IQueryable<TModel> query = baseQuery
+            .With(AlwaysInclude)
             .ConditionalWith(config.OptionalInclude, OptionalInclude)
             .ConditionalReverse(config.Reverse)
             .ConditionalWith(config.RetrieveSoftDeleted, model => model.IgnoreQueryFilters());

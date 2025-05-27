@@ -22,7 +22,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
     // ReSharper disable once InvertIf
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
         MessageResponse<IAuth0AccessToken> mediatorResponse = await new GetAuth0AccessTokenQuery {
-            Access = messageAccessProvider.Empty
+            Access = messageAccessProvider.Server
         }.ExecuteAsync(ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken token)) {
@@ -36,7 +36,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
         MessageResponse<bool> mediatorResponse = await new StoreAuth0AccessTokenRequest(token){
-            Access = messageAccessProvider.Empty
+            Access = messageAccessProvider.Server
         }.ExecuteAsync(ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out bool success)) {

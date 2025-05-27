@@ -3,26 +3,44 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class GetUserByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : CommandHandler<GetUserByAuth0IdQuery, MessageResponse<InfiniLoreUserModel>> {
-    public override async Task<MessageResponse<InfiniLoreUserModel>> ExecuteAsync(GetUserByAuth0IdQuery command, CancellationToken ct = new()) {
-        if (command.Auth0Id.IsNullOrEmpty()) return MessageResponse<InfiniLoreUserModel>.FromErrorString("Cannot get user id by auth0 id. Auth0 id is empty.");
+public class GetUserByAuth0IdHandler(
+    IReadonlyUnitOfWorkFactory factory,
+    ILogger<GetUserByAuth0IdHandler> logger
+) : AccessRestrictedCommandHandler<GetUserByAuth0IdQuery, InfiniLoreUserModel>(logger) {
+    protected override MessageResponse<InfiniLoreUserModel> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get user by auth0 id. Access denied.");
 
-        await using IReadonlyUnitOfWork unitOfWork = factory.Create();
-        var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task<MessageResponse<InfiniLoreUserModel>> HandleCommandAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
+        if (command.Auth0Id.IsNullOrEmpty()) return MessageResponse.FromErrorString("Cannot get user id by auth0 id. Auth0 id is empty.");
 
-        Result<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
-        
-        // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (result.IsError) return MessageResponse<InfiniLoreUserModel>.FromErrorString("Cannot get user id by auth0 id. Auth0 id not found.");
-        return MessageResponse<InfiniLoreUserModel>.FromSuccess(result.AsSuccess);
+        try {
+            await using IReadonlyUnitOfWork unitOfWork = factory.Create();
+            var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
+            
+            Result<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
+            return !result.IsError
+                ? MessageResponse.FromSuccess(result.AsSuccess)
+                : MessageResponse.FromErrorString("Cannot get user id by auth0 id. Auth0 id not found.");
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to get user by auth0 id.");
+            return MessageResponse.FromErrorString("Failed to get user by auth0 id.");
+        }
+    }
+
+    protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
+        return ValueTask.FromResult(command.Access.IsServer);
     }
 }

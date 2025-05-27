@@ -51,4 +51,23 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         bool result = await query.AnyAsync(cancellationToken: ct);
         return Result.FromState(!result);
     }
+    
+    public async ValueTask<Result> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default) {
+        if (resourceId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+        
+        DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
+        IQueryable<LoreScopeModel> query = dbSet
+            .Where(l => 
+                l.Id == resourceId 
+                && (
+                    l.OwnerId == userId 
+                    || l.AccessProtectionId != null 
+                    && l.AccessProtection!.Rules!.Any(r => r.UserId == userId && r.Permission == permission)
+                )
+            );
+        
+        bool exists = await query.AnyAsync(ct);
+
+        return Result.FromState(exists);
+    }
 }

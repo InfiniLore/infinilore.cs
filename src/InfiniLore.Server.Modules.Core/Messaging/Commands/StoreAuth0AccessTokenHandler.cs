@@ -14,7 +14,11 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class StoreAuth0AccessTokenHandler(IUnitOfWorkFactory unitOfWorkFactory, IAuth0AccessTokenEncryptionService encryptionService, IValidator<KeyValueEntryModel> validator) : CommandHandler<StoreAuth0AccessTokenRequest, MessageResponse<bool>> {
+public class StoreAuth0AccessTokenHandler(
+    IUnitOfWorkFactory unitOfWorkFactory,
+    IAuth0AccessTokenEncryptionService encryptionService, 
+    IValidator<KeyValueEntryModel> validator
+) : CommandHandler<StoreAuth0AccessTokenRequest, MessageResponse<bool>> {
     public override async Task<MessageResponse<bool>> ExecuteAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);

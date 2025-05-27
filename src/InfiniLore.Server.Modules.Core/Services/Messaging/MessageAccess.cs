@@ -14,5 +14,12 @@ public record MessageAccess(
     [JsonProperty("roles")] ImmutableArray<string> Roles,
     [JsonProperty("permissions")] ImmutableArray<string> Permissions
 ) : IMessageAccess {
-    public static readonly IMessageAccess Empty = new MessageAccess(Guid.Empty, [], []);
+    public bool IsServer { get; private init; } = false;
+    
+    public static readonly IMessageAccess Empty = new MessageAccess(Guid.Empty, [], []) {
+        IsServer = false
+    };
+    public static readonly IMessageAccess Server = new MessageAccess(Guid.Empty, [], []) {
+        IsServer = true
+    };
 }

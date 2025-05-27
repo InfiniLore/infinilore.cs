@@ -12,4 +12,5 @@ public interface IMessageBroker {
     // Added here because it is kinda required by all those who use it as keys for the services.
     public const string Claims = nameof(Claims);
     public const string JwtToken = nameof(JwtToken);
+    public const string Server = nameof(Server);
 }

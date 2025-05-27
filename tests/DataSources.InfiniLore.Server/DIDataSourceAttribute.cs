@@ -25,6 +25,8 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
         ServerModuleBuilder _ = ServerModuleBuilder.Create(services)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>();
+
+        services.AddSingleton<GuidStore>();
         
         return services.BuildServiceProvider();
     }

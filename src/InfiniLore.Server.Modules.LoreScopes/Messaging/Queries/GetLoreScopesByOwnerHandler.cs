@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared;
 using JetBrains.Annotations;
@@ -14,8 +14,12 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetLoreScopesHandler> logger) : CommandHandler<GetLoreScopesQuery, MessageResponse<PaginatedData<LoreScopeModel>>> {
-    public override async Task<MessageResponse<PaginatedData<LoreScopeModel>>> ExecuteAsync(GetLoreScopesQuery command, CancellationToken ct = new()) {
+public class GetLoreScopesByOwnerHandler(
+    IReadonlyUnitOfWorkFactory factory,
+    ILogger<GetLoreScopesByOwnerHandler> logger
+) : AccessRestrictedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
+
+    protected override async Task<MessageResponse<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
@@ -26,9 +30,14 @@ public class GetLoreScopesHandler(IReadonlyUnitOfWorkFactory factory, ILogger<Ge
 
         if (!response.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedResult)) {
             logger.Warning("Failed to get LoreScopes");
-            return MessageResponse<PaginatedData<LoreScopeModel>>.FromErrorString("Failed to get LoreScopes");
+            return MessageResponse.FromErrorString("Failed to get LoreScopes");
         }
 
-        return MessageResponse<PaginatedData<LoreScopeModel>>.FromSuccess(paginatedResult);
+        return MessageResponse.FromSuccess(paginatedResult);
+    }
+
+    protected override ValueTask<bool> ValidateAccessAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
+        // TODO find a way so that we can check if a user can access the data from another user, rather than just a resource.
+        return ValueTask.FromResult(true);
     }
 }

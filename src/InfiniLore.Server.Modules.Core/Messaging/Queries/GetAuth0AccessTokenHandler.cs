@@ -3,10 +3,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -15,8 +15,19 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILogger<GetAuth0AccessTokenHandler> logger, IAuth0AccessTokenEncryptionService encryptionService) : CommandHandler<GetAuth0AccessTokenQuery, MessageResponse<IAuth0AccessToken>> {
-    public override async Task<MessageResponse<IAuth0AccessToken>> ExecuteAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = new()) {
+public class GetAuth0AccessTokenHandler(
+    IReadonlyUnitOfWorkFactory factory,
+    ILogger<GetAuth0AccessTokenHandler> logger,
+    IAuth0AccessTokenEncryptionService encryptionService,
+    IMessageAccessProvider accessProvider
+) : AccessRestrictedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
+
+    protected override MessageResponse<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task<MessageResponse<IAuth0AccessToken>> HandleCommandAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
@@ -42,4 +53,9 @@ public class GetAuth0AccessTokenHandler(IReadonlyUnitOfWorkFactory factory, ILog
         logger.Information("Successfully retrieved and parsed Auth0 access token.");
         return dto;
     }
+
+    protected override ValueTask<bool> ValidateAccessAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) {
+        return ValueTask.FromResult(command.Access == accessProvider.Server);
+    }
+    
 }

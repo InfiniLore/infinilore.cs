@@ -42,7 +42,7 @@ public class GetLoreScopesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLoreScopesRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesAsync(req.UserId,ct:ct);
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(req.UserId,ct:ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedResult)) {
