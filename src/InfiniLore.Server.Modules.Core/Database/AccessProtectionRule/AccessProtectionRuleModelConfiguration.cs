@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Server.Modules.Core.Database;
@@ -13,7 +14,9 @@ public class AccessProtectionRuleModelConfiguration : OwnedModelConfiguration<Ac
         base.Configure(builder);
         
         builder.Property(x => x.UserId).IsRequired();
-        builder.HasIndex(x => new { x.UserId, x.Permission }).IsUnique();
+        builder.HasIndex(x => new { x.UserId, x.Permission })
+            .IsUnique()
+            .HasDatabaseName("IX_UserId_Permission_Unique");
         
         builder.Property(x => x.Permission)
             .IsRequired()
