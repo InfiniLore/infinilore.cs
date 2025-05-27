@@ -17,6 +17,7 @@
 @inject ILoreScopeInteractiveApi LoreScopeApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
+@inject NavigationManager Navigation
 @attribute [Authorize]
 @rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -43,7 +44,7 @@
 
 <InfiniSection class="flex flex-col gap-4">
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-        <div class="group/item">
+        <div class="group/item" onclick="@(() => Navigation.NavigateTo($"/lorescope/{loreScope.Id}/settings"))">
             <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
 
                 <!-- Poster Image -->
