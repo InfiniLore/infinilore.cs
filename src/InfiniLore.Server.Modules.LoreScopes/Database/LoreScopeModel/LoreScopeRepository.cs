@@ -52,13 +52,13 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
         return Result.FromState(!result);
     }
     
-    public async ValueTask<Result> HasAccessPermissionAsync(Guid loreScopeId, Guid userId, string permission, CancellationToken ct = default) {
-        if (loreScopeId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
+    public async ValueTask<Result> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default) {
+        if (resourceId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return Result.FromError(RepositoryFailures.ModelFailedValidation);
         
         DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
         IQueryable<LoreScopeModel> query = dbSet
             .Where(l => 
-                l.Id == loreScopeId 
+                l.Id == resourceId 
                 && (
                     l.OwnerId == userId 
                     || l.AccessProtectionId != null 
