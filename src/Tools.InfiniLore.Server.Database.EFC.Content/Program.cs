@@ -36,6 +36,13 @@ ContentDbFactory.RegisterDatabase(
     static options => options.UseSqlServer()
 );
 
+S3FileDbFactory.RegisterDatabase(
+    builder.Services,
+    "localhost",
+    "minioadmin",
+    "minioadmin"
+);
+
 WebApplication app = builder.Build();
 
 app.Run();
