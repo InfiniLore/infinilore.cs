@@ -31,7 +31,7 @@ public class UpsertLoreScopeImageEndpoint(
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}/poster-image");
-        Permissions(PermissionsStore.LorescopeImageWrite);
+        Permissions(PermissionsStore.LorescopePosterWrite, PermissionsStore.LorescopeWrite);
         Policies(ApiPolicies.JwtProtected);
         AllowFileUploads();
     }
