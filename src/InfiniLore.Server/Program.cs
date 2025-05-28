@@ -29,7 +29,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
-using Minio;
 using Serilog;
 using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
