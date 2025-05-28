@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using System.Collections.Concurrent;
 
@@ -9,6 +10,7 @@ namespace Fakers.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[InjectableSingleton<LoreScopeFaker>]
 public class LoreScopeFaker {
     private readonly ConcurrentDictionary<Guid, LoreScopeModel> Entries = new();
 

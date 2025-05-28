@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.AspNetCore;
+using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.LoreScopes;
@@ -53,8 +54,9 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>();
 
-        services.AddSingleton<GuidStore>();
-        
+        services.RegisterServicesFromFakersInfiniLoreServer();
+        services.RegisterServicesFromDataSourcesInfiniLoreServer();
+
         ContentDbFactory.RegisterDatabase(
             services,
             moduleBuilder.ModuleAssemblies, 
