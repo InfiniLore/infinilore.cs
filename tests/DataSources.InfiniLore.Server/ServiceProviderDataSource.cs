@@ -9,6 +9,7 @@ using InfiniLore.Server.Modules.LoreScopes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 using Testcontainers.Minio;
 using Testcontainers.MsSql;
 
@@ -17,14 +18,17 @@ namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ServiceProviderDataSource {
-    private static readonly IServiceProvider SharedServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
+public partial class ServiceProviderDataSource {
+    private static readonly IServiceProvider ServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
-    public T GetRequiredService<T>() where T : notnull => SharedServiceProvider.CreateScope().ServiceProvider.GetRequiredService<T>();
-    public T? GetService<T>() => SharedServiceProvider.CreateScope().ServiceProvider.GetService<T>();
-    public object? GetService(Type type) => SharedServiceProvider.CreateScope().ServiceProvider.GetService(type);
-    public IEnumerable<T> GetServices<T>() => SharedServiceProvider.CreateScope().ServiceProvider.GetServices<T>();
-    public IEnumerable<object?> GetServices(Type type) => SharedServiceProvider.CreateScope().ServiceProvider.GetServices(type);
+    public T GetRequiredService<T>() where T : notnull => ServiceProvider.CreateScope().ServiceProvider.GetRequiredService<T>();
+    public T? GetService<T>() => ServiceProvider.CreateScope().ServiceProvider.GetService<T>();
+    public object? GetService(Type type) => ServiceProvider.CreateScope().ServiceProvider.GetService(type);
+    public IEnumerable<T> GetServices<T>() => ServiceProvider.CreateScope().ServiceProvider.GetServices<T>();
+    public IEnumerable<object?> GetServices(Type type) => ServiceProvider.CreateScope().ServiceProvider.GetServices(type);
+    
+    [GeneratedRegex("http(?:s?)://(.*)/")]
+    public static partial Regex HttpUrlRegex { get; }
     
     // -----------------------------------------------------------------------------------------------------------------
     // Creation
@@ -64,9 +68,10 @@ public class ServiceProviderDataSource {
             optionsAction: builder => builder.UseSqlServer(contentDbContainer.GetConnectionString())
         );
         
+        string connectionString = HttpUrlRegex.Match(minIoContainer.GetConnectionString()).Groups[1].Value;
         S3FileDbFactory.RegisterDatabase(
             services,
-            minIoContainer.IpAddress,
+            connectionString,
             minIoContainer.GetAccessKey(),
             minIoContainer.GetSecretKey()       
         );
