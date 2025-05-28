@@ -43,7 +43,7 @@ public class UpsertLoreScopeImageHandler(
             return MessageResponse.FromErrorString("Failed to create new lorescope image metadata");
         }
 
-        if (!await fileStorage.TryUploadFileAsync(foundModel.S3BucketName, metaData.Id, command.FileStream, command.ContentType, ct)) {
+        if (!await fileStorage.TryUploadFileAsync(foundModel.S3BucketName, metaData.FileName, command.FileStream, command.ContentType, ct)) {
             logger.Warning("Failed to upload file to s3 bucket");
             return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");       
         }

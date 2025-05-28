@@ -108,14 +108,13 @@ public class MinIoS3FileStorage(
         }
     }
 
-    public async ValueTask<Result> TryUploadFileAsync(string bucketName, Union<Guid, string> fileName, Stream fileData, string contentType, CancellationToken ct = default) {
+    public async ValueTask<Result> TryUploadFileAsync(string bucketName, string fileName, Stream fileData, string contentType, CancellationToken ct = default) {
         try {
             await TryInitializeBucketAsync(bucketName, ct);
             
-            string fileNameCorrected = fileName.Match(guid => guid.ToString(), str => str);
             PutObjectArgs args = new PutObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(fileNameCorrected)
+                .WithObject(fileName)
                 .WithStreamData(fileData)
                 .WithObjectSize(fileData.Length)
                 .WithContentType(contentType);
@@ -130,12 +129,11 @@ public class MinIoS3FileStorage(
         }
     }
 
-    public async ValueTask<Result> TryDownloadFileAsync(string bucketName, Union<Guid, string> fileName, Stream fileData, CancellationToken ct = default) {
+    public async ValueTask<Result> TryDownloadFileAsync(string bucketName, string fileName, Stream fileData, CancellationToken ct = default) {
         try {
-            string fileNameCorrected = fileName.Match(guid => guid.ToString(), str => str);
             GetObjectArgs? args = new GetObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(fileNameCorrected)
+                .WithObject(fileName)
                 .WithCallbackStream(async (stream, token) => await stream.CopyToAsync(fileData, token));
             ObjectStat _ = await minioClient.GetObjectAsync(args, ct);
             return true;
@@ -146,12 +144,11 @@ public class MinIoS3FileStorage(
         }
     }
     
-    public async ValueTask<Result> TryDeleteFileAsync(string bucketName, Union<Guid, string> fileName, CancellationToken ct = default) {
+    public async ValueTask<Result> TryDeleteFileAsync(string bucketName, string fileName, CancellationToken ct = default) {
         try {
-            string fileNameCorrected = fileName.Match(guid => guid.ToString(), str => str);
             RemoveObjectArgs args = new RemoveObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(fileNameCorrected);
+                .WithObject(fileName);
             await minioClient.RemoveObjectAsync(args, ct);
             return true;
         }
@@ -180,19 +177,16 @@ public class MinIoS3FileStorage(
         }
     }
     
-    public async ValueTask<Result<string>> GetFileUrlAsync(string bucketName, Union<Guid, string> fileName, CancellationToken ct) {
+    public async ValueTask<Result<string>> GetFileUrlAsync(string bucketName, string fileName, CancellationToken ct) {
         try {
-            PresignedGetObjectArgs? presignedArgs = new PresignedGetObjectArgs()
+            PresignedGetObjectArgs presignedArgs = new PresignedGetObjectArgs()
                 .WithBucket(bucketName)
-                .WithObject(fileName.Match(
-                    guid => guid.ToString(),
-                    str => str
-                ))
-                .WithExpiry(60 * 60 * 24); // 24 hours expiry
-
-            return await minioClient.PresignedGetObjectAsync(presignedArgs);
-        }
+                .WithObject(fileName)
+                .WithExpiry(300); // Reduce expiry to 5 minutes
         
+            string url = await minioClient.PresignedGetObjectAsync(presignedArgs);
+            return Result<string>.FromSuccess(url);
+        }
         catch (Exception e) {
             logger.Error(e, "Failed to generate presigned URL for file {FileName} in bucket {BucketName}", fileName, bucketName);
             return Result<string>.FromError($"Failed to generate presigned URL for file {fileName} in bucket {bucketName}");       

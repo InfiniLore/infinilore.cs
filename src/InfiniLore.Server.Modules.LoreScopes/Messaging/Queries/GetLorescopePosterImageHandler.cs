@@ -33,7 +33,7 @@ public class GetLorescopePosterImageHandler(
             return MessageResponse.FromErrorString("No poster image found for this lorescope");
         }
 
-        Result<string> result = await s3FileStorage.GetFileUrlAsync(foundModel.S3BucketName, foundModel.PosterImageMetaDataId.Value, ct);
+        Result<string> result = await s3FileStorage.GetFileUrlAsync(foundModel.S3BucketName, foundModel.PosterImageMetaData.FileName, ct);
         if (!result.TryGetAsSuccess(out string imageUrl)) {
             return MessageResponse.FromErrorString("Failed to get poster image url");
         }

@@ -45,8 +45,15 @@
 
                 <!-- Poster Image -->
                 <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
-                    POSTER IMAGE
+                    @if (loreScope.ImageUrl is not null) {
+                        <img src="@loreScope.ImageUrl" 
+                             alt="@loreScope.Name poster" 
+                             class="w-full h-full object-cover rounded-md" />
+                    } else {
+                        <span>POSTER IMAGE</span>
+                    }
                 </div>
+
 
                 <!-- Main Info Content -->
                 <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full">

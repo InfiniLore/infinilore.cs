@@ -15,7 +15,8 @@ public record WasmLoreScopeModel(
     DateTime LastModifiedDate,
     Guid OwnerId,
     string Name,
-    string? Description
+    string? Description,
+    string? ImageUrl
 ) : ILoreScopeModel {
 
     public static ILoreScopeModel FromKiotaModel(KiotaLoreScopeResponse response)
@@ -25,6 +26,7 @@ public record WasmLoreScopeModel(
             response.LastModifiedDate?.DateTime ?? DateTime.MinValue,
             Guid.Parse(response.OwnerId!),
             response.Name!,
-            response.Description
+            response.Description,
+            response.ImageUrl
         );
 }
