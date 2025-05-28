@@ -67,13 +67,9 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
         );
         
         ServiceProvider serviceProvider = services.BuildServiceProvider();
-        
-        await using (ContentDb dbContext = await ServiceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync()) {
-            await dbContext.Database.MigrateAsync();
-            await dbContext.SaveChangesAsync();
-        }
 
         var populator = new ContentDbPopulator(ServiceProvider);
+        await populator.MigrateAsync();
         await populator.PopulateAsync();
         return serviceProvider;
     }

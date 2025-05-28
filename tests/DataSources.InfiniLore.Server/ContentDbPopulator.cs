@@ -22,6 +22,12 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public async Task MigrateAsync() {
+        await using ContentDb dbContext = await serviceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync();
+        await dbContext.Database.MigrateAsync();
+        await dbContext.SaveChangesAsync();
+    }
+    
     public async Task PopulateAsync() {
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
