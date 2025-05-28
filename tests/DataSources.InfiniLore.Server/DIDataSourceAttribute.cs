@@ -16,7 +16,8 @@ namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// ReSharper disable once InconsistentNaming
+// TODO: This is a bit weird as it launches multiple instances of the same test containers.
+//      We need to figure out how to get the DI container to be shared across the test project.
 public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<IServiceScope> {
     private static readonly IServiceProvider ServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
