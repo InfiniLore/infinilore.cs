@@ -9,19 +9,25 @@ namespace Tests.InfiniLore.Modules.Core.Database.AccessProtection;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class AccessProtectionModelTests(GuidStore guidStore) {
+public class AccessProtectionModelTests {
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    public required ServiceProviderDataSource ServiceProvider { get; init; }
+
+    private GuidStore GuidStore => ServiceProvider.GetRequiredService<GuidStore>();
+    // -----------------------------------------------------------------------------------------------------------------
+    // Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
     [Test]
     [Arguments(0, 0, true)]
     [Arguments(0, 1, false)]
     public async Task HasPermission_ModelOwner(int ownerSeed, int accessingUserSeed, bool expectedResult) {
         // Arrange
         var model = new AccessProtectionModel {
-            ModelOwnerId = guidStore.GetGuid(ownerSeed)
+            ModelOwnerId = GuidStore.GetGuid(ownerSeed)
         };
 
         // Act
-        bool result = model.HasPermission(guidStore.GetGuid(accessingUserSeed), string.Empty);
+        bool result = model.HasPermission(GuidStore.GetGuid(accessingUserSeed), string.Empty);
 
         // Assert
         await Assert.That(result).IsEqualTo(expectedResult);
@@ -53,15 +59,15 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     [Arguments(0, 2, "write", false)]
     public async Task HasPermission_WithExistingPermissions(int ownerSeed, int userSeed, string permission, bool expectedResult) {
         // Arrange
-        Guid ownerId = guidStore.GetGuid(ownerSeed);
+        Guid ownerId = GuidStore.GetGuid(ownerSeed);
         var model = new AccessProtectionModel {
             ModelOwnerId = ownerId
         };
-        await Assert.That(model.TryGrantPermission(guidStore.GetGuid(1), "read")).IsTrue();
-        await Assert.That(model.TryGrantPermission(guidStore.GetGuid(1), "write")).IsTrue();
+        await Assert.That(model.TryGrantPermission(GuidStore.GetGuid(1), "read")).IsTrue();
+        await Assert.That(model.TryGrantPermission(GuidStore.GetGuid(1), "write")).IsTrue();
 
         // Act
-        Guid userId = guidStore.GetGuid(userSeed);
+        Guid userId = GuidStore.GetGuid(userSeed);
         bool result = model.HasPermission(userId, permission);
 
         // Assert
@@ -75,7 +81,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task TryGrantPermission_DuplicatePermission(int userSeed, string permission, bool expectedResult) {
         // Arrange
         var model = new AccessProtectionModel();
-        Guid userId = guidStore.GetGuid(userSeed);
+        Guid userId = GuidStore.GetGuid(userSeed);
         model.TryGrantPermission(userId, "write");
 
         // Act
@@ -94,7 +100,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task TryGrantPermission_ValidatesPermissionString(string? permission, bool expectedResult) {
         // Arrange
         var model = new AccessProtectionModel();
-        Guid userId = guidStore.GetGuid(0);
+        Guid userId = GuidStore.GetGuid(0);
 
         // Act
         bool result = model.TryGrantPermission(userId, permission!);
@@ -107,7 +113,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task TryGrantPermission_ExceedsMaxLength_ReturnsFalse() {
         // Arrange
         var model = new AccessProtectionModel();
-        Guid userId = guidStore.GetGuid(0);
+        Guid userId = GuidStore.GetGuid(0);
         string longPermission = new('a', AccessProtectionRuleModel.Defaults.PermissionMaxLength + 1);
 
         // Act
@@ -123,7 +129,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task TryRevokePermission_ExistingPermission(int userSeed, string permission, bool expectedResult) {
         // Arrange
         var model = new AccessProtectionModel();
-        Guid userId = guidStore.GetGuid(userSeed);
+        Guid userId = GuidStore.GetGuid(userSeed);
         model.TryGrantPermission(userId, "read");
 
         // Act
@@ -137,7 +143,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task TryRevokePermission_FromModelOwner_ReturnsFalse() {
         // Arrange
         var model = new AccessProtectionModel {
-            ModelOwnerId = guidStore.GetGuid(0)
+            ModelOwnerId = GuidStore.GetGuid(0)
         };
 
         // Act
@@ -151,7 +157,7 @@ public class AccessProtectionModelTests(GuidStore guidStore) {
     public async Task UserMappedRules_MultiplePermissionsPerUser() {
         // Arrange
         var model = new AccessProtectionModel();
-        Guid userId = guidStore.GetGuid(0);
+        Guid userId = GuidStore.GetGuid(0);
         
         // Act
         model.TryGrantPermission(userId, "read");

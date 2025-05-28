@@ -13,15 +13,20 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class KeyValueEntryRepositoryTests(IUnitOfWorkFactory infrastructure, KeyValueEntryFaker faker) {
+public class KeyValueEntryRepositoryTests {
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    public required ServiceProviderDataSource ServiceProvider { get; init; }
+
+    private IUnitOfWorkFactory Infrastructure => ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+    private KeyValueEntryFaker Faker => ServiceProvider.GetRequiredService<KeyValueEntryFaker>();
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.Create();
+        await using IUnitOfWork unitOfWork = Infrastructure.Create();
 
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
@@ -33,11 +38,11 @@ public class KeyValueEntryRepositoryTests(IUnitOfWorkFactory infrastructure, Key
     [Test]
     public async Task TryAddOrUpdateAsync_ReturnsExpectedResult() {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.Create();
+        await using IUnitOfWork unitOfWork = Infrastructure.Create();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
-        KeyValueEntryModel model = faker.Faker.Generate();
+        KeyValueEntryModel model = Faker.Faker.Generate();
         string key = model.Key;
         string? value = model.Value;
 

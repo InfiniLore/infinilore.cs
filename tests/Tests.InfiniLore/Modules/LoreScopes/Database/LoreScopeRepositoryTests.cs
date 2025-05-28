@@ -10,12 +10,15 @@ namespace Tests.InfiniLore.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class LoreScopeRepositoryTests(IReadonlyUnitOfWorkFactory infrastructure, GuidStore guidStore) {
+public class LoreScopeRepositoryTests {
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    public required ServiceProviderDataSource ServiceProvider { get; init; }
+    
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.Create();
+        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
 
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
@@ -30,7 +33,9 @@ public class LoreScopeRepositoryTests(IReadonlyUnitOfWorkFactory infrastructure,
     [Arguments("KNOWN NAME", 1, false)]// Same name, but different user
     public async Task IsLoreScopeNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.Create();
+        var guidStore = ServiceProvider.GetRequiredService<GuidStore>();
+        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
@@ -47,7 +52,9 @@ public class LoreScopeRepositoryTests(IReadonlyUnitOfWorkFactory infrastructure,
     [Arguments("KNOWN NAME", 1, true)]// Same name, but different user
     public async Task IsLoreScopeNotNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.Create();
+        var guidStore = ServiceProvider.GetRequiredService<GuidStore>();
+        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act

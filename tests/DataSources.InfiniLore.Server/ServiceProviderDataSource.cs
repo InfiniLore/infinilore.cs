@@ -13,20 +13,22 @@ using Testcontainers.Minio;
 using Testcontainers.MsSql;
 
 namespace DataSources.InfiniLore.Server;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// TODO: This is a bit weird as it launches multiple instances of the same test containers.
-//      We need to figure out how to get the DI container to be shared across the test project.
-public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<IServiceScope> {
-    private static readonly IServiceProvider ServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
+public class ServiceProviderDataSource {
+    public readonly IServiceProvider SharedServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
-    public override IServiceScope CreateScope(DataGeneratorMetadata dataGeneratorMetadata) => ServiceProvider.CreateAsyncScope();
-    public override object? Create(IServiceScope scope, Type type) => scope.ServiceProvider.GetService(type);
+    public T GetRequiredService<T>() where T : notnull => SharedServiceProvider.GetRequiredService<T>();
+    public T? GetService<T>() => SharedServiceProvider.GetService<T>();
+    public object? GetService(Type type) => SharedServiceProvider.GetService(type);
+    public IEnumerable<T> GetServices<T>() => SharedServiceProvider.GetServices<T>();
+    public IEnumerable<object?> GetServices(Type type) => SharedServiceProvider.GetServices(type);
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // Creation
+    // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
         #region Setup DbConnection
         ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("TEST docker");
@@ -77,5 +79,4 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
         await populator.PopulateAsync();
         return provider;
     }
-
 }

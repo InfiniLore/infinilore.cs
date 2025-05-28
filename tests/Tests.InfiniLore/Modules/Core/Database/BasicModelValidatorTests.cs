@@ -11,15 +11,22 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class BasicModelValidatorTests(IValidator<BasicModel> validator) {
+public class BasicModelValidatorTests {
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    public required ServiceProviderDataSource ServiceProvider { get; init; }
+
+    private IValidator<BasicModel> Validator => ServiceProvider.GetRequiredService<IValidator<BasicModel>>();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests
+    // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task BasicModel_ShouldHaveValidEmptyConstructor() {
         // Arrange
         var entity = new BasicModel();
         
         // Act
-        ValidationResult? result = await validator.ValidateAsync(entity);
+        ValidationResult? result = await Validator.ValidateAsync(entity);
 
         // Assert
         await Assert.That(result.IsValid).IsTrue();
@@ -33,7 +40,7 @@ public class BasicModelValidatorTests(IValidator<BasicModel> validator) {
         };
         
         // Act
-        ValidationResult? result = await validator.ValidateAsync(entity);
+        ValidationResult? result = await Validator.ValidateAsync(entity);
     
         // Assert
         await Assert.That(result.IsValid).IsFalse();

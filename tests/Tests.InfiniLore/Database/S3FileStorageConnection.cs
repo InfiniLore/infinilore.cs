@@ -10,11 +10,14 @@ namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class S3FileStorageConnection(IS3FileStorageService s3FileStorageService) {
+public class S3FileStorageConnection {
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    public required ServiceProviderDataSource ServiceProvider { get; init; }
+    
     [Test]
     public async Task CanConnect() {
         // Arrange
+        var s3FileStorageService = ServiceProvider.GetRequiredService<IS3FileStorageService>();
         
         // Act
         Result result = await s3FileStorageService.CanConnectAsync();

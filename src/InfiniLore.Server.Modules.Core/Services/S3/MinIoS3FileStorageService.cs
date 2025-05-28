@@ -52,7 +52,7 @@ public class MinIoS3FileStorageService(
         }
     }
     
-    public async ValueTask<Result> IsBucketInitalizedAsync(string bucketName, CancellationToken ct = default) {
+    public async ValueTask<Result> IsBucketInitializedAsync(string bucketName, CancellationToken ct = default) {
         try {
             bool found = await minioClient.BucketExistsAsync(GetArgs<BucketExistsArgs>(bucketName), ct);
             return found;
