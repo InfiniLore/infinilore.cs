@@ -24,6 +24,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+        <PackageReference Include="Minio" />
+        <PackageReference Include="Testcontainers.Minio" />
         <PackageReference Include="Testcontainers.MsSql" />
     </ItemGroup>
 

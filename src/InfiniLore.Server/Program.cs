@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 using Serilog;
 using System.Security.Claims;
 using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
@@ -91,6 +92,14 @@ public static class Program {
             builder.Services,
             moduleBuilder.ModuleAssemblies, 
             options => options.UseSqlServer(connectionString)
+        );
+
+        await FileDbFactory.CreateDockerMinIoContainer();
+        FileDbFactory.RegisterDatabase(
+            builder.Services,
+            options => options.WithEndpoint($"localhost:{FileDbFactory.Port}")
+                .WithCredentials(FileDbFactory.AccessKey, FileDbFactory.SecretKey)
+                .WithSSL(false)  // For local development
         );
 
         #endregion
