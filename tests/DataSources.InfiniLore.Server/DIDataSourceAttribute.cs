@@ -30,12 +30,14 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
         ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("TEST docker");
         MsSqlContainer contentDbContainer = new MsSqlBuilder()
             .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
+            .WithPortBinding(1433, true)
             .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
             .WithName("infinilore-testing-db")
             .Build();
         
         MinioContainer minIoContainer = new MinioBuilder()
             .WithLogger(containerLoggerFactory.CreateLogger<MinioContainer>())
+            .WithPortBinding(9000, true)
             .WithImage("minio/minio")
             .WithName("infinilore-testing-db-file")
             .Build(); 
