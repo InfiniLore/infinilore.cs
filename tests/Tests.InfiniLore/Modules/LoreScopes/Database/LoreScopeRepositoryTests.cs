@@ -11,7 +11,7 @@ namespace Tests.InfiniLore.Modules.LoreScopes.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class LoreScopeRepositoryTests {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
     public required ServiceProviderDataSource ServiceProvider { get; init; }
     
     [Test]

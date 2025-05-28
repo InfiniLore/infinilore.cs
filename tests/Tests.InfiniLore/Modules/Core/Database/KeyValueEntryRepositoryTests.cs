@@ -14,7 +14,7 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class KeyValueEntryRepositoryTests {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
     public required ServiceProviderDataSource ServiceProvider { get; init; }
 
     private IUnitOfWorkFactory Infrastructure => ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();

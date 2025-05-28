@@ -11,7 +11,7 @@ namespace Tests.InfiniLore.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class S3FileStorageConnection {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
     public required ServiceProviderDataSource ServiceProvider { get; init; }
     
     [Test]

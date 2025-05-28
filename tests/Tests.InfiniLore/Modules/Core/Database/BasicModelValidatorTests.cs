@@ -12,7 +12,7 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class BasicModelValidatorTests {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerAssembly)]
+    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
     public required ServiceProviderDataSource ServiceProvider { get; init; }
 
     private IValidator<BasicModel> Validator => ServiceProvider.GetRequiredService<IValidator<BasicModel>>();
