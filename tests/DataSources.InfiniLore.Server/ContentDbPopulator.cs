@@ -21,8 +21,7 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task MigrateAsync() {
-        CancellationTokenSource cts = new ();
-        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         CancellationToken token = cts.Token;
         
         await using ContentDb dbContext = await serviceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync(token);
@@ -31,8 +30,7 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     }
     
     public async Task PopulateAsync() {
-        CancellationTokenSource cts = new ();
-        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
         CancellationToken token = cts.Token;
         
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
