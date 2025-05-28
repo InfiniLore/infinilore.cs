@@ -23,14 +23,22 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task MigrateAsync() {
-        await using ContentDb dbContext = await serviceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync();
-        await dbContext.Database.MigrateAsync();
-        await dbContext.SaveChangesAsync();
+        CancellationTokenSource cts = new ();
+        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        CancellationToken token = cts.Token;
+        
+        await using ContentDb dbContext = await serviceProvider.GetRequiredService<IDbContextFactory<ContentDb>>().CreateDbContextAsync(token);
+        await dbContext.Database.MigrateAsync(cancellationToken: token);
+        await dbContext.SaveChangesAsync(token);
     }
     
     public async Task PopulateAsync() {
+        CancellationTokenSource cts = new ();
+        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        CancellationToken token = cts.Token;
+        
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
-        var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
+        var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>(token);
 
         InfiniLoreUserModel owner = InfiniLoreUserFaker.GetById(GuidStore.GetGuid(2));
         
