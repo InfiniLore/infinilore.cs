@@ -16,11 +16,11 @@ namespace InfiniLore.Server.Modules.Core.S3;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IS3FileStorageService>]
-public class MinIoS3FileStorageService(
-    ILogger<MinIoS3FileStorageService> logger,
+[InjectableScoped<IS3FileStorage>]
+public class MinIoS3FileStorage(
+    ILogger<MinIoS3FileStorage> logger,
     IMinioClient minioClient
-) : IS3FileStorageService {
+) : IS3FileStorage {
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

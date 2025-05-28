@@ -13,6 +13,13 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 [InjectableScoped<ILoreScopeRepository>]
 public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, LoreScopeModel>, ILoreScopeRepository {
 
+    protected override IQueryable<LoreScopeModel> AlwaysInclude(IQueryable<LoreScopeModel> query) => query
+        .Include(l => l.PosterImageMetaData);
+
+    protected override IQueryable<LoreScopeModel> OptionalInclude(IQueryable<LoreScopeModel> query) => query
+        .Include(l => l.AccessProtection).ThenInclude(ap => ap!.Rules)
+        .Include(l => l.PosterImageMetaData);
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

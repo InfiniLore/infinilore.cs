@@ -1,17 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Server.Modules.Core.Database;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
+
+namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly record struct QueryConfig(
-    bool OptionalInclude = false,
-    bool Reverse = false,
-    bool RetrieveSoftDeleted = false
-) {
-    public static QueryConfig Default => new();
-    public static QueryConfig WithOptional => new(OptionalInclude: true);
-    public static QueryConfig WithReverse => new(Reverse: true);
-    public static QueryConfig WithRetrieveSoftDeleted => new(RetrieveSoftDeleted: true);
-}
+[UsedImplicitly]
+public record UpsertLoreScopeImageRequest(
+    Guid LoreScopeId,
+    string FileName,
+    string ContentType,
+    IFormFile File
+);
