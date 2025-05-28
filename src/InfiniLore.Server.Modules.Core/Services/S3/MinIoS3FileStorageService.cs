@@ -21,8 +21,6 @@ public class MinIoS3FileStorageService(
     ILogger<MinIoS3FileStorageService> logger,
     IMinioClient minioClient
 ) : IS3FileStorageService {
-
-    private static T GetArgs<T>(string bucketName) where T : BucketArgs<T>, new() => new T().WithBucket(bucketName);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -40,10 +38,16 @@ public class MinIoS3FileStorageService(
     
     public async ValueTask<Result> TryInitializeBucketAsync(string bucketName, CancellationToken ct = default) {
         try {
-            bool found = await minioClient.BucketExistsAsync(GetArgs<BucketExistsArgs>(bucketName), ct);
+            bool found = await minioClient.BucketExistsAsync(
+                new BucketExistsArgs().WithBucket(bucketName),
+                ct
+            );
             if (found) return true;
             
-            await minioClient.MakeBucketAsync(GetArgs<MakeBucketArgs>(bucketName), ct);
+            await minioClient.MakeBucketAsync(
+                new MakeBucketArgs().WithBucket(bucketName),
+                ct
+            );
             return true;
         }
         catch (Exception e) {
@@ -54,7 +58,10 @@ public class MinIoS3FileStorageService(
     
     public async ValueTask<Result> IsBucketInitializedAsync(string bucketName, CancellationToken ct = default) {
         try {
-            bool found = await minioClient.BucketExistsAsync(GetArgs<BucketExistsArgs>(bucketName), ct);
+            bool found = await minioClient.BucketExistsAsync(
+                new BucketExistsArgs().WithBucket(bucketName),
+                ct
+            );
             return found;
         }
         catch (Exception e) {
@@ -65,7 +72,7 @@ public class MinIoS3FileStorageService(
 
     public async ValueTask<Result> TryDeleteBucketAsync(string bucketName, CancellationToken ct = default) {
         try {
-            // First remove all objects
+            // First, remove all objects
             ListObjectsArgs listArgs = new ListObjectsArgs()
                 .WithBucket(bucketName)
                 .WithRecursive(true);
@@ -77,7 +84,10 @@ public class MinIoS3FileStorageService(
             }
 
             // Then remove the bucket
-            await minioClient.RemoveBucketAsync(GetArgs<RemoveBucketArgs>(bucketName), ct);
+            await minioClient.RemoveBucketAsync(
+                new RemoveBucketArgs().WithBucket(bucketName),
+                ct
+            );
             return true;
         }
         catch (Exception e) {
