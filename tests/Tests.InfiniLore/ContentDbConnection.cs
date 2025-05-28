@@ -6,16 +6,16 @@ using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.InfiniLore.Server.Database;
+namespace Tests.InfiniLore;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure>(Shared = SharedType.PerTestSession)]
-public class ContentDbConnection(ContentDbInfrastructure infrastructure) {
+[DiDataSource]
+public class ContentDbConnection(IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory) {
     [Test]
     public async Task CanConnect() {
         // Arrange
-        await using IReadonlyUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
+        await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act
@@ -28,7 +28,7 @@ public class ContentDbConnection(ContentDbInfrastructure infrastructure) {
     [Test]
     public async Task IsMigratedCorrectly() {
         // Arrange
-        await using IReadonlyUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
+        await using IReadonlyUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act

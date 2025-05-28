@@ -54,8 +54,13 @@ public class S3FileDbFactory {
 
     public static void RegisterDatabase(
         IServiceCollection services,
-        Action<IMinioClient> options
+        string connectionString,
+        string accessKey,
+        string secretKey
     ) {
-        services.AddMinio(options);
+        services.AddMinio(client => client.WithEndpoint(connectionString)
+            .WithCredentials(accessKey, secretKey)
+            .WithSSL(false) // For local development
+        );
     }
 }

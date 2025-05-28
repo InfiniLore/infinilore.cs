@@ -6,7 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Modules.Core.Database;
 
-namespace Test.InfiniLore.Server.Modules.Core.Database;
+namespace Tests.InfiniLore.Modules.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

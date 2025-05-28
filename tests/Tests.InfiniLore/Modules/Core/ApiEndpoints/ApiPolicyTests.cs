@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Test.InfiniLore.Server.Modules.Core.ApiEndpoints;
+namespace Tests.InfiniLore.Modules.Core.ApiEndpoints;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

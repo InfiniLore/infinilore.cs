@@ -6,16 +6,16 @@ using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
-namespace Tests.InfiniLore.Server.Database.Repositories.Data.User;
+namespace Tests.InfiniLore.Repositories.Data.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, GuidStore>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, GuidStore guidStore) {
+[DiDataSource]
+public class LoreScopeRepositoryTests(IReadonlyUnitOfWorkFactory infrastructure, GuidStore guidStore) {
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
+        await using IUnitOfWork unitOfWork = infrastructure.Create();
 
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
@@ -30,7 +30,7 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Gu
     [Arguments("KNOWN NAME", 1, false)]// Same name, but different user
     public async Task IsLoreScopeNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
+        await using IUnitOfWork unitOfWork = infrastructure.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
@@ -47,7 +47,7 @@ public class LoreScopeRepositoryTests(ContentDbInfrastructure infrastructure, Gu
     [Arguments("KNOWN NAME", 1, true)]// Same name, but different user
     public async Task IsLoreScopeNotNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        await using IUnitOfWork unitOfWork = infrastructure.GetReadonlyUnitOfWork();
+        await using IUnitOfWork unitOfWork = infrastructure.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act

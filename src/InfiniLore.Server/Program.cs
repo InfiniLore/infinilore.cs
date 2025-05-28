@@ -97,9 +97,9 @@ public static class Program {
         await S3FileDbFactory.CreateDockerMinIoContainer();
         S3FileDbFactory.RegisterDatabase(
             builder.Services,
-            options => options.WithEndpoint($"localhost:{S3FileDbFactory.Port}")
-                .WithCredentials(S3FileDbFactory.AccessKey, S3FileDbFactory.SecretKey)
-                .WithSSL(false)  // For local development
+            $"localhost:{S3FileDbFactory.Port}",
+            S3FileDbFactory.AccessKey,
+            S3FileDbFactory.SecretKey
         );
 
         #endregion

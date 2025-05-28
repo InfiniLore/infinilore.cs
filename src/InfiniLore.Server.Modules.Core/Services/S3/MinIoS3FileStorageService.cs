@@ -27,6 +27,17 @@ public class MinIoS3FileStorageService(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public async ValueTask<Result> CanConnectAsync(CancellationToken ct = default) {
+        try {
+            await minioClient.ListBucketsAsync(ct);
+            return true;
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to connect to MinIO");
+            return Result.FromError("Failed to connect to MinIO");
+        }    
+    }
+    
     public async ValueTask<Result> TryInitializeBucketAsync(string bucketName, CancellationToken ct = default) {
         try {
             bool found = await minioClient.BucketExistsAsync(GetArgs<BucketExistsArgs>(bucketName), ct);

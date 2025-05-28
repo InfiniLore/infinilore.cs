@@ -9,19 +9,19 @@ using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.InfiniLore.Server.Database.Repositories.Data.System;
+namespace Tests.InfiniLore.Repositories.Data.System;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ContentDbInfrastructure, KeyValueEntryFaker>(Shared = [SharedType.PerTestSession, SharedType.PerClass])]
-public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure, KeyValueEntryFaker faker) {
+[DiDataSource]
+public class KeyValueEntryRepositoryTests(IUnitOfWorkFactory infrastructure, KeyValueEntryFaker faker) {
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods
     // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange
-        await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
+        await using IUnitOfWork unitOfWork = infrastructure.Create();
 
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
@@ -33,7 +33,7 @@ public class KeyValueEntryRepositoryTests(ContentDbInfrastructure infrastructure
     [Test]
     public async Task TryAddOrUpdateAsync_ReturnsExpectedResult() {
         // Arrange
-        await using IUnitOfWork unitOfWork = await infrastructure.GetUnitOfWork();
+        await using IUnitOfWork unitOfWork = infrastructure.Create();
         var repo = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 

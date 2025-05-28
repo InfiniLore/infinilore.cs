@@ -8,6 +8,8 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IS3FileStorageService {
+    ValueTask<Result> CanConnectAsync(CancellationToken ct = default);
+    
     ValueTask<Result> TryInitializeBucketAsync(string bucketName, CancellationToken ct = default);
     ValueTask<Result> IsBucketInitalizedAsync(string bucketName, CancellationToken ct = default);
     ValueTask<Result> TryDeleteBucketAsync(string bucketName, CancellationToken ct = default);

@@ -21,15 +21,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
-      <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.Core\InfiniLore.Server.Modules.Core.csproj" />
-      <ProjectReference Include="..\DataSources.InfiniLore.Server\DataSources.InfiniLore.Server.csproj" />
+        <ProjectReference Include="..\..\src\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\DataSources.InfiniLore.Server\DataSources.InfiniLore.Server.csproj"/>
+        <ProjectReference Include="..\Fakers.InfiniLore.Server\Fakers.InfiniLore.Server.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Messaging\" />
-      <Folder Include="Services\" />
+        <Folder Include="Configurations\"/>
+        <Folder Include="Modules\Core\Messaging\" />
+        <Folder Include="Modules\Core\Services\" />
     </ItemGroup>
-
 
 </Project>

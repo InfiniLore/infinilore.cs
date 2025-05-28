@@ -5,7 +5,7 @@ using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Modules.Core.Database;
 using System.Collections.Frozen;
 
-namespace Test.InfiniLore.Server.Modules.Core.Database.AccessProtection;
+namespace Tests.InfiniLore.Modules.Core.Database.AccessProtection;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
