@@ -31,10 +31,10 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
     
     public async Task PopulateAsync() {
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        CancellationToken token = cts.Token;
+        CancellationToken ct = cts.Token;
         
         await using IUnitOfWork unitOfWork = serviceProvider.GetRequiredService<IUnitOfWorkFactory>().Create();
-        var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>(token);
+        var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>(ct);
 
         InfiniLoreUserModel owner = InfiniLoreUserFaker.GetById(GuidStore.GetGuid(2));
         
@@ -54,6 +54,6 @@ public class ContentDbPopulator(IServiceProvider serviceProvider) {
             }
         );
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(ct);
     }
 }
