@@ -27,7 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Configurations\"/>
         <Folder Include="Modules\Core\Messaging\" />
         <Folder Include="Modules\Core\Services\" />
     </ItemGroup>
