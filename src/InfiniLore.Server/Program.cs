@@ -94,11 +94,11 @@ public static class Program {
             options => options.UseSqlServer(connectionString)
         );
 
-        await FileDbFactory.CreateDockerMinIoContainer();
-        FileDbFactory.RegisterDatabase(
+        await S3FileDbFactory.CreateDockerMinIoContainer();
+        S3FileDbFactory.RegisterDatabase(
             builder.Services,
-            options => options.WithEndpoint($"localhost:{FileDbFactory.Port}")
-                .WithCredentials(FileDbFactory.AccessKey, FileDbFactory.SecretKey)
+            options => options.WithEndpoint($"localhost:{S3FileDbFactory.Port}")
+                .WithCredentials(S3FileDbFactory.AccessKey, S3FileDbFactory.SecretKey)
                 .WithSSL(false)  // For local development
         );
 

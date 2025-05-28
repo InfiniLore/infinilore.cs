@@ -11,7 +11,7 @@ namespace Tests.InfiniLore.Server.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [ClassDataSource<ContentDbInfrastructure>(Shared = SharedType.PerTestSession)]
-public class DatabaseConnection(ContentDbInfrastructure infrastructure) {
+public class ContentDbConnection(ContentDbInfrastructure infrastructure) {
     [Test]
     public async Task CanConnect() {
         // Arrange

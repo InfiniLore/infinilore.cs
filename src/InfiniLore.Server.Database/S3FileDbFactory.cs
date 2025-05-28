@@ -12,7 +12,7 @@ namespace InfiniLore.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class FileDbFactory {
+public class S3FileDbFactory {
     private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
     public const string AccessKey = "minioadmin"; // TODO make MinIo AccessKey into config settings
     public const string SecretKey = "minioadmin"; // TODO make MinIo SecretKey into config settings
@@ -57,6 +57,5 @@ public class FileDbFactory {
         Action<IMinioClient> options
     ) {
         services.AddMinio(options);
-        services.AddSingleton<MinIoFileDb>();
     }
 }
