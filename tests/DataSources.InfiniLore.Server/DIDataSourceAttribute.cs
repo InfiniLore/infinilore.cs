@@ -32,14 +32,12 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
             .WithPortBinding(MsSqlBuilder.MsSqlPort, true)
             .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
-            .WithName("infinilore-testing-db")
             .Build();
         
         MinioContainer minIoContainer = new MinioBuilder()
             .WithLogger(containerLoggerFactory.CreateLogger<MinioContainer>())
             .WithPortBinding(MinioBuilder.MinioPort, true)
             .WithImage("minio/minio")
-            .WithName("infinilore-testing-db-file")
             .Build(); 
 
         await contentDbContainer.StartAsync();
