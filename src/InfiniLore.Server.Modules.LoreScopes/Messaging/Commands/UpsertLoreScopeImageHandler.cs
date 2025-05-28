@@ -28,7 +28,7 @@ public class UpsertLoreScopeImageHandler(
 ) : CommandHandler<UpsertLoreScopeImageRequest, MessageResponse> {
 
     public override async Task<MessageResponse> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         
         Result<LoreScopeModel> loreScope = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
@@ -36,49 +36,51 @@ public class UpsertLoreScopeImageHandler(
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return MessageResponse.FromErrorString("Failed to find lorescope with id");
         }
-
-        if (!await TryCreateNewMetaDataAsync(command, foundModel, unitOfWork, ct)) {
+        
+        S3FileMetaDataModel? metaData = await TryCreateNewMetaDataAsync(command, foundModel, unitOfWork, ct);
+        if (metaData is null) {
             logger.Warning("Failed to create new lorescope image metadata");
             return MessageResponse.FromErrorString("Failed to create new lorescope image metadata");
         }
 
-        if (!await fileStorage.TryUploadFileAsync(foundModel.S3BucketName, command.FileName, command.FileStream, command.ContentType, ct)) {
+        if (!await fileStorage.TryUploadFileAsync(foundModel.S3BucketName, metaData.Id, command.FileStream, command.ContentType, ct)) {
             logger.Warning("Failed to upload file to s3 bucket");
             return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");       
         }
         
         logger.LogInformation("Uploaded file to s3 bucket");
+        await unitOfWork.SaveChangesAsync(ct);
         return true;
     }
     
-    private async Task<bool> TryCreateNewMetaDataAsync(UpsertLoreScopeImageRequest command, LoreScopeModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {
+    private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(UpsertLoreScopeImageRequest command, LoreScopeModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         
-        var newMetaData = new S3FileMetaDataModel {
+        var metaData = new S3FileMetaDataModel {
             ContentType = command.ContentType,
             FileName = command.FileName
         };
         
-        ValidationResult validMetaData = await s3FileValidator.ValidateAsync(newMetaData, ct);
+        ValidationResult validMetaData = await s3FileValidator.ValidateAsync(metaData, ct);
         if (!validMetaData.IsValid) {
             logger.Warning("Validation failed: {Reason}", validMetaData.Errors);
-            return false;
+            return null;
         }
         
-        foundModel.PosterImageMetaDataId = newMetaData.Id;
-        foundModel.PosterImageMetaData = newMetaData;
+        foundModel.PosterImageMetaDataId = metaData.Id;
+        foundModel.PosterImageMetaData = metaData;
         foundModel.UpdateLastModifiedDate();
         
         if (await loreScopeValidator.ValidateAsync(foundModel, ct) is {IsValid: false} validModel ) {
             logger.Warning("Validation failed: {Reason}", validModel.Errors);
-            return false;       
+            return null;       
         }
 
-        await s3FileMetaDataRepo.AddAsync(newMetaData, ct);
+        await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await loreScopeRepo.UpdateAsync(foundModel, ct);
         
         logger.LogInformation("Created new lorescope image metadata");
-        return true;
+        return metaData;
     }
 } 

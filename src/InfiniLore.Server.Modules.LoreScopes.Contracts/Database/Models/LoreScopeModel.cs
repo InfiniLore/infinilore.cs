@@ -18,11 +18,11 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     public Guid? AccessProtectionId { get; set; } 
     public AccessProtectionModel? AccessProtection { get; set; } 
     
-    public Guid? PosterImageMetaDataId { get; set; } 
-    public S3FileMetaDataModel? PosterImageMetaData { get; set; }
-    
     [MemberNotNullWhen(true, nameof(AccessProtectionId), nameof(AccessProtection))] 
     public bool HasAccessProtection => AccessProtectionId != null;
+    
+    public Guid? PosterImageMetaDataId { get; set; } 
+    public S3FileMetaDataModel? PosterImageMetaData { get; set; }
 
     [NotMapped] public string S3BucketName => $"lorescope-{Id.ToString().ToLowerInvariant()}";
 

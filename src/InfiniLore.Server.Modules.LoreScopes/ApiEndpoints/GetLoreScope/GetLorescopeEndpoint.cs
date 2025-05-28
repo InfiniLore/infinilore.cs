@@ -53,6 +53,12 @@ public class GetLorescopeEndpoint(
 
         // Return
         LoreScopeResponse response = Map.FromEntity(loreScope);
+
+        MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
+        if (imageUrlResponse.TryGetAsSuccess(out string imageUrl)) {
+            response.ImageUrl = imageUrl;
+        }
+        
         return TypedResults.Ok(response);
     }
 }

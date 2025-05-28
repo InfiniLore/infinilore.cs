@@ -10,6 +10,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record UpsertLoreScopeImageRequest(
+    Guid UserId,
     Guid LoreScopeId,
     string FileName,
     string ContentType,
