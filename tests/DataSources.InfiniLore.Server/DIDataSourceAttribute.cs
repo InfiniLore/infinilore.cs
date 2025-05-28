@@ -17,7 +17,7 @@ namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // ReSharper disable once InconsistentNaming
 public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<IServiceScope> {
-    private static readonly IServiceProvider ServiceProvider = Task.Run(CreateSharedServiceProvider).Result;
+    private static readonly IServiceProvider ServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
