@@ -40,8 +40,10 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             .WithImage("minio/minio")
             .Build(); 
 
-        await contentDbContainer.StartAsync();
-        await minIoContainer.StartAsync();
+        await Task.WhenAll(
+            contentDbContainer.StartAsync(),
+            minIoContainer.StartAsync()
+        );
         #endregion
         
         var services = new ServiceCollection();
@@ -66,11 +68,11 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             minIoContainer.GetSecretKey()       
         );
         
-        ServiceProvider serviceProvider = services.BuildServiceProvider();
-        var populator = new ContentDbPopulator(serviceProvider);
+        ServiceProvider provider = services.BuildServiceProvider();
+        var populator = new ContentDbPopulator(provider);
         await populator.MigrateAsync();
         await populator.PopulateAsync();
-        return serviceProvider;
+        return provider;
     }
 
 }
