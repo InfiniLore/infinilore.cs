@@ -10,14 +10,17 @@ namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ContentDbConnection {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
-    public required ServiceProviderDataSource ServiceProvider { get; init; }
+[ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
+public class ContentDbConnection(ServiceProviderDataSource serviceProvider) {
+    private IReadonlyUnitOfWorkFactory Factory => serviceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>();
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task CanConnect() {
         // Arrange
-        await using IReadonlyUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>().Create();
+        await using IReadonlyUnitOfWork unitOfWork = Factory.Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act
@@ -30,7 +33,7 @@ public class ContentDbConnection {
     [Test]
     public async Task IsMigratedCorrectly() {
         // Arrange
-        await using IReadonlyUnitOfWork unitOfWork = ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>().Create();
+        await using IReadonlyUnitOfWork unitOfWork = Factory.Create();
         var dbContext = await unitOfWork.GetDbContextAsync<ContentDb>();
 
         // Act

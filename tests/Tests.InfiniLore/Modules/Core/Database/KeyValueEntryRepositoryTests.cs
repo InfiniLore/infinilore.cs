@@ -13,12 +13,10 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class KeyValueEntryRepositoryTests {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
-    public required ServiceProviderDataSource ServiceProvider { get; init; }
-
-    private IUnitOfWorkFactory Infrastructure => ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
-    private KeyValueEntryFaker Faker => ServiceProvider.GetRequiredService<KeyValueEntryFaker>();
+[ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
+public class KeyValueEntryRepositoryTest(ServiceProviderDataSource serviceProvider) {
+    private IUnitOfWorkFactory Infrastructure => serviceProvider.GetRequiredService<IUnitOfWorkFactory>();
+    private KeyValueEntryFaker Faker => serviceProvider.GetRequiredService<KeyValueEntryFaker>();
     
     // -----------------------------------------------------------------------------------------------------------------
     // Test Methods

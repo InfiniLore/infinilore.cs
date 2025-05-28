@@ -10,17 +10,19 @@ namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class S3FileStorageConnection {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
-    public required ServiceProviderDataSource ServiceProvider { get; init; }
-    
+[ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
+public class S3FileStorageConnection(ServiceProviderDataSource serviceProvider) {
+    private IS3FileStorageService S3FileStorageService => serviceProvider.GetRequiredService<IS3FileStorageService>();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task CanConnect() {
         // Arrange
-        var s3FileStorageService = ServiceProvider.GetRequiredService<IS3FileStorageService>();
         
         // Act
-        Result result = await s3FileStorageService.CanConnectAsync();
+        Result result = await S3FileStorageService.CanConnectAsync();
 
         // Assert
         await Assert.That(result.TryGetState(out bool isConnected)).IsTrue();

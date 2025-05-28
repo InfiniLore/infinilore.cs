@@ -20,11 +20,11 @@ namespace DataSources.InfiniLore.Server;
 public class ServiceProviderDataSource {
     public readonly IServiceProvider SharedServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
-    public T GetRequiredService<T>() where T : notnull => SharedServiceProvider.GetRequiredService<T>();
-    public T? GetService<T>() => SharedServiceProvider.GetService<T>();
-    public object? GetService(Type type) => SharedServiceProvider.GetService(type);
-    public IEnumerable<T> GetServices<T>() => SharedServiceProvider.GetServices<T>();
-    public IEnumerable<object?> GetServices(Type type) => SharedServiceProvider.GetServices(type);
+    public T GetRequiredService<T>() where T : notnull => SharedServiceProvider.CreateScope().ServiceProvider.GetRequiredService<T>();
+    public T? GetService<T>() => SharedServiceProvider.CreateScope().ServiceProvider.GetService<T>();
+    public object? GetService(Type type) => SharedServiceProvider.CreateScope().ServiceProvider.GetService(type);
+    public IEnumerable<T> GetServices<T>() => SharedServiceProvider.CreateScope().ServiceProvider.GetServices<T>();
+    public IEnumerable<object?> GetServices(Type type) => SharedServiceProvider.CreateScope().ServiceProvider.GetServices(type);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Creation

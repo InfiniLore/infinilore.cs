@@ -10,15 +10,18 @@ namespace Tests.InfiniLore.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LoreScopeRepositoryTests {
-    [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
-    public required ServiceProviderDataSource ServiceProvider { get; init; }
+[ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
+public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider) {
+    private IUnitOfWorkFactory Factory => serviceProvider.GetRequiredService<IUnitOfWorkFactory>();
+    private GuidStore GuidStore => serviceProvider.GetRequiredService<GuidStore>();
     
+    // -----------------------------------------------------------------------------------------------------------------
+    // Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
     [Test]
     public async Task BoundToCorrectRepository() {
         // Arrange
-        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = Factory.Create();
 
         // Act
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
@@ -33,13 +36,11 @@ public class LoreScopeRepositoryTests {
     [Arguments("KNOWN NAME", 1, false)]// Same name, but different user
     public async Task IsLoreScopeNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        var guidStore = ServiceProvider.GetRequiredService<GuidStore>();
-        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = Factory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        Result result = await repo.IsLoreScopeNameTakenAsync(name, guidStore.GetGuid(userIdSeed));
+        Result result = await repo.IsLoreScopeNameTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
         await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
@@ -52,13 +53,11 @@ public class LoreScopeRepositoryTests {
     [Arguments("KNOWN NAME", 1, true)]// Same name, but different user
     public async Task IsLoreScopeNotNameTakenAsync_ShouldReturnExpected(string name, int userIdSeed, bool expected) {
         // Arrange
-        var guidStore = ServiceProvider.GetRequiredService<GuidStore>();
-        var unitOfWorkFactory = ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = Factory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        Result result = await repo.IsLoreScopeNameNotTakenAsync(name, guidStore.GetGuid(userIdSeed));
+        Result result = await repo.IsLoreScopeNameNotTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
         await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
