@@ -14,10 +14,8 @@ namespace DataSources.InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ContentDbPopulator(IServiceProvider serviceProvider) {
-    private GuidStore GuidStore { get; } = new();
-    private InfiniLoreUserFaker InfiniLoreUserFaker { get; } = new();
-    private KeyValueEntryFaker KeyValueEntryFaker { get; } = new();
-    private LoreScopeFaker LoreScopeFaker { get; } = new();
+    private GuidStore GuidStore { get; } = serviceProvider.GetRequiredService<GuidStore>();
+    private InfiniLoreUserFaker InfiniLoreUserFaker { get; } = serviceProvider.GetRequiredService<InfiniLoreUserFaker>();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
