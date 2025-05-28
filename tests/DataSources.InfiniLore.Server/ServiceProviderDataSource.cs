@@ -18,7 +18,7 @@ namespace DataSources.InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class ServiceProviderDataSource {
-    public readonly IServiceProvider SharedServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
+    private static readonly IServiceProvider SharedServiceProvider = CreateSharedServiceProvider().GetAwaiter().GetResult();
 
     public T GetRequiredService<T>() where T : notnull => SharedServiceProvider.CreateScope().ServiceProvider.GetRequiredService<T>();
     public T? GetService<T>() => SharedServiceProvider.CreateScope().ServiceProvider.GetService<T>();
@@ -30,7 +30,7 @@ public class ServiceProviderDataSource {
     // Creation
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
-        #region Setup DbConnection
+        #region Setup Containers
         ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("TEST docker");
         MsSqlContainer contentDbContainer = new MsSqlBuilder()
             .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
@@ -43,11 +43,9 @@ public class ServiceProviderDataSource {
             .WithPortBinding(MinioBuilder.MinioPort, true)
             .WithImage("minio/minio")
             .Build(); 
-
-        await Task.WhenAll(
-            contentDbContainer.StartAsync(),
-            minIoContainer.StartAsync()
-        );
+        
+        await contentDbContainer.StartAsync();
+        await minIoContainer.StartAsync();
         #endregion
         
         var services = new ServiceCollection();
