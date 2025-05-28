@@ -9,7 +9,7 @@ using InfiniLore.Server.Database;
 using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.InfiniLore.Repositories.Data.System;
+namespace Tests.InfiniLore.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

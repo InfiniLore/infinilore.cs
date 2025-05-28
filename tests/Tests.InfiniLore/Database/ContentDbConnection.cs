@@ -6,7 +6,7 @@ using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.InfiniLore;
+namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

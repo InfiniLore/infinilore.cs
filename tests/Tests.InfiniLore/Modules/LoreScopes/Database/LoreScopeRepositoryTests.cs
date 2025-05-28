@@ -6,7 +6,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
-namespace Tests.InfiniLore.Repositories.Data.User;
+namespace Tests.InfiniLore.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

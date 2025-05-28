@@ -5,7 +5,7 @@ using AterraEngine.Unions;
 using DataSources.InfiniLore.Server;
 using InfiniLore.Server.Modules.Core;
 
-namespace Tests.InfiniLore;
+namespace Tests.InfiniLore.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
