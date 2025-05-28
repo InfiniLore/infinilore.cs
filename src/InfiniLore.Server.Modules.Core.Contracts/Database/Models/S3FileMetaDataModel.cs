@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfiniLore.Server.Modules.Core.Database;
@@ -9,8 +10,16 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class S3FileMetaDataModel : BasicModel {
-    public required string FileName { get; set; }
-    public required string ContentType { get; set; }
+    [MaxLength(Defaults.MaxFileNameLength)] public required string FileName { get; set; }
+    [MaxLength(Defaults.MaxContentTypeLength)	] public required string ContentType { get; set; }
     
     [NotMapped] public Stream? DataStream { get; set; }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Defaults
+    // -----------------------------------------------------------------------------------------------------------------
+    public static class Defaults {
+        public const int MaxFileNameLength = 256;
+        public const int MaxContentTypeLength = 256;
+    }
 }

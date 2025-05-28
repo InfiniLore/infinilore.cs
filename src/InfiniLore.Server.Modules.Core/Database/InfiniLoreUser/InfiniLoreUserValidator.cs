@@ -19,7 +19,6 @@ public class InfiniLoreUserValidator : BasicModelValidator<InfiniLoreUserModel> 
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public InfiniLoreUserValidator(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILoggerFactory factory) {
-        
         _unitOfWorkFactory = unitOfWorkFactory;
         _logger = factory.CreateLogger("VALIDATE InfiniLoreUser");
 
