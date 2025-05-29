@@ -20,8 +20,11 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok<LoreScopesResponse>,
+    // Default Included Results
     NotFound,
     UnauthorizedHttpResult,
+    BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 

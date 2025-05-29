@@ -11,7 +11,11 @@ namespace InfiniLore.Server.Modules.Core.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok<UserProfileResponse>,
+    // Default Included Results
     NotFound,
+    UnauthorizedHttpResult,
+    BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 
