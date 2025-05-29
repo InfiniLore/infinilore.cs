@@ -12,6 +12,7 @@ using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.DevContainers;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.ApiEndpoints;
 using InfiniLore.Server.Modules.Core.Auth;
@@ -39,6 +40,9 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
+        await using var devEnv = new InfiniLoreDevEnvironment();
+        await devEnv.InitializeAsync();
+        
         await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
             // Builder is set up here first
             //      This is so we can override the logging configuration
@@ -52,7 +56,7 @@ public static class Program {
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
 
-            WebApplication app = await BuildApp(builder);
+            WebApplication app = BuildApp(builder, devEnv);
             if (!args.IsEmpty()) await ExecuteCliCommands(args, app); // Has to option to quit before starting of the app
             await Start(app);
         });
@@ -77,28 +81,26 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static async Task<WebApplication> BuildApp(WebApplicationBuilder builder) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreDevEnvironment devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>();
         
         #region Database
-        // Technically we need to wrap this as a `IsDevelopment`
-        //      And have another value for when we don't pull from our own container 
+        // Technically, we need to wrap this as a `IsDevelopment`
+        //      And have another value for when we don't pull from our own containers
         //      Most of it is made through a factory which sets up the docker instance
-        string connectionString = await ContentDbFactory.CreateDockerMsSqlContainer();
         ContentDbFactory.RegisterDatabase(
             builder.Services,
             moduleBuilder.ModuleAssemblies, 
-            options => options.UseSqlServer(connectionString)
+            options => options.UseSqlServer(devEnv.GetSqlConnectionString())
         );
 
-        await S3FileDbFactory.CreateDockerMinIoContainer();
         S3FileDbFactory.RegisterDatabase(
             builder.Services,
-            $"localhost:{S3FileDbFactory.Port}",
-            S3FileDbFactory.AccessKey,
-            S3FileDbFactory.SecretKey
+            $"localhost:{devEnv.GetMinioPort()}",
+            devEnv.GetMinioAccessKey(),
+            devEnv.GetMinioSecretKey()
         );
 
         #endregion

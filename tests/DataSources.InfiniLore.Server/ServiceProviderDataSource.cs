@@ -1,17 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.AspNetCore;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
+using InfiniLore.Server.DevContainers;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.LoreScopes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
-using Testcontainers.Minio;
-using Testcontainers.MsSql;
 
 namespace DataSources.InfiniLore.Server;
 
@@ -35,21 +32,8 @@ public partial class ServiceProviderDataSource {
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
         #region Setup Containers
-        ILoggerFactory containerLoggerFactory = LoggingFactoryExtensions.CreateWithSerilog("TEST docker");
-        MsSqlContainer contentDbContainer = new MsSqlBuilder()
-            .WithLogger(containerLoggerFactory.CreateLogger<MsSqlContainer>())
-            .WithPortBinding(MsSqlBuilder.MsSqlPort, true)
-            .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04")
-            .Build();
-        
-        MinioContainer minIoContainer = new MinioBuilder()
-            .WithLogger(containerLoggerFactory.CreateLogger<MinioContainer>())
-            .WithPortBinding(MinioBuilder.MinioPort, true)
-            .WithImage("minio/minio")
-            .Build(); 
-        
-        await contentDbContainer.StartAsync();
-        await minIoContainer.StartAsync();
+        var devEnv = new InfiniLoreDevEnvironment(isTesting:true);
+        await devEnv.InitializeAsync();
         #endregion
         
         var services = new ServiceCollection();
@@ -65,15 +49,15 @@ public partial class ServiceProviderDataSource {
         ContentDbFactory.RegisterDatabase(
             services,
             moduleBuilder.ModuleAssemblies, 
-            optionsAction: builder => builder.UseSqlServer(contentDbContainer.GetConnectionString())
+            optionsAction: builder => builder.UseSqlServer(devEnv.GetSqlConnectionString())
         );
         
-        string connectionString = HttpUrlRegex.Match(minIoContainer.GetConnectionString()).Groups[1].Value;
+        string connectionString = HttpUrlRegex.Match(devEnv.GetMinioConnectionString()).Groups[1].Value;
         S3FileDbFactory.RegisterDatabase(
             services,
             connectionString,
-            minIoContainer.GetAccessKey(),
-            minIoContainer.GetSecretKey()       
+            devEnv.GetMinioAccessKey(),
+            devEnv.GetMinioSecretKey()       
         );
         
         ServiceProvider provider = services.BuildServiceProvider();
