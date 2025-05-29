@@ -25,7 +25,7 @@ public partial class ServiceProviderDataSource {
     public IEnumerable<object?> GetServices(Type type) => ServiceProvider.CreateScope().ServiceProvider.GetServices(type);
     
     [GeneratedRegex("http(?:s?)://(.*)/")]
-    public static partial Regex HttpUrlRegex { get; }
+    private static partial Regex HttpUrlRegex { get; }
     
     // -----------------------------------------------------------------------------------------------------------------
     // Creation

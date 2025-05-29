@@ -16,13 +16,13 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
     private readonly INetwork _network;
     private readonly MsSqlContainer _sqlContainer;
     private readonly MinioContainer _minioContainer;
-    
+
     private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
     private readonly ILogger _logger = EmptyLoggerFactory.CreateLogger("DOCKER-DEV-ENV");
-    
+
     private const int SqlPort = 40626;
     private const string SqlPassword = "AnnaIsTrans4Ever!";
-    
+
     private const int MinioPort = 40627;
     private const string MinioAccessKey = "minioadmin";
     private const string MinioSecretKey = "minioadmin";
@@ -51,7 +51,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
                 .WithReuse(true)
                 .WithLabel("reuse-id", "infinilore-dev-content");
         }
-            
+
         _sqlContainer = sqlBuilder.Build();
 
         // Configure a MinIO container
@@ -60,7 +60,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
             .WithNetwork(_network)
             .WithLogger(_logger)
             .WithImage("minio/minio");
-        
+
         if (!isTesting) {
             minIoBuilder = minIoBuilder
                 .WithName("infinilore-dev-file")
@@ -69,7 +69,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
                 .WithEnvironment("MINIO_ROOT_USER", MinioAccessKey)
                 .WithEnvironment("MINIO_ROOT_PASSWORD", MinioSecretKey);
         }
-        
+
         _minioContainer = minIoBuilder.Build();
     }
 
@@ -104,6 +104,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
             );
 
             await _network.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
         catch (Exception ex) {
             _logger.LogError(ex, "Error during environment cleanup");
