@@ -15,7 +15,7 @@ namespace InfiniLore.Server.Modules.Core.TokenStore;
 [InjectableScoped<IAuth0AccessTokenStore>]
 public class MediatorProxyAccessTokenStore(
     ILogger<MediatorProxyAccessTokenStore> logger,
-    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) : IAuth0AccessTokenStore {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

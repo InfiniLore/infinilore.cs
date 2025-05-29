@@ -28,7 +28,7 @@ using Response=Results<
 public class GetLoreScopesEndpoint(
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope");

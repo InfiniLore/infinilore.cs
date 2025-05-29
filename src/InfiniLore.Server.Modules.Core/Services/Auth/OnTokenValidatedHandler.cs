@@ -22,7 +22,7 @@ namespace InfiniLore.Server.Modules.Core.Auth;
 public class OnTokenValidatedHandler(
     ILoggerFactory loggerFactory,
     IClaimsDtoHelper claimsPrincipalHelper,
-    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 

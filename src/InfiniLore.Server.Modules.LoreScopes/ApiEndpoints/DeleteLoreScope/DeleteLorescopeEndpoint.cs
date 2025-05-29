@@ -26,7 +26,7 @@ using Response=Results<
 public class DeleteLorescopeEndpoint(
     ILogger<DeleteLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<DeleteLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {

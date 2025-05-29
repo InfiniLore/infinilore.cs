@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Components.Pages.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public partial class Register(
     NavigationManager navigation,
-    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) {
     [Parameter] [SupplyParameterFromQuery(Name = "auth0UserId")] public string Auth0UserId { get; set; } = string.Empty;
     [Parameter] [SupplyParameterFromQuery(Name = "returnUrl")] public string ReturnUrl { get; set; } = string.Empty;

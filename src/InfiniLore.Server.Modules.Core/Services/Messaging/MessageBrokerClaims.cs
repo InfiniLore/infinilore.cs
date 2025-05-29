@@ -8,7 +8,7 @@ namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IMessageBroker>(IMessageBroker.Claims)]
+[InjectableScoped<IMessageBroker>(IMessageBroker.FromClaims)]
 public class MessageBrokerClaims(IAccessingUserProvider accessFactory) : IMessageBroker {
 
     // -----------------------------------------------------------------------------------------------------------------

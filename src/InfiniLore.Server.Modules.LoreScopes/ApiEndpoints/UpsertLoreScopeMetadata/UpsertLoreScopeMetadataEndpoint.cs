@@ -26,7 +26,7 @@ using Response=Results<
 public class UpsertLoreScopeMetadataEndpoint(
     ILogger<UpsertLoreScopeMetadataEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<UpsertLoreScopeMetadataRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {

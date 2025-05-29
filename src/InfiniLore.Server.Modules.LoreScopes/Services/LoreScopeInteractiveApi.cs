@@ -19,7 +19,7 @@ namespace InfiniLore.Server.Modules.LoreScopes;
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
