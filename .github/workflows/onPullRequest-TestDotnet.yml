@@ -3,7 +3,8 @@
 on:
     pull_request:
         types: [opened, synchronize, reopened, ready_for_review]
-        branches: [ core ] 
+        branches: [ core ]
+        draft: false
 
 jobs:
     build:
@@ -22,6 +23,6 @@ jobs:
 
             - name: Build
               run: dotnet build InfiniLore.sln --configuration Release --no-restore
-            
+
             - name: Run tests
               run: dotnet test InfiniLore.sln --configuration Release --no-restore --no-build

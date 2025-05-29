@@ -19,8 +19,9 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 [UsedImplicitly]
 public class GetLorescopeByIdHandler(
     IReadonlyUnitOfWorkFactory factory,
+    IAccessProtectionRules protectionRules,
     ILogger<GetLorescopeByIdHandler> logger
-) : AccessRestrictedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
+) : AccessProtectedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
     protected override MessageResponse<LoreScopeModel> AccessDeniedResult => MessageResponse.FromErrorString("Access denied");
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -47,17 +48,11 @@ public class GetLorescopeByIdHandler(
         return MessageResponse.FromSuccess(value);
     } 
     
-    protected override async ValueTask<bool> ValidateAccessAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
-        await using IReadonlyUnitOfWork unitOfWork = factory.Create();
-        var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-
-        IMessageAccess access = command.Access;
-        if (access.IsServer) return true;
-        return await loreScopeRepository.HasAccessPermissionAsync(
-            command.LorescopeId,
-            access.UserId,
-            PermissionsStore.LorescopeRead, 
+    protected override ValueTask<bool> ValidateAccessAsync(GetLorescopeByIdQuery command, CancellationToken ct = default)
+        => protectionRules.CanAccessRepoWithPermission<ILoreScopeRepository>(
+            command.LorescopeId, 
+            command.AccessingUser,
+            PermissionsStore.LorescopeRead,
             ct
         );
-    }
 }

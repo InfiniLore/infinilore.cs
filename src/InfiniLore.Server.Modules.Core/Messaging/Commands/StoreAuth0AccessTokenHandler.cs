@@ -3,11 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using FluentValidation;
 using InfiniLore.Server.Modules.Core.Auth;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,9 +18,11 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 public class StoreAuth0AccessTokenHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
     IAuth0AccessTokenEncryptionService encryptionService, 
-    IValidator<KeyValueEntryModel> validator
-) : CommandHandler<StoreAuth0AccessTokenRequest, MessageResponse<bool>> {
-    public override async Task<MessageResponse<bool>> ExecuteAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = new()) {
+    IValidator<KeyValueEntryModel> validator,
+    ILogger<StoreAuth0AccessTokenHandler> logger,
+    IAccessProtectionRules protectionRules   
+) : AccessProtectedCommandHandler<StoreAuth0AccessTokenRequest, bool>(logger) {
+    protected override async Task<MessageResponse<bool>> HandleCommandAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
@@ -40,4 +43,7 @@ public class StoreAuth0AccessTokenHandler(
 
         return state;
     }
+    
+    protected override ValueTask<bool> ValidateAccessAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) 
+        => protectionRules.IsServerAsync(command.AccessingUser, ct);  
 }

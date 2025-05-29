@@ -12,12 +12,13 @@ namespace InfiniLore.Server.Components.Pages.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public partial class Register(NavigationManager Navigation, [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker MessageBroker) {
-    [Parameter, SupplyParameterFromQuery(Name = "auth0UserId")]
-    public string Auth0UserId { get; set; } = string.Empty;
-    [Parameter, SupplyParameterFromQuery(Name = "returnUrl")]
-    public string ReturnUrl { get; set; } = string.Empty;
-    
+public partial class Register(
+    NavigationManager navigation,
+    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
+) {
+    [Parameter] [SupplyParameterFromQuery(Name = "auth0UserId")] public string Auth0UserId { get; set; } = string.Empty;
+    [Parameter] [SupplyParameterFromQuery(Name = "returnUrl")] public string ReturnUrl { get; set; } = string.Empty;
+
     private readonly UserModel userModel = new();
 
     private string _usernameValidationMessage = string.Empty;
@@ -25,13 +26,13 @@ public partial class Register(NavigationManager Navigation, [FromKeyedServices(I
     private readonly Stopwatch _debounceStopwatch = new();
     private const int DebounceMilliseconds = 500;
     private UsernameStatus _usernameStatus = UsernameStatus.None;
-    
+
     private class UserModel {
         [Required]
         [StringLength(50, ErrorMessage = "Username must be less than 50 characters.")]
         public string Username { get; set; } = string.Empty;
     }
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -62,13 +63,13 @@ public partial class Register(NavigationManager Navigation, [FromKeyedServices(I
         if (username.IsNullOrWhiteSpace()) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            _usernameStatus = UsernameStatus.None;// Set to None for empty username
+            _usernameStatus = UsernameStatus.None;// Set to None for an empty username
             await InvokeAsync(StateHasChanged);// Refresh UI
             return;
         }
 
         // Call the backend to check username availability
-        MessageResponse mediatorResponse = await MessageBroker.UsernameExistsAsync(username);
+        MessageResponse mediatorResponse = await messageBroker.UsernameExistsAsync(username);
 
         if (!mediatorResponse.TryGetState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
@@ -83,14 +84,14 @@ public partial class Register(NavigationManager Navigation, [FromKeyedServices(I
             : UsernameStatus.Available;
 
         _usernameValidationMessage = string.Empty;// Clear message
-        _isFormDisabled = isTaken;// Disable form if username is taken
+        _isFormDisabled = isTaken;// Disable form if a username is taken
         await InvokeAsync(StateHasChanged);// Refresh UI
     }
     private async Task HandleValidSubmitAsync() {
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MessageResponse<Guid> result = await MessageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
+        MessageResponse<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false;// Allow retry
@@ -103,7 +104,7 @@ public partial class Register(NavigationManager Navigation, [FromKeyedServices(I
             : "/";
 
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
-        Navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
+        navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
     }
 
     private enum UsernameStatus {

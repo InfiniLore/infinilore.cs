@@ -10,13 +10,20 @@
 
     <ItemGroup>
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Testcontainers.MsSql"/>
         <PackageReference Include="TUnit.Core" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj"/>
+        <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj" />
         <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
+        <ProjectReference Include="..\..\src\InfiniLore.Server\InfiniLore.Server.csproj" />
         <ProjectReference Include="..\Fakers.InfiniLore.Server\Fakers.InfiniLore.Server.csproj"/>
     </ItemGroup>
 

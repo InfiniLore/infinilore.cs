@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
+using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Server.Modules.Core.Database;
 using System.Collections.Concurrent;
 
@@ -9,6 +10,7 @@ namespace Fakers.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[InjectableSingleton<InfiniLoreUserFaker>]
 public class InfiniLoreUserFaker {
     private static readonly ConcurrentBag<string> UsedUsernames = [];
     private static readonly ConcurrentBag<string> UsedAuth0MailPasswords = [];

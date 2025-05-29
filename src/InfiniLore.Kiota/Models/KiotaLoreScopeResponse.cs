@@ -22,6 +22,14 @@ namespace InfiniLore.Kiota.Models
 #else
         public string Description { get; set; }
 #endif
+        /// <summary>The imageUrl property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? ImageUrl { get; set; }
+#nullable restore
+#else
+        public string ImageUrl { get; set; }
+#endif
         /// <summary>The name property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -56,6 +64,7 @@ namespace InfiniLore.Kiota.Models
             return new Dictionary<string, Action<IParseNode>>(base.GetFieldDeserializers())
             {
                 { "description", n => { Description = n.GetStringValue(); } },
+                { "imageUrl", n => { ImageUrl = n.GetStringValue(); } },
                 { "name", n => { Name = n.GetStringValue(); } },
             };
         }
@@ -68,6 +77,7 @@ namespace InfiniLore.Kiota.Models
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             base.Serialize(writer);
             writer.WriteStringValue("description", Description);
+            writer.WriteStringValue("imageUrl", ImageUrl);
             writer.WriteStringValue("name", Name);
             writer.WriteAdditionalData(AdditionalData);
         }

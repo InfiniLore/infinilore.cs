@@ -11,4 +11,7 @@ public readonly record struct QueryConfig(
     bool RetrieveSoftDeleted = false
 ) {
     public static QueryConfig Default => new();
+    public static QueryConfig WithOptional => new(OptionalInclude: true);
+    public static QueryConfig WithReverse => new(Reverse: true);
+    public static QueryConfig WithRetrieveSoftDeleted => new(RetrieveSoftDeleted: true);
 }

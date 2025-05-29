@@ -26,6 +26,12 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .HasForeignKey<LoreScopeModel>(x => x.AccessProtectionId)
             .IsRequired(false);
         
+        builder.HasOne(x => x.PosterImageMetaData)
+            .WithOne()
+            .HasForeignKey<LoreScopeModel>(x => x.PosterImageMetaDataId)
+            .IsRequired(false);
+        
         builder.Ignore(x => x.HasAccessProtection);
+        builder.Ignore(x => x.S3BucketName);
     }
 }

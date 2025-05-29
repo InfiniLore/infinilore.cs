@@ -31,7 +31,8 @@ public class LoreScopeInteractiveApi(
     }
     
     public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) 
+            return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 
         // Form and Execute Query
         MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
@@ -40,15 +41,24 @@ public class LoreScopeInteractiveApi(
         );
 
         // Verify Response
-        // ReSharper disable once InvertIf
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedData)) {
             logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", userId, result.AsError.Value);
             return PaginatedResult<ILoreScopeModel>.FromError($"Failed to get LoreScopes for user {userId}");
+        }
+    
+        // Get image URLs for all lorescopes that have poster images
+        foreach (LoreScopeModel loreScope in paginatedData.Items) {
+            if (loreScope.PosterImageMetaDataId is null) continue;
+
+            MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
+            if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) continue;
+            loreScope.ImageUrl = imageUrl;
         }
 
         PaginatedData<ILoreScopeModel> casted = paginatedData.CastTo<ILoreScopeModel>();
         return PaginatedResult<ILoreScopeModel>.FromData(casted);
     }
+
 
     public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");

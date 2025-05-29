@@ -14,7 +14,9 @@ namespace InfiniLore.Server.Services;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IJwtTokenHelper>]
-public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtTokenHelper {
+public class JwtTokenHelper(
+    IHttpContextAccessor httpContextAccessor
+) : IJwtTokenHelper {
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
     public bool IsAuthenticated => _user?.Identity?.IsAuthenticated == true;
@@ -60,14 +62,11 @@ public class JwtTokenHelper(IHttpContextAccessor httpContextAccessor) : IJwtToke
 
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
-        MessageResponse<Guid> result = await new GetUserIdByAuth0IdQuery(auth0UserId) {
-            Access = MessageAccess.Empty
-        }.ExecuteAsync(ct);
+        var query = new GetUserIdByAuth0IdQuery(auth0UserId) { AccessingUser = AccessingUser.Empty };
+        MessageResponse<Guid> result = await query.ExecuteAsync(ct);
+        
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
-
-        return userId != Guid.Empty
-            ? userId
-            : Guid.Empty;
+        return userId;
     }
 
     public string[] GetRoles() => _user?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];

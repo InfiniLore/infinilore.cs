@@ -6,7 +6,7 @@ using InfiniLore.Kiota;
 using InfiniLore.Wasm.Contracts.Services;
 using System.Text.Json;
 
-namespace InfiniLore.Wasm.Services;
+namespace InfiniLore.Wasm.Services.InteractiveApi;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

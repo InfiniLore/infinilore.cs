@@ -33,8 +33,7 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override Task OnInitializedAsync() {
-        if (MarkdownFileId == Guid.Empty) return Task.CompletedTask;
-
+        if (MarkdownFileId == Guid.Empty) {}
         return Task.CompletedTask;
     }
     private Task SaveAsync() {

@@ -54,6 +54,18 @@ public class GetLoreScopesEndpoint(
 
         // Return
         LoreScopesResponse response = Map.FromEntity(paginatedResult);
+
+        List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {
+            MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
+            if (imageUrlResponse.TryGetAsSuccess(out string imageUrl)) {
+                item.ImageUrl = imageUrl;
+            }
+            return item;
+        }).ToList();
+
+        // Wait for all tasks to complete
+        response.Items = await Task.WhenAll(updateTasks);
+        
         return TypedResults.Ok(response);
     }
 }

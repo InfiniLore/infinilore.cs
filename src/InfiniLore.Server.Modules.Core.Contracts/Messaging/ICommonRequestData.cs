@@ -6,6 +6,6 @@ namespace InfiniLore.Server.Modules.Core.Messaging;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ICommonRequestData {
-    IMessageAccess Access { get; }
+    IAccessingUser AccessingUser { get; }
     DateTime CreatedAt { get; }
 }

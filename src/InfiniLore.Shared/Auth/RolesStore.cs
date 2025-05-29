@@ -31,7 +31,6 @@ public static partial class RolesStore {
     private static ImmutableArray<string> UserPermissionsFactory() {
         return [
             PermissionsStoreConstants.LorescopeRead,
-            PermissionsStoreConstants.MarkdownFileRead,
         ];
     }
 
@@ -50,8 +49,7 @@ public static partial class RolesStore {
             ..ConsumerPermissionsFactory(),
             PermissionsStoreConstants.LorescopeWrite,
             PermissionsStoreConstants.LorescopeDelete,
-            PermissionsStoreConstants.MarkdownFileWrite,
-            PermissionsStoreConstants.MarkdownFileDelete,
+            PermissionsStoreConstants.LorescopePosterWrite,
         ];
     }
 

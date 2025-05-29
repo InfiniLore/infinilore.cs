@@ -180,6 +180,41 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("KeyValueEntryModel");
                 });
 
+            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.S3FileMetaDataModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("S3FileMetaDataModel");
+
+                    b.UseTptMappingStrategy();
+                });
+
             modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,6 +242,9 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("PosterImageMetaDataId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
 
@@ -220,6 +258,10 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .IsUnique();
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("PosterImageMetaDataId")
+                        .IsUnique()
+                        .HasFilter("[PosterImageMetaDataId] IS NOT NULL");
 
                     b.HasIndex("OwnerId", "Name", "SoftDeleteDate")
                         .IsUnique()
@@ -269,9 +311,15 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("InfiniLore.Server.Modules.Core.Database.S3FileMetaDataModel", "PosterImageMetaData")
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "PosterImageMetaDataId");
+
                     b.Navigation("AccessProtection");
 
                     b.Navigation("Owner");
+
+                    b.Navigation("PosterImageMetaData");
                 });
 
             modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>

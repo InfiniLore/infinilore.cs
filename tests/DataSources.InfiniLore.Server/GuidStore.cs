@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,6 +10,7 @@ namespace DataSources.InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[InjectableSingleton<GuidStore>]
 public class GuidStore {
     private readonly ConcurrentDictionary<int, Guid> Guids = new();
     private readonly ConcurrentDictionary<string, Guid> StringGuids = new();
