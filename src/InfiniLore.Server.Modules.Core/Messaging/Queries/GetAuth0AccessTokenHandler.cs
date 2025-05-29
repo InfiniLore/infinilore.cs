@@ -20,7 +20,7 @@ public class GetAuth0AccessTokenHandler(
     ILogger<GetAuth0AccessTokenHandler> logger,
     IAuth0AccessTokenEncryptionService encryptionService,
     IMessageAccessProvider accessProvider
-) : AccessRestrictedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
+) : AccessProtectedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
 
     protected override MessageResponse<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
     

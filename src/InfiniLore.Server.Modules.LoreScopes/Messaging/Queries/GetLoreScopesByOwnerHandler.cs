@@ -17,7 +17,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 public class GetLoreScopesByOwnerHandler(
     IReadonlyUnitOfWorkFactory factory,
     ILogger<GetLoreScopesByOwnerHandler> logger
-) : AccessRestrictedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
+) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
 
     protected override async Task<MessageResponse<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();

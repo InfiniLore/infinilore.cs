@@ -8,8 +8,8 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Handlers;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class AccessRestrictedCommandHandlerBase<TInput, TOutput>(
-    ILogger<AccessRestrictedCommandHandlerBase<TInput, TOutput>> logger
+public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
+    ILogger<AccessProtectedCommandHandlerBase<TInput, TOutput>> logger
 ) : CommandHandler<TInput, TOutput>
     where TInput : ICommand<TOutput>, ICommonRequestData {
     protected abstract TOutput AccessDeniedResult { get; }
@@ -48,16 +48,16 @@ public abstract class AccessRestrictedCommandHandlerBase<TInput, TOutput>(
 }
 
 #region Actual implementations
-public abstract class AccessRestrictedCommandHandler<TCommand, TResult>(
-    ILogger<AccessRestrictedCommandHandler<TCommand, TResult>> logger
-) : AccessRestrictedCommandHandlerBase<TCommand, MessageResponse<TResult>>(logger)
+public abstract class AccessProtectedCommandHandler<TCommand, TResult>(
+    ILogger<AccessProtectedCommandHandler<TCommand, TResult>> logger
+) : AccessProtectedCommandHandlerBase<TCommand, MessageResponse<TResult>>(logger)
     where TCommand : ICommand<MessageResponse<TResult>>, ICommonRequestData {
     protected override MessageResponse<TResult> AccessDeniedResult { get; } = MessageResponse.FromErrorString("Access denied");
 }
 
-public abstract class AccessRestrictedCommandHandler<TCommand>(
-    ILogger<AccessRestrictedCommandHandler<TCommand>> logger
-) : AccessRestrictedCommandHandlerBase<TCommand, MessageResponse>(logger)
+public abstract class AccessProtectedCommandHandler<TCommand>(
+    ILogger<AccessProtectedCommandHandler<TCommand>> logger
+) : AccessProtectedCommandHandlerBase<TCommand, MessageResponse>(logger)
     where TCommand : ICommand<MessageResponse>, ICommonRequestData {
     protected override MessageResponse AccessDeniedResult { get; } = MessageResponse.FromErrorString("Access denied");
 }

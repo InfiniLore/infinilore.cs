@@ -20,7 +20,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 public class GetLorescopeByIdHandler(
     IReadonlyUnitOfWorkFactory factory,
     ILogger<GetLorescopeByIdHandler> logger
-) : AccessRestrictedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
+) : AccessProtectedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
     protected override MessageResponse<LoreScopeModel> AccessDeniedResult => MessageResponse.FromErrorString("Access denied");
     
     // -----------------------------------------------------------------------------------------------------------------
