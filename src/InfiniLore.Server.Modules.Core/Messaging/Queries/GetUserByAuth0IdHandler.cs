@@ -41,7 +41,6 @@ public class GetUserByAuth0IdHandler(
         }
     }
 
-    protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
-        return protectionRules.IsServerAsync(command.AccessingUser);
-    }
+    protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default)
+        => protectionRules.IsServerAsync(command.AccessingUser, ct);
 }

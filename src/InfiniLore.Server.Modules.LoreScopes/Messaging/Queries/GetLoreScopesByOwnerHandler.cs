@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.Messaging;
 using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
@@ -16,6 +17,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 [UsedImplicitly]
 public class GetLoreScopesByOwnerHandler(
     IReadonlyUnitOfWorkFactory factory,
+    IAccessProtectionRules protectionRules,
     ILogger<GetLoreScopesByOwnerHandler> logger
 ) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
 
@@ -36,8 +38,6 @@ public class GetLoreScopesByOwnerHandler(
         return MessageResponse.FromSuccess(paginatedResult);
     }
 
-    protected override ValueTask<bool> ValidateAccessAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
-        // TODO find a way so that we can check if a user can access the data from another user, rather than just a resource.
-        return ValueTask.FromResult(true);
-    }
+    protected override ValueTask<bool> ValidateAccessAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) 
+        => protectionRules.IsOwnerAsync(command.AccessingUser, command.UserId, ct);
 }

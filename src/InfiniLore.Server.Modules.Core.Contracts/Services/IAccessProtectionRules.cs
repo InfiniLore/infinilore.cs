@@ -10,7 +10,7 @@ namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IAccessProtectionRules {
     IReadonlyUnitOfWork CreateReadonlyUnitOfWork();
-    ValueTask<bool> IsServerAsync(IAccessingUser access);
-    ValueTask<bool> IsOwnerAsync(IAccessingUser access, Guid userId);
+    ValueTask<bool> IsServerAsync(IAccessingUser access, CancellationToken ct = default);
+    ValueTask<bool> IsOwnerAsync(IAccessingUser access, Guid userId, CancellationToken ct = default);
     
 }
