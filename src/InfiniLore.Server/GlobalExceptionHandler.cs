@@ -17,18 +17,21 @@ public static partial class GlobalExceptionHandler {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static async Task ExecuteWithGlobalExceptionHandlingAsync(Func<Task> action) {
+    public static async Task<int> ExecuteWithGlobalExceptionHandlingAsync(Func<Task<int>> action) {
         try {
-            await action.Invoke();
+            return await action.Invoke();
         }
         catch (DockerApiException ex) {
             Log.Logger.Fatal(ex, "Docker API Exception \"{ExceptionType}\": {Message}", ex.GetType(), ex.Message);
+            return ex.HResult;
         }
         catch (AggregateException ex) {
             HandleAggregateException(ex);
+            return ex.HResult;
         }
         catch (Exception ex) {
             Log.Logger.Fatal(ex, "Host terminated unexpectedly \"{ExceptionType}\": {Message}", ex.GetType(), ex.Message);
+            return ex.HResult;
         }
         finally {
             await Log.CloseAndFlushAsync();

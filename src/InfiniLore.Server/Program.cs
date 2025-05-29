@@ -39,8 +39,8 @@ namespace InfiniLore.Server;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
-    public static async Task Main(string[] args) {
-        await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
+    public static async Task<int> Main(string[] args) {
+        return await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
             // Builder is set up here first
             //      This is so we can override the logging configuration
             //      And have proper application exception catching 
@@ -60,9 +60,10 @@ public static class Program {
             WebApplication app = BuildApp(builder, devEnv);
             if (!args.IsEmpty()) {
                 bool shouldExit = await ExecuteCliCommands(args, app);
-                if (shouldExit) return;
+                if (shouldExit) return 200;
             }
             await Start(app);
+            return 0;
         });
     }
     
