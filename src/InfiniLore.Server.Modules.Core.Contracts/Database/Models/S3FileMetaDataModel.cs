@@ -11,8 +11,7 @@ namespace InfiniLore.Server.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public class S3FileMetaDataModel : BasicModel {
     [MaxLength(Defaults.MaxFileNameLength)] public required string FileName { get; set; }
-    [MaxLength(Defaults.MaxContentTypeLength)	] public required string ContentType { get; set; }
-    
+    [MaxLength(Defaults.MaxContentTypeLength)] public required string ContentType { get; set; }
     [NotMapped] public Stream? DataStream { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------

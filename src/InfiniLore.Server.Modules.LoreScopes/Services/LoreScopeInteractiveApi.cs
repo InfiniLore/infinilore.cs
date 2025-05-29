@@ -52,7 +52,7 @@ public class LoreScopeInteractiveApi(
 
             MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
             if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) continue;
-            loreScope.ImageUrl = imageUrl;
+            loreScope.S3PosterImageUrl = imageUrl;
         }
 
         PaginatedData<ILoreScopeModel> casted = paginatedData.CastTo<ILoreScopeModel>();

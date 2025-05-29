@@ -25,8 +25,7 @@ public class LoreScopeModel : OwnedModel<InfiniLoreUserModel>, ILoreScopeModel {
     public S3FileMetaDataModel? PosterImageMetaData { get; set; }
 
     [NotMapped] public string S3BucketName => $"lorescope-{Id.ToString().ToLowerInvariant()}";
-
-    [NotMapped] public string? ImageUrl { get; set; } 
+    [NotMapped] public string? S3PosterImageUrl { get; set; } 
 
     // -----------------------------------------------------------------------------------------------------------------
     // Default

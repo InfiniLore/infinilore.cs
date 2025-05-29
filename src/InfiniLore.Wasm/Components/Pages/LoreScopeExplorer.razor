@@ -45,8 +45,8 @@
 
                 <!-- Poster Image -->
                 <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
-                    @if (loreScope.ImageUrl is not null) {
-                        <img src="@loreScope.ImageUrl" 
+                    @if (loreScope.S3PosterImageUrl is not null) {
+                        <img src="@loreScope.S3PosterImageUrl" 
                              alt="@loreScope.Name poster" 
                              class="w-full h-full object-cover rounded-md" />
                     } else {
