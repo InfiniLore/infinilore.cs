@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Docker.DotNet;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Networks;
 using Serilog;
@@ -46,7 +45,8 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
                 .WithLabel("reuse-id", GetNetworkName(isTesting))
                 .WithLabel("com.docker.compose.project", ProjectLabel)
                 .WithLabel("com.docker.compose.network", GetNetworkName(isTesting))
-                .WithLabel("com.docker.compose.version", "1.0");
+                .WithLabel("com.docker.compose.version", "1.0")
+                .WithLabel("com.docker.compose.container-number", "0");
         
         _network = networkBuilder.Build();
 
@@ -55,7 +55,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
             .WithPortBinding(SqlPort, MsSqlBuilder.MsSqlPort)
             .WithNetwork(_network)
             .WithLogger(_logger)
-            .WithImage("mcr.microsoft.com/mssql/server:2022-CU10-ubuntu-22.04");
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest");
 
         if (!isTesting) {
             sqlBuilder = sqlBuilder
@@ -66,7 +66,9 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
                 .WithLabel("service", "mssql")
                 .WithLabel("com.docker.compose.project", ProjectLabel)
                 .WithLabel("com.docker.compose.service", "mssql")
-                .WithLabel("com.docker.compose.version", "1.0");
+                .WithLabel("com.docker.compose.version", "1.0")
+                .WithLabel("com.docker.compose.container-number", "1")
+                .WithLabel("com.docker.compose.depends_on", "");
         }
 
         _sqlContainer = sqlBuilder.Build();
@@ -76,19 +78,21 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
             .WithPortBinding(MinioPort, MinioBuilder.MinioPort)
             .WithNetwork(_network)
             .WithLogger(_logger)
-            .WithImage("minio/minio");
+            .WithImage("minio/minio:latest");
 
         if (!isTesting) {
             minIoBuilder = minIoBuilder
                 .WithUsername(MinioAccessKey)
                 .WithPassword(MinioSecretKey)
-                .WithName("infinilore-dev-file")
+                .WithName("infinilore-dev-s3files")
                 .WithReuse(true)
-                .WithLabel("reuse-id", "infinilore-dev-file")
+                .WithLabel("reuse-id", "infinilore-dev-s3files")
                 .WithLabel("service", "minio")
                 .WithLabel("com.docker.compose.project", ProjectLabel)
                 .WithLabel("com.docker.compose.service", "minio")
-                .WithLabel("com.docker.compose.version", "1.0");
+                .WithLabel("com.docker.compose.version", "1.0")
+                .WithLabel("com.docker.compose.container-number", "2")
+                .WithLabel("com.docker.compose.depends_on", "");
         }
 
         _minioContainer = minIoBuilder.Build();
@@ -98,13 +102,15 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task InitializeAsync() {
+        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+        CancellationToken ct = cts.Token;
         try {
-            await _network.CreateAsync();
+            await _network.CreateAsync(ct);
             
             // Start both containers concurrently
             await Task.WhenAll(
-                _sqlContainer.StartAsync(),
-                _minioContainer.StartAsync()
+                _sqlContainer.StartAsync(ct),
+                _minioContainer.StartAsync(ct)
             );
 
             _logger.LogInformation("SQL Connection string: {ConnectionString}", _sqlContainer.GetConnectionString());
