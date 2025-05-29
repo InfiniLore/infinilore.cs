@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Security.Claims;
 using InfiniLoreClaimsStore = InfiniLore.Shared.Auth.InfiniLoreClaimsStore;
@@ -18,20 +19,22 @@ public class AccessingUserProvider(
     IJwtTokenHelper jwtTokenHelper,
     IHttpContextAccessor httpContextAccessor
 ) : IAccessingUserProvider {
-    public IAccessingUser Empty { get; } = new AccessingUser(
-        Guid.Empty,
-        ImmutableArray<string>.Empty,
-        ImmutableArray<string>.Empty
-    );
-    public IAccessingUser Server { get; } = new AccessingUser(
-        Guid.Empty,
-        ImmutableArray<string>.Empty,
-        ImmutableArray<string>.Empty
-    );
 
+    private readonly Lazy<IAccessingUser> serverUser = new(() => {
+        var metaData = new Dictionary<string, object> {
+            ["server"] = true
+        };
+
+        return AccessingUser.Empty with {
+            MetaData = metaData.ToFrozenDictionary()
+        };
+    });
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public IAccessingUser GetServerUser() => serverUser.Value;
+
     public async ValueTask<IAccessingUser> FromJwtTokenAsync(CancellationToken ct = default) {
         if (jwtTokenHelper.IsNotAuthenticated) return AccessingUser.Empty;
 
