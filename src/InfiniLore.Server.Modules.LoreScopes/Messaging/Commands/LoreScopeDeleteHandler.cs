@@ -20,10 +20,9 @@ public class LoreScopeDeleteHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogge
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         Result result = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
-        if (result.IsError) {
-            logger.Warning("Failed to delete lorescope at id {id}", command.LoreScopeId);
-            return MessageResponse.FromErrorString("Failed to delete lorescope");
-        }
-        return true;
+        if (!result.IsError) return true;
+
+        logger.Warning("Failed to delete lorescope at id {id}", command.LoreScopeId);
+        return MessageResponse.FromErrorString("Failed to delete lorescope");
     }
 }
