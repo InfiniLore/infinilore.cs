@@ -18,8 +18,8 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 public class GetAuth0AccessTokenHandler(
     IReadonlyUnitOfWorkFactory factory,
     ILogger<GetAuth0AccessTokenHandler> logger,
-    IAuth0AccessTokenEncryptionService encryptionService,
-    IAccessingUserProvider accessProvider
+    IAccessProtectionRules protectionRules,
+    IAuth0AccessTokenEncryptionService encryptionService
 ) : AccessProtectedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
 
     protected override MessageResponse<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
@@ -54,8 +54,6 @@ public class GetAuth0AccessTokenHandler(
         return dto;
     }
 
-    protected override ValueTask<bool> ValidateAccessAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) {
-        return ValueTask.FromResult(command.AccessingUser == accessProvider.Server);
-    }
-    
+    protected override ValueTask<bool> ValidateAccessAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) 
+        => protectionRules.IsServerAsync(command.AccessingUser, ct);
 }

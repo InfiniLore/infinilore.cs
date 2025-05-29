@@ -18,7 +18,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 [UsedImplicitly]
 public class LoreScopeDeleteHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
-    IAccessProtectionRules accessProtectionRules,
+    IAccessProtectionRules protectionRules,
     ILogger<LoreScopeDeleteHandler> logger
 ) : AccessProtectedCommandHandler<DeleteLoreScopeRequest>(logger) {
     // -----------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class LoreScopeDeleteHandler(
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(DeleteLoreScopeRequest command, CancellationToken ct = default) 
-        => accessProtectionRules.CanAccessRepoWithPermission<ILoreScopeRepository>(
+        => protectionRules.CanAccessRepoWithPermission<ILoreScopeRepository>(
             command.LoreScopeId, 
             command.AccessingUser,
             PermissionsStore.LorescopeDelete,
