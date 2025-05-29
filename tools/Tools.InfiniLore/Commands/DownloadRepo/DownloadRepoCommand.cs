@@ -398,73 +398,73 @@ public partial class DownloadRepoCommand : ICliCommand<DownloadRepoParameters> {
         }
     }
 
-    private static async ValueTask RemapDependenciesAsync(DownloadRepoParameters parameters, ProjectData[] projects) {
-        foreach (ProjectData project in projects) {
-            string projectFilePath = Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name, $"{project.Name}.csproj");
-
-            if (!File.Exists(projectFilePath)) {
-                Console.WriteLine($"Project file not found: {projectFilePath}");
-                continue;
-            }
-
-            Console.WriteLine($"Remapping dependencies for {project.Name}...");
-
-            // Load the project file
-            XDocument doc;
-            await using (var stream = new FileStream(projectFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
-                doc = await XDocument.LoadAsync(stream, LoadOptions.PreserveWhitespace, CancellationToken.None);
-            }
-
-            // Update PackageReference versions (if applicable)
-            IEnumerable<XElement> packageReferences = doc.Descendants("PackageReference");
-            foreach (XElement packageReference in packageReferences) {
-                string? packageName = packageReference.Attribute("Include")?.Value;
-
-                // Update logic for PackageReference
-                ProjectData matchingProject = projects.FirstOrDefault(p => p.Name == packageName);
-                Console.WriteLine($"Updating {packageName} to version {matchingProject.Version}...");
-                packageReference.SetAttributeValue("Version", matchingProject.Version);
-            }
-
-            // Update ProjectReference paths (if applicable)
-            IEnumerable<XElement> projectReferences = doc.Descendants("ProjectReference");
-            foreach (XElement projectReference in projectReferences) {
-                string? projectPath = projectReference.Attribute("Include")?.Value;
-                if (projectPath == null) continue;
-
-                // Resolve full path of the old project reference
-                string oldProjectFullPath = Path.Combine(Path.GetDirectoryName(projectFilePath) ?? string.Empty, projectPath);
-                string newProjectPath;
-
-                // Check if the project exists in the new "src" folder
-                if (File.Exists(Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath)))) {
-                    newProjectPath = Path.Combine("..", "..", "src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath));
-                    Console.WriteLine($"Updating project reference path: {projectPath} -> {newProjectPath}");
-                }
-                else {
-                    Console.WriteLine($"Could not resolve new path for {projectPath}. Keeping the existing reference.");
-                    newProjectPath = projectPath;// Keep the original, unaltered path if no new path is found
-                }
-
-                // Update the ProjectReference to the new location
-                projectReference.SetAttributeValue("Include", newProjectPath);
-
-            }
-
-            // Save the updated `.csproj` file
-            var settings = new XmlWriterSettings {
-                Indent = true,
-                IndentChars = "    ",
-                Async = true,
-                OmitXmlDeclaration = true
-            };
-
-            await using (var stream = new FileStream(projectFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
-                await using var writer = XmlWriter.Create(stream, settings);
-                doc.Save(writer);
-            }
-
-            Console.WriteLine($"Dependencies remapped successfully for {project.Name}.");
-        }
-    }
+    // private static async ValueTask RemapDependenciesAsync(DownloadRepoParameters parameters, ProjectData[] projects) {
+    //     foreach (ProjectData project in projects) {
+    //         string projectFilePath = Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", project.Name, $"{project.Name}.csproj");
+    //
+    //         if (!File.Exists(projectFilePath)) {
+    //             Console.WriteLine($"Project file not found: {projectFilePath}");
+    //             continue;
+    //         }
+    //
+    //         Console.WriteLine($"Remapping dependencies for {project.Name}...");
+    //
+    //         // Load the project file
+    //         XDocument doc;
+    //         await using (var stream = new FileStream(projectFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
+    //             doc = await XDocument.LoadAsync(stream, LoadOptions.PreserveWhitespace, CancellationToken.None);
+    //         }
+    //
+    //         // Update PackageReference versions (if applicable)
+    //         IEnumerable<XElement> packageReferences = doc.Descendants("PackageReference");
+    //         foreach (XElement packageReference in packageReferences) {
+    //             string? packageName = packageReference.Attribute("Include")?.Value;
+    //
+    //             // Update logic for PackageReference
+    //             ProjectData matchingProject = projects.FirstOrDefault(p => p.Name == packageName);
+    //             Console.WriteLine($"Updating {packageName} to version {matchingProject.Version}...");
+    //             packageReference.SetAttributeValue("Version", matchingProject.Version);
+    //         }
+    //
+    //         // Update ProjectReference paths (if applicable)
+    //         IEnumerable<XElement> projectReferences = doc.Descendants("ProjectReference");
+    //         foreach (XElement projectReference in projectReferences) {
+    //             string? projectPath = projectReference.Attribute("Include")?.Value;
+    //             if (projectPath == null) continue;
+    //
+    //             // Resolve full path of the old project reference
+    //             string oldProjectFullPath = Path.Combine(Path.GetDirectoryName(projectFilePath) ?? string.Empty, projectPath);
+    //             string newProjectPath;
+    //
+    //             // Check if the project exists in the new "src" folder
+    //             if (File.Exists(Path.Combine(parameters.Root, $"{parameters.OutputFolder}src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath)))) {
+    //                 newProjectPath = Path.Combine("..", "..", "src", Path.GetFileNameWithoutExtension(oldProjectFullPath), Path.GetFileName(oldProjectFullPath));
+    //                 Console.WriteLine($"Updating project reference path: {projectPath} -> {newProjectPath}");
+    //             }
+    //             else {
+    //                 Console.WriteLine($"Could not resolve new path for {projectPath}. Keeping the existing reference.");
+    //                 newProjectPath = projectPath;// Keep the original, unaltered path if no new path is found
+    //             }
+    //
+    //             // Update the ProjectReference to the new location
+    //             projectReference.SetAttributeValue("Include", newProjectPath);
+    //
+    //         }
+    //
+    //         // Save the updated `.csproj` file
+    //         var settings = new XmlWriterSettings {
+    //             Indent = true,
+    //             IndentChars = "    ",
+    //             Async = true,
+    //             OmitXmlDeclaration = true
+    //         };
+    //
+    //         await using (var stream = new FileStream(projectFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true)) {
+    //             await using var writer = XmlWriter.Create(stream, settings);
+    //             doc.Save(writer);
+    //         }
+    //
+    //         Console.WriteLine($"Dependencies remapped successfully for {project.Name}.");
+    //     }
+    // }
 }

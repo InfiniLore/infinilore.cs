@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Modules.LoreScopes.Database;
 public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreScopeModel> {
     private readonly IReadonlyUnitOfWorkFactory UnitOfWorkFactory;
     
-    public LoreScopeValidator(IReadonlyUnitOfWorkFactory unitOfWorkFactory) : base() {
+    public LoreScopeValidator(IReadonlyUnitOfWorkFactory unitOfWorkFactory) {
         UnitOfWorkFactory = unitOfWorkFactory;
         
         RuleFor(x => x.Name)

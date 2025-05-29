@@ -2,11 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Credentials;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Shared.Auth;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SuppressMessage("ReSharper", "UnusedMember.Local")] // Eh this isn't great, but it works
 [CredentialsStore(CredentialsFlags.PermissionsStore, true, ":")]
 public static partial class PermissionsStore {
     private const string Account = nameof(Account);

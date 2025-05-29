@@ -63,7 +63,7 @@ public partial class Register(
         if (username.IsNullOrWhiteSpace()) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            _usernameStatus = UsernameStatus.None;// Set to None for empty username
+            _usernameStatus = UsernameStatus.None;// Set to None for an empty username
             await InvokeAsync(StateHasChanged);// Refresh UI
             return;
         }
@@ -84,7 +84,7 @@ public partial class Register(
             : UsernameStatus.Available;
 
         _usernameValidationMessage = string.Empty;// Clear message
-        _isFormDisabled = isTaken;// Disable form if username is taken
+        _isFormDisabled = isTaken;// Disable form if a username is taken
         await InvokeAsync(StateHasChanged);// Refresh UI
     }
     private async Task HandleValidSubmitAsync() {

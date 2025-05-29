@@ -54,7 +54,7 @@ public class KeyValueEntryRepositoryTest(ServiceProviderDataSource serviceProvid
         // Assert
         await Assert.That(result.IsState).IsTrue();
         await Assert.That(actual).IsNotNull()
-            .And.HasMember(m => m!.Key).EqualTo(key)
-            .And.HasMember(m => m!.Value).EqualTo(value);
+            .And.HasMember(m => m.Key).EqualTo(key)
+            .And.HasMember(m => m.Value).EqualTo(value);
     }
 }
