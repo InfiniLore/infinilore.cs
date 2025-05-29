@@ -2,12 +2,10 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using FastEndpoints;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Messaging.Commands;
-using InfiniLore.Server.Modules.Core.Messaging.Queries;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Modules.Core.TokenStore;
@@ -15,15 +13,16 @@ namespace InfiniLore.Server.Modules.Core.TokenStore;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IAuth0AccessTokenStore>]
-public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore> logger, IAccessingUserProvider messageAccessProvider) : IAuth0AccessTokenStore {
+public class MediatorProxyAccessTokenStore(
+    ILogger<MediatorProxyAccessTokenStore> logger,
+    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+) : IAuth0AccessTokenStore {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     // ReSharper disable once InvertIf
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
-        MessageResponse<IAuth0AccessToken> mediatorResponse = await new GetAuth0AccessTokenQuery {
-            AccessingUser = messageAccessProvider.Server
-        }.ExecuteAsync(ct);
+        MessageResponse<IAuth0AccessToken> mediatorResponse = await messageBroker.GetAuth0AccessTokenAsync(ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken token)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;
@@ -35,9 +34,7 @@ public class MediatorProxyAccessTokenStore(ILogger<MediatorProxyAccessTokenStore
     }
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
-        MessageResponse<bool> mediatorResponse = await new StoreAuth0AccessTokenRequest(token){
-            AccessingUser = messageAccessProvider.Server
-        }.ExecuteAsync(ct);
+        MessageResponse<bool> mediatorResponse = await messageBroker.StoreAuth0AccessTokenAsync(token, ct);
         
         if (!mediatorResponse.TryGetAsSuccess(out bool success)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;

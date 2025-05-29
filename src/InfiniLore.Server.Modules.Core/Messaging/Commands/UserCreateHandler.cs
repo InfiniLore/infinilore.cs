@@ -7,6 +7,7 @@ using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Server.Modules.Core.Messaging.Handlers;
 using InfiniLore.Server.Modules.Core.Messaging.Notifications;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,12 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Commands;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILogger<UserCreateHandler> logger, IValidator<InfiniLoreUserModel> validator) : CommandHandler<CreateInfiniLoreUserRequest, MessageResponse<Guid>> {
+public partial class UserCreateHandler(
+    IUnitOfWorkFactory unitOfWorkFactory,
+    ILogger<UserCreateHandler> logger,
+    IValidator<InfiniLoreUserModel> validator,
+    IAccessProtectionRules protectionRules
+) : AccessProtectedCommandHandler<CreateInfiniLoreUserRequest, Guid>(logger) {
     private static readonly Dictionary<string, Action<InfiniLoreUserModel, string>> Auth0Handlers = new() {
         { "google", (user, id) => user.Auth0IdGoogle = id },
         { "github", (user, id) => user.Auth0Github = id },
@@ -30,7 +36,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default) {
+    protected override async Task<MessageResponse<Guid>> HandleCommandAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default){
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
@@ -67,4 +73,7 @@ public partial class UserCreateHandler(IUnitOfWorkFactory unitOfWorkFactory, ILo
 
         handler(user, auth0UserId);
     }
+    
+    protected override ValueTask<bool> ValidateAccessAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default) 
+        => protectionRules.IsServerAsync(command.AccessingUser, ct);  
 }
