@@ -11,8 +11,8 @@ using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
+using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.DevContainers;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.Core.ApiEndpoints;
 using InfiniLore.Server.Modules.Core.Auth;
@@ -53,7 +53,7 @@ public static class Program {
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
             
-            await using var devEnv = new InfiniLoreDevEnvironment();
+            await using var devEnv = new InfiniLoreContainers();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
@@ -81,7 +81,7 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreDevEnvironment devEnv) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>();

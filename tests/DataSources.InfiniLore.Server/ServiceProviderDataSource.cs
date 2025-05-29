@@ -2,8 +2,8 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Fakers.InfiniLore.Server;
+using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.DevContainers;
 using InfiniLore.Server.Modules.Core;
 using InfiniLore.Server.Modules.LoreScopes;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ public partial class ServiceProviderDataSource {
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
         #region Setup Containers
-        var devEnv = new InfiniLoreDevEnvironment(isTesting:true);
+        var devEnv = new InfiniLoreContainers(isTesting:true);
         await devEnv.InitializeAsync();
         #endregion
         

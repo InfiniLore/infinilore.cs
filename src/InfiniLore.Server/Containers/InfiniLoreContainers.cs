@@ -10,11 +10,11 @@ using Testcontainers.Minio;
 using Testcontainers.MsSql;
 using ILogger=Microsoft.Extensions.Logging.ILogger;
 
-namespace InfiniLore.Server.DevContainers;
+namespace InfiniLore.Server.Containers;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreDevEnvironment : IAsyncDisposable {
+public class InfiniLoreContainers : IAsyncDisposable {
     private readonly INetwork _network;
     private readonly MsSqlContainer _sqlContainer;
     private readonly MinioContainer _minioContainer;
@@ -36,7 +36,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    public InfiniLoreDevEnvironment(bool isTesting = false) {
+    public InfiniLoreContainers(bool isTesting = false) {
         IsTesting = isTesting;
         
         // Create a shared network
