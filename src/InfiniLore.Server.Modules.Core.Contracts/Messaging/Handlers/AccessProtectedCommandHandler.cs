@@ -19,17 +19,18 @@ public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<TOutput> ExecuteAsync(TInput command, CancellationToken ct = new()) {
         if (!await ValidateAccessAsync(command, ct)) {
-            LogCommandAccess(command.Access, AccessType.Denied);
+            LogCommandAccess(command.AccessingUser, AccessType.Denied);
             return AccessDeniedResult;
         }
 
-        LogCommandAccess(command.Access, AccessType.Granted);
+        LogCommandAccess(command.AccessingUser, AccessType.Granted);
         return await HandleCommandAsync(command, ct);
     }
+
     protected abstract Task<TOutput> HandleCommandAsync(TInput command, CancellationToken ct = default);
     protected abstract ValueTask<bool> ValidateAccessAsync(TInput command, CancellationToken ct = default);
 
-    private void LogCommandAccess(IMessageAccess access, string accessType) {
+    private void LogCommandAccess(IAccessingUser access, string accessType) {
         logger.Log(
             accessType == AccessType.Denied ? LogLevel.Warning : LogLevel.Information,
             "Command {Command} access {type} for requesting user {UserId} with roles {Roles} and permissions {Permissions}",
@@ -40,7 +41,7 @@ public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
             access.Permissions
         );
     }
-    
+
     private static class AccessType {
         public const string Denied = "denied";
         public const string Granted = "granted";

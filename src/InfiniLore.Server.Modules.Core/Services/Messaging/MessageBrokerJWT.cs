@@ -9,11 +9,11 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMessageBroker>(IMessageBroker.JwtToken)]
-public class MessageBrokerJwt(IMessageAccessProvider accessFactory) : IMessageBroker {
+public class MessageBrokerJwt(IAccessingUserProvider accessFactory) : IMessageBroker {
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public ValueTask<IMessageAccess> GetMessageAccessAsync(CancellationToken ct = default)
+    public ValueTask<IAccessingUser> GetMessageAccessAsync(CancellationToken ct = default)
         => accessFactory.FromJwtTokenAsync(ct);
 }

@@ -9,11 +9,11 @@ namespace InfiniLore.Server.Modules.Core;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IMessageBroker>(IMessageBroker.Claims)]
-public class MessageBrokerClaims(IMessageAccessProvider accessFactory) : IMessageBroker {
+public class MessageBrokerClaims(IAccessingUserProvider accessFactory) : IMessageBroker {
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public ValueTask<IMessageAccess> GetMessageAccessAsync(CancellationToken ct = default) 
+    public ValueTask<IAccessingUser> GetMessageAccessAsync(CancellationToken ct = default) 
         => ValueTask.FromResult(accessFactory.FromClaims(ct));
 }

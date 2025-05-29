@@ -15,6 +15,7 @@ namespace InfiniLore.Server.Modules.Core.Messaging.Queries;
 [UsedImplicitly]
 public class GetUserByAuth0IdHandler(
     IReadonlyUnitOfWorkFactory factory,
+    IAccessProtectionRules protectionRules,
     ILogger<GetUserByAuth0IdHandler> logger
 ) : AccessProtectedCommandHandler<GetUserByAuth0IdQuery, InfiniLoreUserModel>(logger) {
     protected override MessageResponse<InfiniLoreUserModel> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get user by auth0 id. Access denied.");
@@ -41,6 +42,6 @@ public class GetUserByAuth0IdHandler(
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
-        return ValueTask.FromResult(command.Access.IsServer);
+        return protectionRules.IsServerAsync(command.AccessingUser);
     }
 }

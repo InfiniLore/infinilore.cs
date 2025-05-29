@@ -23,7 +23,7 @@ namespace InfiniLore.Server.Modules.Core.Auth;
 public class OnTokenValidatedHandler(
     ILoggerFactory loggerFactory,
     IClaimsDtoHelper claimsPrincipalHelper,
-    IMessageAccessProvider messageAccessProvider
+    IAccessingUserProvider messageAccessProvider
 ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
 
@@ -49,9 +49,9 @@ public class OnTokenValidatedHandler(
         }
 
         // Run all checks and return to the new user page if needed
-        IMessageAccess access = messageAccessProvider.Server;
-        Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
-        Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId) { Access = access }.ExecuteAsync();
+        IAccessingUser access = messageAccessProvider.Server;
+        Task<MessageResponse> userExistsTask = new UserExistsByAuth0Query(auth0Info.Auth0UserId) { AccessingUser = access }.ExecuteAsync();
+        Task<MessageResponse<InfiniLoreUserModel>> userTask = new GetUserByAuth0IdQuery(auth0Info.Auth0UserId) { AccessingUser = access }.ExecuteAsync();
 
         (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 

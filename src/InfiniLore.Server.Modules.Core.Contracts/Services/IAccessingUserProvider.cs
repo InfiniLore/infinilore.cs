@@ -6,9 +6,9 @@ namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageAccessProvider {
-    IMessageAccess Empty { get; }
-    IMessageAccess Server { get; }
-    ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default);
-    IMessageAccess FromClaims(CancellationToken ct = default);
+public interface IAccessingUserProvider {
+    IAccessingUser Empty { get; }
+    IAccessingUser Server { get; }
+    ValueTask<IAccessingUser> FromJwtTokenAsync(CancellationToken ct = default);
+    IAccessingUser FromClaims(CancellationToken ct = default);
 }

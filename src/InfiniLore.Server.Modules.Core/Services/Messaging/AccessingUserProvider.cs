@@ -13,35 +13,43 @@ namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IMessageAccessProvider>]
-public class MessageAccessProvider(
+[InjectableScoped<IAccessingUserProvider>]
+public class AccessingUserProvider(
     IJwtTokenHelper jwtTokenHelper,
     IHttpContextAccessor httpContextAccessor
-) : IMessageAccessProvider {
-    public IMessageAccess Empty => MessageAccess.Empty;
-    public IMessageAccess Server => MessageAccess.Server;
+) : IAccessingUserProvider {
+    public IAccessingUser Empty { get; } = new AccessingUser(
+        Guid.Empty,
+        ImmutableArray<string>.Empty,
+        ImmutableArray<string>.Empty
+    );
+    public IAccessingUser Server { get; } = new AccessingUser(
+        Guid.Empty,
+        ImmutableArray<string>.Empty,
+        ImmutableArray<string>.Empty
+    );
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<IMessageAccess> FromJwtTokenAsync(CancellationToken ct = default) {
-        if (jwtTokenHelper.IsNotAuthenticated) return MessageAccess.Empty;
+    public async ValueTask<IAccessingUser> FromJwtTokenAsync(CancellationToken ct = default) {
+        if (jwtTokenHelper.IsNotAuthenticated) return AccessingUser.Empty;
 
         Guid userId = await jwtTokenHelper.TryGetUserIdFromClaimsAsync(ct);
-        if (userId == Guid.Empty) return MessageAccess.Empty;
+        if (userId == Guid.Empty) return AccessingUser.Empty;
 
-        return new MessageAccess(
+        return new AccessingUser(
             userId,
             jwtTokenHelper.GetRoles().ToImmutableArray(),
             jwtTokenHelper.GetPermissions().ToImmutableArray()
         );
     }
 
-    public IMessageAccess FromClaims(CancellationToken ct = default) {
+    public IAccessingUser FromClaims(CancellationToken ct = default) {
         ClaimsPrincipal? claims = httpContextAccessor.HttpContext?.User;
         
         string? userIdString = claims?.FindFirstOrDefault(InfiniLoreClaimsStore.UserId)?.Value;
-        if (!Guid.TryParse(userIdString, out Guid userId)) return MessageAccess.Empty;
+        if (!Guid.TryParse(userIdString, out Guid userId)) return AccessingUser.Empty;
 
         ImmutableArray<string>? roles = claims?
             .FindAll(ClaimTypes.Role)
@@ -55,7 +63,7 @@ public class MessageAccessProvider(
 
         ct.ThrowIfCancellationRequested();
 
-        return new MessageAccess(
+        return new AccessingUser(
             userId,
             roles ?? ImmutableArray<string>.Empty,
             permissions ?? ImmutableArray<string>.Empty

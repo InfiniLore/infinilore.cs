@@ -1,15 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Collections.Immutable;
+using CodeOfChaos.Types.UnitOfWork;
 
 namespace InfiniLore.Server.Modules.Core;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IMessageAccess {
-    Guid UserId { get; }
-    ImmutableArray<string> Roles { get; }
-    ImmutableArray<string> Permissions { get; }
-    bool IsServer { get; }
+public interface IAccessProtectionRules {
+    IReadonlyUnitOfWork CreateReadonlyUnitOfWork();
+    ValueTask<bool> IsServerAsync(IAccessingUser access);
+    ValueTask<bool> IsOwnerAsync(IAccessingUser access, Guid userId);
+    
 }

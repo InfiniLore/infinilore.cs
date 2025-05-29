@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Newtonsoft.Json;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 
 namespace InfiniLore.Server.Modules.Core;
@@ -9,17 +10,12 @@ namespace InfiniLore.Server.Modules.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record MessageAccess(
+public record AccessingUser(
     [JsonProperty("user_id")] Guid UserId,
     [JsonProperty("roles")] ImmutableArray<string> Roles,
     [JsonProperty("permissions")] ImmutableArray<string> Permissions
-) : IMessageAccess {
-    public bool IsServer { get; private init; } = false;
+) : IAccessingUser {
+    [JsonProperty("metadata")] public FrozenDictionary<string, object> MetaData { get; init; } = FrozenDictionary<string, object>.Empty;
     
-    public static readonly IMessageAccess Empty = new MessageAccess(Guid.Empty, [], []) {
-        IsServer = false
-    };
-    public static readonly IMessageAccess Server = new MessageAccess(Guid.Empty, [], []) {
-        IsServer = true
-    };
+    public static AccessingUser Empty { get; } = new(Guid.Empty, ImmutableArray<string>.Empty, ImmutableArray<string>.Empty);
 }
