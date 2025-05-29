@@ -53,16 +53,20 @@ public static class Program {
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
             
+            // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
             await using var devEnv = new InfiniLoreContainers();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
-            if (!args.IsEmpty()) await ExecuteCliCommands(args, app); // Has to option to quit before starting of the app
+            if (!args.IsEmpty()) {
+                bool shouldExit = await ExecuteCliCommands(args, app);
+                if (shouldExit) return;
+            }
             await Start(app);
         });
     }
     
-    private static async Task ExecuteCliCommands(string[] args, WebApplication app) {
+    private static async Task<bool> ExecuteCliCommands(string[] args, WebApplication app) {
         ICliParser parser = CliParser.CreateBuilder()
             .WithServiceProvider(() => app.Services)
             .AddFromAssembly<ICliAssemblyEntrypoint>()
@@ -70,12 +74,12 @@ public static class Program {
         
         await parser.ExecuteAsync(args);
         var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunEffects>();
-        if (!cliPostRunStatus.ShouldExit) return;
+        if (!cliPostRunStatus.ShouldExit) return false;
 
         // If we get here, we should exit with a specific code
         var logger = app.Services.GetRequiredService<ILogger<CliParser>>();
         logger.Information("Exit requested by CLI tool");
-        Environment.Exit(200);
+        return true;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -87,9 +91,6 @@ public static class Program {
             .AddModule<IServerModuleEntryLoreScopes>();
         
         #region Database
-        // Technically, we need to wrap this as a `IsDevelopment`
-        //      And have another value for when we don't pull from our own containers
-        //      Most of it is made through a factory which sets up the docker instance
         ContentDbFactory.RegisterDatabase(
             builder.Services,
             moduleBuilder.ModuleAssemblies, 
