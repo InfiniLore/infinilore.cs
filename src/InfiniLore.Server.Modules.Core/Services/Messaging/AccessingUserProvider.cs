@@ -33,7 +33,7 @@ public class AccessingUserProvider(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public IAccessingUser GetServerUser() => serverUser.Value;
+    public IAccessingUser FromServer() => serverUser.Value;
 
     public async ValueTask<IAccessingUser> FromJwtTokenAsync(CancellationToken ct = default) {
         if (jwtTokenHelper.IsNotAuthenticated) return AccessingUser.Empty;

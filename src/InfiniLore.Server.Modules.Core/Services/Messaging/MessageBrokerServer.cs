@@ -15,5 +15,5 @@ public class MessageBrokerServer(IAccessingUserProvider accessFactory) : IMessag
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public ValueTask<IAccessingUser> GetMessageAccessAsync(CancellationToken ct = default)
-        => ValueTask.FromResult(accessFactory.GetServerUser());
+        => ValueTask.FromResult(accessFactory.FromServer());
 }
