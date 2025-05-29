@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Docker.DotNet;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Networks;
 using Serilog;
@@ -28,14 +29,26 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
     private const string MinioSecretKey = "minioadmin";
 
     private static string GetNetworkName(bool isTesting) => $"infinilore-{(isTesting ? "test" : "dev")}-network";
+    private const string ProjectLabel = "infinilore-dev";
+
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
     public InfiniLoreDevEnvironment(bool isTesting = false) {
         // Create a shared network
-        _network = new NetworkBuilder()
+        NetworkBuilder? networkBuilder = new NetworkBuilder()
             .WithName(GetNetworkName(isTesting))
-            .Build();
+            .WithLogger(_logger);
+
+        if (!isTesting)
+            networkBuilder = networkBuilder
+                .WithReuse(true)
+                .WithLabel("reuse-id", GetNetworkName(isTesting))
+                .WithLabel("com.docker.compose.project", ProjectLabel)
+                .WithLabel("com.docker.compose.network", GetNetworkName(isTesting))
+                .WithLabel("com.docker.compose.version", "1.0");
+        
+        _network = networkBuilder.Build();
 
         // Configure an SQL Server container
         MsSqlBuilder sqlBuilder = new MsSqlBuilder()
@@ -49,7 +62,11 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
                 .WithPassword(SqlPassword)
                 .WithName("infinilore-dev-content")
                 .WithReuse(true)
-                .WithLabel("reuse-id", "infinilore-dev-content");
+                .WithLabel("reuse-id", "infinilore-dev-content")
+                .WithLabel("service", "mssql")
+                .WithLabel("com.docker.compose.project", ProjectLabel)
+                .WithLabel("com.docker.compose.service", "mssql")
+                .WithLabel("com.docker.compose.version", "1.0");
         }
 
         _sqlContainer = sqlBuilder.Build();
@@ -63,11 +80,15 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
 
         if (!isTesting) {
             minIoBuilder = minIoBuilder
+                .WithUsername(MinioAccessKey)
+                .WithPassword(MinioSecretKey)
                 .WithName("infinilore-dev-file")
                 .WithReuse(true)
                 .WithLabel("reuse-id", "infinilore-dev-file")
-                .WithEnvironment("MINIO_ROOT_USER", MinioAccessKey)
-                .WithEnvironment("MINIO_ROOT_PASSWORD", MinioSecretKey);
+                .WithLabel("service", "minio")
+                .WithLabel("com.docker.compose.project", ProjectLabel)
+                .WithLabel("com.docker.compose.service", "minio")
+                .WithLabel("com.docker.compose.version", "1.0");
         }
 
         _minioContainer = minIoBuilder.Build();
@@ -79,7 +100,7 @@ public class InfiniLoreDevEnvironment : IAsyncDisposable {
     public async Task InitializeAsync() {
         try {
             await _network.CreateAsync();
-
+            
             // Start both containers concurrently
             await Task.WhenAll(
                 _sqlContainer.StartAsync(),

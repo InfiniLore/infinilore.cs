@@ -40,9 +40,6 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
     public static async Task Main(string[] args) {
-        await using var devEnv = new InfiniLoreDevEnvironment();
-        await devEnv.InitializeAsync();
-        
         await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
             // Builder is set up here first
             //      This is so we can override the logging configuration
@@ -55,6 +52,9 @@ public static class Program {
                 )
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
+            
+            await using var devEnv = new InfiniLoreDevEnvironment();
+            await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
             if (!args.IsEmpty()) await ExecuteCliCommands(args, app); // Has to option to quit before starting of the app
