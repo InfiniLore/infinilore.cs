@@ -33,4 +33,10 @@
         <ProjectReference Include="..\..\src\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Commands\ModuleSetup\Templates\TemplateModuleSetup.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
