@@ -9,8 +9,10 @@ using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ProblemDetails=FastEndpoints.ProblemDetails;
 
 namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -18,15 +20,18 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok<LoreScopeResponse>,
+    // Default Included Results
     NotFound,
     UnauthorizedHttpResult,
+    BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {

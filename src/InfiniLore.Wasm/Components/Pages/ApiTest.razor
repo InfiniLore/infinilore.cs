@@ -63,6 +63,8 @@
         PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
+            StateHasChanged();
+            return;
         }
 
         string dataAsJson = JsonSerializer.Serialize(result.AsData, new JsonSerializerOptions {

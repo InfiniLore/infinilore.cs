@@ -14,7 +14,7 @@ namespace InfiniLore.Server.Components.Pages.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 public partial class Register(
     NavigationManager navigation,
-    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) {
     [Parameter] [SupplyParameterFromQuery(Name = "auth0UserId")] public string Auth0UserId { get; set; } = string.Empty;
     [Parameter] [SupplyParameterFromQuery(Name = "returnUrl")] public string ReturnUrl { get; set; } = string.Empty;
@@ -87,6 +87,7 @@ public partial class Register(
         _isFormDisabled = isTaken;// Disable form if a username is taken
         await InvokeAsync(StateHasChanged);// Refresh UI
     }
+    
     private async Task HandleValidSubmitAsync() {
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
@@ -94,7 +95,7 @@ public partial class Register(
         MessageResponse<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
         if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
-            _isFormDisabled = false;// Allow retry
+            _isFormDisabled = false; // Allow retry
             await InvokeAsync(StateHasChanged);
             return;
         }

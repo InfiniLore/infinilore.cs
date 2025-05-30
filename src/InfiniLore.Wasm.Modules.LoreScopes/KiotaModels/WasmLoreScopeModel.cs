@@ -16,7 +16,7 @@ public record WasmLoreScopeModel(
     Guid OwnerId,
     string Name,
     string? Description,
-    string? ImageUrl
+    string? S3PosterImageUrl
 ) : ILoreScopeModel {
 
     public static ILoreScopeModel FromKiotaModel(KiotaLoreScopeResponse response)

@@ -23,7 +23,7 @@ public class LoreScopeCreateHandler(
     IUnitOfWorkFactory unitOfWorkFactory, 
     ILogger<LoreScopeCreateHandler> logger,
     IValidator<LoreScopeModel> validator,
-    [FromKeyedServices(IMessageBroker.Server)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) : CommandHandler<CreateLoreScopeRequest, MessageResponse<Guid>> {
     public override async Task<MessageResponse<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();

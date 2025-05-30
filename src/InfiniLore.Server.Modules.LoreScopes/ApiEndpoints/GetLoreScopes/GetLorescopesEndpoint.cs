@@ -20,15 +20,18 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok<LoreScopesResponse>,
+    // Default Included Results
     NotFound,
     UnauthorizedHttpResult,
+    BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 
 public class GetLoreScopesEndpoint(
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope");

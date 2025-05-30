@@ -17,16 +17,18 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok,
+    // Default Included Results
     NotFound,
-    BadRequest,
     UnauthorizedHttpResult,
+    BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 
 public class UpsertLoreScopeImageEndpoint(
     ILogger<UpsertLoreScopeImageEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<UpsertLoreScopeImageRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {

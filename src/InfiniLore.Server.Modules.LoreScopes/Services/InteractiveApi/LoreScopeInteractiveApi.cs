@@ -12,14 +12,14 @@ using InfiniLore.Shared.Modules.LoreScopes.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Modules.LoreScopes;
+namespace InfiniLore.Server.Modules.LoreScopes.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<ILoreScopeInteractiveApi>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
-    [FromKeyedServices(IMessageBroker.Claims)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
 ) : ILoreScopeInteractiveApi {
     public async ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
@@ -28,6 +28,27 @@ public class LoreScopeInteractiveApi(
         
         if (!result.TryGetAsState(out bool success)) Result.FromError("Failed to delete lorescope");
         return success;
+    }
+
+    public async ValueTask<Result<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<ILoreScopeModel>.FromError("Invalid userId");
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result<ILoreScopeModel>.FromError("Invalid lorescopeId");
+        
+        MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(parsedLoreScopeId, parsedUserId, ct: ct);
+        
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) return Result<ILoreScopeModel>.FromError("Failed to get lorescope");
+        
+        if (loreScope.PosterImageMetaDataId is null) return loreScope;
+
+        MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
+        if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) {
+            logger.Warning("Failed to get lorescope poster image for lorescope {lorescopeId} because '{reason}'", loreScopeId, imageUrlResponse.AsError.Value);
+            return loreScope;
+        }
+        
+        loreScope.S3PosterImageUrl = imageUrl;
+        return loreScope;
     }
     
     public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
@@ -52,7 +73,7 @@ public class LoreScopeInteractiveApi(
 
             MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
             if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) continue;
-            loreScope.ImageUrl = imageUrl;
+            loreScope.S3PosterImageUrl = imageUrl;
         }
 
         PaginatedData<ILoreScopeModel> casted = paginatedData.CastTo<ILoreScopeModel>();
@@ -69,6 +90,16 @@ public class LoreScopeInteractiveApi(
 
         logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
         return Result.FromError($"Failed to create lorescope for user {userId}");
-
+    }
+    
+    public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, string fileName, string contentType, Stream fileStream, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
+        
+        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);
+        if (result.TryGetAsState(out bool success)) return success;
+        
+        logger.Warning("Failed to upsert lorescope image for user {userId} because '{reason}'", userId, result.AsError.Value);
+        return Result.FromError($"Failed to upsert lorescope image for user {userId}");
     }
 }

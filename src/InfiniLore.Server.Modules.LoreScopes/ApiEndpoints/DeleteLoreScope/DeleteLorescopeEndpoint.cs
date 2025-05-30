@@ -17,16 +17,18 @@ namespace InfiniLore.Server.Modules.LoreScopes.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok,
+    // Default Included Results
     NotFound,
     UnauthorizedHttpResult,
     BadRequest,
+    ForbidHttpResult,
     ProblemDetails
 >;
 
 public class DeleteLorescopeEndpoint(
     ILogger<DeleteLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.JwtToken)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
 ) : Endpoint<DeleteLorescopeRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
