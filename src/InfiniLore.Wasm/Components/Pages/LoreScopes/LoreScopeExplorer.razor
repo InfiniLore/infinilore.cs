@@ -105,12 +105,12 @@
     
     private async Task RefreshLoreScopeListAsync() {
         PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
-        if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel> response)) {
+        if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? response)) {
             return;
         }
         
-        MarkdownFileMap = response.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
-        LoreScopeResponses = response.Items.OrderBy(i => i.Name).ToArray();
+        MarkdownFileMap = response.Value.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
+        LoreScopeResponses = response.Value.Items.OrderBy(i => i.Name).ToArray();
     }
 
     private async Task CreateNewLoreScopeAsync() {

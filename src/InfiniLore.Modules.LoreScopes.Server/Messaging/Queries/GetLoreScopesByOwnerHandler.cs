@@ -31,12 +31,13 @@ public class GetLoreScopesByOwnerHandler(
         // Todo lorescopes can be hidden so only the owner can access view it.
         //      Do we do that in the config level, or here?
 
-        if (!response.TryGetAsData(out PaginatedData<LoreScopeModel> paginatedResult)) {
-            logger.Warning("Failed to get LoreScopes");
-            return MessageResponse.FromErrorString("Failed to get LoreScopes");
-        }
-
-        return MessageResponse.FromSuccess(paginatedResult);
+        return response.Match(
+            MessageResponse.FromSuccess,
+            _ => {
+                logger.Warning("Failed to get LoreScopes");
+                return MessageResponse.FromErrorString("Failed to get LoreScopes");
+            }
+        );
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) 
