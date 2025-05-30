@@ -55,7 +55,7 @@ public static class Program {
             );
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
-            await using var devEnv = new InfiniLoreContainers();
+            await using var devEnv = InfiniLoreContainers.Create();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);

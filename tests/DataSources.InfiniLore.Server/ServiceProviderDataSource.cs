@@ -6,6 +6,7 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;
@@ -32,7 +33,7 @@ public partial class ServiceProviderDataSource {
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
         #region Setup Containers
-        var devEnv = new InfiniLoreContainers(isTesting:true);
+        var devEnv = InfiniLoreContainers.CreateForTesting();
         await devEnv.InitializeAsync();
         #endregion
         
@@ -41,7 +42,8 @@ public partial class ServiceProviderDataSource {
 
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
             .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>();
+            .AddModule<IServerModuleEntryLoreScopes>()
+            .AddModule<IModulelsLsMarkdownFilesServer>();
 
         services.RegisterServicesFromFakersInfiniLoreServer();
         services.RegisterServicesFromDataSourcesInfiniLoreServer();
