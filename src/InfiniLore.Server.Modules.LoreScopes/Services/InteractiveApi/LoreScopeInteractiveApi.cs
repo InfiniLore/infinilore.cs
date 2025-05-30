@@ -12,7 +12,7 @@ using InfiniLore.Shared.Modules.LoreScopes.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace InfiniLore.Server.Modules.LoreScopes;
+namespace InfiniLore.Server.Modules.LoreScopes.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
