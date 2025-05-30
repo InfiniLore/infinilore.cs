@@ -9,7 +9,6 @@ namespace InfiniLore.Modules.LoreScopes.Shared.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ILoreScopeModel : IOwnedModel, IHasName {
-    string Name { get; }
     string? Description { get; }
     string? S3PosterImageUrl { get; }
 }

@@ -6,6 +6,4 @@ namespace InfiniLore.Modules.Core.Shared.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IOwnedModel : IBasicModel, IHasOwnerId {
-    public Guid OwnerId { get; }
-}
+public interface IOwnedModel : IBasicModel, IHasOwnerId;

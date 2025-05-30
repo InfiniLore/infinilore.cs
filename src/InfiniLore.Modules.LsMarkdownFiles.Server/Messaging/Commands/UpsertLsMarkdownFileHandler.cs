@@ -24,7 +24,6 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Commands;
 public class UpsertLsMarkdownFileHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
     IS3FileStorage fileStorage,
-    IValidator<LsMarkdownFileModel> fileValidator,
     IValidator<S3FileMetaDataModel> s3FileValidator,
     ILogger<UpsertLsMarkdownFileHandler> logger
 ) : CommandHandler<UpsertLsMarkdownFileRequest, MessageResponse> {
