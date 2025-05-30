@@ -39,6 +39,11 @@
       "_readme": "Download all externally self built packages",
       "commandName": "Project",
       "commandLineArgs": "download-repo --output=\"\" --link --solution=\"InfiniLore.sln\""
+    },
+    "setup new module Repos": {
+      "_readme": "Setup a new module and all of its packages",
+      "commandName": "Project",
+      "commandLineArgs": "module-setup"
     }
   }
 }
