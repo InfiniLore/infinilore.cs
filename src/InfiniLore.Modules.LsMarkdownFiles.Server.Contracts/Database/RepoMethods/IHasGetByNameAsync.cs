@@ -1,16 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Database.RepoMethods;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Modules.Core.Shared.Database;
 
 namespace InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILsMarkdownFileRepository : IOwnedModelRepository<LoreScopeModel, LsMarkdownFileModel>,
-    IHasIsNameTakenAsync<LsMarkdownFileModel>,
-    IHasGetByNameAndOwnerAsync<LsMarkdownFileModel>
-;
+public interface IHasGetByNameAndOwnerAsync<T> where T : BasicModel, IHasName, IHasOwnerId {
+    ValueTask<Result<T>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = default, CancellationToken ct = default);
+}

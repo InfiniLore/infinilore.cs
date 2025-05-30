@@ -1,16 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Database.RepoMethods;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Modules.Core.Server.Messaging;
 
-namespace InfiniLore.Server.Modules.LsMarkdownFiles.Database;
+namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Commands;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface ILsMarkdownFileRepository : IOwnedModelRepository<LoreScopeModel, LsMarkdownFileModel>,
-    IHasIsNameTakenAsync<LsMarkdownFileModel>,
-    IHasGetByNameAndOwnerAsync<LsMarkdownFileModel>
-;
+public record UpsertLsMarkdownFileRequest(
+    Guid LoreScopeId,
+    string FileName,
+    Stream FileStream
+) : MessageRequest;

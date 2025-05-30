@@ -25,7 +25,7 @@ public class UpsertLoreScopeImageHandler(
     IS3FileStorage fileStorage,
     IValidator<LoreScopeModel> loreScopeValidator,
     IValidator<S3FileMetaDataModel> s3FileValidator,
-    ILogger<LoreScopeCreateHandler> logger
+    ILogger<UpsertLoreScopeImageHandler> logger
 ) : CommandHandler<UpsertLoreScopeImageRequest, MessageResponse> {
 
     public override async Task<MessageResponse> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {

@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database\RepoMethods\" />
-      <Folder Include="Messaging\" />
+      <Folder Include="Messaging\Notifications\" />
+      <Folder Include="Messaging\Queries\" />
     </ItemGroup>
 
 </Project>
