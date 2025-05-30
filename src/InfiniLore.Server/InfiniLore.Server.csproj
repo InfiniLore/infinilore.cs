@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server\InfiniLore.Modules.LsMarkdownFiles.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />

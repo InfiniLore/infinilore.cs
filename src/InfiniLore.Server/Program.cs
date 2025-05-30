@@ -19,6 +19,7 @@ using InfiniLore.Server.Components;
 using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
@@ -89,7 +90,8 @@ public static class Program {
     private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>();
+            .AddModule<IServerModuleEntryLoreScopes>()
+            .AddModule<IModulelsLsMarkdownFilesServer>();
         
         #region Database
         ContentDbFactory.RegisterDatabase(

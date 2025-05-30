@@ -9,6 +9,7 @@ using InfiniLore.Shared;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Wasm;
+using InfiniLore.Modules.LsMarkdownFiles.Wasm;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
@@ -33,7 +34,8 @@ public static class Program {
 
         WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
             .AddModule<IWasmModuleEntryCore>()
-            .AddModule<IModuleLoreScopesWasm>();
+            .AddModule<IModuleLoreScopesWasm>()
+            .AddModule<IModulelsLsMarkdownFilesWasm>();;
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();

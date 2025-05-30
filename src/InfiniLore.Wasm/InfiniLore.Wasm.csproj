@@ -31,6 +31,7 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
         <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm\InfiniLore.Modules.LsMarkdownFiles.Wasm.csproj" />
         <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
