@@ -35,7 +35,7 @@ public static class Program {
         WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
             .AddModule<IWasmModuleEntryCore>()
             .AddModule<IModuleLoreScopesWasm>()
-            .AddModule<IModulelsLsMarkdownFilesWasm>();;
+            .AddModule<IModulelsLsMarkdownFilesWasm>();
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();

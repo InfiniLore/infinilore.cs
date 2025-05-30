@@ -117,7 +117,7 @@
                 stream
             );
 
-            if (!result.TryGetAsState(out bool success)) {
+            if (!result.TryGetAsState(out bool success) || !success) {
                 Logger.LogError("Failed to upload image");
                 return;
             }

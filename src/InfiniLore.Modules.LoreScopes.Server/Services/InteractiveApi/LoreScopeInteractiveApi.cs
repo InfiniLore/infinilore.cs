@@ -93,7 +93,7 @@ public class LoreScopeInteractiveApi(
     }
     
     public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, string fileName, string contentType, Stream fileStream, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+        // if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
         
         MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);

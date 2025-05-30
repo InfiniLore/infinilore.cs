@@ -28,7 +28,7 @@ public class LsMarkdownFileValidator : OwnedModelValidator<LoreScopeModel, LsMar
     
     private async Task<bool> VerifyNameAvailabilityAsync(LsMarkdownFileModel model, string name, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
-        var LsMarkdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
-        return await LsMarkdownFileRepository.IsNameNotTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
+        return await markdownFileRepository.IsNameNotTakenAsync(name, model.OwnerId, model.Id, ct:ct);
     }
 }
