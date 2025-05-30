@@ -5,22 +5,26 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/lorescope/{LoreScopeId:guid}/settings"
+@rendermode InteractiveServer
+
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection>
-    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
-        LoreScope Settings
-        <span class="text-sm text-(--color-base-50)">
-            Id: @LoreScopeId
-        </span>
-    </h2>
-</InfiniSection>
+<div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
+    @if (ImageUrl is not null) {
+        <img src="@ImageUrl"
+             alt="@Name poster"
+             class="w-full h-full object-cover rounded-md" />
+    } else {
+        <span>POSTER IMAGE</span>
+    }
+</div>
+
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter] public Guid LoreScopeId { get; set; }
+    [Parameter, EditorRequired] public string? ImageUrl { get; set; }
+    [Parameter, EditorRequired] public string? Name { get; set; }
 }

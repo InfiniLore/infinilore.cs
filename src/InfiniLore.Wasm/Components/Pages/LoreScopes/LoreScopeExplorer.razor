@@ -40,21 +40,12 @@
 
 <InfiniSection class="flex flex-col gap-4">
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/lorescope/{loreScope.Id}/settings"))">
+        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
             <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
 
                 <!-- Poster Image -->
-                <div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
-                    @if (loreScope.S3PosterImageUrl is not null) {
-                        <img src="@loreScope.S3PosterImageUrl" 
-                             alt="@loreScope.Name poster" 
-                             class="w-full h-full object-cover rounded-md" />
-                    } else {
-                        <span>POSTER IMAGE</span>
-                    }
-                </div>
-
-
+                <LoreScopePoster ImageUrl="@loreScope.S3PosterImageUrl" Name="@loreScope.Name"/>
+                
                 <!-- Main Info Content -->
                 <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full">
                     @* Content *@

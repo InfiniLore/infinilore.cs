@@ -1,0 +1,130 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
+@using InfiniLore.Shared.Modules.LoreScopes.Database
+@using InfiniLore.Shared.Modules.LoreScopes.Services
+@using System.Diagnostics.CodeAnalysis
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
+@rendermode InteractiveServer
+@inject ILoreScopeInteractiveApi LoreScopeInteractiveApi
+@inject ILogger<LoreScopeSettings> Logger
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniSection>
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+        LoreScope Settings
+        <span class="text-sm text-(--color-base-50)">
+            Id: @LoreScopeId
+        </span>
+    </h2>
+</InfiniSection>
+
+@if (LoreScopeModelFound) {
+    <InfiniSection>
+        <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+            LoreScope Image
+        </h2>
+        <LoreScopePoster ImageUrl="@LoreScopeModel.S3PosterImageUrl" Name="@LoreScopeModel.Name"/>
+
+        <div class="mt-4">
+            <div class="flex flex-row">
+                <InputFile OnChange="@OnPosterImageSelected"
+                           class="block w-full text-sm text-(--color-base-70)
+                             file:mr-4 file:py-2 file:px-4
+                             file:rounded-full file:border-0
+                             file:text-sm file:font-semibold
+                             file:bg-(--color-primary-500) file:text-white
+                             hover:file:bg-(--color-primary-600)"
+                           accept="image/*"/>
+                <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)"/>
+            </div>
+            @if (IsUploading) {
+                <div class="mt-2 text-sm text-(--color-primary-500)">Uploading...</div>
+            }
+        </div>
+
+    </InfiniSection>
+}
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    [Parameter] public Guid LoreScopeId { get; set; }
+    [Parameter] public Guid UserId { get; set; }
+
+    private ILoreScopeModel? LoreScopeModel { get; set; }
+    [MemberNotNullWhen(true, nameof(LoreScopeModel))] private bool LoreScopeModelFound { get; set; }
+
+    private bool IsUploading { get; set; }
+    private IBrowserFile? SelectedFile { get; set; }
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        Result<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopeAsync(
+            UserId.ToString(),
+            LoreScopeId.ToString()
+        );
+        
+        if (!result.TryGetAsSuccess(out ILoreScopeModel model)) {
+            Logger.Warning("Could not retrieve model");
+
+            LoreScopeModel = null;
+            LoreScopeModelFound = false;
+            return;
+        }
+
+        LoreScopeModel = model;
+        LoreScopeModelFound = true;
+    }
+
+    private void OnPosterImageSelected(InputFileChangeEventArgs e) {
+        SelectedFile = e.File;
+        IsUploading = true;// Enable the upload button
+        StateHasChanged();
+    }
+    private async Task OnPosterImageUpload() {
+        if (SelectedFile is null) return;
+
+        try {
+            // 5MB limit
+            if (SelectedFile.Size > MaxFileSize) {
+                Logger.LogWarning("File size exceeds 5MB limit");
+                return;
+            }
+
+            await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
+            Result result = await LoreScopeInteractiveApi.UpsertLoreScopeImageAsync(
+                UserId.ToString(),
+                LoreScopeId.ToString(),
+                SelectedFile.Name,
+                SelectedFile.ContentType,
+                stream
+            );
+
+            if (!result.TryGetAsState(out bool success)) {
+                Logger.LogError("Failed to upload image");
+                return;
+            }
+
+            // Refresh the LoreScope model to get the updated image URL
+            await OnInitializedAsync();
+            SelectedFile = null;
+        }
+        finally {
+            IsUploading = false;
+            StateHasChanged();
+        }
+    }
+
+
+}

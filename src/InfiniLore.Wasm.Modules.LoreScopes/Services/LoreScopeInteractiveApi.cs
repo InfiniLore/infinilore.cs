@@ -26,6 +26,9 @@ public class LoreScopeInteractiveApi(
     public ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
         throw new NotImplementedException();
     }
+
+    public ValueTask<Result<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) 
+        => throw new NotImplementedException();
     
     public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
         try {
@@ -62,7 +65,9 @@ public class LoreScopeInteractiveApi(
     }
 
     
-    public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
-        throw new NotImplementedException();
-    }
+    public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) 
+        => throw new NotImplementedException();
+
+    public ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, string fileName, string contentType, Stream file, CancellationToken ct = default) 
+        => throw new NotImplementedException();
 }
