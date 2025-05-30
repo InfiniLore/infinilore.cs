@@ -17,22 +17,34 @@ public partial class ModuleSetupCommand(
     ILogger<ModuleSetupCommand> logger,
     CliHelper cliHelper
 ) : ICliCommand<ModuleSetupParameters>{
-    public async ValueTask ExecuteAsync(ModuleSetupParameters parameters, CancellationToken ct = new()) {
-        logger.Information("Starting module setup");
-        
-        string moduleName = GetNewModuleName();
+    private static readonly Dictionary<string, string[]> SubProjects = new() {
+        ["Server"] = [
+            "CodeOfChaos.Extensions.DependencyInjection.Generators",
+            "CodeOfChaos.Extensions.MicrosoftLogging",
+        ],
+        ["Server.Contracts"] = [
+        ],
+        ["Shared"] = [
+            "CodeOfChaos.Extensions.DependencyInjection",
+            "CodeOfChaos.Extensions.DependencyInjection.Generators",
+        ],
+        ["Wasm"] = [
+           "CodeOfChaos.Extensions.MicrosoftLogging" ,
+           "CodeOfChaos.Extensions.DependencyInjection",
+           "CodeOfChaos.Extensions.DependencyInjection.Generators",
+           "Microsoft.Extensions.Logging.Abstractions",
+           "Microsoft.AspNetCore.Components.WebAssembly",
+        ]
+    };
 
-        (string command, string arguments)[] commands = [
-            ("dotnet", "sln add src/InfiniLore.Modules.{moduleName}.Server.csproj --solution-folder {moduleName}"),
-            ("dotnet", "sln add src/InfiniLore.Modules.{moduleName}.Server.Contracts.csproj --solution-folder {moduleName}"),
-            ("dotnet", "sln add src/InfiniLore.Modules.{moduleName}.Shared.csproj --solution-folder {moduleName}"),
-            ("dotnet", "sln add src/InfiniLore.Modules.{moduleName}.Wasm.csproj --solution-folder {moduleName}"),
-        ];
-        
-        foreach ((string command, string arguments) in commands) {
-            await cliHelper.ExecuteCommandAsync(command, arguments.Replace("{moduleName}", moduleName), parameters.Root);
-        }
-        
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public async ValueTask ExecuteAsync(ModuleSetupParameters parameters, CancellationToken ct = new()) {
+        logger.LogInformation("Starting module setup");
+
+        string moduleName = GetNewModuleName();
+        await CreateModuleProjects(moduleName,parameters, ct);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,5 +60,24 @@ public partial class ModuleSetupCommand(
             throw new Exception("No module name given");
         }
         return moduleName;
+    }
+    
+    private async ValueTask CreateModuleProjects(string moduleName, ModuleSetupParameters parameters, CancellationToken ct = default) {
+        foreach (string section in SubProjects.Keys) {
+            string projectName = $"InfiniLore.Modules.{moduleName}.{section}";
+            string outputDir = Path.Combine("src", projectName);
+
+            // Create the project using dotnet CLI
+            await cliHelper.ExecuteCommandAsync("dotnet", $"new classlib -n {projectName} -o \"{outputDir}\"", parameters.Root, ct);
+
+            // Add it to the solution
+            string csprojPath = Path.Combine("src", projectName, $"{projectName}.csproj");
+            await cliHelper.ExecuteCommandAsync("dotnet", $"sln add \"{csprojPath}\" --solution-folder \"src/Server/Modules/{moduleName}\"", parameters.Root, ct);
+            
+            // Optional:  Add Nuget Packages
+            foreach (string package in SubProjects[section]) {
+                await cliHelper.ExecuteCommandAsync("dotnet", $"add \"{csprojPath}\" package {package}", parameters.Root, ct);
+            }
+        }
     }
 }

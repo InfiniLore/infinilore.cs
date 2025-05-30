@@ -12,7 +12,7 @@ namespace Tools.InfiniLore.Library;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableSingleton<CliHelper>]
 public class CliHelper(ILogger<CliHelper> logger) {
-    public async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null) {
+    public async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null, CancellationToken ct = default) {
         var processInfo = new ProcessStartInfo(fileName, arguments) {
             WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
@@ -28,13 +28,13 @@ public class CliHelper(ILogger<CliHelper> logger) {
             throw new Exception($"Failed to start process to run {fileName} {arguments}");
         }
 
-        string output = await process.StandardOutput.ReadToEndAsync();
+        string output = await process.StandardOutput.ReadToEndAsync(ct);
         logger.LogInformation("Command output: {output}", output);
         
-        await process.WaitForExitAsync();
+        await process.WaitForExitAsync(ct);
 
         if (process.ExitCode != 0) {
-            string error = await process.StandardError.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync(ct);
             logger.Error("Command failed: {error}", error);
             throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
         }

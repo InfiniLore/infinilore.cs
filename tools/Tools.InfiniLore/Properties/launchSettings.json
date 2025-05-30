@@ -40,7 +40,7 @@
       "commandName": "Project",
       "commandLineArgs": "download-repo --output=\"\" --link --solution=\"InfiniLore.sln\""
     },
-    "setup new module Repos": {
+    "setup module": {
       "_readme": "Setup a new module and all of its packages",
       "commandName": "Project",
       "commandLineArgs": "module-setup"
