@@ -46,14 +46,14 @@ public class DeleteLorescopeEndpoint(
         MessageResponse result = await messageBroker.DeleteLoreScopeAsync(req.LoreScopeId, ct: ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool successful)) {
+        if (!result.TryGetState(out bool? successful)) {
             logger.Warning("FAILED, {@state}", result.AsError);
             AddError("Failed to delte lorescope");
             return new ProblemDetails(ValidationFailures);
         }
 
         // Return
-        if (!successful) return TypedResults.BadRequest();
+        if (successful is false) return TypedResults.BadRequest();
         return TypedResults.Ok();
     }
 }

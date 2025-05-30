@@ -20,7 +20,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : Command
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         Result result = await userRepository.IsUsernameTakenAsync(command.Username, ct: ct);
-        if (!result.TryGetState(out bool state)) return result.AsError;
+        if (!result.TryGetState(out bool? state)) return result.AsError;
 
         return state;
     }

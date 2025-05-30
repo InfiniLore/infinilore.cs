@@ -7,12 +7,14 @@ using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public class OnNewLoreScopeSetAccessProtection(
     ILogger<OnNewLoreScopeSetAccessProtection> logger,
     IUnitOfWorkFactory unitOfWorkFactory
@@ -25,7 +27,7 @@ public class OnNewLoreScopeSetAccessProtection(
 
 
         Result<LoreScopeModel> result = await repo.GetByIdAsync(eventModel.LoreScopeId, ct:ct);
-        if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) {
+        if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to get lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }

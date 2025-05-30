@@ -35,7 +35,7 @@ public class UpsertLsMarkdownFileHandler(
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         
         Result idExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
-        if (!idExistsResult.TryGetAsState(out bool success) || !success) {
+        if (!idExistsResult.TryGetAsState(out bool? success) || success is false) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return MessageResponse.FromErrorString("Failed to find lorescope with id");
         }
@@ -51,13 +51,13 @@ public class UpsertLsMarkdownFileHandler(
         }
 
         Result s3RepoResult = await s3FileMetaDataRepo.AddOrUpdateAsync(s3FileMetaData, ct);
-        if (!s3RepoResult.TryGetAsState(out success) || !success) {
+        if (!s3RepoResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to add or update S3FileMetaDataModel");
             return MessageResponse.FromErrorString("Failed to add or update S3FileMetaDataModel");
         }
         
         Result<LsMarkdownFileModel> existingModelResult = await markdownFileRepo.GetByNameAndOwnerAsync(command.FileName, command.LoreScopeId, ct:ct);
-        if (!existingModelResult.TryGetAsSuccess(out LsMarkdownFileModel markdownFileModel)) {
+        if (!existingModelResult.TryGetAsSuccess(out LsMarkdownFileModel? markdownFileModel)) {
             markdownFileModel = new LsMarkdownFileModel {
                 OwnerId = command.LoreScopeId,
                 
@@ -73,7 +73,7 @@ public class UpsertLsMarkdownFileHandler(
         }
         
         Result fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
-        if (!fileRepoResult.TryGetAsState(out success) || !success) {
+        if (!fileRepoResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to add or update LsMarkdownFileModel");
             return MessageResponse.FromErrorString("Failed to add or update LsMarkdownFileModel");
         }
@@ -85,7 +85,7 @@ public class UpsertLsMarkdownFileHandler(
             "text/markdown", 
             ct
         );
-        if (!fileUploadResult.TryGetAsState(out success) || !success) {
+        if (!fileUploadResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to upload file to S3");
             return MessageResponse.FromErrorString("Failed to upload file to S3");
         }

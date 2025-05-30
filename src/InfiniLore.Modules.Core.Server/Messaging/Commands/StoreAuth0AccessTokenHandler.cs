@@ -29,7 +29,7 @@ public class StoreAuth0AccessTokenHandler(
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(command.Token);
 
         Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        KeyValueEntryModel store = storeResult.TryGetAsSuccess(out KeyValueEntryModel foundStore)
+        KeyValueEntryModel store = storeResult.TryGetAsSuccess(out KeyValueEntryModel? foundStore)
             ? foundStore
             : new KeyValueEntryModel { Key = "Auth0AccessToken" };
 
@@ -39,7 +39,7 @@ public class StoreAuth0AccessTokenHandler(
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return MessageResponse<bool>.FromErrorString("Cannot store auth0 access token. Validation failed.");
 
         Result result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
-        if (!result.TryGetState(out bool state)) return result.AsError;
+        if (!result.TryGetState(out bool? state)) return result.AsError;
 
         return state;
     }

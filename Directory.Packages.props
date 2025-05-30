@@ -4,14 +4,14 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AterraEngine.Unions" Version="4.2.0" />
-    <PackageVersion Include="AterraEngine.Unions.Generators" Version="4.2.0">
+    <PackageVersion Include="AterraEngine.Unions" Version="5.0.0" />
+    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
-    <PackageVersion Include="Auth0.AuthenticationApi" Version="7.36.0" />
-    <PackageVersion Include="Auth0.ManagementApi" Version="7.36.0" />
+    <PackageVersion Include="Auth0.AuthenticationApi" Version="7.37.0" />
+    <PackageVersion Include="Auth0.ManagementApi" Version="7.37.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
     <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0-preview.7" />
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0-preview.7" />
@@ -38,10 +38,10 @@
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
-    <PackageVersion Include="InfiniLore.Credentials" Version="4.2.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.2.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.2.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.2.0">
+    <PackageVersion Include="InfiniLore.Credentials" Version="4.3.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.3.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.3.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>

@@ -80,7 +80,7 @@
             LoreScopeId.ToString()
         );
         
-        if (!result.TryGetAsSuccess(out ILoreScopeModel model)) {
+        if (!result.TryGetAsSuccess(out ILoreScopeModel? model)) {
             Logger.Warning("Could not retrieve model");
 
             LoreScopeModel = null;
@@ -117,7 +117,7 @@
                 stream
             );
 
-            if (!result.TryGetAsState(out bool success) || !success) {
+            if (!result.TryGetAsState(out bool? success) || success is false) {
                 Logger.LogError("Failed to upload image");
                 return;
             }

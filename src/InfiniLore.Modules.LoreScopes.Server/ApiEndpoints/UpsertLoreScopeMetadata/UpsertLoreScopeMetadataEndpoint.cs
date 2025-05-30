@@ -46,14 +46,14 @@ public class UpsertLoreScopeMetadataEndpoint(
         MessageResponse result = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool successful)) {
+        if (!result.TryGetState(out bool? successful)) {
             logger.Warning("FAILED, {@state}", result.AsError);
             AddError("Failed to update lorescope metadata");
             return new ProblemDetails(ValidationFailures);
         }
 
         // Return
-        if (!successful) return TypedResults.BadRequest();
+        if (successful is false) return TypedResults.BadRequest();
         return TypedResults.Ok();
     }
 }

@@ -48,7 +48,7 @@ public class GetLorescopeEndpoint(
         MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) {
+        if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, result.AsError.Value);
             return TypedResults.NotFound();
         }
@@ -59,7 +59,7 @@ public class GetLorescopeEndpoint(
         LoreScopeResponse response = Map.FromEntity(loreScope);
 
         MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
-        if (imageUrlResponse.TryGetAsSuccess(out string imageUrl)) {
+        if (imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
             response.ImageUrl = imageUrl;
         }
         

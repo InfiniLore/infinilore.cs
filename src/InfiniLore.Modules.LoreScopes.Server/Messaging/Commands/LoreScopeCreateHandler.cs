@@ -33,7 +33,7 @@ public class LoreScopeCreateHandler(
 
         Result loreScopeNameTakenResult = await loreScopeRepo.IsNameTakenAsync(command.LoreScopeName, command.OwnerId, ct:ct);
         Result userIdExistsResult = await userRepo.IsIdTakenAsync(command.OwnerId, ct);
-        if (loreScopeNameTakenResult.TryGetState(out bool isTaken) && isTaken) return MessageResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
+        if (loreScopeNameTakenResult.TryGetState(out bool? isTaken) && isTaken is true) return MessageResponse<Guid>.FromErrorString("LoreScope name already taken for this user");
         if (userIdExistsResult.IsError) return MessageResponse<Guid>.FromErrorString("Owner id does not exist");
 
         // Create a new lorescope based on the request

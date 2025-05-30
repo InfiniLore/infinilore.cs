@@ -20,7 +20,7 @@ public class UserExistsByAuth0Handler(IReadonlyUnitOfWorkFactory factory) : Comm
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         Result result = await userRepository.IsExistingAuth0Id(command.Auth0UserId, ct);
-        if (!result.TryGetState(out bool state)) return result.AsError;
+        if (!result.TryGetState(out bool? state)) return result.AsError;
 
         return state;
     }

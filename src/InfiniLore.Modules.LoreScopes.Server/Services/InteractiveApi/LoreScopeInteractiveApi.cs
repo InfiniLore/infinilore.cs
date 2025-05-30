@@ -26,8 +26,8 @@ public class LoreScopeInteractiveApi(
         
         MessageResponse result = await messageBroker.DeleteLoreScopeAsync(parsedLoreScopeId, ct: ct);
         
-        if (!result.TryGetAsState(out bool success)) Result.FromError("Failed to delete lorescope");
-        return success;
+        if (!result.TryGetAsState(out bool? success)) Result.FromError("Failed to delete lorescope");
+        return success ?? false;
     }
 
     public async ValueTask<Result<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {
@@ -37,12 +37,12 @@ public class LoreScopeInteractiveApi(
         MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(parsedLoreScopeId, parsedUserId, ct: ct);
         
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (!result.TryGetAsSuccess(out LoreScopeModel loreScope)) return Result<ILoreScopeModel>.FromError("Failed to get lorescope");
+        if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) return Result<ILoreScopeModel>.FromError("Failed to get lorescope");
         
         if (loreScope.PosterImageMetaDataId is null) return loreScope;
 
         MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
-        if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) {
+        if (!imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
             logger.Warning("Failed to get lorescope poster image for lorescope {lorescopeId} because '{reason}'", loreScopeId, imageUrlResponse.AsError.Value);
             return loreScope;
         }
@@ -72,7 +72,7 @@ public class LoreScopeInteractiveApi(
             if (loreScope.PosterImageMetaDataId is null) continue;
 
             MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
-            if (!imageUrlResponse.TryGetAsSuccess(out string imageUrl)) continue;
+            if (!imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) continue;
             loreScope.S3PosterImageUrl = imageUrl;
         }
 
@@ -97,7 +97,7 @@ public class LoreScopeInteractiveApi(
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
         
         MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);
-        if (result.TryGetAsState(out bool success)) return success;
+        if (result.TryGetAsState(out bool? success)) return (Result)success;
         
         logger.Warning("Failed to upsert lorescope image for user {userId} because '{reason}'", userId, result.AsError.Value);
         return Result.FromError($"Failed to upsert lorescope image for user {userId}");

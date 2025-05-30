@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Commands;
@@ -16,6 +17,7 @@ namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[UsedImplicitly]
 public class UpsertLoreScopeMetadataHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
     ILogger<LoreScopeCreateHandler> logger,
@@ -27,7 +29,7 @@ public class UpsertLoreScopeMetadataHandler(
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         
         Result<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, ct: ct);
-        if (!foundModelResult.TryGetAsSuccess(out LoreScopeModel foundModel)) {
+        if (!foundModelResult.TryGetAsSuccess(out LoreScopeModel? foundModel)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return MessageResponse.FromErrorString("Failed to find lorescope with id");
         }

@@ -33,7 +33,7 @@ public class UpsertLoreScopeImageHandler(
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         
         Result<LoreScopeModel> loreScope = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
-        if (!loreScope.TryGetAsSuccess(out LoreScopeModel foundModel)) {
+        if (!loreScope.TryGetAsSuccess(out LoreScopeModel? foundModel)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return MessageResponse.FromErrorString("Failed to find lorescope with id");
         }
@@ -45,7 +45,7 @@ public class UpsertLoreScopeImageHandler(
         }
 
         Result result = await fileStorage.TryUploadFileAsync(foundModel.S3BucketName, metaData.FileName, command.FileStream, command.ContentType, ct);
-        if (!result.TryGetAsState(out bool success) || !success) {
+        if (!result.TryGetAsState(out bool? success) || success is false) {
             logger.Warning("Failed to upload file to s3 bucket");
             return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");       
         }

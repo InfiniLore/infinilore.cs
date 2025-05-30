@@ -13,7 +13,7 @@ namespace InfiniLore.Modules.Core.Server.Messaging;
 public partial record MessageResponse : IUnion<bool, Error<ICollection<string>>> {
 
     public bool State => AsState;
-    public bool TryGetState(out bool state) => TryGetAsState(out state);
+    public bool TryGetState(out bool? state) => TryGetAsState(out state);
 
     public static MessageResponse FromErrorString(string value) => new() {
         IsError = true,
@@ -53,7 +53,7 @@ public partial record MessageResponse<T>() : IUnion<T, Error<ICollection<string>
     public static implicit operator MessageResponse<T>(string value) => FromErrorString(value);
     public static implicit operator MessageResponse<T>(Error<string> error) => FromErrorString(error.Value);
     public static implicit operator MessageResponse<T>(MessageResponse responseWithError) {
-        if (!responseWithError.TryGetAsError(out Error<ICollection<string>> value)) throw new InvalidOperationException();
+        if (!responseWithError.TryGetAsError(out Error<ICollection<string>>? value)) throw new InvalidOperationException();
         return value;    
     }
 }

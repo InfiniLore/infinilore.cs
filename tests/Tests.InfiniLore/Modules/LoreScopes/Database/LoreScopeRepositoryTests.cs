@@ -44,7 +44,7 @@ public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider)
         Result result = await repo.IsNameTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
-        await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
+        await Assert.That(result.TryGetState(out bool? isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 
@@ -61,7 +61,7 @@ public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider)
         Result result = await repo.IsNameNotTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
-        await Assert.That(result.TryGetState(out bool isTaken)).IsTrue();
+        await Assert.That(result.TryGetState(out bool? isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 }

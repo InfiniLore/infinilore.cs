@@ -71,7 +71,7 @@ public partial class Register(
         // Call the backend to check username availability
         MessageResponse mediatorResponse = await messageBroker.UsernameExistsAsync(username);
 
-        if (!mediatorResponse.TryGetState(out bool isTaken)) {
+        if (!mediatorResponse.TryGetState(out bool? isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
             _isFormDisabled = true;
             await InvokeAsync(StateHasChanged);// Refresh UI
@@ -79,12 +79,12 @@ public partial class Register(
         }
 
         // Update the UI based on validation response
-        _usernameStatus = isTaken
+        _usernameStatus = isTaken ?? false
             ? UsernameStatus.Taken
             : UsernameStatus.Available;
 
         _usernameValidationMessage = string.Empty;// Clear message
-        _isFormDisabled = isTaken;// Disable form if a username is taken
+        _isFormDisabled = isTaken ?? false;// Disable form if a username is taken
         await InvokeAsync(StateHasChanged);// Refresh UI
     }
     
@@ -93,7 +93,7 @@ public partial class Register(
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
         MessageResponse<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
-        if (result.TryGetAsError(out Error<ICollection<string>> errorMessage)) {
+        if (result.TryGetAsError(out Error<ICollection<string>>? errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false; // Allow retry
             await InvokeAsync(StateHasChanged);

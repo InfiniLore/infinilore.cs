@@ -54,14 +54,14 @@ public class UpsertLsMarkdownFileEndpoint(
         MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(req.LoreScopeId, req.FileName, fileStream, ct:ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool successful)) {
+        if (!result.TryGetState(out bool? successful)) {
             logger.Warning("FAILED, {@state}", result.AsError);
             AddError("Failed to upsert markdown file.");
             return new ProblemDetails(ValidationFailures);
         }
 
         // Return
-        if (!successful) return TypedResults.BadRequest();
+        if (successful is false) return TypedResults.BadRequest();
         return TypedResults.Ok();
     }
 }
