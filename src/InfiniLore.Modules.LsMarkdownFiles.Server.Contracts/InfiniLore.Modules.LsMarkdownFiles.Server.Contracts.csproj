@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>InfiniLore.Server.Modules.LsMarkdownFiles</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared\InfiniLore.Modules.LsMarkdownFiles.Shared.csproj" />
+        <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Ugly, but this is because of some weirdness with how analyzers are imported through a project reference -->
+        <PackageReference Include="CodeOfChaos.GeneratorTools" GeneratePathProperty="true" PrivateAssets="all" />
+        <Analyzer Include="$(PkgCodeOfChaos_GeneratorTools)\lib\netstandard2.0\*.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Database\Models\" />
+      <Folder Include="Database\RepoMethods\" />
+      <Folder Include="Database\Repositories\" />
+      <Folder Include="Messaging\" />
+    </ItemGroup>
+
+</Project>
