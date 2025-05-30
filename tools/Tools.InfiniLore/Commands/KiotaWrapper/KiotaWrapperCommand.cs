@@ -46,8 +46,8 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
     private async ValueTask RunPostProcessingAsync(KiotaWrapperParameters parameters, string csprojPath) {
         logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
-            "InfiniLoreServerModulesCoreApiEndpoints",
-            "InfiniLoreServerModulesLoreScopesApiEndpoints"
+            "InfiniLoreModulesCoreServerApiEndpoints",
+            "InfiniLoreModulesLoreScopesServerApiEndpoints"
         ]);
         
         logger.Information("Fixing specific lines in generated files");
@@ -170,6 +170,12 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
     }
 
     private async Task FixSpecificFileIssues(string fileName, IReadOnlyCollection<(int Line, string Replacement)> replacements) {
+        // Check if file exists first
+        if (!File.Exists(fileName)) {
+            logger.Warning("File not found: {fileName}, skipping modifications", fileName);
+            return;
+        }
+        
         // Read all lines from the file
         string[] lines = await File.ReadAllLinesAsync(fileName);
         bool fileChanged = false;
