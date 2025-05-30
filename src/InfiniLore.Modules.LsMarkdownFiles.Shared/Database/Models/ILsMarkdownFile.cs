@@ -1,11 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Core.Shared.Database;
+using InfiniLore.Modules.Core.Shared.Database;
+
+namespace InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IOwnedModel : IBasicModel, IHasOwnerId {
-    public Guid OwnerId { get; }
+public interface ILsMarkdownFileModel : IOwnedModel {
+    string Name { get; }
 }

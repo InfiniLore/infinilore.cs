@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Server.Contracts\InfiniLore.Modules.LoreScopes.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared\InfiniLore.Modules.LsMarkdownFiles.Shared.csproj" />
@@ -21,9 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database\Models\" />
       <Folder Include="Database\RepoMethods\" />
-      <Folder Include="Database\Repositories\" />
       <Folder Include="Messaging\" />
     </ItemGroup>
 

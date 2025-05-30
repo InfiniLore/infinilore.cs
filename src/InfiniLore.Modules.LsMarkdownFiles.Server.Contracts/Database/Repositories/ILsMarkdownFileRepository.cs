@@ -2,21 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Shared;
-using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
+using InfiniLore.Modules.Core.Server.Database.RepoMethods;
+using InfiniLore.Server.Modules.LoreScopes.Database;
 
-namespace InfiniLore.Modules.Core.Server;
+namespace InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class CoreModuleSetup : ServerModuleSetup {
-    public override void SetupServices(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreShared();
-        services.RegisterServicesFromInfiniLoreModulesCoreShared();
-        services.RegisterServicesFromInfiniLoreModulesCoreServer();
-    }
-}
+public interface ILsMarkdownFileRepository : IOwnedModelRepository<LoreScopeModel, LsMarkdownFileModel>,
+    IHasIsNameTakenAsync<LsMarkdownFileModel>;

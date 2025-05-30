@@ -32,6 +32,6 @@ public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreS
     private async Task<bool> VerifyNameAvailabilityAsync(LoreScopeModel model, string name, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        return await loreScopeRepository.IsLoreScopeNameNotTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        return await loreScopeRepository.IsNameNotTakenAsync(name, model.OwnerId, model.Id, ct:ct);
     }
 }

@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Server.Database.RepoMethods;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

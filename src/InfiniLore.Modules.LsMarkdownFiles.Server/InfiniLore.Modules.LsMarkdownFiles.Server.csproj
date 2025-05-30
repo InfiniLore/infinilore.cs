@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="ApiEndpoints\" />
-      <Folder Include="Database\" />
       <Folder Include="Messaging\Commands\" />
       <Folder Include="Messaging\Queries\" />
       <Folder Include="Messaging\Receivers\" />
