@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Shared;
 using JetBrains.Annotations;

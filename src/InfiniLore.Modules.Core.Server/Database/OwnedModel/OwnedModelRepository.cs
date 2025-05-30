@@ -14,7 +14,8 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     where TOwner : BasicModel 
 {
     protected override IQueryable<TModel> OptionalInclude(IQueryable<TModel> query)
-        => query.Include(ls => ls.Owner);
+        => base.OptionalInclude(query)
+            .Include(ls => ls.Owner);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

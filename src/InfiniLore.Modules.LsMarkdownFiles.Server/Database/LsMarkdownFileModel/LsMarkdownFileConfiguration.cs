@@ -22,5 +22,9 @@ public class LsMarkdownFileConfiguration : OwnedModelConfiguration<LoreScopeMode
         builder.HasIndex(x => new { x.OwnerId, x.Name, x.SoftDeleteDate })
             .IsUnique()
             .HasDatabaseName("IX_OwnerId_Name_Unique");
+
+        builder.HasOne(x => x.S3FileMetaData)
+            .WithOne()
+            .HasForeignKey<LsMarkdownFileModel>(x => x.S3FileMetaDataId);
     }
 }
