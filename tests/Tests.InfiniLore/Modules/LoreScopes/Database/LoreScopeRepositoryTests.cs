@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
+using InfiniLore.Modules.LoreScopes.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
 namespace Tests.InfiniLore.Modules.LoreScopes.Database;

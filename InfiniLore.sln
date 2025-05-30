@@ -64,25 +64,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{589681
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{4390246B-F6EB-49D7-A057-F7370113D72B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.LoreScopes", "src\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj", "{C3B5A812-65FB-4131-94A7-A8AD54FDFFF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LoreScopes.Server", "src\InfiniLore.Modules.LoreScopes.Server\InfiniLore.Modules.LoreScopes.Server.csproj", "{C3B5A812-65FB-4131-94A7-A8AD54FDFFF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.Core", "src\InfiniLore.Server.Modules.Core\InfiniLore.Server.Modules.Core.csproj", "{0C745EF4-A4BE-4DEA-860D-54F754A079BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.Core.Server", "src\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj", "{0C745EF4-A4BE-4DEA-860D-54F754A079BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.Core.Contracts", "src\InfiniLore.Server.Modules.Core.Contracts\InfiniLore.Server.Modules.Core.Contracts.csproj", "{4441D8CD-C197-41F0-9838-937E74200681}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.Core.Server.Contracts", "src\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj", "{4441D8CD-C197-41F0-9838-937E74200681}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Modules.LoreScopes.Contracts", "src\InfiniLore.Server.Modules.LoreScopes.Contracts\InfiniLore.Server.Modules.LoreScopes.Contracts.csproj", "{D955FA17-3B7E-48C7-9B35-D810525C5821}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LoreScopes.Server.Contracts", "src\InfiniLore.Modules.LoreScopes.Server.Contracts\InfiniLore.Modules.LoreScopes.Server.Contracts.csproj", "{D955FA17-3B7E-48C7-9B35-D810525C5821}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Shared.Modules.Core", "src\InfiniLore.Shared.Modules.Core\InfiniLore.Shared.Modules.Core.csproj", "{E212CF65-4DC1-443D-BFEC-6755DE9B5F7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.Core.Shared", "src\InfiniLore.Modules.Core.Shared\InfiniLore.Modules.Core.Shared.csproj", "{E212CF65-4DC1-443D-BFEC-6755DE9B5F7C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{42683F79-9091-4617-B46F-53069E1C6F8B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoreScopes", "LoreScopes", "{0EF8306D-41E1-46D7-B890-278D2C4E10DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Shared.Modules.LoreScopes", "src\InfiniLore.Shared.Modules.LoreScopes\InfiniLore.Shared.Modules.LoreScopes.csproj", "{DF9F1CB3-75ED-41AF-9A0F-F0F69267DB52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LoreScopes.Shared", "src\InfiniLore.Modules.LoreScopes.Shared\InfiniLore.Modules.LoreScopes.Shared.csproj", "{DF9F1CB3-75ED-41AF-9A0F-F0F69267DB52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Wasm.Modules.Core", "src\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj", "{84607F06-1F4C-4CBB-BBBD-79F46DD46E56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.Core.Wasm", "src\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj", "{84607F06-1F4C-4CBB-BBBD-79F46DD46E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Wasm.Modules.LoreScopes", "src\InfiniLore.Wasm.Modules.LoreScopes\InfiniLore.Wasm.Modules.LoreScopes.csproj", "{4821C71E-67E4-4FDB-B748-672E2F1E1BC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LoreScopes.Wasm", "src\InfiniLore.Modules.LoreScopes.Wasm\InfiniLore.Modules.LoreScopes.Wasm.csproj", "{4821C71E-67E4-4FDB-B748-672E2F1E1BC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Cli", "src\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj", "{A7B68546-67DE-4016-AFEE-B8A6ECA040C6}"
 EndProject

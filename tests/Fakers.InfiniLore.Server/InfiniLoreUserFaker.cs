@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Bogus;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Modules.Core.Server.Database;
 using System.Collections.Concurrent;
 
 namespace Fakers.InfiniLore.Server;

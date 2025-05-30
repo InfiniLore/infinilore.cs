@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;

@@ -2,8 +2,8 @@
 // Methods
 // -----------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.Core.Messaging;
+using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Messaging;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;

@@ -3,9 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.Core.Messaging;
-using InfiniLore.Server.Modules.Core.Messaging.Queries;
+using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Modules.Core.Server.Messaging.Queries;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 

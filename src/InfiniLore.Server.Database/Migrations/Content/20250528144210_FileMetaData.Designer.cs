@@ -25,7 +25,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionRuleModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,7 +108,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +165,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.KeyValueEntryModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.KeyValueEntryModel", b =>
                 {
                     b.Property<string>("Key")
                         .HasMaxLength(256)
@@ -183,7 +183,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("KeyValueEntryModel");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.S3FileMetaDataModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.S3FileMetaDataModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +216,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -267,9 +267,9 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "ModelOwner")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", "ModelOwner")
                         .WithMany()
                         .HasForeignKey("ModelOwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -278,13 +278,13 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("ModelOwner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionRuleModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", null)
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", null)
                         .WithMany("Rules")
                         .HasForeignKey("AccessProtectionModelId");
 
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "Owner")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -293,13 +293,13 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "AccessProtection")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", "AccessProtection")
                         .WithOne()
-                        .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "AccessProtectionId");
+                        .HasForeignKey("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", "AccessProtectionId");
 
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "Owner")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -310,7 +310,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
                 {
                     b.Navigation("Rules");
                 });

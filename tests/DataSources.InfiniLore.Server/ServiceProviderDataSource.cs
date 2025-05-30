@@ -2,10 +2,10 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Fakers.InfiniLore.Server;
+using InfiniLore.Modules.Core.Server;
 using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Modules.LoreScopes.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.RegularExpressions;

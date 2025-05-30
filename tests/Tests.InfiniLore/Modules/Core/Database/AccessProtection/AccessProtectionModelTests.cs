@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using DataSources.InfiniLore.Server;
-using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Modules.Core.Server.Database;
 using System.Collections.Frozen;
 
 namespace Tests.InfiniLore.Modules.Core.Database.AccessProtection;

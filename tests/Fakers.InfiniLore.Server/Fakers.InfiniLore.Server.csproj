@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\InfiniLore.Server.Modules.LoreScopes\InfiniLore.Server.Modules.LoreScopes.csproj" />
+      <ProjectReference Include="..\..\src\InfiniLore.Modules.LoreScopes.Server\InfiniLore.Modules.LoreScopes.Server.csproj" />
     </ItemGroup>
 
 </Project>

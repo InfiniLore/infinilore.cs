@@ -34,8 +34,8 @@
         <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
-        <ProjectReference Include="..\InfiniLore.Wasm.Modules.Core\InfiniLore.Wasm.Modules.Core.csproj" />
-        <ProjectReference Include="..\InfiniLore.Wasm.Modules.LoreScopes\InfiniLore.Wasm.Modules.LoreScopes.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Wasm\InfiniLore.Modules.LoreScopes.Wasm.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,7 +4,7 @@
 using DataSources.InfiniLore.Server;
 using FluentValidation;
 using FluentValidation.Results;
-using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Modules.Core.Server.Database;
 
 namespace Tests.InfiniLore.Modules.Core.Database;
 
