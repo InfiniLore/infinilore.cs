@@ -94,6 +94,8 @@ public partial class ModuleSetupCommand(
             foreach (string package in SubProjects[section]) {
                 await cliHelper.ExecuteCommandAsync("dotnet", $"add \"{csprojPath}\" package {package}", parameters.Root, ct);
             }
+            
+            await Task.Delay(1000, ct);
         }
     }
 
