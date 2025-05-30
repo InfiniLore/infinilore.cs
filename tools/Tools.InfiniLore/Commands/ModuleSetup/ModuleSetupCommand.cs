@@ -100,10 +100,10 @@ public partial class ModuleSetupCommand(
     }
 
     private async ValueTask CreateEntryInterface(string moduleName, string mode, ModuleSetupParameters parameters, CancellationToken ct = default) {
-        string generatedCode = await templateHelper.LoadTemplateModuleSetupFileAsync(moduleName, mode, parameters.Root, ct);
+        string generatedCode = await templateHelper.LoadTemplateModuleSetupFileAsync(moduleName, mode, ct);
         string interfaceFileName = $"IModule{moduleName}Server.cs";
         string outputDir = GetModuleOutputDir(moduleName, mode);
-        string interfaceFilePath = Path.Combine(outputDir, interfaceFileName);
+        string interfaceFilePath = Path.Combine(parameters.Root, outputDir, interfaceFileName);
         await File.WriteAllTextAsync(interfaceFilePath, generatedCode, ct);
     }
 }
