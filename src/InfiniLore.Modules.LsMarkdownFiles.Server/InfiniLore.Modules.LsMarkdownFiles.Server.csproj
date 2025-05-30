@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Messaging\Queries\" />
+      <Folder Include="Messaging\Receivers\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+</Project>

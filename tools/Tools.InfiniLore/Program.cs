@@ -55,7 +55,8 @@ public static class Program {
         });
         services.AddSingleton(Log.Logger);
         #endregion
-        
+
+        services.RegisterServicesFromToolsInfiniLore();
         return services.BuildServiceProvider();
     }
 }

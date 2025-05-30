@@ -4,7 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core.Database;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -22,7 +22,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionRuleModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -105,7 +105,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -162,7 +162,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.KeyValueEntryModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.KeyValueEntryModel", b =>
                 {
                     b.Property<string>("Key")
                         .HasMaxLength(256)
@@ -180,7 +180,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("KeyValueEntryModel");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.S3FileMetaDataModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.S3FileMetaDataModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -273,9 +273,58 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Server.Modules.LsMarkdownFiles.Database.LsMarkdownFileModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "ModelOwner")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("LastUserToEditId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("S3FileMetaDataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("SoftDeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("S3FileMetaDataId")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId", "Name", "SoftDeleteDate")
+                        .IsUnique()
+                        .HasDatabaseName("IX_OwnerId_Name_Unique")
+                        .HasFilter("[SoftDeleteDate] IS NOT NULL");
+
+                    b.ToTable("LsMarkdownFileModel");
+
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
+                {
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", "ModelOwner")
                         .WithMany()
                         .HasForeignKey("ModelOwnerId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -284,13 +333,13 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("ModelOwner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionRuleModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionRuleModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", null)
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", null)
                         .WithMany("Rules")
                         .HasForeignKey("AccessProtectionModelId");
 
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "Owner")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -301,17 +350,17 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", "AccessProtection")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", "AccessProtection")
                         .WithOne()
                         .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "AccessProtectionId");
 
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.InfiniLoreUserModel", "Owner")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InfiniLore.Server.Modules.Core.Database.S3FileMetaDataModel", "PosterImageMetaData")
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.S3FileMetaDataModel", "PosterImageMetaData")
                         .WithOne()
                         .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "PosterImageMetaDataId");
 
@@ -322,7 +371,26 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("PosterImageMetaData");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.AccessProtectionModel", b =>
+            modelBuilder.Entity("InfiniLore.Server.Modules.LsMarkdownFiles.Database.LsMarkdownFileModel", b =>
+                {
+                    b.HasOne("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InfiniLore.Modules.Core.Server.Database.S3FileMetaDataModel", "S3FileMetaData")
+                        .WithOne()
+                        .HasForeignKey("InfiniLore.Server.Modules.LsMarkdownFiles.Database.LsMarkdownFileModel", "S3FileMetaDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("S3FileMetaData");
+                });
+
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.AccessProtectionModel", b =>
                 {
                     b.Navigation("Rules");
                 });

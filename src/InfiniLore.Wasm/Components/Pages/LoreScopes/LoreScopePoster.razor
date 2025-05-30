@@ -10,20 +10,25 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="w-40 h-60 rounded-md inset-shadow-xs, inset-shadow-gray-500 bg-red-600 text-xs text-white flex items-center justify-center shrink-0">
+<div class="w-40 h-60 rounded-md overflow-hidden relative group/poster">
     @if (ImageUrl is not null) {
         <img src="@ImageUrl"
-             alt="@Name poster"
-             class="w-full h-full object-cover rounded-md" />
-    } else {
-        <span>POSTER IMAGE</span>
+             alt="LoreScope: @Name"
+             class="w-full h-full object-cover rounded-md"/>
+    }
+    else {
+        <div class="w-full h-full bg-(--color-base-40) group-hover/poster:bg-(--color-base-50) flex items-center justify-center">
+            <span class="text-xs text-(--color-base-00) group-hover/poster:text-(--color-accent)">POSTER IMAGE</span>
+        </div>
     }
 </div>
+
 
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [Parameter, EditorRequired] public string? ImageUrl { get; set; }
     [Parameter, EditorRequired] public string? Name { get; set; }

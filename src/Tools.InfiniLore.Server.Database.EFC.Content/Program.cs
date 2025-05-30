@@ -3,8 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Server;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.LoreScopes.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
     .AddModule<IServerModuleEntryCore>()
-    .AddModule<IServerModuleEntryLoreScopes>();
+    .AddModule<IServerModuleEntryLoreScopes>()
+    .AddModule<IModulelsLsMarkdownFilesServer>();
 
 builder.Services.RegisterServicesFromInfiniLoreServer();
 builder.Services.RegisterServicesFromInfiniLoreShared();

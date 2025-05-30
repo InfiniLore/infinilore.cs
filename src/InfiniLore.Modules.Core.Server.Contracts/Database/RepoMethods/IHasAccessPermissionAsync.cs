@@ -1,0 +1,13 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using AterraEngine.Unions;
+
+namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+public interface IHasAccessPermissionAsync {
+    ValueTask<Result> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default);
+}

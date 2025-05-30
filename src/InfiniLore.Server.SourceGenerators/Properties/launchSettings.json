@@ -3,7 +3,7 @@
   "profiles": {
     "DebugRoslynSourceGenerator": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../InfiniLore.Server.Modules.Core.Contracts/InfiniLore.Server.Modules.Core.Contracts.csproj"
+      "targetProject": "../InfiniLore.Modules.Core.Server.Contracts/InfiniLore.Modules.Core.Server.Contracts.csproj"
     }
   }
 }

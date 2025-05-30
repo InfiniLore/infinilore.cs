@@ -5,8 +5,8 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.InfiniLore.Modules.Core.Database;

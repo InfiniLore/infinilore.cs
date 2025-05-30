@@ -25,7 +25,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.Core.Database.KeyValueEntryModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.Core.Server.Database.KeyValueEntryModel", b =>
                 {
                     b.Property<string>("Key")
                         .HasMaxLength(256)
@@ -43,7 +43,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.ToTable("KeyValueEntryModel");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeDocumentModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeDocumentModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,7 +82,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,11 +230,11 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeDocumentModel", "Document")
+                    b.HasOne("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeDocumentModel", "Document")
                         .WithOne("Owner")
-                        .HasForeignKey("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "DocumentId");
+                        .HasForeignKey("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", "DocumentId");
 
                     b.HasOne("InfiniLore.Server.Modules.Users.Database.InfiniLoreUserModel", "Owner")
                         .WithMany()
@@ -249,7 +249,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
             modelBuilder.Entity("InfiniLore.Server.Modules.MarkdownFiles.DataBase.MarkdownFileModel", b =>
                 {
-                    b.HasOne("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeModel", "Owner")
+                    b.HasOne("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeModel", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,7 +258,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InfiniLore.Server.Modules.LoreScopes.Database.LoreScopeDocumentModel", b =>
+            modelBuilder.Entity("InfiniLore.Modules.LoreScopes.Server.Database.LoreScopeDocumentModel", b =>
                 {
                     b.Navigation("Owner");
                 });

@@ -9,16 +9,17 @@ using FastEndpoints.Swagger;
 using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.ApiEndpoints;
+using InfiniLore.Modules.Core.Server.Auth;
+using InfiniLore.Modules.Core.Server.Encryption;
+using InfiniLore.Modules.Core.Server.TokenStore;
 using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Modules.Core;
-using InfiniLore.Server.Modules.Core.ApiEndpoints;
-using InfiniLore.Server.Modules.Core.Auth;
-using InfiniLore.Server.Modules.Core.Encryption;
-using InfiniLore.Server.Modules.Core.TokenStore;
-using InfiniLore.Server.Modules.LoreScopes;
+using InfiniLore.Modules.LoreScopes.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Server.Services;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
@@ -54,7 +55,7 @@ public static class Program {
             );
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
-            await using var devEnv = new InfiniLoreContainers();
+            await using var devEnv = InfiniLoreContainers.Create();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
@@ -89,7 +90,8 @@ public static class Program {
     private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>();
+            .AddModule<IServerModuleEntryLoreScopes>()
+            .AddModule<IModulelsLsMarkdownFilesServer>();
         
         #region Database
         ContentDbFactory.RegisterDatabase(
