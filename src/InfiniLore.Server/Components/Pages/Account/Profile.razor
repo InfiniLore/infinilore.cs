@@ -33,6 +33,7 @@
     </h2>
     
     <div class="flex flex-row gap-2">
+        @* User Data *@
         <div class="flex w-2/3 grow flex-col gap-2">
             <span>UserName: <span class="text-xs">@UserModel.Username</span></span>
             <span>Auth0Id: <span class="text-xs">@UserModel.Auth0Id</span></span>
@@ -61,13 +62,16 @@
             </div>
             
         </div>
-        <div class="flex w-1/3">
-            <img
-                class="w-full h-full object-fill object-center rounded-full"
-                src="@UserModel.ProfileImageUrl"
-                alt="profile image"/>
-        </div>
         
+        @* Profile Image *@
+        <div class="w-1/3 min-w-[120px]">
+            <div class="aspect-square w-full">
+                <img
+                    class="w-full h-full rounded-full object-cover"
+                    src="@UserModel.ProfileImageUrl"
+                    alt="profile image"/>
+            </div>
+        </div>
     </div>
 </InfiniSection>
 
