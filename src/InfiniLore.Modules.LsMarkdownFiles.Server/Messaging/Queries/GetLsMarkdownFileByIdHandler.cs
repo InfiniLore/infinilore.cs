@@ -22,8 +22,6 @@ public class GetLsMarkdownFileByIdHandler(
     IS3FileStorage fileStorage,
     ILogger<GetLsMarkdownFileByIdHandler> logger
 ) : AccessProtectedCommandHandler<GetLsMarkdownFileByIdQuery, LsMarkdownFileModel>(logger) {
-    protected override MessageResponse<LsMarkdownFileModel> AccessDeniedResult => MessageResponse.FromErrorString("Access denied");
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -35,6 +33,7 @@ public class GetLsMarkdownFileByIdHandler(
         if (!response.TryGetAsSuccess(out LsMarkdownFileModel? model)) return MessageResponse.FromErrorString("Failed to get markdown file");
         if (model.S3FileMetaData is null) return MessageResponse.FromErrorString("Failed to get complete S3FileMetaData");
         
+        // Get the url for the file
         string bucketName = model.GetLoreScopeBucketName();
         Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
         urlResult.Switch(

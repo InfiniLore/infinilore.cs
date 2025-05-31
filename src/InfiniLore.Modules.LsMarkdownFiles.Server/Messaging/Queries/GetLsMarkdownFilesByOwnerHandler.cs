@@ -23,8 +23,6 @@ public class GetLsMarkdownFilesByOwnerHandler(
     IS3FileStorage fileStorage,
     ILogger<GetLsMarkdownFilesByOwnerHandler> logger
 ) : AccessProtectedCommandHandler<GetLsMarkdownFilesByOwnerQuery, PaginatedData<LsMarkdownFileModel>>(logger) {
-    protected override MessageResponse<PaginatedData<LsMarkdownFileModel>> AccessDeniedResult => MessageResponse.FromErrorString("Access denied");
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

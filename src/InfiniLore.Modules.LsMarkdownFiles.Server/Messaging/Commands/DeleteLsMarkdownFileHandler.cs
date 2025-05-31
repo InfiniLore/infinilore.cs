@@ -29,6 +29,7 @@ public class DeleteLsMarkdownFileHandler(
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
+        // Try and find an existing model
         Result<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
         if (!existingModel.TryGetAsSuccess(out LsMarkdownFileModel? markdownFileModel)) {
             logger.Warning("Failed to find markdown file with id {MarkdownFileId}", command.MarkdownFileId);

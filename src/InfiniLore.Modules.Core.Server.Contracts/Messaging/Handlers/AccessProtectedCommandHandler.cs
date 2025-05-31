@@ -11,20 +11,29 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Handlers;
 public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
     ILogger<AccessProtectedCommandHandlerBase<TInput, TOutput>> logger
 ) : CommandHandler<TInput, TOutput>
-    where TInput : ICommand<TOutput>, ICommonRequestData {
+    where TInput : ICommand<TOutput>, ICommonRequestData 
+{
     protected abstract TOutput AccessDeniedResult { get; }
+    protected abstract TOutput UncaughtErrorResult { get; } 
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<TOutput> ExecuteAsync(TInput command, CancellationToken ct = new()) {
-        if (!await ValidateAccessAsync(command, ct)) {
-            LogCommandAccess(command.AccessingUser, AccessType.Denied);
-            return AccessDeniedResult;
+        try {
+            if (!await ValidateAccessAsync(command, ct)) {
+                LogCommandAccess(command.AccessingUser, AccessType.Denied);
+                return AccessDeniedResult;
+            }
+
+            LogCommandAccess(command.AccessingUser, AccessType.Granted);
+            return await HandleCommandAsync(command, ct);
         }
 
-        LogCommandAccess(command.AccessingUser, AccessType.Granted);
-        return await HandleCommandAsync(command, ct);
+        catch (Exception e) {
+            logger.LogError(e, "Uncaught error in command handler {Handler}", typeof(TInput).Name);
+            return UncaughtErrorResult;
+        }
     }
 
     protected abstract Task<TOutput> HandleCommandAsync(TInput command, CancellationToken ct = default);
@@ -54,6 +63,7 @@ public abstract class AccessProtectedCommandHandler<TCommand, TResult>(
 ) : AccessProtectedCommandHandlerBase<TCommand, MessageResponse<TResult>>(logger)
     where TCommand : ICommand<MessageResponse<TResult>>, ICommonRequestData {
     protected override MessageResponse<TResult> AccessDeniedResult { get; } = MessageResponse.FromErrorString("Access denied");
+    protected override MessageResponse<TResult> UncaughtErrorResult { get; } = MessageResponse.FromErrorString("Uncaught error");
 }
 
 public abstract class AccessProtectedCommandHandler<TCommand>(
@@ -61,5 +71,6 @@ public abstract class AccessProtectedCommandHandler<TCommand>(
 ) : AccessProtectedCommandHandlerBase<TCommand, MessageResponse>(logger)
     where TCommand : ICommand<MessageResponse>, ICommonRequestData {
     protected override MessageResponse AccessDeniedResult { get; } = MessageResponse.FromErrorString("Access denied");
+    protected override MessageResponse UncaughtErrorResult { get; } = MessageResponse.FromErrorString("Uncaught error");
 }
 #endregion
