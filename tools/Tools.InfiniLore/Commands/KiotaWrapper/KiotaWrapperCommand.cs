@@ -138,14 +138,14 @@ public partial class KiotaWrapperCommand(
             if (!isFileChanged) return;
 
             await File.WriteAllTextAsync(fileName, fileContent, ct);
-            logger.Information("Replaced long Kiota class names in {fileName}", fileName);
+            logger.Information("Replaced long Kiota class names in {fileName}", Path.GetFileName(fileName));
             
             foreach (string name in namesToReplace) {
                 if (!fileName.Contains(name)) continue;
                 
                 string newFileName = fileName.Replace(name, "Kiota");
                 File.Move(fileName, newFileName, true);
-                logger.Information("Renamed {fileName} to {newFileName}", fileName, newFileName);
+                logger.Information("Renamed {fileName} to {newFileName}", Path.GetFileName(fileName), Path.GetFileName(newFileName));
             }
         });
     }
