@@ -23,7 +23,6 @@
 
     <ItemGroup>
       <Folder Include="Messaging\Notifications\" />
-      <Folder Include="Messaging\Queries\" />
     </ItemGroup>
 
 </Project>

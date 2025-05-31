@@ -18,6 +18,7 @@ public class S3FileMetaDataConfiguration : BasicModelConfiguration<S3FileMetaDat
         builder.Property(x => x.ContentType)
             .IsRequired();
 
-        builder.Ignore(x => x.DataStream);
+        builder.Ignore(x => x.FileStream);
+        builder.Ignore(x => x.S3ResourceUrl);
     }
 }
