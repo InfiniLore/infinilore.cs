@@ -26,5 +26,7 @@ public class LsMarkdownFileConfiguration : OwnedModelConfiguration<LoreScopeMode
         builder.HasOne(x => x.S3FileMetaData)
             .WithOne()
             .HasForeignKey<LsMarkdownFileModel>(x => x.S3FileMetaDataId);
+
+        builder.Ignore(x => x.ResourceUrl);
     }
 }
