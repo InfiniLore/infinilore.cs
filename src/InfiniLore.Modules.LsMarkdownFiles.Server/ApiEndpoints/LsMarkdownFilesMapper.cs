@@ -9,5 +9,5 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LsMarkdownFileResponse, LsMarkdownFileMapper, LsMarkdownFilesResponse, LsMarkdownFileModel>;
+[InjectableSingleton<LsMarkdownFilesMapper>]
+public class LsMarkdownFilesMapper : AutoResponsesMapper<LsMarkdownFileResponse, LsMarkdownFileMapper, LsMarkdownFilesResponse, LsMarkdownFileModel>;
