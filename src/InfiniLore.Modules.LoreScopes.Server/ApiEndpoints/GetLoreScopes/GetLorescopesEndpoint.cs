@@ -56,6 +56,7 @@ public class GetLoreScopesEndpoint(
         logger.Information("Successfully retrieved LoreScopes for userId {id}", req.UserId);
 
         // Return
+        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
         LoreScopesResponse response = Map.FromEntity(paginatedResult);
 
         List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {

@@ -2,12 +2,11 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Modules.Core.Server.Database;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LoreScopeResponse, LoreScopeMapper, LoreScopesResponse, LoreScopeModel>;
+[InjectableSingleton<UserProfilesMapper>]
+public class UserProfilesMapper : AutoResponsesMapper<UserProfileResponse, UserProfileMapper, UserProfilesResponse, InfiniLoreUserModel>;

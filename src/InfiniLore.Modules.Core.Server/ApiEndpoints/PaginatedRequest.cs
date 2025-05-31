@@ -1,13 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Shared;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LoreScopeResponse, LoreScopeMapper, LoreScopesResponse, LoreScopeModel>;
+public record PaginatedRequest : IHasReverse, IHasPageNumber {
+    public int PageNumber { get; [UsedImplicitly] init; } = 1;
+    public bool Reverse { get; [UsedImplicitly] init; } = false;
+}

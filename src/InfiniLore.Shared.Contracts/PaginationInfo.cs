@@ -5,26 +5,55 @@ namespace InfiniLore.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly struct PaginationInfo(int pageNumber, int pageSize) : IEquatable<PaginationInfo> {
-    public readonly int PageNumber = Math.Max(1, pageNumber);
-    public readonly int PageSize = pageSize != 0 
-        ? Math.Max(1, pageSize)
+public readonly record struct PaginationInfo {
+
+    private readonly int _pageNumber;
+    public int PageNumber {
+        get => _pageNumber;
+        init => _pageNumber = Math.Max(1, value);
+    } 
+    
+    private readonly int _pageSize;
+    public int PageSize {
+        get => _pageSize;
+        init => _pageSize = value != 0 
+        ? Math.Max(1, value)
         : 64;
+    }
     
-    public int SkipAmount => (pageNumber - 1) * pageSize;
+    public int SkipAmount => (PageNumber - 1) * PageSize;
+
+    public PaginationInfo(int pageNumber = 1, int pageSize = 64) {
+        PageNumber = pageNumber;
+        PageSize = pageSize;
+    }
     
-    public static PaginationInfo Empty => new(0, 0);
-    public static PaginationInfo Default => new(1, 64);
+    public static PaginationInfo Empty => new() {
+        PageNumber = 0,
+        PageSize = 0
+    };
+    
+    public static PaginationInfo Default => new() {
+        PageNumber = 1,
+        PageSize = 64
+    };
+    
+    public static PaginationInfo From(IHasPageNumber entity) => Default with {
+        PageNumber = entity.PageNumber
+    };
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public PaginationInfo NextPage() => new(PageNumber + 1, pageSize);
-    public PaginationInfo PreviousPage() => new(PageNumber - 1, pageSize);
+    public PaginationInfo NextPage() => this with {
+        PageNumber = PageNumber + 1
+    };
     
-    public static bool operator ==(PaginationInfo left, PaginationInfo right) => left.Equals(right);
-    public static bool operator !=(PaginationInfo left, PaginationInfo right) => !(left == right);
-    public bool Equals(PaginationInfo other) => PageNumber == other.PageNumber && PageSize == other.PageSize;
-    public override bool Equals(object? obj) => obj is PaginationInfo other && Equals(other);
-    public override int GetHashCode() => HashCode.Combine(PageNumber, PageSize);
+    public PaginationInfo PreviousPage() =>this with {
+        PageNumber = PageNumber - 1
+    };
+}
+
+public interface IHasPageNumber {
+    int PageNumber { get; }
 }
