@@ -21,6 +21,8 @@ public class MinIoS3FileStorage(
     ILogger<MinIoS3FileStorage> logger,
     IMinioClient minioClient
 ) : IS3FileStorage {
+
+    private readonly TimeSpan DefaultUrlExpiry = TimeSpan.FromMinutes(5);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -177,12 +179,12 @@ public class MinIoS3FileStorage(
         }
     }
     
-    public async ValueTask<Result<string>> GetFileUrlAsync(string bucketName, string fileName, CancellationToken ct) {
+    public async ValueTask<Result<string>> GetFileUrlAsync(string bucketName, string fileName, TimeSpan? expiry = null, CancellationToken ct = default) {
         try {
             PresignedGetObjectArgs presignedArgs = new PresignedGetObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(fileName)
-                .WithExpiry(300); // Reduce expiry to 5 minutes
+                .WithExpiry((int)(expiry ?? DefaultUrlExpiry).TotalSeconds); // Reduce expiry to 5 minutes
         
             string url = await minioClient.PresignedGetObjectAsync(presignedArgs);
             return Result<string>.FromSuccess(url);

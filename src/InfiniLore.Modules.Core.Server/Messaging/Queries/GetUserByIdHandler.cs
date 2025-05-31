@@ -43,6 +43,7 @@ public class GetUserByIdHandler(
             Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
                 S3BucketNames.UserProfileImages,
                 user.ProfileImageMetaData.FileName,
+                expiry: TimeSpan.FromDays(1),
                 ct: ct
             );
             

@@ -20,5 +20,5 @@ public interface IS3FileStorage {
     ValueTask<Result> TryDownloadFileAsync(string bucketName, string fileName, Stream fileData, CancellationToken ct = default);
     ValueTask<Result> TryDeleteFileAsync(string bucketName, string fileName, CancellationToken ct = default);
     ValueTask<Result<IReadOnlyList<string>>> TryListFilesAsync(string bucketName, string filePath, CancellationToken ct = default);
-    ValueTask<Result<string>> GetFileUrlAsync(string bucketName, string fileName, CancellationToken ct);
+    ValueTask<Result<string>> GetFileUrlAsync(string bucketName, string fileName, TimeSpan? expiry = null, CancellationToken ct = default);
 }
