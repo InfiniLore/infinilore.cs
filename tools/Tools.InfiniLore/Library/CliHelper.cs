@@ -31,7 +31,6 @@ public class CliHelper(ILogger<CliHelper> logger) {
         process.EnableRaisingEvents = true;
 
         var outputTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var errorTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         #pragma warning disable CA2254
         process.OutputDataReceived += (_, e) => {
@@ -47,14 +46,6 @@ public class CliHelper(ILogger<CliHelper> logger) {
                 logger.LogInformation(e.Data);
             }
         };
-
-        process.ErrorDataReceived += (_, e) => {
-            if (e.Data == null) {
-                errorTcs.TrySetResult(true);
-            } else {
-                logger.LogError(e.Data);
-            }
-        };
         #pragma warning restore CA2254
 
         if (!process.Start()) {
@@ -63,17 +54,17 @@ public class CliHelper(ILogger<CliHelper> logger) {
         }
 
         process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
 
         // Wait for process exit and the output/error streams to close
         await Task.WhenAll(
             process.WaitForExitAsync(ct),
-            outputTcs.Task,
-            errorTcs.Task
+            outputTcs.Task
         );
 
         if (process.ExitCode != 0) {
-            throw new Exception($"Command failed with exit code {process.ExitCode}: {fileName} {arguments}");
+            string error = await process.StandardError.ReadToEndAsync(ct);
+            logger.Error("Command failed: {error}", error);
+            throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
         }
     }
 }
