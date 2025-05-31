@@ -37,7 +37,13 @@ public class CliHelper(ILogger<CliHelper> logger) {
         process.OutputDataReceived += (_, e) => {
             if (e.Data == null) {
                 outputTcs.TrySetResult(true);
-            } else {
+            } else if (e.Data.StartsWith("warn: ")) {
+                logger.LogWarning(e.Data[6..]);
+            } else if (e.Data.StartsWith("hint: ")) {
+                logger.LogDebug(e.Data[6..]);
+            } else if (e.Data.StartsWith("Example: ")) {
+                logger.LogDebug(e.Data[9..]);
+            }else {
                 logger.LogInformation(e.Data);
             }
         };
