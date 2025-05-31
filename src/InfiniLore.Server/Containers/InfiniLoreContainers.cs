@@ -14,9 +14,10 @@ public class InfiniLoreContainers : IAsyncDisposable {
     private MsSqlContainer SqlContainer { get; init; } = null!;
     private MinioContainer MinioContainer { get; init; } = null!;
 
-    private static readonly ILoggerFactory EmptyLoggerFactory = LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
-    private static readonly ILogger Logger = EmptyLoggerFactory.CreateLogger("DOCKER-DEV-ENV");
-
+    private static readonly ILogger Logger = LoggerFactory
+        .Create(builder => builder.AddSerilog(Log.Logger))
+        .CreateLogger("DOCKER-DEV-ENV");
+    
     private const int SqlPort = 40626;
     private const string SqlPassword = "AnnaIsTrans4Ever!";
 
@@ -25,6 +26,8 @@ public class InfiniLoreContainers : IAsyncDisposable {
     private const string MinioSecretKey = "minioadmin";
 
     private const string ProjectLabel = "infinilore-dev";
+    private const string SqlImage = "mcr.microsoft.com/mssql/server:2022-latest";
+    private const string MinioImage = "minio/minio:latest";
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -35,7 +38,7 @@ public class InfiniLoreContainers : IAsyncDisposable {
         // Configure an SQL Server container
         MsSqlBuilder sqlBuilder = new MsSqlBuilder()
             .WithLogger(Logger)
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            .WithImage(SqlImage)
             .WithPortBinding(SqlPort, MsSqlBuilder.MsSqlPort)
             .WithPassword(SqlPassword)
             .WithName("infinilore-dev-content")
@@ -51,7 +54,7 @@ public class InfiniLoreContainers : IAsyncDisposable {
         // Configure a MinIO container
         MinioBuilder? minIoBuilder = new MinioBuilder()
             .WithLogger(Logger)
-            .WithImage("minio/minio:latest")
+            .WithImage(MinioImage)
             .WithPortBinding(MinioPort, MinioBuilder.MinioPort)
             .WithUsername(MinioAccessKey)
             .WithPassword(MinioSecretKey)
@@ -74,12 +77,12 @@ public class InfiniLoreContainers : IAsyncDisposable {
         // Configure an SQL Server container
         MsSqlBuilder sqlBuilder = new MsSqlBuilder()
             .WithLogger(Logger)
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest");
+            .WithImage(SqlImage);
 
         // Configure a MinIO container
         MinioBuilder? minIoBuilder = new MinioBuilder()
             .WithLogger(Logger)
-            .WithImage("minio/minio:latest");
+            .WithImage(MinioImage);
 
         return new InfiniLoreContainers {
             SqlContainer = sqlBuilder.Build(),
