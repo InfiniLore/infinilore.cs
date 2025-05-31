@@ -31,7 +31,7 @@ public class DeleteLsMarkdownFileEndpoint(
 
     public override void Configure() {
         Delete("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
-        Permissions(PermissionsStore.LorescopePosterWrite, PermissionsStore.LorescopeWrite);
+        Permissions(PermissionsStore.LorescopeDelete);
         Policies(ApiPolicies.JwtProtected);
         AllowFileUploads();
     }

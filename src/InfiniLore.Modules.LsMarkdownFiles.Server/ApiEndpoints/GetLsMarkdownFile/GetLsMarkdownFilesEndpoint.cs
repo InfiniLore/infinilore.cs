@@ -32,7 +32,7 @@ public class GetLsMarkdownFilesEndpoint(
 
     public override void Configure() {
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
-        Permissions(PermissionsStore.LorescopePosterWrite, PermissionsStore.LorescopeWrite);
+        Permissions(PermissionsStore.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
         AllowFileUploads();
     }
