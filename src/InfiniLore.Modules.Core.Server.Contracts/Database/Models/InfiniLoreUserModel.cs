@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Shared.Database;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InfiniLore.Modules.Core.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,6 +16,7 @@ public class InfiniLoreUserModel : BasicModel, IInfiniLoreUserModel {
     
     public Guid? ProfileImageMetaDataId { get; set; } 
     public S3FileMetaDataModel? ProfileImageMetaData { get; set; }
+    public string? ProfileImageUrl { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

@@ -16,7 +16,8 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 public class GetUserByIdHandler(
     IReadonlyUnitOfWorkFactory factory,
     IAccessProtectionRules protectionRules,
-    ILogger<GetUserByIdHandler> logger
+    ILogger<GetUserByIdHandler> logger,
+    IS3FileStorage fileStorage   
 ) : AccessProtectedCommandHandler<GetUserByIdQuery, InfiniLoreUserModel>(logger) {
     protected override MessageResponse<InfiniLoreUserModel> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get user by id. Access denied.");
 
@@ -31,13 +32,26 @@ public class GetUserByIdHandler(
             var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
             
             Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
-            return result.Match(
-                successCase: MessageResponse.FromSuccess,
-                errorCase: error => {
-                    logger.Error("Failed to get user by id. {Error}", error);
-                    return MessageResponse.FromErrorString("Cannot get user by id.");
-                }
+            if (!result.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
+                logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
+                return MessageResponse.FromErrorString("Cannot get user by id.");
+            }
+
+            // Skip if there is no profile image.
+            if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return MessageResponse.FromSuccess(user);
+
+            Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
+                S3BucketNames.UserProfileImages,
+                user.ProfileImageMetaData.FileName,
+                ct: ct
             );
+            
+            imageUrlResult.Switch(
+                imageUrl => user.ProfileImageUrl = imageUrl,
+                error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
+            );
+            
+            return MessageResponse.FromSuccess(user);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get user by id.");

@@ -13,6 +13,14 @@ namespace InfiniLore.Modules.Core.Server.Database.InfiniLoreUser;
 [InjectableScoped<IInfiniLoreUserRepository>]
 public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel>, IInfiniLoreUserRepository {
 
+    protected override IQueryable<InfiniLoreUserModel> AlwaysInclude(IQueryable<InfiniLoreUserModel> query) 
+        => base.AlwaysInclude(query)
+            .Include(user => user.ProfileImageMetaData)    
+    ;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<Guid>> TryGetIdByAuth0IdAsync(string auth0Id, CancellationToken ct = default) {
         if (auth0Id.IsNullOrWhiteSpace()) return Result<Guid>.FromError(RepositoryFailures.ModelFailedValidation);
 

@@ -14,6 +14,7 @@ public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreU
     public override UserProfileResponse FromEntity(InfiniLoreUserModel entity) => new() {
         Username = entity.Username,
         Id = entity.Id,
-        CreatedDate = entity.CreatedDate
+        CreatedDate = entity.CreatedDate,
+        ProfileImageUrl = entity.ProfileImageUrl
     };
 }
