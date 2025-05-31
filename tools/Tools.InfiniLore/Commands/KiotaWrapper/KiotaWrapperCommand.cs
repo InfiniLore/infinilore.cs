@@ -5,7 +5,7 @@ using CodeOfChaos.CliArgsParser;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel;
-using System.Diagnostics;
+using Tools.InfiniLore.Library;
 
 namespace Tools.InfiniLore.Commands.KiotaWrapper;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -13,7 +13,10 @@ namespace Tools.InfiniLore.Commands.KiotaWrapper;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 [CliData("kiota-wrapper")]
-public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : ICliCommand<KiotaWrapperParameters> {
+public partial class KiotaWrapperCommand(
+    ILogger<KiotaWrapperCommand> logger,
+    CliHelper cliHelper
+) : ICliCommand<KiotaWrapperParameters> {
 
     public async ValueTask ExecuteAsync(KiotaWrapperParameters parameters, CancellationToken ct = default) {
         // Resolve paths relative to the Root
@@ -105,7 +108,7 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
                 + "--clean-output "
                 + "--clear-cache";
 
-            await ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
+            await cliHelper.ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }
         catch (Win32Exception ) {
             logger.Error("Failed to run Kiota, this is most likely due to a missing kiota as a global tool. To install Kiota, run the following command: {cmd}", "dotnet tool install --global Microsoft.OpenApi.Kiota");
@@ -114,29 +117,7 @@ public partial class KiotaWrapperCommand(ILogger<KiotaWrapperCommand> logger) : 
     }
 
     private async Task RunDotNetRestoreAsync(string csprojPath)
-        => await ExecuteCommandAsync("dotnet", $"restore \"{csprojPath}\"");
-
-    private async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null) {
-        var processInfo = new ProcessStartInfo(fileName, arguments) {
-            WorkingDirectory = workingDirectory,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
-        using Process? process = Process.Start(processInfo);
-        
-        logger.LogInformation("Command output: {output}", await process?.StandardOutput.ReadToEndAsync()!);
-        await process.WaitForExitAsync();
-
-        if (process.ExitCode != 0) {
-            string error = await process.StandardError.ReadToEndAsync();
-            logger.Error("Command failed: {error}", error);
-            throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
-        }
-    }
+        => await cliHelper.ExecuteCommandAsync("dotnet", $"restore \"{csprojPath}\"");
 
     private async Task ReplaceLongKiotaClassNamesAsync(string csprojPath, string[] namesToReplace) {
         // collect all .cs files
