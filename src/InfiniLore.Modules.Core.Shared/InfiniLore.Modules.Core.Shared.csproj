@@ -7,15 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AterraEngine.Unions" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

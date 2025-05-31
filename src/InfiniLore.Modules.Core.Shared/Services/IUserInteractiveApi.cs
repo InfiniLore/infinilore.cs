@@ -1,13 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Core.Shared.Database;
+using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Shared.Database;
+
+namespace InfiniLore.Modules.Core.Shared;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInfiniLoreUserModel {
-    string Username { get; }
-    string? Auth0Id { get; }
-    string? ProfileImageUrl { get; }
+public interface IUserInteractiveApi {
+    ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default);
 }

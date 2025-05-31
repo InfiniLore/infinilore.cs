@@ -1,13 +1,20 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Core.Shared.Database;
+using AterraEngine.Unions;
+using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.Database;
+
+namespace InfiniLore.Modules.Core.Wasm.Services.InteractiveApi;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInfiniLoreUserModel {
-    string Username { get; }
-    string? Auth0Id { get; }
-    string? ProfileImageUrl { get; }
+[InjectableScoped<IUserInteractiveApi>]
+public class UserInteractiveApiWasm : IUserInteractiveApi {
+
+    public ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
+        throw new NotImplementedException();
+    }
 }

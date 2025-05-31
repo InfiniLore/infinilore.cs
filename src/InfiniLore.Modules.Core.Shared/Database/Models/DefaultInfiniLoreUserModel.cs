@@ -6,8 +6,8 @@ namespace InfiniLore.Modules.Core.Shared.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInfiniLoreUserModel {
-    string Username { get; }
-    string? Auth0Id { get; }
-    string? ProfileImageUrl { get; }
+public class DefaultInfiniLoreUserModel : IInfiniLoreUserModel {
+    public string Username { get; } = "Unknown";
+    public string? Auth0Id { get; } = null ;
+    public string? ProfileImageUrl { get; }= null ;
 }
