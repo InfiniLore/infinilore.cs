@@ -11,4 +11,5 @@ namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IUserInteractiveApi {
     ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default);
+    ValueTask<Result> UpsertProfileImageAsync(string userId,  string contentType, Stream file, CancellationToken ct = default);
 }

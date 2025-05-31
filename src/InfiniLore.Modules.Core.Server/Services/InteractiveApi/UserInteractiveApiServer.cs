@@ -28,4 +28,14 @@ public class UserInteractiveApiServer(
             errorCase: _ => Result<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
         );
     }
+    
+    public async ValueTask<Result> UpsertProfileImageAsync(string userId, string contentType, Stream file, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+        
+        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(parsedUserId, contentType, file, ct: ct);
+        return result.Match<Result>(
+            stateCase: state => state,
+            errorCase: _ => Result.FromError("Failed to retrieve user.")
+        );
+    }
 }

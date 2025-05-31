@@ -14,7 +14,9 @@ namespace InfiniLore.Modules.Core.Wasm.Services.InteractiveApi;
 [InjectableScoped<IUserInteractiveApi>]
 public class UserInteractiveApiWasm : IUserInteractiveApi {
 
-    public ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
-        throw new NotImplementedException();
-    }
+    public ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) 
+        => throw new NotImplementedException();
+
+    public ValueTask<Result> UpsertProfileImageAsync(string userId, string contentType, Stream file, CancellationToken ct = default) 
+        => throw new NotImplementedException();
 }
