@@ -66,14 +66,16 @@ public class CliHelper(ILogger<CliHelper> logger) {
         process.BeginErrorReadLine();
 
         // Wait for process exit and the output/error streams to close
+        await process.WaitForExitAsync(ct);
         await Task.WhenAll(
-            process.WaitForExitAsync(ct),
             outputTcs.Task,
             errorTcs.Task
         );
 
         if (process.ExitCode != 0) {
-            throw new Exception($"Command failed with exit code {process.ExitCode}: {fileName} {arguments}");
+            string error = await process.StandardError.ReadToEndAsync(ct);
+            logger.Error("Command failed: {error}", error);
+            throw new Exception($"Command failed: {fileName} {arguments}\nError: {error}");
         }
     }
 }
