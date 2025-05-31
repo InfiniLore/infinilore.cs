@@ -4,6 +4,7 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
-    Ok<UserProfileResponse>,
+    Ok<UserProfilesResponse>,
     
     // Default Included Results
     NotFound,
@@ -25,29 +26,35 @@ using Response=Results<
     ProblemDetails
 >;
 
-public class GetUserProfileEndpoint(
+public class GetUserProfilesEndpoint(
     ILogger<GetUserProfileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
-    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetUserProfileRequest, Response, UserProfileMapper> {
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker // TODO this needs a better fix than just showing the accessing user as the server
+) : Endpoint<GetUserProfilesRequest, Response, UserProfilesMapper> {
     public override void Configure() {
-        Get("/account/profile/{UserId:guid}");
+        Get("/account/profile");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override async Task<Response> ExecuteAsync(GetUserProfileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetUserProfilesRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
-        MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
+
+        MessageResponse<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(
+            QueryConfig.From(req),
+            PaginationInfo.From(req), 
+            ct: ct
+        );
+
+        // MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
         return result.Match<Response>(
             successCase: model => {
-                logger.Information("Successfully retrieved user with id {id}", req.UserId);
-                UserProfileResponse mappedModel = Map.FromEntity(model);
+                logger.Information("Successfully retrieved users");
+                UserProfilesResponse mappedModel = Map.FromEntity(model);
                 return TypedResults.Ok(mappedModel);
             },
             errorCase: error => {
-                logger.Warning("Failed to get user with id {id} because '{reason}'", req.UserId, error.Value);
+                logger.Warning("Failed to get users because '{reason}'", error.Value);
                 return TypedResults.NotFound();
             }
         );

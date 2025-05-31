@@ -1,7 +1,10 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
 @using InfiniLore.InfiniBlazor.Theming
+@using InfiniLore.Modules.Core.Shared
+@using InfiniLore.Modules.Core.Shared.Database
 @using InfiniLore.Shared.Auth
 @using InfiniLore.Shared.Services.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
@@ -12,6 +15,8 @@
 @rendermode InteractiveServer
 @inject IJwtTokenJsSecureStorage JsTokenProvider
 @inject IThemeSelector ThemeSelector
+@inject IUserInteractiveApi UserInteractiveApi
+@inject NavigationManager NavigationManager
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -80,13 +85,18 @@
                 <!-- Profile Icon -->
                 <SideNavMenuUser
                     HrefUserProfile="/account/profile"
-                    UserName="@UserName"
-                    UserImageUrl="@ProfileImage">
+                    UserName="@UserModel.Username">
+                    <Icon>
+                        <UserIcon
+                            HrefUserProfile="/account/profile"
+                            ImageUrl="@UserModel.ProfileImageUrl"
+                        />
+                    </Icon>
                     <AdditionalLinks>
                         <button class="@(SideNavMenuUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">
                             theme
                         </button>
-                        
+
                         <NavLink @onclick="LogoutCallbackAsync"
                                  href="/account/logout"
                                  class="@(SideNavMenuUser.AdditionalLinkClasses)">
@@ -108,27 +118,34 @@
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     // State for user details
-    private string UserName { get; set; } = "Guest";
-    private string ProfileImage { get; set; } = "";// Fallback image
-    private bool MenuCollapsed { get; set; }// Tracks whether the menu is collapsed
-
+    private bool MenuCollapsed { get; set; } // Tracks whether the menu is collapsed
+    private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
         if (AuthenticationStateTask is null) return;
 
         AuthenticationState authState = await AuthenticationStateTask;
         ClaimsPrincipal user = authState.User;
-
+        
         if (user.Identity is { IsAuthenticated: true }) {
-            // Retrieve claims
-            string? nameClaim = user.FindFirst(c => c.Type == InfiniLoreClaimsStoreConstants.UserName)?.Value
-                ?? user.FindFirst(c => c.Type == "name")?.Value
-                ?? user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+            // try find userId
+            string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+            if (userId is null) {
+                await JsTokenProvider.RemoveTokenAsync();
+                NavigationManager.NavigateTo("/account/logout");
+                return;
+            }
 
-            string? imageClaim = user.FindFirst(c => c.Type.Equals("picture"))?.Value;
+            Result<IInfiniLoreUserModel> result = await UserInteractiveApi.GetUserAsync(userId);
+            if (!result.TryGetAsSuccess(out IInfiniLoreUserModel? userModel)) {
+                await JsTokenProvider.RemoveTokenAsync();
+                NavigationManager.NavigateTo("/account/logout");
+                return;
+            }
 
-            // Set username and profile image
-            UserName = nameClaim ?? "User";
-            ProfileImage = imageClaim ?? string.Empty;
+            UserModel = userModel;
         }
 
         await InvokeAsync(StateHasChanged);

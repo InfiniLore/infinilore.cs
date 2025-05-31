@@ -25,5 +25,11 @@ public class InfiniLoreUserConfiguration : BasicModelConfiguration<InfiniLoreUse
         builder.Property(x => x.Username).HasMaxLength(InfiniLoreUserModel.Defaults.UsernameMaxLength);
 
         builder.Ignore(x => x.Auth0Id);
+        builder.Ignore(x => x.ProfileImageUrl);
+        
+        builder.HasOne(x => x.ProfileImageMetaData)
+            .WithOne()
+            .HasForeignKey<InfiniLoreUserModel>(x => x.ProfileImageMetaDataId)
+            .IsRequired(false);
     }
 }

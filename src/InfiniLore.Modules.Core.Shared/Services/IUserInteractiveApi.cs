@@ -1,13 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Shared.Database;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Shared;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LoreScopeResponse, LoreScopeMapper, LoreScopesResponse, LoreScopeModel>;
+public interface IUserInteractiveApi {
+    ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default);
+    ValueTask<Result> UpsertProfileImageAsync(string userId,  string contentType, Stream file, CancellationToken ct = default);
+}

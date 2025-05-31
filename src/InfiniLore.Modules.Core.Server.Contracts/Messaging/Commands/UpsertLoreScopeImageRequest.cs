@@ -1,13 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+namespace InfiniLore.Modules.Core.Server.Messaging.Commands;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LoreScopeResponse, LoreScopeMapper, LoreScopesResponse, LoreScopeModel>;
+public record UpsertUserProfileImageRequest(
+    Guid UserId,
+    string ContentType,
+    Stream FileStream
+) : MessageRequest;

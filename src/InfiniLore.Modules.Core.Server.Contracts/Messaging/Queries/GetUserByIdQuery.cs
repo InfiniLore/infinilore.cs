@@ -1,12 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using JetBrains.Annotations;
+using InfiniLore.Modules.Core.Server.Database;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
+namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetUserProfileRequest {
-    public Guid UserId { get; [UsedImplicitly] init; }
-}
+public record GetUserByIdQuery(
+    Guid UserId
+) : MessageRequest<InfiniLoreUserModel>;

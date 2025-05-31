@@ -1,38 +1,75 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@* Descriptors
-@* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/account/profile"
+@using AterraEngine.Unions
+@using InfiniLore.Modules.Core.Shared
+@using InfiniLore.Modules.Core.Shared.Database
 @using InfiniLore.Server.Components.Layout
 @using InfiniLore.Shared.Auth
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/account/profile"
 @rendermode InteractiveServer
 
 @attribute [Authorize]
 @layout MainLayout
+@inject IUserInteractiveApi UserInteractiveApi
+@inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <PageTitle>Profile</PageTitle>
 
 <InfiniSection>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <h2 class="text-lg font-semibold text-(--color-base-90)">
-                    Profile
-                </h2>
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+        Profile Settings
+        <span class="text-sm text-(--color-base-50)">
+            Id: @UserModel.Id
+        </span>
+    </h2>
+    
+    <div class="flex flex-row gap-2">
+        @* User Data *@
+        <div class="flex w-2/3 grow flex-col gap-2">
+            <span>UserName: <span class="text-xs">@UserModel.Username</span></span>
+            <span>Auth0Id: <span class="text-xs">@UserModel.Auth0Id</span></span>
 
-                <div class="col-md-2">
-                    <img src="@_picture"
-                         alt="" class="img-rounded img-responsive" style="display: block; margin: 0 auto;"/>
+            <div class="flex flex-col grow justify-center">
+                <div class="grow"></div>
+                <div class="flex flex-row justify-between">
+                    <span>Profile Image: </span>
+                    @if (IsUploading) {
+                        <div class="mt-2 text-sm text-(--color-primary-500)">Uploading...</div>
+                    }
                 </div>
-                <div class="col-md-4">
-                    <span>UserName: @_username</span>
+                <div class="flex flex-row justify-between">
+                    <div class="relative">
+                        <InputFile OnChange="@OnPosterImageSelected"
+                                   class="w-full text-sm text-gray-700 transition-all duration-150 transform cursor-pointer
+                     file:cursor-pointer active:file:scale-95 file:mr-4 file:px-2 file:py-1 
+                     file:text-base file:rounded-md file:bg-(--color-base-70) file:text-(--color-base-00) 
+                     hover:file:text-(--color-accent) hover:file:ring-2 hover:ring-(--color-accent) 
+                     hover:file:scale-105 p-1"
+                                   accept="image/*"/>
+                    </div>
+
+                    <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
                 </div>
+            </div>
+            
+        </div>
+        
+        @* Profile Image *@
+        <div class="w-1/3 min-w-[120px]">
+            <div class="aspect-square w-full">
+                <img
+                    class="w-full h-full rounded-full object-cover"
+                    src="@UserModel.ProfileImageUrl"
+                    alt="profile image"/>
             </div>
         </div>
     </div>
@@ -57,18 +94,67 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
-    private string _username = string.Empty;
-    private string _picture = string.Empty;
+    private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
+    private IBrowserFile? SelectedFile { get; set; }
+    public bool IsUploading { get; set; }
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
+        ClaimsPrincipal user = state.User;
+        if (user.Identity is { IsAuthenticated: true }) {
+            // try find userId
+            string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+            if (userId.IsNullOrEmpty()) return;
+            
+            Result<IInfiniLoreUserModel> result = await UserInteractiveApi.GetUserAsync(userId);
+            if (!result.TryGetAsSuccess(out IInfiniLoreUserModel? userModel)) return;
 
-        _username = state.User.Identity?.Name ?? string.Empty;
-        _picture = state.User.Claims
-            .Where(c => c.Type.Equals("picture"))
-            .Select(c => c.Value)
-            .FirstOrDefault() ?? string.Empty;
+            UserModel = userModel;
+        }
 
         await base.OnInitializedAsync();
+    }
+    
+    private void OnPosterImageSelected(InputFileChangeEventArgs e) {
+        if (e.File is not {} file) return;
+        SelectedFile = file;
+        IsUploading = true; 
+        StateHasChanged();
+    }
+    
+    private async Task OnPosterImageUpload() {
+        if (SelectedFile is null) return;
+
+        try {
+            // 5MB limit
+            if (SelectedFile.Size > MaxFileSize) {
+                Logger.LogWarning("File size exceeds 5MB limit");
+                return;
+            }
+
+            await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
+            Result result = await UserInteractiveApi.UpsertProfileImageAsync(
+                UserModel.Id.ToString(),
+                SelectedFile.ContentType,
+                stream
+            );
+
+            if (!result.TryGetAsState(out bool? success) || success is false) {
+                Logger.LogError("Failed to upload image");
+                return;
+            }
+
+            // Refresh the LoreScope model to get the updated image URL
+            await OnInitializedAsync();
+            SelectedFile = null;
+        }
+        finally {
+            IsUploading = false;
+            StateHasChanged();
+        }
     }
 }

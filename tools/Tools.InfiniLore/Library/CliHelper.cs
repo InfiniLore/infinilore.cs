@@ -13,21 +13,16 @@ namespace Tools.InfiniLore.Library;
 [InjectableSingleton<CliHelper>]
 public class CliHelper(ILogger<CliHelper> logger) {
     public async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null, CancellationToken ct = default) {
-        var processInfo = new ProcessStartInfo(fileName, arguments) {
+        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
+        
+        using var process = new Process();
+        process.StartInfo = new ProcessStartInfo(fileName, arguments) {
             WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true
         };
-
-        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
-        using Process? process = Process.Start(processInfo);
-        if (process == null) {
-            logger.Error("Failed to start process to run {cmd}", $"{fileName} {arguments}");
-            return;
-        }
-
         process.EnableRaisingEvents = true;
 
         var outputTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -35,10 +30,19 @@ public class CliHelper(ILogger<CliHelper> logger) {
 
         #pragma warning disable CA2254
         process.OutputDataReceived += (_, e) => {
-            if (e.Data == null) {
+            if (e.Data is null || e.Data.Contains("Kiota.Builder.KiotaBuilder[0]") || e.Data.Trim().StartsWith("OpenAPI warning:")) {
                 outputTcs.TrySetResult(true);
-            } else {
-                logger.LogInformation(e.Data);
+            } 
+            else if (e.Data.StartsWith("warn: ")) {
+                logger.LogWarning(e.Data[6..].Trim());
+            }
+            else if (e.Data.StartsWith("hint: ")) {
+                logger.LogDebug(e.Data[6..].Trim());
+            }
+            else if (e.Data.StartsWith("Example: ")) {
+                logger.LogDebug(e.Data[9..].Trim());
+            }else {
+                logger.LogDebug(e.Data);
             }
         };
 

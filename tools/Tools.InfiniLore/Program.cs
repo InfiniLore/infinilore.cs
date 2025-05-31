@@ -44,7 +44,8 @@ public static class Program {
                 24,
                 configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
             )
-            .WithTruncateSourceContextEnricher(maxLength: 24);
+            .WithTruncateSourceContextEnricher(maxLength: 24)
+            .MinimumLevel.Debug();
 
         Log.Logger = loggerConfig.CreateLogger();
 

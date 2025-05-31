@@ -23,7 +23,8 @@ public class AccessProtectionRules(IReadonlyUnitOfWorkFactory readonlyUnitOfWork
         return ValueTask.FromResult(state);
     }
 
-    public ValueTask<bool> IsOwnerAsync(IAccessingUser access, Guid userId, CancellationToken ct = default) => ValueTask.FromResult(
-        access.UserId == userId
-    );
+    public async ValueTask<bool> IsOwnerAsync(IAccessingUser access, Guid userId, CancellationToken ct = default) {
+        if (await IsServerAsync(access, ct)) return true;
+        return access.UserId == userId;
+    }
 }

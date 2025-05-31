@@ -1,13 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Server.Modules.LoreScopes.Database;
+namespace InfiniLore.Modules.Core.Shared.Database;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<LoreScopesMapper>]
-public class LoreScopesMapper : AutoResponsesMapper<LoreScopeResponse, LoreScopeMapper, LoreScopesResponse, LoreScopeModel>;
+public class DefaultInfiniLoreUserModel : IInfiniLoreUserModel {
+    public Guid Id { get; } = Guid.Empty;
+    public string Username { get; } = "Unknown";
+    public string? Auth0Id { get; } = null ;
+    public string? ProfileImageUrl { get; }= null ;
+}

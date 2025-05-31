@@ -1,20 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Shared;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableSingleton<UserProfileMapper>]
-public class UserProfileMapper : ResponseMapper<UserProfileResponse, InfiniLoreUserModel> {
-    public override UserProfileResponse FromEntity(InfiniLoreUserModel entity) => new() {
-        Username = entity.Username,
-        Id = entity.Id,
-        CreatedDate = entity.CreatedDate,
-        ProfileImageUrl = entity.ProfileImageUrl
-    };
+public record PaginatedRequest : IHasReverse, IHasPageNumber {
+    public int PageNumber { get; [UsedImplicitly] init; } = 1;
+    public bool Reverse { get; [UsedImplicitly] init; } = false;
 }
