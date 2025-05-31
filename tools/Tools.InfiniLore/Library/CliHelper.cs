@@ -22,12 +22,8 @@ public class CliHelper(ILogger<CliHelper> logger) {
         };
 
         logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
-        using Process? process = Process.Start(processInfo);
-        if (process == null) {
-            logger.Error("Failed to start process to run {cmd}", $"{fileName} {arguments}");
-            return;
-        }
-
+        using var process = new Process();
+        process.StartInfo = processInfo;
         process.EnableRaisingEvents = true;
 
         var outputTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -37,7 +33,13 @@ public class CliHelper(ILogger<CliHelper> logger) {
         process.OutputDataReceived += (_, e) => {
             if (e.Data == null) {
                 outputTcs.TrySetResult(true);
-            } else {
+            } else if (e.Data.StartsWith("warn: ")) {
+                logger.LogWarning(e.Data[6..]);
+            } else if (e.Data.StartsWith("hint: ")) {
+                logger.LogDebug(e.Data[6..]);
+            } else if (e.Data.StartsWith("Example: ")) {
+                logger.LogDebug(e.Data[9..]);
+            }else {
                 logger.LogInformation(e.Data);
             }
         };
