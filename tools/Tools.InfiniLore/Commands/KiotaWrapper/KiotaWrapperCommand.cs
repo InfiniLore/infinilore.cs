@@ -25,10 +25,6 @@ public partial class KiotaWrapperCommand(
         string csprojPath = Path.Combine(root, parameters.CsprojPath);
         string tempCsprojPath = Path.Combine(root, ".temp/temp.csproj");
 
-        // Validate OpenAPI file accessibility
-        logger.Information("Validating OpenAPI file accessibility...");
-        await ValidateOpenApiFileAccessAsync(parameters.OpenApiFile, ct);
-
         // Ensure the .csproj is backed up
         logger.Information("Backing up .csproj file...");
         BackupCsproj(csprojPath, tempCsprojPath);
@@ -45,18 +41,18 @@ public partial class KiotaWrapperCommand(
         logger.Information("Restoring NuGet packages...");
         await RunDotNetRestoreAsync(csprojPath);
         logger.Information("Initial Kiota client generated");
-
+        
         logger.Information("Starting Post Processing");
         await RunPostProcessingAsync(parameters, csprojPath);
     }
-
+    
     private async ValueTask RunPostProcessingAsync(KiotaWrapperParameters parameters, string csprojPath) {
         logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
             "InfiniLoreModulesCoreServerApiEndpoints",
             "InfiniLoreModulesLoreScopesServerApiEndpoints"
         ]);
-
+        
         logger.Information("Fixing specific lines in generated files");
         Dictionary<string, (int Line, string Replacement)[]> data = new() {
             ["src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs"] = [
@@ -66,7 +62,7 @@ public partial class KiotaWrapperCommand(
 
         IEnumerable<Task> tasks = data.Select(pair => FixSpecificFileIssues(Path.Join(parameters.Root, pair.Key), pair.Value));
         await Task.WhenAll(tasks);
-
+        
         // End
         logger.Information("Post Processing completed");
     }
@@ -114,7 +110,7 @@ public partial class KiotaWrapperCommand(
 
             await cliHelper.ExecuteCommandAsync("kiota", arguments, resolvedOutputFolder);
         }
-        catch (Win32Exception) {
+        catch (Win32Exception ) {
             logger.Error("Failed to run Kiota, this is most likely due to a missing kiota as a global tool. To install Kiota, run the following command: {cmd}", "dotnet tool install --global Microsoft.OpenApi.Kiota");
             throw;
         }
@@ -143,10 +139,10 @@ public partial class KiotaWrapperCommand(
 
             await File.WriteAllTextAsync(fileName, fileContent, ct);
             logger.Information("Replaced long Kiota class names in {fileName}", fileName);
-
+            
             foreach (string name in namesToReplace) {
                 if (!fileName.Contains(name)) continue;
-
+                
                 string newFileName = fileName.Replace(name, "Kiota");
                 File.Move(fileName, newFileName, true);
                 logger.Information("Renamed {fileName} to {newFileName}", fileName, newFileName);
@@ -160,7 +156,7 @@ public partial class KiotaWrapperCommand(
             logger.Warning("File not found: {fileName}, skipping modifications", fileName);
             return;
         }
-
+        
         // Read all lines from the file
         string[] lines = await File.ReadAllLinesAsync(fileName);
         bool fileChanged = false;
@@ -187,30 +183,4 @@ public partial class KiotaWrapperCommand(
             logger.Information("Updated specific lines in {fileName}", fileName);
         }
     }
-
-    private async Task ValidateOpenApiFileAccessAsync(string openApiFile, CancellationToken ct) {
-        if (Uri.TryCreate(openApiFile, UriKind.Absolute, out Uri? uri) && uri.Scheme is "http" or "https") {
-            using var httpClient = new HttpClient();
-            try {
-                using HttpResponseMessage response = await httpClient.GetAsync(uri, ct);
-                if (!response.IsSuccessStatusCode) {
-                    logger.Error("Unable to access OpenAPI file at URL: {url}. Status code: {statusCode}",
-                        openApiFile, response.StatusCode);
-                    throw new Exception($"OpenAPI file not accessible at URL: {openApiFile}");
-                }
-            }
-            catch (HttpRequestException ex) {
-                logger.Error(ex, "Failed to access OpenAPI file at URL: {url}", openApiFile);
-                throw new Exception($"Failed to access OpenAPI file at URL: {openApiFile}", ex);
-            }
-        }
-        else if (!File.Exists(openApiFile)) {
-            logger.Error("OpenAPI file not found at path: {path}", openApiFile);
-            throw new Exception($"OpenAPI file not found at path: {openApiFile}");
-        }
-        
-
-        logger.Information("OpenAPI file validated successfully: {file}", openApiFile);
-    }
-
 }
