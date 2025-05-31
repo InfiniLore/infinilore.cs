@@ -2,7 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Server.Messaging;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
@@ -11,6 +16,7 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 using Response=Results<
     Ok<UserProfileResponse>,
+    
     // Default Included Results
     NotFound,
     UnauthorizedHttpResult,
@@ -19,15 +25,31 @@ using Response=Results<
     ProblemDetails
 >;
 
-public class GetUserProfileEndpoint : Endpoint<GetUserProfileRequest, Response, UserProfileMapper> {
+public class GetUserProfileEndpoint(
+    ILogger<GetUserProfileEndpoint> logger,
+    IJwtTokenHelper jwtTokenHelper,
+    [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
+) : Endpoint<GetUserProfileRequest, Response, UserProfileMapper> {
     public override void Configure() {
         Get("/account/profile/{UserId:guid}");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override Task<Response> ExecuteAsync(GetUserProfileRequest req, CancellationToken ct) => throw
-        // TODO check the user for more than just the permissions
-        //      We need to validate if the user is an admin, accessing themselves if they are just a user, etc...
-        new NotImplementedException();
+    public override async Task<Response> ExecuteAsync(GetUserProfileRequest req, CancellationToken ct) {
+        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
+        
+        MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
+        return result.Match<Response>(
+            successCase: model => {
+                logger.Information("Successfully retrieved user with id {id}", req.UserId);
+                UserProfileResponse mappedModel = Map.FromEntity(model);
+                return TypedResults.Ok(mappedModel);
+            },
+            errorCase: error => {
+                logger.Warning("Failed to get user with id {id} because '{reason}'", req.UserId, error.Value);
+                return TypedResults.NotFound();
+            }
+        );
+    }
 }
