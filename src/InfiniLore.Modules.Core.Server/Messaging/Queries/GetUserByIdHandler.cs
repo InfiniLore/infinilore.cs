@@ -27,37 +27,31 @@ public class GetUserByIdHandler(
     protected override async Task<MessageResponse<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
         if (command.UserId == Guid.Empty) return MessageResponse.FromErrorString("Cannot get user by id.  id is empty.");
 
-        try {
-            await using IReadonlyUnitOfWork unitOfWork = factory.Create();
-            var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
+        await using IReadonlyUnitOfWork unitOfWork = factory.Create();
+        var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
             
-            Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
-            if (!result.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
-                logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
-                return MessageResponse.FromErrorString("Cannot get user by id.");
-            }
-
-            // Skip if there is no profile image.
-            if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return MessageResponse.FromSuccess(user);
-
-            Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
-                S3BucketNames.UserProfileImages,
-                user.ProfileImageMetaData.FileName,
-                expiry: TimeSpan.FromDays(1),
-                ct: ct
-            );
-            
-            imageUrlResult.Switch(
-                imageUrl => user.ProfileImageUrl = imageUrl,
-                error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
-            );
-            
-            return MessageResponse.FromSuccess(user);
+        Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
+        if (!result.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
+            logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
+            return MessageResponse.FromErrorString("Cannot get user by id.");
         }
-        catch (Exception e) {
-            logger.Error(e, "Failed to get user by id.");
-            return MessageResponse.FromErrorString("Failed to get user by id.");
-        }
+
+        // Skip if there is no profile image.
+        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return MessageResponse.FromSuccess(user);
+
+        Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
+            S3BucketNames.UserProfileImages,
+            user.ProfileImageMetaData.FileName,
+            expiry: TimeSpan.FromDays(1),
+            ct: ct
+        );
+            
+        imageUrlResult.Switch(
+            imageUrl => user.ProfileImageUrl = imageUrl,
+            error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
+        );
+            
+        return MessageResponse.FromSuccess(user);
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByIdQuery command, CancellationToken ct = default)
