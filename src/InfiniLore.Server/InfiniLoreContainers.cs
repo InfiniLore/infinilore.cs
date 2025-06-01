@@ -22,6 +22,8 @@ public class InfiniLoreContainers : IAsyncDisposable {
     private const string SqlPassword = "AnnaIsTrans4Ever!";
 
     private const int MinioPort = 40627;
+    private const int MinioWebUiPort = 40628;
+    
     private const string MinioAccessKey = "minioadmin";
     private const string MinioSecretKey = "minioadmin";
 
@@ -56,6 +58,7 @@ public class InfiniLoreContainers : IAsyncDisposable {
             .WithLogger(Logger)
             .WithImage(MinioImage)
             .WithPortBinding(MinioPort, MinioBuilder.MinioPort)
+            .WithPortBinding(MinioWebUiPort, 40585)
             .WithUsername(MinioAccessKey)
             .WithPassword(MinioSecretKey)
             .WithName("infinilore-dev-s3files")

@@ -8,6 +8,6 @@ namespace InfiniLore.Modules.Core.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class S3BucketNames {
     public const string UserProfileImages = "user-profile-images";
-
+    
     public static string GetLoreScopeBucket(Guid lorescopeId) => $"lorescope-{lorescopeId:D}";
 }
