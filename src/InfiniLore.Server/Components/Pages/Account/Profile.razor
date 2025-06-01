@@ -5,13 +5,14 @@
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
 @using InfiniLore.Shared.Auth
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveServer
 
 @attribute [Authorize]
 @inject IInteractiveApiUsers UserInteractiveApi
