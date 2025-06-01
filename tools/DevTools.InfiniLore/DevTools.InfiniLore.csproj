@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <LangVersion>latest</LangVersion>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Library" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="CodeOfChaos.Extensions" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
+        <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
+        <PackageReference Include="Microsoft.Extensions.Logging" />
+        <PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary"/>
+        <PackageReference Include="JetBrains.Annotations"/>
+        <PackageReference Include="LibGit2Sharp"/>
+        <PackageReference Include="NuGet.Protocol"/>
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="TextCopy"/>
+        <PackageReference Include="Auth0.ManagementApi"/>
+        <PackageReference Include="InfiniLore.Credentials.Auth0" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts"/>
+        <PackageReference Include="Serilog.Extensions.Hosting"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+        <ProjectReference Include="..\..\src\InfiniLore.Shared\InfiniLore.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Commands\ModuleSetup\Templates\TemplateModuleSetup.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
