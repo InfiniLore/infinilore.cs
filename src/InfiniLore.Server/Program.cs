@@ -53,7 +53,7 @@ public static class Program {
             );
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
-            await using var devEnv = InfiniLoreDevContainers.Create();
+            await using var devEnv = InfiniLoreContainers.CreateForDevelopment();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
@@ -85,7 +85,7 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreDevContainers devEnv) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()

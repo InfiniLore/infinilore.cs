@@ -33,7 +33,7 @@ public partial class ServiceProviderDataSource {
     // -----------------------------------------------------------------------------------------------------------------
     private static async Task<IServiceProvider> CreateSharedServiceProvider() {
         #region Setup Containers
-        var devEnv = InfiniLoreDevContainers.CreateForTesting();
+        var devEnv = InfiniLoreContainers.CreateForTesting();
         await devEnv.InitializeAsync();
         #endregion
         
