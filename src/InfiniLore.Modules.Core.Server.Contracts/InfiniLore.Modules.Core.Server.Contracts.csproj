@@ -29,7 +29,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Server.Contracts\InfiniLore.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Shared\InfiniLore.Modules.Core.Shared.csproj" />
         <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" /> 
         <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
@@ -52,7 +51,9 @@
         
         <PackageReference Include="FastEndpoints" />
         <PackageReference Include="FastEndpoints.Messaging.Core" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts" />
         <PackageReference Include="JetBrains.Annotations" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
     </ItemGroup>
 
 </Project>

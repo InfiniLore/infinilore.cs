@@ -104,7 +104,6 @@ public static class Program {
             devEnv.GetMinioAccessKey(),
             devEnv.GetMinioSecretKey()
         );
-
         #endregion
 
         #region Auth
