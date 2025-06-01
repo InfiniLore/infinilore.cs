@@ -39,6 +39,17 @@
 <div class="my-8"></div>
 
 <InfiniSection class="flex flex-col gap-4">
+    @if (LoreScopeResponses.IsEmpty()) {
+        <div class="flex flex-col items-center">
+            <h3 class="text-lg font-semibold text-(--color-base-90)">
+                No LoreScopes Found
+            </h3>
+            <p class="text-sm text-(--color-base-50)">
+                Create a new one by clicking the button above
+            </p>
+        </div>
+    }
+    
     @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
         <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
             <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
