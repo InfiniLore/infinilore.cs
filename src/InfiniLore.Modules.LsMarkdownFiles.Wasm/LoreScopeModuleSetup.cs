@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Wasm.Services;
+using InfiniLore.Modules.Core.Wasm.Contracts;
 using InfiniLore.Modules.LsMarkdownFiles.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;

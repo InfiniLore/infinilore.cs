@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Extensions;
-using InfiniLore.Wasm.Services.AuthenticationStateSyncer;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.Shared;
 using InfiniLore.Modules.Core.Wasm;
@@ -39,7 +38,7 @@ public static class Program {
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.AddSingleton<AuthenticationStateProvider, WasmClientAuthenticationStateProvider>();
+        builder.Services.AddSingleton<AuthenticationStateProvider, AuthenticationStateProviderWasm>();
 
         builder.Services.AddHttpClient();
         builder.Services.RegisterServicesFromInfiniLoreShared();

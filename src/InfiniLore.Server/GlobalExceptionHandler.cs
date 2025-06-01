@@ -22,7 +22,7 @@ public static partial class GlobalExceptionHandler {
             return await action.Invoke();
         }
         catch (DockerApiException ex) {
-            Log.Logger.Fatal(ex, "Docker API Exception \"{ExceptionType}\": {Message}", ex.GetType(), ex.Message);
+            Log.Logger.Fatal(ex, "Docker API Exception \"{ExceptionType}\"", ex.GetType());
             return ex.HResult;
         }
         catch (AggregateException ex) {
@@ -30,7 +30,7 @@ public static partial class GlobalExceptionHandler {
             return ex.HResult;
         }
         catch (Exception ex) {
-            Log.Logger.Fatal(ex, "Host terminated unexpectedly \"{ExceptionType}\": {Message}", ex.GetType(), ex.Message);
+            Log.Logger.Fatal(ex, "Host terminated unexpectedly \"{ExceptionType}\"", ex.GetType());
             return ex.HResult;
         }
         finally {
@@ -41,7 +41,7 @@ public static partial class GlobalExceptionHandler {
     private static void HandleAggregateException(AggregateException aggregateException) {
         foreach (Exception innerException in aggregateException.InnerExceptions) {
             switch (innerException) {
-                // Example handling for dependency injection-related InvalidOperationException
+                // Example handling for dependency-injection-related InvalidOperationException
                 case InvalidOperationException { Source: "Microsoft.Extensions.DependencyInjection" } invalidOperationException: {
                     if (TryHandleInvalidOperationException(invalidOperationException)) break;
 

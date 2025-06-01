@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Server;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Modules.Core.Server.Database.InfiniLoreUser;

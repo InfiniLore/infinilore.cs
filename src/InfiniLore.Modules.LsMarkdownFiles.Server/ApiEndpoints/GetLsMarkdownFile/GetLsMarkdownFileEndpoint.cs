@@ -28,19 +28,18 @@ using Response=Results<
 public class GetLsMarkdownFileEndpoint(
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLsMarkdownFileRequest, Response, LsMarkdownFileMapper> {
+) : Endpoint<GetLsMarkdownFileEndpointRequest, Response, LsMarkdownFileMapper> {
 
     public override void Configure() {
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
         Permissions(PermissionsStore.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
-        AllowFileUploads();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLsMarkdownFileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
         MessageResponse<LsMarkdownFileModel> result = await messageBroker.GetLsMarkdownFileByIdAsync(req.MarkdownFileId, ct: ct);

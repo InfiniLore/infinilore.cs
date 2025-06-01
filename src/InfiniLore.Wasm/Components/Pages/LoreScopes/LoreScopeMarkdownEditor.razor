@@ -4,19 +4,21 @@
 @using AterraEngine.Unions
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
+@using InfiniLore.Shared
 @using System.Text
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown/{MarkdownId:guid}/editor"
-@inject ILsMarkdownFileInteractiveApi InteractiveApi
+@inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject HttpClient Http
 @inject ILogger<LoreScopeMarkdownEditor> Logger
-@rendermode InteractiveServer
+@attribute [Authorize]
+@rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection>
+<InfiniSection class="flex flex-col h-screen">
     <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
         LoreScope Markdown File Editor
     </h2>
@@ -25,7 +27,7 @@
         <span>Loading...</span>
     } else {
         @* File changes *@
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-4">
             <div class="flex flex-row items-center space-x-3">
                 <InputText @bind-Value="@FileModel.Name"
                            placeholder="Enter a file name..."
@@ -33,13 +35,15 @@
 
                 <InfiniButton IconName="check" OnClick="SetFileNameAsync" Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
             </div>
-            <div class="flex flex-row-reverse items-center space-x-3">
+            <div class="flex flex-row justify-center items-center space-x-3">
                 <InfiniButton IconName="save" OnClick="SaveFileAsync" Disabled="@(FileModel is null)">Save File</InfiniButton>
             </div>
         </div>
-
+        
         @* Editor *@
-        <MarkdownEditor Source="@TextSource"/>
+        <div class="grow mt-4">
+            <MarkdownEditor Source="@TextSource"/>
+        </div>
     }
 
 </InfiniSection>

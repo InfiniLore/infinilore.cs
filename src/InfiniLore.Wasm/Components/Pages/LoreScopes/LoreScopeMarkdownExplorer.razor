@@ -10,9 +10,10 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown"
-@inject ILsMarkdownFileInteractiveApi InteractiveApi
+@inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
+@attribute [Authorize]
+@rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -39,13 +40,13 @@
             @* Table *@
             <InfiniTable TItem="ILsMarkdownFileModel" Items="@Files">
                 <Header>
-                    <InfiniTableHeader>File Name</InfiniTableHeader>
-                    <InfiniTableHeader Alignment="right">Actions</InfiniTableHeader>
+                    <InfiniTableHeader Class="w-4/5">File Name</InfiniTableHeader>
+                    <InfiniTableHeader Class="w-1/5">Actions</InfiniTableHeader>
                 </Header>
                 <Content Context="file">
                     <InfiniTableCell>@file.Name</InfiniTableCell>
-                    <InfiniTableCell Alignment="right">
-                        <div class="flex justify-end gap-2">
+                    <InfiniTableCell>
+                        <div class="flex justify-center gap-2">
                             <InfiniButton OnClick="() => GotoEditMarkdownFile(file)">Edit</InfiniButton>
                             <InfiniButton OnClick="async () => await DeleteMarkdownFileAsync(file)">Delete
                             </InfiniButton>
@@ -130,9 +131,7 @@
     }
 
     private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {
-        Result result = await InteractiveApi.DeleteLsMarkdownFileAsync(file.OwnerId.ToString(), file.Id.ToString());
-        if (!result.TryGetAsState(out bool? deleted) || deleted is false) return;
-
+        await InteractiveApi.DeleteLsMarkdownFileAsync(file.OwnerId.ToString(), file.Id.ToString());
         await FetchFilesAsync(0);
         StateHasChanged();
     }

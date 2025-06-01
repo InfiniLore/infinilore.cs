@@ -1,8 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Modules.Core.Wasm.Contracts;
 using InfiniLore.Modules.LoreScopes.Shared;
-using InfiniLore.Modules.Core.Wasm.Services;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 

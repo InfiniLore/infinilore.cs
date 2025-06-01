@@ -29,7 +29,7 @@ public class UpsertLoreScopeMetadataEndpoint(
     ILogger<UpsertLoreScopeMetadataEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertLoreScopeMetadataRequest, Response, LoreScopeMapper> {
+) : Endpoint<UpsertLoreScopeMetadataEndpointRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}/metadata");
@@ -40,7 +40,7 @@ public class UpsertLoreScopeMetadataEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertLoreScopeMetadataRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse result = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);

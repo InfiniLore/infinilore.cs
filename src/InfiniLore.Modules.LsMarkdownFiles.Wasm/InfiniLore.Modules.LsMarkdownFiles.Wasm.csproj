@@ -10,7 +10,7 @@
         <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
         <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
-        <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared\InfiniLore.Modules.LsMarkdownFiles.Shared.csproj" />
     </ItemGroup>
@@ -24,9 +24,5 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="KiotaModels\" />
     </ItemGroup>
 </Project>

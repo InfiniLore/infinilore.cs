@@ -4,6 +4,7 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Shared;
@@ -29,24 +30,24 @@ using Response=Results<
 public class GetLsMarkdownFilesEndpoint(
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLsMarkdownFilesRequest, Response, LsMarkdownFilesMapper> {
+) : Endpoint<GetLsMarkdownFilesEndpointRequest, Response, LsMarkdownFilesMapper> {
 
     public override void Configure() {
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file");
         Permissions(PermissionsStore.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
-        AllowFileUploads();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
             req.LoreScopeId,
-            paginationInfo: req.PaginationInfo,
+            QueryConfig.From(req),
+            PaginationInfo.From(req),
             ct: ct
         );
         return result.Match<Response>(

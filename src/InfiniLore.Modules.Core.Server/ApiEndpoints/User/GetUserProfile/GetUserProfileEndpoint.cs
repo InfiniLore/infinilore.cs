@@ -29,14 +29,14 @@ public class GetUserProfileEndpoint(
     ILogger<GetUserProfileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetUserProfileRequest, Response, UserProfileMapper> {
+) : Endpoint<GetUserProfileEndpointRequest, Response, UserProfileMapper> {
     public override void Configure() {
         Get("/account/profile/{UserId:guid}");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override async Task<Response> ExecuteAsync(GetUserProfileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetUserProfileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);

@@ -27,19 +27,18 @@ using Response=Results<
 public class DeleteLsMarkdownFileEndpoint(
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<DeleteLsMarkdownFileRequest, Response> {
+) : Endpoint<DeleteLsMarkdownFileEndpointRequest, Response> {
 
     public override void Configure() {
         Delete("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
         Permissions(PermissionsStore.LorescopeDelete);
         Policies(ApiPolicies.JwtProtected);
-        AllowFileUploads();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(DeleteLsMarkdownFileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(DeleteLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse result = await messageBroker.DeleteLsMarkdownFileAsync(req.MarkdownFileId, ct: ct);

@@ -27,7 +27,7 @@ public class UpsertUserProfileImageEndpoint(
     ILogger<UpsertUserProfileImageEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertUserProfileImageRequest, Response> {
+) : Endpoint<UpsertUserProfileImageEndpointRequest, Response> {
 
     public override void Configure() {
         Post("/account/profile/{UserId:guid}/profile-image");
@@ -39,12 +39,18 @@ public class UpsertUserProfileImageEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertUserProfileImageRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(UpsertUserProfileImageEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(req.UserId, req.ContentType, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(
+            req.UserId,
+            file.ContentType,
+            fileStream,
+            ct: ct
+        );
+        
         return result.Match<Response>(
             state => state 
                 ? TypedResults.Ok()

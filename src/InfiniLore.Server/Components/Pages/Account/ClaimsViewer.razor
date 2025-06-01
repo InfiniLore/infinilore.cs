@@ -1,19 +1,22 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/claims-viewer"
 @using Infinilore.InfiniBlazor
-@using InfiniLore.Server.Services
+@using InfiniLore.Shared.Services
 @using InfiniLore.Shared.Services.JwtToken
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/claims-viewer"
+@attribute [Authorize]
+@rendermode InteractiveServer
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ClipboardService ClipboardService
-@attribute [Authorize]
-@rendermode InteractiveServer
 @inject IJwtTokenEncoder JwtTokenEncoder
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html

@@ -29,7 +29,7 @@ public class UpsertLoreScopeImageEndpoint(
     ILogger<UpsertLoreScopeImageEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertLoreScopeImageRequest, Response, LoreScopeMapper> {
+) : Endpoint<UpsertLoreScopeImageEndpointRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}/poster-image");
@@ -41,12 +41,16 @@ public class UpsertLoreScopeImageEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertLoreScopeImageRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(UpsertLoreScopeImageEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId, req.FileName, req.ContentType, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
+            file.FileName,
+            file.ContentType,
+            fileStream,
+            ct: ct);
 
         // Verify Response
         if (!result.TryGetState(out bool? successful)) {

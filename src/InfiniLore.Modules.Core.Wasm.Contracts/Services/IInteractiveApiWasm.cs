@@ -1,0 +1,16 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Kiota;
+using InfiniLore.Shared.Services.InteractiveApi;
+
+namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+public interface IInteractiveApiWasm : IInteractiveApi{
+    InfiniLoreApiClient ApiClient { get; }
+    
+    string DefaultApiError { get; }
+}

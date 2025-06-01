@@ -1,0 +1,14 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
+
+namespace InfiniLore.Shared.Services;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+[InjectableScoped<ClipboardService>]
+public class ClipboardService(IJSRuntime jsRuntime) {
+    public ValueTask WriteTextAsync(string text) => jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+}

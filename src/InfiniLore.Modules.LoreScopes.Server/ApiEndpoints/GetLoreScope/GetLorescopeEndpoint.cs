@@ -31,7 +31,7 @@ public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLorescopeRequest, Response, LoreScopeMapper> {
+) : Endpoint<GetLorescopeEndpointRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
@@ -42,7 +42,7 @@ public class GetLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLorescopeRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);

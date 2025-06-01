@@ -13,12 +13,12 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/lorescopes"
-@inject ILoreScopeInteractiveApi LoreScopeApi
+@inject IInteractiveApiLoreScopes LoreScopeApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
 @inject NavigationManager Navigation
 @attribute [Authorize]
-@rendermode InteractiveServer
+@rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -115,7 +115,7 @@
     }
     
     private async Task RefreshLoreScopeListAsync() {
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, PaginationInfo.Default);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? response)) {
             return;
         }
@@ -153,7 +153,7 @@
     }
     
     private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
-        Result result = await LoreScopeApi.DeleteLoreScopesAsync(loreScope.Id.ToString());
+        Result result = await LoreScopeApi.DeleteLoreScopesAsync(UserId, loreScope.Id.ToString());
         if (result.AsState) {
             var toast = new ToastData(
                 "LoreScope Deleted",

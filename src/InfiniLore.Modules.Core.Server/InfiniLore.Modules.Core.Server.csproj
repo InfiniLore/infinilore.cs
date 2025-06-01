@@ -13,6 +13,7 @@
       <PackageReference Include="InfiniLore.Credentials.Auth0" />
       <PackageReference Include="JetBrains.Annotations" />
         <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
