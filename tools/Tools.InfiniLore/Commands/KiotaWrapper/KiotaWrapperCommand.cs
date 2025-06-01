@@ -50,7 +50,8 @@ public partial class KiotaWrapperCommand(
         logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
             "InfiniLoreModulesCoreServerApiEndpoints",
-            "InfiniLoreModulesLoreScopesServerApiEndpoints"
+            "InfiniLoreModulesLoreScopesServerApiEndpoints",
+            "InfiniLoreModulesLsMarkdownFilesServerApiEndpoints"
         ]);
         
         logger.Information("Fixing specific lines in generated files");

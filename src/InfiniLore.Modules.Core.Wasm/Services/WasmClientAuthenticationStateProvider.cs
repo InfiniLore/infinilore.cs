@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
+namespace InfiniLore.Modules.Core.Wasm.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

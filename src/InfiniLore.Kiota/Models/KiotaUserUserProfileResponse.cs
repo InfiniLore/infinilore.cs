@@ -22,6 +22,14 @@ namespace InfiniLore.Kiota.Models
 #else
         public string Id { get; set; }
 #endif
+        /// <summary>The profileImageUrl property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public string? ProfileImageUrl { get; set; }
+#nullable restore
+#else
+        public string ProfileImageUrl { get; set; }
+#endif
         /// <summary>The username property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -50,6 +58,7 @@ namespace InfiniLore.Kiota.Models
             {
                 { "createdDate", n => { CreatedDate = n.GetDateTimeOffsetValue(); } },
                 { "id", n => { Id = n.GetStringValue(); } },
+                { "profileImageUrl", n => { ProfileImageUrl = n.GetStringValue(); } },
                 { "username", n => { Username = n.GetStringValue(); } },
             };
         }
@@ -62,6 +71,7 @@ namespace InfiniLore.Kiota.Models
             _ = writer ?? throw new ArgumentNullException(nameof(writer));
             writer.WriteDateTimeOffsetValue("createdDate", CreatedDate);
             writer.WriteStringValue("id", Id);
+            writer.WriteStringValue("profileImageUrl", ProfileImageUrl);
             writer.WriteStringValue("username", Username);
         }
     }
