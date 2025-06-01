@@ -10,7 +10,6 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record UpsertLsMarkdownFileRequest(
-    Guid UserId,
     Guid LoreScopeId,
     string FileName,
     string ContentType,

@@ -26,10 +26,10 @@ using Response=Results<
     ProblemDetails
 >;
 
-public class GetLsMarkdownFileEndpoint(
+public class GetLsMarkdownFilesEndpoint(
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLsMarkdownFileRequest, Response, LsMarkdownFilesMapper> {
+) : Endpoint<GetLsMarkdownFilesRequest, Response, LsMarkdownFilesMapper> {
 
     public override void Configure() {
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file");
@@ -41,10 +41,14 @@ public class GetLsMarkdownFileEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLsMarkdownFileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await messageBroker.GetLsMarkdownFilesByOwnerAsync(req.LoreScopeId, ct: ct);
+        MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
+            req.LoreScopeId,
+            paginationInfo: req.PaginationInfo,
+            ct: ct
+        );
         return result.Match<Response>(
             data => TypedResults.Ok(Map.FromEntity(data)),
             _ => TypedResults.NotFound()       

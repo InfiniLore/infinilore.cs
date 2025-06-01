@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Messaging\Receivers\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,110 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
+@using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
+@using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
+@using InfiniLore.Shared
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown"
+@inject ILsMarkdownFileInteractiveApi InteractiveApi
+@inject NavigationManager NavigationManager
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniSection>
+    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+        LoreScope Markdown Files
+    </h2>
+    
+    @if (Files is null) {
+        <span>Loading...</span>
+    } else {
+        <div class="flex flex-row gap-2">
+            @* Table *@
+            <InfiniTable TItem="ILsMarkdownFileModel" Items="@Files">
+                <Header>
+                    <InfiniTableHeader>File Name</InfiniTableHeader>
+                    <InfiniTableHeader Alignment="right">Actions</InfiniTableHeader>
+                </Header>
+                <Content Context="file">
+                    <InfiniTableCell>@file.Name</InfiniTableCell>
+                    <InfiniTableCell Alignment="right">
+                        <div class="flex justify-end gap-2">
+                            <InfiniButton OnClick="() => GotoEditMarkdownFile(file)">Edit</InfiniButton>
+                            <InfiniButton OnClick="async () => await DeleteMarkdownFileAsync(file)">Delete</InfiniButton>
+                        </div>
+                    </InfiniTableCell>
+                </Content>
+            </InfiniTable>
+
+            @* Navigation *@
+            <div class="mt-4 flex justify-between items-center">
+                <div class="flex gap-2">
+                    <InfiniButton OnClick="() => FetchFilesAsync(CurrentPage - 1)"
+                                  Disabled="@(CurrentPage <= 0)">
+                        Previous
+                    </InfiniButton>
+                    <div class="text-sm text-(--color-base-70)">
+                        Page @(CurrentPage + 1) of @TotalPages (@TotalCount total items)
+                    </div>
+                    <InfiniButton OnClick="() => FetchFilesAsync(CurrentPage + 1)"
+                                  Disabled="@(CurrentPage >= TotalPages - 1)">
+                        Next
+                    </InfiniButton>
+                </div>
+            </div>
+
+        </div>
+    }
+    
+</InfiniSection>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [Parameter] private Guid UserId { get; set; }
+    [Parameter] private Guid LoreScopeId { get; set; }
+    
+    private ILsMarkdownFileModel[]? Files { get; set; }
+    private int TotalCount { get; set; }
+    private int CurrentPage { get; set;}
+    private int TotalPages { get; set;}
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        await FetchFilesAsync(0);
+    }
+
+    private async Task FetchFilesAsync(int pageNumber) {
+        if (Files is not null) Files = null;
+        var pagination = new PaginationInfo {
+            PageNumber = pageNumber,
+            PageSize = 64
+        };
+        
+        PaginatedResult<ILsMarkdownFileModel> result = await InteractiveApi.GetLsMarkdownFilesAsync(LoreScopeId.ToString(), pagination);
+        if (!result.TryGetAsData(out PaginatedData<ILsMarkdownFileModel>? data)) return;
+
+        PaginatedData<ILsMarkdownFileModel> paginated = data.Value;
+        Files = paginated.Items;
+        TotalCount = paginated.TotalCount;
+        CurrentPage = paginated.CurrentPage;
+        TotalPages = paginated.TotalPages;
+    }
+    
+    private void GotoEditMarkdownFile(ILsMarkdownFileModel file) {
+        NavigationManager.NavigateTo($"/{UserId}/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
+    }
+    
+    private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {
+        Result result = await InteractiveApi.DeleteLsMarkdownFileAsync(file.OwnerId.ToString(), file.Id.ToString());
+        if (!result.TryGetAsState(out bool? deleted) || deleted is false) return;
+
+        await FetchFilesAsync(0);
+    }
+}

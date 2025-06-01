@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Shared;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
@@ -10,5 +11,5 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 [UsedImplicitly]
 public record GetLsMarkdownFilesRequest(
     Guid LoreScopeId,
-    Guid MarkdownFileId
+    PaginationInfo PaginationInfo
 );

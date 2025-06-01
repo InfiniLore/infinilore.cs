@@ -9,5 +9,6 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public record GetLsMarkdownFileRequest(
-    Guid LoreScopeId
+    Guid LoreScopeId,
+    Guid MarkdownFileId
 );
