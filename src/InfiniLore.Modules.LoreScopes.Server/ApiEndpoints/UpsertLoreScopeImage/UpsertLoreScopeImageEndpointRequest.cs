@@ -2,13 +2,15 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record CreateLorescopeRequest(
+public record UpsertLoreScopeImageEndpointRequest(
     Guid UserId,
-    string Name
+    Guid LoreScopeId,
+    IFormFile File
 );

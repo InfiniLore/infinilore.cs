@@ -8,7 +8,9 @@ namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record GetLorescopeRequest(
+public record UpsertLoreScopeMetadataEndpointRequest(
     Guid UserId,
-    Guid LoreScopeId
+    Guid LoreScopeId,
+    string? Name = null,
+    string? Description = null
 );

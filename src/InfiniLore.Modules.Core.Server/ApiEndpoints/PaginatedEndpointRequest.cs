@@ -10,7 +10,7 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record PaginatedRequest : IHasReverse, IHasPageNumber {
+public record PaginatedEndpointRequest : IHasReverse, IHasPageNumber {
     public int PageNumber { get; [UsedImplicitly] init; } = 1;
     public bool Reverse { get; [UsedImplicitly] init; } = false;
 }

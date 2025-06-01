@@ -29,7 +29,7 @@ public class UpsertLsMarkdownFileEndpoint(
     ILogger<UpsertLsMarkdownFileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertLsMarkdownFileRequest, Response> {
+) : Endpoint<UpsertLsMarkdownFileEndpointRequest, Response> {
 
     public override void Configure() {
         Post("/data-lorescope/{LoreScopeId:guid}/markdown-file");
@@ -41,7 +41,7 @@ public class UpsertLsMarkdownFileEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertLsMarkdownFileRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(UpsertLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
         if (req.ContentType != "text/markdown") {

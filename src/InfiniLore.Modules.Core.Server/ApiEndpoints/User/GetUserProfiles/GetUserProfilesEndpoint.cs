@@ -30,14 +30,14 @@ public class GetUserProfilesEndpoint(
     ILogger<GetUserProfileEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker // TODO this needs a better fix than just showing the accessing user as the server
-) : Endpoint<GetUserProfilesRequest, Response, UserProfilesMapper> {
+) : Endpoint<GetUserProfilesEndpointRequest, Response, UserProfilesMapper> {
     public override void Configure() {
         Get("/account/profile");
         Permissions(PermissionsStore.AccountRead, PermissionsStore.ProfileRead);
         Policies(ApiPolicies.JwtProtected);
     }
 
-    public override async Task<Response> ExecuteAsync(GetUserProfilesRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetUserProfilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
         MessageResponse<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(

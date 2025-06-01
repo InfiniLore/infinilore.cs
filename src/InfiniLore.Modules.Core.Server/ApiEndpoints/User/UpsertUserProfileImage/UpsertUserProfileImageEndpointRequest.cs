@@ -4,14 +4,12 @@
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record UpsertLsMarkdownFileRequest(
-    Guid LoreScopeId,
-    string FileName,
-    string ContentType,
+public record UpsertUserProfileImageEndpointRequest(
+    Guid UserId,
     IFormFile File
 );

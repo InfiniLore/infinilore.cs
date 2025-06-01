@@ -1,15 +1,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared;
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
+namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record GetLsMarkdownFilesRequest(
-    Guid LoreScopeId,
-    PaginationInfo PaginationInfo
+public record CreateLorescopeEndpointRequest(
+    Guid UserId,
+    string Name
 );

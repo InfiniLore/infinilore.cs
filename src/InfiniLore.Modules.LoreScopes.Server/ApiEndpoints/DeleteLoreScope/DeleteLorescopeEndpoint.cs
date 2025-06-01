@@ -29,7 +29,7 @@ public class DeleteLorescopeEndpoint(
     ILogger<DeleteLorescopeEndpoint> logger, 
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<DeleteLorescopeRequest, Response, LoreScopeMapper> {
+) : Endpoint<DeleteLorescopeEndpointRequest, Response, LoreScopeMapper> {
 
     public override void Configure() {
         Delete("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
@@ -40,7 +40,7 @@ public class DeleteLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(DeleteLorescopeRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(DeleteLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
         MessageResponse result = await messageBroker.DeleteLoreScopeAsync(req.LoreScopeId, ct: ct);

@@ -1,16 +1,11 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record UpsertLoreScopeMetadataRequest(
-    Guid UserId,
-    Guid LoreScopeId,
-    string? Name = null,
-    string? Description = null
-);
+public record GetUserProfilesEndpointRequest : PaginatedEndpointRequest;

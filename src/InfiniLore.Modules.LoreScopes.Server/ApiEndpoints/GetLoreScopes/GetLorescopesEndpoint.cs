@@ -4,6 +4,7 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared;
@@ -32,7 +33,7 @@ public class GetLoreScopesEndpoint(
     ILogger<GetLoreScopesEndpoint> logger,
     IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLoreScopesRequest, Response, LoreScopesMapper> {
+) : Endpoint<GetLoreScopesEndpointRequest, Response, LoreScopesMapper> {
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
@@ -42,10 +43,15 @@ public class GetLoreScopesEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     // Execute Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLoreScopesRequest req, CancellationToken ct) {
+    public override async Task<Response> ExecuteAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(req.UserId,ct:ct);
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
+            req.UserId,
+            QueryConfig.From(req),
+            PaginationInfo.From(req),
+            ct:ct
+        );
 
         // Verify Response
         if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedResult)) {

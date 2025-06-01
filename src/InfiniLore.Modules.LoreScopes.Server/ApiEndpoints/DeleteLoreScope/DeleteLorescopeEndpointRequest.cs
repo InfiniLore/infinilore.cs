@@ -1,12 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
+namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetUserProfileRequest {
-    public Guid UserId { get; [UsedImplicitly] init; }
-}
+[UsedImplicitly]
+public record DeleteLorescopeEndpointRequest(
+    Guid UserId,
+    Guid LoreScopeId
+);

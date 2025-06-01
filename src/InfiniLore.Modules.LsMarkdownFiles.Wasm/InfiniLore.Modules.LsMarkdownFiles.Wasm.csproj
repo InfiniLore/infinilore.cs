@@ -25,8 +25,4 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="KiotaModels\" />
-    </ItemGroup>
 </Project>

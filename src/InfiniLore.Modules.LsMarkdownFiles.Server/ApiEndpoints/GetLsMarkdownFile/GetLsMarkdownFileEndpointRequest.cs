@@ -3,12 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
+namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record DeleteLorescopeRequest(
-    Guid UserId,
-    Guid LoreScopeId
+public record GetLsMarkdownFileEndpointRequest(
+    Guid LoreScopeId,
+    Guid MarkdownFileId
 );

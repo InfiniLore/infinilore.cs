@@ -1,14 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public record GetLsMarkdownFileRequest(
-    Guid LoreScopeId,
-    Guid MarkdownFileId
-);
+public record GetUserProfileEndpointRequest {
+    public Guid UserId { get; [UsedImplicitly] init; }
+}

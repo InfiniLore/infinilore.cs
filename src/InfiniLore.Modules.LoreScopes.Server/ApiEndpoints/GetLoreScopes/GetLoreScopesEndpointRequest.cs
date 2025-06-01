@@ -1,15 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Http;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
+namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public record UpsertUserProfileImageRequest(
-    Guid UserId,
-    IFormFile File
-);
+public record GetLoreScopesEndpointRequest(
+    Guid UserId
+) : PaginatedEndpointRequest;
