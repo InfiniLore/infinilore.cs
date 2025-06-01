@@ -73,15 +73,16 @@
                     </div>
 
                     @* Links *@
-                    <div class="flex flex-row gap-2">
-                        <InfiniButton IconName="file" OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">New File</InfiniButton>
-                        <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
+                    <div class="flex flex-row gap-2 justify-start">
+                        <InfiniButton IconName="file" OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">Markdown files</InfiniButton>
+                        
                     </div>
                 </div>
 
                 <!-- Stats Section -->
-                <div class="flex flex-col items-end justify-between min-w-[100px] shrink-0 px-1">
-                    <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div>
+                <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full">
+                    @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
+                    <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
                 </div>
 
             </div>
