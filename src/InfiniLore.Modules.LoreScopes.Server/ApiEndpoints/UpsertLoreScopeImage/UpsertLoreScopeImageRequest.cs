@@ -12,7 +12,5 @@ namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 public record UpsertLoreScopeImageRequest(
     Guid UserId,
     Guid LoreScopeId,
-    string FileName,
-    string ContentType,
     IFormFile File
 );

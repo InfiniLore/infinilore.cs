@@ -49,7 +49,10 @@ public class InteractiveApiWasmUsers(
             ProfileImageRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId].ProfileImage;
         
             // Read the stream into a memory stream first
-            await using Stream memoryStream = file.OpenReadStream(cancellationToken: ct);
+            using var memoryStream = new MemoryStream();
+            await using Stream fileStream = file.OpenReadStream(file.Size, ct);
+            await fileStream.CopyToAsync(memoryStream, ct);
+            memoryStream.Position = 0; // Reset position to beginning
 
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(

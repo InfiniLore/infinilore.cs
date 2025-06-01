@@ -46,7 +46,11 @@ public class UpsertLoreScopeImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId, req.FileName, req.ContentType, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
+            file.FileName,
+            file.ContentType,
+            fileStream,
+            ct: ct);
 
         // Verify Response
         if (!result.TryGetState(out bool? successful)) {

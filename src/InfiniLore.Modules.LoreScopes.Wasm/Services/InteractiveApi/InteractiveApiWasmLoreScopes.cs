@@ -21,8 +21,8 @@ namespace InfiniLore.Modules.LoreScopes.Wasm.Services.InteractiveApi;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IInteractiveApiLoreScopes>]
-public class LoreScopeInteractiveApi(
-    ILogger<LoreScopeInteractiveApi> logger,
+public class InteractiveApiWasmLoreScopes(
+    ILogger<InteractiveApiWasmLoreScopes> logger,
     IInteractiveApiWasm interactiveApi
 ) : IInteractiveApiLoreScopes {
 
@@ -111,7 +111,10 @@ public class LoreScopeInteractiveApi(
             PosterImageRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].PosterImage;
             
             // Read the stream into a memory stream first
-            await using Stream memoryStream = file.OpenReadStream(cancellationToken: ct);
+            using var memoryStream = new MemoryStream();
+            await using Stream fileStream = file.OpenReadStream(file.Size, ct);
+            await fileStream.CopyToAsync(memoryStream, ct);
+            memoryStream.Position = 0; // Reset position to beginning
             
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(
