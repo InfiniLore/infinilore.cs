@@ -80,7 +80,6 @@
                     }
                 </div>
             </div>
-
         </div>
     }
 
@@ -111,7 +110,7 @@
     private async Task FetchFilesAsync(int pageNumber) {
         if (Files is not null) Files = null;
         var pagination = new PaginationInfo {
-            PageNumber = pageNumber,// Already 1-based, don't adjust
+            PageNumber = pageNumber, // Already 1-based, don't adjust
             PageSize = 10
         };
 
@@ -121,7 +120,7 @@
         PaginatedData<ILsMarkdownFileModel> paginated = data.Value;
         Files = paginated.Items;
         TotalCount = paginated.TotalCount;
-        CurrentPage = paginated.CurrentPage - 1;// Convert to 0-based for UI
+        CurrentPage = paginated.CurrentPage - 1; // Convert to 0-based for UI
         TotalPages = paginated.TotalPages;
     }
 

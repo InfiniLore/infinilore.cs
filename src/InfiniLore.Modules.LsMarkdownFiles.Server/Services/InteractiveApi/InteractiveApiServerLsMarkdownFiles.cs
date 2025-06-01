@@ -39,20 +39,20 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
         );
     }
     
-    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, CancellationToken ct = default) {
+    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
 
-        MessageResponse result = await interactiveApi.MessageBroker.UpsertLsMarkdownFileAsync(parsedLoreScopeId, fileName, fileData, ct: ct);
+        MessageResponse result = await interactiveApi.MessageBroker.UpsertLsMarkdownFileAsync(parsedLoreScopeId, fileName, fileData, knownFileId, ct: ct);
         return result.Match(
             Result.FromState, 
             error => Result.FromError(string.Join(',', error.Value))
         );
     }
-    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, CancellationToken ct = default) {
+    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
         byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
         await using var stream = new MemoryStream(textBytes);
         
-        Result result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, ct);
+        Result result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, knownFileId, ct);
         return result;
     }
 

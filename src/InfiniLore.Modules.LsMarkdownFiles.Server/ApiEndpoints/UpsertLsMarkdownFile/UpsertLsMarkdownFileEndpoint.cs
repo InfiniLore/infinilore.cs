@@ -51,7 +51,13 @@ public class UpsertLsMarkdownFileEndpoint(
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(req.LoreScopeId, file.FileName, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(
+            req.LoreScopeId, 
+            file.FileName,
+            fileStream,
+            req.KnownMarkdownFileId,
+            ct:ct
+        );
 
         // Verify Response
         if (!result.TryGetState(out bool? successful)) {

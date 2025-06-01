@@ -85,7 +85,8 @@
         Result _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
             FileModel.OwnerId.ToString(),
             FileModel.Name,
-            TextSource.Text
+            TextSource.Text,
+            MarkdownId
         );
     }
 }
