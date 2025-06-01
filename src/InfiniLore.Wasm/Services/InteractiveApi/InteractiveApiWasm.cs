@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Wasm.Contracts.Services;
-using System.Text.Json;
 
 namespace InfiniLore.Wasm.Services.InteractiveApi;
 
@@ -17,5 +16,4 @@ public class InteractiveApiWasm(
 ) : IInteractiveApiWasm {
 
     public InfiniLoreApiClient ApiClient { get; } = apiClient;
-    public JsonSerializerOptions JsonOptions { get; } =  new() { PropertyNameCaseInsensitive = true };
 }

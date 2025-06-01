@@ -96,7 +96,6 @@
     [CascadingParameter] 
     private Task<AuthenticationState>? AuthenticationState { get; set; }
     private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
-    private Dictionary<Guid, (Guid, string)[]> MarkdownFileMap { get; set; } = new();
     
     private string? NewLoreScopeName { get; set; }
     private string UserId { get; set; } = string.Empty;
@@ -120,8 +119,6 @@
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? response)) {
             return;
         }
-        
-        MarkdownFileMap = response.Value.Items.ToDictionary(r => r.Id, _ => Array.Empty<(Guid, string)>());
         LoreScopeResponses = response.Value.Items.OrderBy(i => i.Name).ToArray();
     }
 

@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Kiota;
 using InfiniLore.Shared.Services.InteractiveApi;
-using System.Text.Json;
 
 namespace InfiniLore.Wasm.Contracts.Services;
 
@@ -12,5 +11,4 @@ namespace InfiniLore.Wasm.Contracts.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInteractiveApiWasm : IInteractiveApi{
     InfiniLoreApiClient ApiClient { get; }
-    JsonSerializerOptions JsonOptions { get; }
 }
