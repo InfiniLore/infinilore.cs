@@ -48,13 +48,25 @@ public class InteractiveApiWasmLsMarkdownFile(
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MarkdownFileRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
 
-            KiotaLsMarkdownFilesResponse? _ = await requestBuilder.GetAsync(requestConfiguration: config => {
+            KiotaLsMarkdownFilesResponse? result = await requestBuilder.GetAsync(requestConfiguration: config => {
                     config.QueryParameters.PageNumber = pagination.PageNumber;
+                    config.QueryParameters.Reverse = false;
                 },
                 ct
             );
 
-            throw new NotImplementedException();
+            if (result is null) return PaginatedResult<ILsMarkdownFileModel>.FromError("Could not get data from API");
+            
+            ILsMarkdownFileModel[] items = (result.Items ?? Enumerable.Empty<KiotaLsMarkdownFileResponse>())
+                .Select(WasmLsMarkdownFileModel.FromKiotaModel)
+                .ToArray();
+
+            return new PaginatedData<ILsMarkdownFileModel>(
+                items,
+                result.TotalCount ?? items.Length,
+                result.CurrentPage ?? 1,// Default to page 1 if null
+                result.TotalPages ?? 1// Default to 1 page if null
+            );
         }
         catch (Exception e) {
             logger.Error(e, "Could not get ls markdown files");
