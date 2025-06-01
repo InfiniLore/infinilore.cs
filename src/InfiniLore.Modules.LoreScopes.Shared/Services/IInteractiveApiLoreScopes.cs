@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Shared;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace InfiniLore.Modules.LoreScopes.Shared.Services;
 
@@ -15,6 +16,6 @@ public interface IInteractiveApiLoreScopes  {
     ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default);
     
     ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default);
-    ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, string fileName, string contentType, Stream file, CancellationToken ct = default);
-    ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default);
+    ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default);
+    ValueTask<Result> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default);
 }

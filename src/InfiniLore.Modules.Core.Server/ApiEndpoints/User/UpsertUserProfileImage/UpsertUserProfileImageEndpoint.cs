@@ -44,7 +44,13 @@ public class UpsertUserProfileImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(req.UserId, file.ContentType, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(
+            req.UserId,
+            file.ContentType,
+            fileStream,
+            ct: ct
+        );
+        
         return result.Match<Response>(
             state => state 
                 ? TypedResults.Ok()

@@ -9,6 +9,7 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Server.InteractiveApi;
@@ -20,7 +21,7 @@ public class InteractiveApiServerLoreScopes(
     ILogger<InteractiveApiServerLoreScopes> logger,
     IInteractiveApiServer interactiveApi
 ) : IInteractiveApiLoreScopes {
-    public async ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
+    public async ValueTask<Result> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
         
         MessageResponse result = await interactiveApi.MessageBroker.DeleteLoreScopeAsync(parsedLoreScopeId, ct: ct);
@@ -91,11 +92,17 @@ public class InteractiveApiServerLoreScopes(
         return Result.FromError($"Failed to create lorescope for user {userId}");
     }
     
-    public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, string fileName, string contentType, Stream fileStream, CancellationToken ct = default) {
+    public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile fileStream, CancellationToken ct = default) {
         // if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
-        
-        MessageResponse result = await interactiveApi.MessageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);
+
+        await using Stream stream = fileStream.OpenReadStream(cancellationToken: ct);
+        MessageResponse result = await interactiveApi.MessageBroker.UpsertLoreScopeImageAsync(
+            parsedLoreScopeId,
+            fileStream.Name,
+            fileStream.ContentType,
+            stream,
+            ct: ct);
         if (result.TryGetAsState(out bool? success)) return (Result)success;
         
         logger.Warning("Failed to upsert lorescope image for user {userId} because '{reason}'", userId, result.AsError.Value);

@@ -107,14 +107,11 @@
                 Logger.LogWarning("File size exceeds 5MB limit");
                 return;
             }
-
-            await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
+            
             Result result = await LoreScopeInteractiveApi.UpsertLoreScopeImageAsync(
                 UserId.ToString(),
                 LoreScopeId.ToString(),
-                SelectedFile.Name,
-                SelectedFile.ContentType,
-                stream
+                SelectedFile
             );
 
             if (!result.TryGetAsState(out bool? success) || success is false) {

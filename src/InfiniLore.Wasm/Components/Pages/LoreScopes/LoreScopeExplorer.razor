@@ -153,7 +153,7 @@
     }
     
     private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
-        Result result = await LoreScopeApi.DeleteLoreScopesAsync(loreScope.Id.ToString());
+        Result result = await LoreScopeApi.DeleteLoreScopesAsync(UserId, loreScope.Id.ToString());
         if (result.AsState) {
             var toast = new ToastData(
                 "LoreScope Deleted",
