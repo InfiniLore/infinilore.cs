@@ -9,7 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
       <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
-      <ProjectReference Include="..\InfiniLore.Wasm.Contracts\InfiniLore.Wasm.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared\InfiniLore.Modules.LoreScopes.Shared.csproj" />
     </ItemGroup>

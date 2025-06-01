@@ -3,13 +3,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
-using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Server.Messaging.Queries;
+using Microsoft.AspNetCore.Http;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
-namespace InfiniLore.Server.Services;
+namespace InfiniLore.Modules.Core.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

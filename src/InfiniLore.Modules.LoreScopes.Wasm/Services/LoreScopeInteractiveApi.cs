@@ -9,7 +9,7 @@ using InfiniLore.Kiota.Models;
 using InfiniLore.Shared;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Modules.LoreScopes.Shared.Services;
-using InfiniLore.Wasm.Contracts.Services;
+using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Wasm.Services;
@@ -17,11 +17,11 @@ namespace InfiniLore.Modules.LoreScopes.Wasm.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<ILoreScopeInteractiveApi>]
+[InjectableScoped<IInteractiveApiLoreScopes>]
 public class LoreScopeInteractiveApi(
     ILogger<LoreScopeInteractiveApi> logger,
     IInteractiveApiWasm interactiveApi
-) : ILoreScopeInteractiveApi {
+) : IInteractiveApiLoreScopes {
 
     public ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
         throw new NotImplementedException();

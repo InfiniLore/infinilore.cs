@@ -9,7 +9,7 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown/{MarkdownId:guid}/editor"
-@inject ILsMarkdownFileInteractiveApi InteractiveApi
+@inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject HttpClient Http
 @inject ILogger<LoreScopeMarkdownEditor> Logger
 @rendermode InteractiveServer

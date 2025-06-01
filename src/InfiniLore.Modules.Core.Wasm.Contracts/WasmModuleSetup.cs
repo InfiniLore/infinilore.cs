@@ -1,11 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Services.InteractiveApi;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Server.Services;
+namespace InfiniLore.Modules.Core.Wasm.Contracts;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IInteractiveApiServer : IInteractiveApi;
+public abstract class WasmModuleSetup {
+    public virtual void SetupBuilder(WebAssemblyHostBuilder builder) {}
+    public virtual void SetupServices(IServiceCollection services) {}
+}

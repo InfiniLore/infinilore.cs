@@ -1,15 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Shared.Database;
 
-namespace InfiniLore.Modules.Core.Wasm.Services;
+namespace InfiniLore.Modules.Core.Shared;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class WasmModuleSetup {
-    public virtual void SetupBuilder(WebAssemblyHostBuilder builder) {}
-    public virtual void SetupServices(IServiceCollection services) {}
+public interface IInteractiveApiUsers {
+    ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default);
+    ValueTask<Result> UpsertProfileImageAsync(string userId,  string contentType, Stream file, CancellationToken ct = default);
 }

@@ -9,22 +9,21 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Server.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<ILoreScopeInteractiveApi>]
-public class LoreScopeInteractiveApi(
-    ILogger<LoreScopeInteractiveApi> logger,
-    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
-) : ILoreScopeInteractiveApi {
+[InjectableScoped<IInteractiveApiLoreScopes>]
+public class InteractiveApiServerLoreScopes(
+    ILogger<InteractiveApiServerLoreScopes> logger,
+    IInteractiveApiServer interactiveApi
+) : IInteractiveApiLoreScopes {
     public async ValueTask<Result> DeleteLoreScopesAsync(string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
         
-        MessageResponse result = await messageBroker.DeleteLoreScopeAsync(parsedLoreScopeId, ct: ct);
+        MessageResponse result = await interactiveApi.MessageBroker.DeleteLoreScopeAsync(parsedLoreScopeId, ct: ct);
         
         if (!result.TryGetAsState(out bool? success)) Result.FromError("Failed to delete lorescope");
         return success ?? false;
@@ -34,14 +33,14 @@ public class LoreScopeInteractiveApi(
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<ILoreScopeModel>.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result<ILoreScopeModel>.FromError("Invalid lorescopeId");
         
-        MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(parsedLoreScopeId, parsedUserId, ct: ct);
+        MessageResponse<LoreScopeModel> result = await interactiveApi.MessageBroker.GetLorescopeByIdAsync(parsedLoreScopeId, parsedUserId, ct: ct);
         
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) return Result<ILoreScopeModel>.FromError("Failed to get lorescope");
         
         if (loreScope.PosterImageMetaDataId is null) return loreScope;
 
-        MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
+        MessageResponse<string> imageUrlResponse = await interactiveApi.MessageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
         if (!imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
             logger.Warning("Failed to get lorescope poster image for lorescope {lorescopeId} because '{reason}'", loreScopeId, imageUrlResponse.AsError.Value);
             return loreScope;
@@ -56,7 +55,7 @@ public class LoreScopeInteractiveApi(
             return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 
         // Form and Execute Query
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
+        MessageResponse<PaginatedData<LoreScopeModel>> result = await interactiveApi.MessageBroker.GetLoreScopesByOwnerAsync(
             parsedUserId,
             ct: ct
         );
@@ -71,7 +70,7 @@ public class LoreScopeInteractiveApi(
         foreach (LoreScopeModel loreScope in paginatedData.Items) {
             if (loreScope.PosterImageMetaDataId is null) continue;
 
-            MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
+            MessageResponse<string> imageUrlResponse = await interactiveApi.MessageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct);
             if (!imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) continue;
             loreScope.S3PosterImageUrl = imageUrl;
         }
@@ -85,7 +84,7 @@ public class LoreScopeInteractiveApi(
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         
         
-        MessageResponse<Guid> createResult = await messageBroker.CreateLoreScopeAsync(parsedUserId, newLoreScopeName, ct: ct);
+        MessageResponse<Guid> createResult = await interactiveApi.MessageBroker.CreateLoreScopeAsync(parsedUserId, newLoreScopeName, ct: ct);
         if (createResult.TryGetAsSuccess(out Guid _)) return true;
 
         logger.Warning("Failed to create lorescope for user {userId} because '{reason}'", userId, createResult.AsError.Value);
@@ -96,7 +95,7 @@ public class LoreScopeInteractiveApi(
         // if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
         
-        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);
+        MessageResponse result = await interactiveApi.MessageBroker.UpsertLoreScopeImageAsync(parsedLoreScopeId, fileName, contentType, fileStream, ct: ct);
         if (result.TryGetAsState(out bool? success)) return (Result)success;
         
         logger.Warning("Failed to upsert lorescope image for user {userId} because '{reason}'", userId, result.AsError.Value);

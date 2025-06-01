@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Wasm.Services;
+using InfiniLore.Modules.Core.Wasm.Contracts;
 using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;

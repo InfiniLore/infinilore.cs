@@ -2,18 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Kiota;
-using InfiniLore.Wasm.Contracts.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Wasm.Services.InteractiveApi;
+namespace InfiniLore.Modules.Core.Server.InteractiveApi;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IInteractiveApiWasm>]
-public class InteractiveApiWasm(
-    InfiniLoreApiClient apiClient
-) : IInteractiveApiWasm {
-
-    public InfiniLoreApiClient ApiClient { get; } = apiClient;
+[InjectableScoped<IInteractiveApiServer>]
+internal class InteractiveApiServer(
+    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
+) : IInteractiveApiServer {
+    public IMessageBroker MessageBroker => messageBroker;
 }

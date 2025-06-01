@@ -11,8 +11,8 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Wasm.Services.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<ILsMarkdownFileInteractiveApi>]
-public class LsMarkdownFileInteractiveApi : ILsMarkdownFileInteractiveApi {
+[InjectableScoped<IInteractiveApiLsMarkdownFiles>]
+public class LsMarkdownFileInteractiveApi : IInteractiveApiLsMarkdownFiles {
     
     public ValueTask<Result<ILsMarkdownFileModel>> GetLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) 
         => throw new NotImplementedException();

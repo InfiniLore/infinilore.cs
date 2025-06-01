@@ -6,7 +6,7 @@ using InfiniLore.Shared.Services.JwtToken;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace InfiniLore.Wasm.Services;
+namespace InfiniLore.Modules.Core.Wasm.Services;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

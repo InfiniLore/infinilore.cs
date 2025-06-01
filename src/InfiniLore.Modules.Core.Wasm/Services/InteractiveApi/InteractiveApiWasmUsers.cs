@@ -11,8 +11,8 @@ namespace InfiniLore.Modules.Core.Wasm.Services.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IUserInteractiveApi>]
-public class UserInteractiveApiWasm : IUserInteractiveApi {
+[InjectableScoped<IInteractiveApiUsers>]
+public class InteractiveApiWasmUsers : IInteractiveApiUsers {
 
     public ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) 
         => throw new NotImplementedException();

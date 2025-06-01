@@ -5,16 +5,17 @@ using InfiniLore.Shared.ClaimsHelper;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace InfiniLore.Wasm.Services.AuthenticationStateSyncer;
+namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class WasmClientAuthenticationStateProvider(
+public class AuthenticationStateProviderWasm(
     PersistentComponentState persistentState,
     IClaimsDtoHelper principalHelper,
-    ILogger<WasmClientAuthenticationStateProvider> logger
+    ILogger<AuthenticationStateProviderWasm> logger
 ) : AuthenticationStateProvider {
     private static readonly Task<AuthenticationState> UnauthenticatedTask = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
 
@@ -27,7 +28,7 @@ public class WasmClientAuthenticationStateProvider(
             return UnauthenticatedTask;
         }
 
-        ClaimsPrincipal principal = principalHelper.GetClaimsPrincipal<WasmClientAuthenticationStateProvider>(userInfo);
+        ClaimsPrincipal principal = principalHelper.GetClaimsPrincipal<AuthenticationStateProviderWasm>(userInfo);
         logger.Information("Auth0 information found in persistent state.");
         return Task.FromResult(new AuthenticationState(principal));
     }

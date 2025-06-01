@@ -1,12 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Shared.Services.InteractiveApi;
 
-namespace InfiniLore.Server.Services;
+namespace InfiniLore.Modules.Core.Server;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IInteractiveApiServer>]
-public class InteractiveApiServer : IInteractiveApiServer;
+public interface IInteractiveApiServer : IInteractiveApi {
+    IMessageBroker MessageBroker { get; }
+}
