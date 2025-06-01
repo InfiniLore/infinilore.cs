@@ -5,12 +5,14 @@
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
 @using InfiniLore.Shared
+@using System.Text
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown"
 @inject ILsMarkdownFileInteractiveApi InteractiveApi
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -19,10 +21,20 @@
         LoreScope Markdown Files
     </h2>
     
+    <div class="flex items-center space-x-3">
+        <InputText @bind-Value="@NewMarkdownFileName"
+                   placeholder="Enter a new markdown file name..."
+                   class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
+
+        <InfiniButton IconName="check" OnClick="CreateNewMarkdownFileAsync" Disabled="NewMarkdownFileName.IsNullOrWhiteSpace()"/>
+    </div>
+    
+    <hr class="my-4" />
+    
     @if (Files is null) {
         <span>Loading...</span>
     } else {
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-col gap-2">
             @* Table *@
             <InfiniTable TItem="ILsMarkdownFileModel" Items="@Files">
                 <Header>
@@ -41,17 +53,20 @@
             </InfiniTable>
 
             @* Navigation *@
-            <div class="mt-4 flex justify-between items-center">
+            <div class="mt-4 flex justify-center items-center">
                 <div class="flex gap-2">
-                    <InfiniButton OnClick="() => FetchFilesAsync(CurrentPage - 1)"
-                                  Disabled="@(CurrentPage <= 0)">
+                    <InfiniButton 
+                        OnClick="() => FetchFilesAsync(CurrentPage - 1)"
+                        Disabled="@(CurrentPage <= 0)">
                         Previous
                     </InfiniButton>
-                    <div class="text-sm text-(--color-base-70)">
-                        Page @(CurrentPage + 1) of @TotalPages (@TotalCount total items)
+                    <div class="text-(--color-base-70) flex flex-col justify-center items-center">
+                        <span class="text-sm">Page @(CurrentPage + 1) of @TotalPages</span>
+                        <span class="text-xs">@TotalCount total items</span>
                     </div>
-                    <InfiniButton OnClick="() => FetchFilesAsync(CurrentPage + 1)"
-                                  Disabled="@(CurrentPage >= TotalPages - 1)">
+                    <InfiniButton 
+                        OnClick="() => FetchFilesAsync(CurrentPage + 1)"
+                        Disabled="@(CurrentPage >= TotalPages - 1)">
                         Next
                     </InfiniButton>
                 </div>
@@ -72,6 +87,9 @@
     private int TotalCount { get; set; }
     private int CurrentPage { get; set;}
     private int TotalPages { get; set;}
+    
+    
+    private string? NewMarkdownFileName { get; set; }
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -106,5 +124,26 @@
         if (!result.TryGetAsState(out bool? deleted) || deleted is false) return;
 
         await FetchFilesAsync(0);
+        StateHasChanged();
+    }
+
+    private async Task CreateNewMarkdownFileAsync() {
+        if (NewMarkdownFileName.IsNullOrEmpty()) return;
+        
+        byte[] textBytes = Encoding.UTF8.GetBytes($"# File: {NewMarkdownFileName}");
+        using var stream = new MemoryStream(textBytes);
+
+        var fileName = NewMarkdownFileName.EndsWith(".md")
+            ? NewMarkdownFileName 
+            : $"{NewMarkdownFileName}.md";
+        
+        Result _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
+            LoreScopeId.ToString(),
+            fileName,
+            stream
+        );
+        
+        await FetchFilesAsync(0);
+        StateHasChanged();
     }
 }

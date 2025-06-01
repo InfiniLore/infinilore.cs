@@ -63,7 +63,7 @@
 
                     @* Links *@
                     <div class="flex flex-row gap-2">
-                        <InfiniButton Disabled="true" IconName="plus">New File</InfiniButton>
+                        <InfiniButton IconName="file" OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">New File</InfiniButton>
                         <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
                     </div>
                 </div>
