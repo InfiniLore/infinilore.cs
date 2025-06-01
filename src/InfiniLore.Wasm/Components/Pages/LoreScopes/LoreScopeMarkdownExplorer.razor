@@ -65,8 +65,8 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter] private Guid UserId { get; set; }
-    [Parameter] private Guid LoreScopeId { get; set; }
+    [Parameter] public Guid UserId { get; set; }
+    [Parameter] public Guid LoreScopeId { get; set; }
     
     private ILsMarkdownFileModel[]? Files { get; set; }
     private int TotalCount { get; set; }

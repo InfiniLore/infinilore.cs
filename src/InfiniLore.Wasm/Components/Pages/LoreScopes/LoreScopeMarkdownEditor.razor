@@ -46,9 +46,9 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter] private Guid UserId { get; set; }
-    [Parameter] private Guid LoreScopeId { get; set; }
-    [Parameter] private Guid MarkdownId { get; set; }
+    [Parameter] public Guid UserId { get; set; }
+    [Parameter] public Guid LoreScopeId { get; set; }
+    [Parameter] public Guid MarkdownId { get; set; }
 
     private TextSource TextSource { get; } = new();
     private ILsMarkdownFileModel? FileModel { get; set; }
