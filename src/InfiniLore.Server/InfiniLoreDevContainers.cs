@@ -6,11 +6,11 @@ using Testcontainers.Minio;
 using Testcontainers.MsSql;
 using ILogger=Microsoft.Extensions.Logging.ILogger;
 
-namespace InfiniLore.Server.Containers;
+namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreContainers : IAsyncDisposable {
+public class InfiniLoreDevContainers : IAsyncDisposable {
     private MsSqlContainer SqlContainer { get; init; } = null!;
     private MinioContainer MinioContainer { get; init; } = null!;
 
@@ -32,9 +32,9 @@ public class InfiniLoreContainers : IAsyncDisposable {
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    private InfiniLoreContainers() {}
+    private InfiniLoreDevContainers() {}
 
-    public static InfiniLoreContainers Create() {
+    public static InfiniLoreDevContainers Create() {
         // Configure an SQL Server container
         MsSqlBuilder sqlBuilder = new MsSqlBuilder()
             .WithLogger(Logger)
@@ -68,12 +68,12 @@ public class InfiniLoreContainers : IAsyncDisposable {
             .WithLabel("com.docker.compose.container-number", "2")
             .WithLabel("com.docker.compose.depends_on", "");
 
-        return new InfiniLoreContainers {
+        return new InfiniLoreDevContainers {
             SqlContainer = sqlBuilder.Build(),
             MinioContainer = minIoBuilder.Build()
         };
     }
-    public static InfiniLoreContainers CreateForTesting() {
+    public static InfiniLoreDevContainers CreateForTesting() {
         // Configure an SQL Server container
         MsSqlBuilder sqlBuilder = new MsSqlBuilder()
             .WithLogger(Logger)
@@ -84,7 +84,7 @@ public class InfiniLoreContainers : IAsyncDisposable {
             .WithLogger(Logger)
             .WithImage(MinioImage);
 
-        return new InfiniLoreContainers {
+        return new InfiniLoreDevContainers {
             SqlContainer = sqlBuilder.Build(),
             MinioContainer = minIoBuilder.Build()
         };

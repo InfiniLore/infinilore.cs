@@ -14,9 +14,7 @@ using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
-using InfiniLore.Server.Cli;
 using InfiniLore.Server.Components;
-using InfiniLore.Server.Containers;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
@@ -55,7 +53,7 @@ public static class Program {
             );
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
-            await using var devEnv = InfiniLoreContainers.Create();
+            await using var devEnv = InfiniLoreDevContainers.Create();
             await devEnv.InitializeAsync();
 
             WebApplication app = BuildApp(builder, devEnv);
@@ -71,7 +69,7 @@ public static class Program {
     private static async Task<bool> ExecuteCliCommands(string[] args, WebApplication app) {
         ICliParser parser = CliParser.CreateBuilder()
             .WithServiceProvider(() => app.Services)
-            .AddFromAssembly<ICliAssemblyEntrypoint>()
+            .AddFromAssembly<IServerEntry>()
             .Build();
         
         await parser.ExecuteAsync(args);
@@ -87,7 +85,7 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreDevContainers devEnv) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()
@@ -151,7 +149,6 @@ public static class Program {
             .AddJwtProtectedPolicy();
 
         builder.Services.AddCascadingAuthenticationState();
-        builder.Services.RegisterServicesFromInfiniLoreServerCli();
         #endregion
 
         #region Auth0 Management Services
