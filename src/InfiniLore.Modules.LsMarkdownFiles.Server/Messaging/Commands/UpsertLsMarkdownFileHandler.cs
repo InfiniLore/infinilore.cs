@@ -85,12 +85,13 @@ public class UpsertLsMarkdownFileHandler(
         }
         
         Result fileUploadResult = await fileStorage.TryUploadFileAsync(
-            $"lorescope-{command.LoreScopeId.ToString().ToLowerInvariant()}", // TODO - make this a service or something globally handled
+            S3BucketNames.GetLoreScopeBucket(command.LoreScopeId),
             s3FileMetaData.FileName,
             command.FileStream,
             "text/markdown", 
             ct
         );
+        
         if (!fileUploadResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to upload file to S3");
             return MessageResponse.FromErrorString("Failed to upload file to S3");

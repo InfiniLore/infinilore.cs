@@ -5,6 +5,7 @@ using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
@@ -34,7 +35,11 @@ public class GetLorescopePosterImageHandler(
             return MessageResponse.FromErrorString("No poster image found for this lorescope");
         }
 
-        Result<string> result = await s3FileStorage.GetFileUrlAsync(foundModel.S3BucketName, foundModel.PosterImageMetaData.FileName, ct:ct);
+        Result<string> result = await s3FileStorage.GetFileUrlAsync(
+            S3BucketNames.GetLoreScopeBucket(foundModel.Id),
+            foundModel.PosterImageMetaData.FileName,
+            ct: ct
+        );
         return result.Match(
             MessageResponse.FromSuccess,
             _ => MessageResponse.FromErrorString("Failed to get poster image url")
