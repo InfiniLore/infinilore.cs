@@ -35,7 +35,7 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MarkdownFileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?paginationInfo={paginationInfo}", pathParameters)
+        public MarkdownFileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&reverse={reverse}", pathParameters)
         {
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MarkdownFileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?paginationInfo={paginationInfo}", rawUrl)
+        public MarkdownFileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&reverse={reverse}", rawUrl)
         {
         }
         /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaLsMarkdownFilesResponse"/></returns>
@@ -136,15 +136,10 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         public partial class MarkdownFileRequestBuilderGetQueryParameters 
         #pragma warning restore CS1591
         {
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            [QueryParameter("paginationInfo")]
-            public string? PaginationInfo { get; set; }
-#nullable restore
-#else
-            [QueryParameter("paginationInfo")]
-            public string PaginationInfo { get; set; }
-#endif
+            [QueryParameter("pageNumber")]
+            public int? PageNumber { get; set; }
+            [QueryParameter("reverse")]
+            public bool? Reverse { get; set; }
         }
     }
 }

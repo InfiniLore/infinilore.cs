@@ -44,14 +44,14 @@ public class UpsertLsMarkdownFileEndpoint(
     public override async Task<Response> ExecuteAsync(UpsertLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        if (req.ContentType != "text/markdown") {
+        if (req.File.ContentType != "text/markdown") {
             AddError("Invalid file type.");
             return new ProblemDetails(ValidationFailures);       
         }
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(req.LoreScopeId, req.FileName, fileStream, ct:ct);
+        MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(req.LoreScopeId, file.FileName, fileStream, ct:ct);
 
         // Verify Response
         if (!result.TryGetState(out bool? successful)) {

@@ -35,7 +35,7 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public LorescopeRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope?paginationInfo={paginationInfo}{&reverse*}", pathParameters)
+        public LorescopeRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope?pageNumber={pageNumber}&reverse={reverse}", pathParameters)
         {
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public LorescopeRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope?paginationInfo={paginationInfo}{&reverse*}", rawUrl)
+        public LorescopeRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-user/{userId}/lorescope?pageNumber={pageNumber}&reverse={reverse}", rawUrl)
         {
         }
         /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaLoreScopesResponse"/></returns>
@@ -73,11 +73,11 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
         /// <exception cref="global::InfiniLore.Kiota.Models.FastEndpointsProblemDetails">When receiving a 400 status code</exception>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public async Task<string?> PostAsync(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<string?> PostAsync(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeEndpointRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #nullable restore
 #else
-        public async Task<string> PostAsync(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
+        public async Task<string> PostAsync(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeEndpointRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default, CancellationToken cancellationToken = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
@@ -109,11 +109,11 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
         /// <param name="requestConfiguration">Configuration for the request such as headers, query parameters, and middleware options.</param>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public RequestInformation ToPostRequestInformation(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
+        public RequestInformation ToPostRequestInformation(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeEndpointRequest body, Action<RequestConfiguration<DefaultQueryParameters>>? requestConfiguration = default)
         {
 #nullable restore
 #else
-        public RequestInformation ToPostRequestInformation(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
+        public RequestInformation ToPostRequestInformation(global::InfiniLore.Kiota.Models.KiotaCreateLorescopeEndpointRequest body, Action<RequestConfiguration<DefaultQueryParameters>> requestConfiguration = default)
         {
 #endif
             _ = body ?? throw new ArgumentNullException(nameof(body));
@@ -137,15 +137,8 @@ namespace InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
         public partial class LorescopeRequestBuilderGetQueryParameters 
         #pragma warning restore CS1591
         {
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            [QueryParameter("paginationInfo")]
-            public string? PaginationInfo { get; set; }
-#nullable restore
-#else
-            [QueryParameter("paginationInfo")]
-            public string PaginationInfo { get; set; }
-#endif
+            [QueryParameter("pageNumber")]
+            public int? PageNumber { get; set; }
             [QueryParameter("reverse")]
             public bool? Reverse { get; set; }
         }

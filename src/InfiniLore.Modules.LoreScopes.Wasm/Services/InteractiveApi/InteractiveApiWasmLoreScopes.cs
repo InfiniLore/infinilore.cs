@@ -90,7 +90,7 @@ public class InteractiveApiWasmLoreScopes(
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
-            var requestBody = new KiotaCreateLorescopeRequest {
+            var requestBody = new KiotaCreateLorescopeEndpointRequest {
                 Name = newLoreScopeName
             };
             
