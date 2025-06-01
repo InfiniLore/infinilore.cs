@@ -9,7 +9,7 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 @attribute [Authorize]
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger

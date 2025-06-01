@@ -85,14 +85,28 @@ public class LoreScopeInteractiveApi(
             return PaginatedResult<ILoreScopeModel>.FromError("Unknown failure");
         }
     }
-
-
-    public ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) 
-        => throw new NotImplementedException();
+    
+    public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
+        try {
+            InfiniLoreApiClient client = interactiveApi.ApiClient;
+            LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
+            var requestBody = new KiotaCreateLorescopeRequest {
+                Name = newLoreScopeName
+            };
+            
+            string? result = await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
+            
+            if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
+            return Result.FromState(true);
+        }
+        catch (Exception e) {
+            logger.Error(e, "Failed to create LoreScope {newLoreScopeName} because '{reason}'", newLoreScopeName, e.Message);
+            return Result.FromError(interactiveApi.DefaultApiError);
+        }
+    }
 
     public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default) {
         try {
-            
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             PosterImageRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].PosterImage;
             
