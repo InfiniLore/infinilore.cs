@@ -1,19 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Kiota;
-using InfiniLore.Wasm.Contracts.Services;
 
-namespace InfiniLore.Wasm.Services.InteractiveApi;
+using InfiniLore.Modules.Core.Server.ApiEndpoints;
+using JetBrains.Annotations;
 
+namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IInteractiveApiWasm>]
-public class InteractiveApiWasm(
-    InfiniLoreApiClient apiClient
-) : IInteractiveApiWasm {
-
-    public InfiniLoreApiClient ApiClient { get; } = apiClient;
+public record LsMarkdownFileResponse : OwnedResponse {
+    public required string Name { [UsedImplicitly] get; init; }
+    public required Guid LastUserToEditId { [UsedImplicitly] get; init; }
+    public required string? ResourceUrl { [UsedImplicitly] get; init; }
 }

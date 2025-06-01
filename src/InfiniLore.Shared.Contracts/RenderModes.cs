@@ -1,17 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Components.Web;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
+namespace InfiniLore.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public record UpsertLsMarkdownFileRequest(
-    Guid LoreScopeId,
-    string FileName,
-    string ContentType,
-    IFormFile File
-);
+public static class RenderModes {
+    public static readonly InteractiveWebAssemblyRenderMode WebAssemblyOnly = new(prerender: false);
+    public static readonly InteractiveServerRenderMode ServerOnly = new(prerender: false);
+}

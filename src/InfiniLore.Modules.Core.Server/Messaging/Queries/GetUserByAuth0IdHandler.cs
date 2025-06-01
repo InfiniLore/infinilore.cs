@@ -26,19 +26,13 @@ public class GetUserByAuth0IdHandler(
     protected override async Task<MessageResponse<InfiniLoreUserModel>> HandleCommandAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
         if (command.Auth0Id.IsNullOrEmpty()) return MessageResponse.FromErrorString("Cannot get user id by auth0 id. Auth0 id is empty.");
 
-        try {
-            await using IReadonlyUnitOfWork unitOfWork = factory.Create();
-            var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
+        await using IReadonlyUnitOfWork unitOfWork = factory.Create();
+        var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
             
-            Result<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
-            return !result.IsError
-                ? MessageResponse.FromSuccess(result.AsSuccess)
-                : MessageResponse.FromErrorString("Cannot get user id by auth0 id. Auth0 id not found.");
-        }
-        catch (Exception e) {
-            logger.Error(e, "Failed to get user by auth0 id.");
-            return MessageResponse.FromErrorString("Failed to get user by auth0 id.");
-        }
+        Result<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
+        return !result.IsError
+            ? MessageResponse.FromSuccess(result.AsSuccess)
+            : MessageResponse.FromErrorString("Cannot get user id by auth0 id. Auth0 id not found.");
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default)

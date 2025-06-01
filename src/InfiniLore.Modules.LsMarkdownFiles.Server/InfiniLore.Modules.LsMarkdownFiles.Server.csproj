@@ -21,9 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Messaging\Queries\" />
       <Folder Include="Messaging\Receivers\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

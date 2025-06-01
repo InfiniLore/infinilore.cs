@@ -1,12 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components.Web;
+using InfiniLore.Modules.Core.Server.Messaging;
 
-namespace InfiniLore.Wasm.Components;
+namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Commands;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class RenderModes {
-    public static readonly InteractiveWebAssemblyRenderMode WebAssemblyOnly = new(prerender: false);
-}
+public record DeleteLsMarkdownFileRequest(
+    Guid MarkdownFileId
+) : MessageRequest;

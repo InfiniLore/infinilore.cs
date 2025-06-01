@@ -9,5 +9,6 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface ILsMarkdownFileModel : IOwnedModel {
-    string Name { get; }
+    string Name { get; set; }
+    string? ResourceUrl { get; }
 }

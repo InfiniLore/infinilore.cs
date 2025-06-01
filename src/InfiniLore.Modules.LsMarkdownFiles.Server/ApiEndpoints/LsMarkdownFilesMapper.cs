@@ -2,18 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Kiota;
-using InfiniLore.Wasm.Contracts.Services;
+using InfiniLore.Modules.Core.Server.ApiEndpoints;
+using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 
-namespace InfiniLore.Wasm.Services.InteractiveApi;
-
+namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IInteractiveApiWasm>]
-public class InteractiveApiWasm(
-    InfiniLoreApiClient apiClient
-) : IInteractiveApiWasm {
-
-    public InfiniLoreApiClient ApiClient { get; } = apiClient;
-}
+[InjectableSingleton<LsMarkdownFilesMapper>]
+public class LsMarkdownFilesMapper : AutoResponsesMapper<LsMarkdownFileResponse, LsMarkdownFileMapper, LsMarkdownFilesResponse, LsMarkdownFileModel>;
