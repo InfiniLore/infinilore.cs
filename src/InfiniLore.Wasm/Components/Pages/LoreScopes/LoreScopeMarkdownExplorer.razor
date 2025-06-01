@@ -12,7 +12,8 @@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown"
 @inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
+@attribute [Authorize]
+@rendermode RenderModes.WebAssemblyOnly
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@

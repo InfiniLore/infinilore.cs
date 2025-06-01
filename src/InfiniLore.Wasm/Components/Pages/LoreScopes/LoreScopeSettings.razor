@@ -4,15 +4,16 @@
 @using AterraEngine.Unions
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
+@using InfiniLore.Shared
 @using System.Diagnostics.CodeAnalysis
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
-@rendermode InteractiveWebAssembly
-@attribute [Authorize]
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger
+@attribute [Authorize]
+@rendermode RenderModes.WebAssemblyOnly
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
