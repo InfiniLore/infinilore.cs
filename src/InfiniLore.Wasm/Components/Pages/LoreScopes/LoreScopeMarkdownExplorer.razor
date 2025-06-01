@@ -127,7 +127,7 @@
 
 
     private void GotoEditMarkdownFile(ILsMarkdownFileModel file) {
-        NavigationManager.NavigateTo($"/{UserId}/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
+        NavigationManager.NavigateTo($"/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
     }
 
     private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {

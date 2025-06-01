@@ -7,6 +7,7 @@ using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
+using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace InfiniLore.Modules.Core.Server.InteractiveApi;
@@ -30,7 +31,7 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
     public async ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         
-        await using Stream stream = file.OpenReadStream(cancellationToken: ct);
+        await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
         MessageResponse result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
             parsedUserId, 
             file.ContentType,

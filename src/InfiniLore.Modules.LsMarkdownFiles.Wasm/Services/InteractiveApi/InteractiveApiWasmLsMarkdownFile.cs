@@ -13,6 +13,7 @@ using InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
 using InfiniLore.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
+using System.Text;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Wasm.Services.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -101,6 +102,14 @@ public class InteractiveApiWasmLsMarkdownFile(
             logger.Error(e, "Could not upsert ls markdown file");
             return Result.FromError("Could not upsert ls markdown file");
         }
+    }
+    
+    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, CancellationToken ct = default) {
+        byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
+        await using var stream = new MemoryStream(textBytes);
+        
+        Result result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, ct);
+        return result;
     }
 
     public async ValueTask<Result> DeleteLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {

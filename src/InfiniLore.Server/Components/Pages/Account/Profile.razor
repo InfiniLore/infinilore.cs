@@ -129,11 +129,6 @@
             }
             
             // Copy to MemoryStream first
-            using var memoryStream = new MemoryStream();
-            await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
-            await stream.CopyToAsync(memoryStream);
-            memoryStream.Position = 0; // Reset position to beginning
-            
             Result result = await UserInteractiveApi.UpsertProfileImageAsync(
                 UserModel.Id.ToString(),
                 SelectedFile

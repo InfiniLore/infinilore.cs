@@ -9,6 +9,7 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Shared;
+using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 
@@ -97,7 +98,7 @@ public class InteractiveApiServerLoreScopes(
         // if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
 
-        await using Stream stream = fileStream.OpenReadStream(cancellationToken: ct);
+        await using MemoryStream stream = await fileStream.ToMemoryStreamAsync(ct: ct);
         MessageResponse result = await interactiveApi.MessageBroker.UpsertLoreScopeImageAsync(
             parsedLoreScopeId,
             fileStream.Name,
