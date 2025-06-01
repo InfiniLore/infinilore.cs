@@ -61,12 +61,6 @@ public class InteractiveApiWasmUsers(
             await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             return Result.FromState(true);
         }
-        catch (ApiException apiEx) {
-            logger.LogError(apiEx, "API Error: {StatusCode}, Details: {Message}", 
-                apiEx.ResponseStatusCode, 
-                apiEx.InnerException?.Message ?? apiEx.Message);
-            return Result.FromError($"Upload failed: {apiEx.Message}");
-        }
         catch (Exception e) {
             logger.LogError(e, "Error updating profile image");
             return Result.FromError(interactiveApi.DefaultApiError);       
