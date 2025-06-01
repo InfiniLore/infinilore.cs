@@ -11,4 +11,6 @@ namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInteractiveApiWasm : IInteractiveApi{
     InfiniLoreApiClient ApiClient { get; }
+    
+    string DefaultApiError { get; }
 }

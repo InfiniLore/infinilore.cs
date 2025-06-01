@@ -11,6 +11,5 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 [UsedImplicitly]
 public record UpsertUserProfileImageRequest(
     Guid UserId,
-    string ContentType,
     IFormFile File
 );

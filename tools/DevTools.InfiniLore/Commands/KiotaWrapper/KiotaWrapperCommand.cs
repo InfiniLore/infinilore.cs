@@ -58,7 +58,10 @@ public partial class KiotaWrapperCommand(
         Dictionary<string, (int Line, string Replacement)[]> data = new() {
             ["src/InfiniLore.Kiota/Models/KiotaLoreScopeResponse.cs"] = [
                 (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
-            ]
+            ],
+            ["src/InfiniLore.Kiota/Models/KiotaLsMarkdownFileResponse.cs"] = [
+                (16, "        public new IDictionary<string, object> AdditionalData { get; set; }")
+            ],
         };
 
         IEnumerable<Task> tasks = data.Select(pair => FixSpecificFileIssues(Path.Join(parameters.Root, pair.Key), pair.Value));

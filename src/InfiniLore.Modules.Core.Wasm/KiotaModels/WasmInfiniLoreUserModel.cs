@@ -1,16 +1,25 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared.Database;
-using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
+namespace InfiniLore.Modules.Core.Wasm.KiotaModels;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record UserProfileResponse : IInfiniLoreUserModel {
-    public required Guid Id { [UsedImplicitly] get; init; }
-    public required DateTime CreatedDate { [UsedImplicitly] get; init; }
-    public required string Username { [UsedImplicitly] get; init; }
-    public required string? ProfileImageUrl { [UsedImplicitly] get; init; }
+public record WasmInfiniLoreUserModel(
+    Guid Id,
+    string Username,
+    string? Auth0Id,
+    string? ProfileImageUrl
+) : IInfiniLoreUserModel{
+    public static IInfiniLoreUserModel FromKiotaModel(KiotaUserUserProfileResponse response)
+        => new WasmInfiniLoreUserModel(
+            Guid.Parse(response.Id!),
+            response.Username ?? "unknown user",
+            null,
+            response.ProfileImageUrl
+        );
 }

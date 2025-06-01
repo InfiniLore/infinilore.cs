@@ -7,6 +7,7 @@ using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace InfiniLore.Modules.Core.Server.InteractiveApi;
 
@@ -26,10 +27,16 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
         );
     }
     
-    public async ValueTask<Result> UpsertProfileImageAsync(string userId, string contentType, Stream file, CancellationToken ct = default) {
+    public async ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         
-        MessageResponse result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(parsedUserId, contentType, file, ct: ct);
+        await using Stream stream = file.OpenReadStream(cancellationToken: ct);
+        MessageResponse result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
+            parsedUserId, 
+            file.ContentType,
+            stream,
+            ct: ct
+        );
         return result.Match<Result>(
             stateCase: state => state,
             errorCase: _ => Result.FromError("Failed to retrieve user.")

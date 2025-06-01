@@ -9,6 +9,5 @@ namespace InfiniLore.Modules.Core.Shared.Database;
 public interface IInfiniLoreUserModel {
     Guid Id { get; }
     string Username { get; }
-    string? Auth0Id { get; }
     string? ProfileImageUrl { get; }
 }

@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using InfiniLore.Modules.Core.Shared.Database;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace InfiniLore.Modules.Core.Shared;
 
@@ -11,5 +12,5 @@ namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInteractiveApiUsers {
     ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default);
-    ValueTask<Result> UpsertProfileImageAsync(string userId,  string contentType, Stream file, CancellationToken ct = default);
+    ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default);
 }

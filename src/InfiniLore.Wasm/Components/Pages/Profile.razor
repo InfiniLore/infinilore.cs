@@ -4,19 +4,16 @@
 @using AterraEngine.Unions
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
-@using InfiniLore.Server.Components.Layout
 @using InfiniLore.Shared.Auth
-@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 
 @attribute [Authorize]
-@layout MainLayout
 @inject IInteractiveApiUsers UserInteractiveApi
 @inject ILogger<Profile> Logger
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -36,7 +33,6 @@
         @* User Data *@
         <div class="flex w-2/3 grow flex-col gap-2">
             <span>UserName: <span class="text-xs">@UserModel.Username</span></span>
-            <span>Auth0Id: <span class="text-xs">@UserModel.Auth0Id</span></span>
 
             <div class="flex flex-col grow justify-center">
                 <div class="grow"></div>
@@ -139,8 +135,7 @@
             await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
             Result result = await UserInteractiveApi.UpsertProfileImageAsync(
                 UserModel.Id.ToString(),
-                SelectedFile.ContentType,
-                stream
+                SelectedFile
             );
 
             if (!result.TryGetAsState(out bool? success) || success is false) {
