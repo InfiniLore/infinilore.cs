@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server\InfiniLore.Modules.LsMarkdownFiles.Server.csproj" />
-        <ProjectReference Include="..\InfiniLore.Server.Cli\InfiniLore.Server.Cli.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Wasm\InfiniLore.Wasm.csproj" />
@@ -20,6 +19,11 @@
         <PackageReference Include="AterraEngine.Unions" />
         <PackageReference Include="Auth0.AspNetCore.Authentication" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Contracts" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" />
         <PackageReference Include="FastEndpoints" />
         <PackageReference Include="FastEndpoints.Swagger" />
@@ -45,6 +49,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Cli\Commands\DataSeeding\Data\InfiniLoreUsers.json" />
     </ItemGroup>
 
 </Project>

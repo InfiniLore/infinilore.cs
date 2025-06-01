@@ -4,8 +4,6 @@
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Server.Cli.DataSeeding.Seeders;
 using InfiniLore.Server.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Cli.DataSeeding;
 

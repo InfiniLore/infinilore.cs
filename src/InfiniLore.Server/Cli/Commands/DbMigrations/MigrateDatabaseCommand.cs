@@ -6,7 +6,6 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
 using InfiniLore.Server.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Cli.DbMigrations;
 

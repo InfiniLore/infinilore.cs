@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
-using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Server.Cli.DataSeeding;
 
