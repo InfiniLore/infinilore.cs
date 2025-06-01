@@ -28,12 +28,12 @@
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
 
         <InfiniButton IconName="check" OnClick="CreateNewMarkdownFileAsync"
-                      Disabled="NewMarkdownFileName.IsNullOrWhiteSpace()"/>
+                      Disabled="@(NewMarkdownFileName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
     </div>
 
     <hr class="my-4"/>
 
-    @if (Files is null) {
+    @if (Files is null  || !RendererInfo.IsInteractive) {
         <span>Loading...</span>
     } else {
         <div class="flex flex-col gap-2">
@@ -80,7 +80,6 @@
                     }
                 </div>
             </div>
-
         </div>
     }
 
@@ -111,7 +110,7 @@
     private async Task FetchFilesAsync(int pageNumber) {
         if (Files is not null) Files = null;
         var pagination = new PaginationInfo {
-            PageNumber = pageNumber,// Already 1-based, don't adjust
+            PageNumber = pageNumber, // Already 1-based, don't adjust
             PageSize = 10
         };
 
@@ -121,13 +120,13 @@
         PaginatedData<ILsMarkdownFileModel> paginated = data.Value;
         Files = paginated.Items;
         TotalCount = paginated.TotalCount;
-        CurrentPage = paginated.CurrentPage - 1;// Convert to 0-based for UI
+        CurrentPage = paginated.CurrentPage - 1; // Convert to 0-based for UI
         TotalPages = paginated.TotalPages;
     }
 
 
     private void GotoEditMarkdownFile(ILsMarkdownFileModel file) {
-        NavigationManager.NavigateTo($"/{UserId}/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
+        NavigationManager.NavigateTo($"/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
     }
 
     private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {

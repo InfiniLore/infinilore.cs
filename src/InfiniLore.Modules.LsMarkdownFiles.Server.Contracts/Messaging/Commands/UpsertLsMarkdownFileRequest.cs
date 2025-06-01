@@ -11,5 +11,6 @@ namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Commands;
 public record UpsertLsMarkdownFileRequest(
     Guid LoreScopeId,
     string FileName,
-    Stream FileStream
+    Stream FileStream,
+    Guid KnownLsMarkdownFileId = default
 ) : MessageRequest;

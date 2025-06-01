@@ -12,6 +12,7 @@ using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Modules.LoreScopes.Shared.Services;
 using InfiniLore.Shared;
+using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
@@ -116,20 +117,17 @@ public class InteractiveApiWasmLoreScopes(
             PosterImageRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].PosterImage;
             
             // Read the stream into a memory stream first
-            using var memoryStream = new MemoryStream();
-            await using Stream fileStream = file.OpenReadStream(file.Size, ct);
-            await fileStream.CopyToAsync(memoryStream, ct);
-            memoryStream.Position = 0; // Reset position to beginning
+            await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
             
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(
                 "File",  // This must match exactly with the server-side model property name
                 file.ContentType,
-                memoryStream,
+                stream,
                 file.Name
             );
             
-            await using Stream? stream = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
+            await using Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             return Result.FromState(true);
         }
         catch (Exception e) {

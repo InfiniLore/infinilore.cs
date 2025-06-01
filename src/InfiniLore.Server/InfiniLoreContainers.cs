@@ -22,6 +22,7 @@ public class InfiniLoreContainers : IAsyncDisposable {
     private const string SqlPassword = "AnnaIsTrans4Ever!";
 
     private const int MinioPort = 40627;
+    
     private const string MinioAccessKey = "minioadmin";
     private const string MinioSecretKey = "minioadmin";
 

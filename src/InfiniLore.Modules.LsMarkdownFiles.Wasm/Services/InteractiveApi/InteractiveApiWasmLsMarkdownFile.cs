@@ -13,6 +13,7 @@ using InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
 using InfiniLore.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
+using System.Text;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Wasm.Services.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ public class InteractiveApiWasmLsMarkdownFile(
         }
     }
 
-    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, CancellationToken ct = default) {
+    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MarkdownFileRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
@@ -101,6 +102,14 @@ public class InteractiveApiWasmLsMarkdownFile(
             logger.Error(e, "Could not upsert ls markdown file");
             return Result.FromError("Could not upsert ls markdown file");
         }
+    }
+    
+    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
+        byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
+        await using var stream = new MemoryStream(textBytes);
+        
+        Result result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, knownFileId,ct);
+        return result;
     }
 
     public async ValueTask<Result> DeleteLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {

@@ -33,6 +33,5 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
             .IsRequired(false);
         
         builder.Ignore(x => x.HasAccessProtection);
-        builder.Ignore(x => x.S3BucketName);
     }
 }

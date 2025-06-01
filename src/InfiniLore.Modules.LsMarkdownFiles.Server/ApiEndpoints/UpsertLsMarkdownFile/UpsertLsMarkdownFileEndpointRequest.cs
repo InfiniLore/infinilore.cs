@@ -11,5 +11,6 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 [UsedImplicitly]
 public record UpsertLsMarkdownFileEndpointRequest(
     Guid LoreScopeId,
-    IFormFile File
+    IFormFile File,
+    Guid KnownMarkdownFileId = default
 );

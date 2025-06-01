@@ -11,6 +11,7 @@ using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
 using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.Core.Wasm.KiotaModels;
+using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
@@ -49,16 +50,13 @@ public class InteractiveApiWasmUsers(
             ProfileImageRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId].ProfileImage;
         
             // Read the stream into a memory stream first
-            using var memoryStream = new MemoryStream();
-            await using Stream fileStream = file.OpenReadStream(file.Size, ct);
-            await fileStream.CopyToAsync(memoryStream, ct);
-            memoryStream.Position = 0; // Reset position to beginning
+            await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
 
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(
                 "File",  // This must match exactly with the server-side model property name
                 file.ContentType,
-                memoryStream,
+                stream,
                 file.Name
             );
             await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);

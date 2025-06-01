@@ -5,13 +5,14 @@
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
 @using InfiniLore.Shared.Auth
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/account/profile"
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveServer
 
 @attribute [Authorize]
 @inject IInteractiveApiUsers UserInteractiveApi
@@ -38,9 +39,6 @@
                 <div class="grow"></div>
                 <div class="flex flex-row justify-between">
                     <span>Profile Image: </span>
-                    @if (IsUploading) {
-                        <div class="mt-2 text-sm text-(--color-primary-500)">Uploading...</div>
-                    }
                 </div>
                 <div class="flex flex-row justify-between">
                     <div class="relative">
@@ -92,7 +90,6 @@
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
     private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
     private IBrowserFile? SelectedFile { get; set; }
-    public bool IsUploading { get; set; }
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -118,7 +115,6 @@
     private void OnPosterImageSelected(InputFileChangeEventArgs e) {
         if (e.File is not {} file) return;
         SelectedFile = file;
-        IsUploading = true; 
         StateHasChanged();
     }
     
@@ -131,8 +127,8 @@
                 Logger.LogWarning("File size exceeds 5MB limit");
                 return;
             }
-
-            await using Stream stream = SelectedFile.OpenReadStream(MaxFileSize);
+            
+            // Copy to MemoryStream first
             Result result = await UserInteractiveApi.UpsertProfileImageAsync(
                 UserModel.Id.ToString(),
                 SelectedFile
@@ -148,7 +144,6 @@
             SelectedFile = null;
         }
         finally {
-            IsUploading = false;
             StateHasChanged();
         }
     }

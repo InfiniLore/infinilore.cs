@@ -4,7 +4,6 @@
 @using AterraEngine.Unions
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
-@using InfiniLore.Shared
 @using System.Diagnostics.CodeAnalysis
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -49,9 +48,6 @@
 
                 <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
             </div>
-            @if (IsUploading) {
-                <div class="mt-2 text-sm text-(--color-primary-500)">Uploading...</div>
-            }
         </div>
 
     </InfiniSection>
@@ -60,7 +56,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     [Parameter] public Guid LoreScopeId { get; set; }
     [Parameter] public Guid UserId { get; set; }
@@ -68,7 +63,6 @@
     private ILoreScopeModel? LoreScopeModel { get; set; }
     [MemberNotNullWhen(true, nameof(LoreScopeModel))] private bool LoreScopeModelFound { get; set; }
 
-    private bool IsUploading { get; set; }
     private IBrowserFile? SelectedFile { get; set; }
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
@@ -96,9 +90,9 @@
     private void OnPosterImageSelected(InputFileChangeEventArgs e) {
         if (e.File is not {} file) return;
         SelectedFile = file;
-        IsUploading = true; 
         StateHasChanged();
     }
+    
     private async Task OnPosterImageUpload() {
         if (SelectedFile is null) return;
 
@@ -125,10 +119,7 @@
             SelectedFile = null;
         }
         finally {
-            IsUploading = false;
             StateHasChanged();
         }
     }
-
-
 }

@@ -32,61 +32,63 @@
                    placeholder="Enter a new Lorescope name..."
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition" />
 
-        <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="NewLoreScopeName.IsNullOrWhiteSpace()"/>
+        <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
     </div>
 </InfiniSection>
 
 <div class="my-8"></div>
 
 <InfiniSection class="flex flex-col gap-4">
-    @if (LoreScopeResponses.IsEmpty()) {
-        <div class="flex flex-col items-center">
-            <h3 class="text-lg font-semibold text-(--color-base-90)">
-                No LoreScopes Found
-            </h3>
-            <p class="text-sm text-(--color-base-50)">
-                Create a new one by clicking the button above
-            </p>
-        </div>
-    }
-    
-    @foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
-        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
-            <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
-
-                <!-- Poster Image -->
-                <LoreScopePoster ImageUrl="@loreScope.S3PosterImageUrl" Name="@loreScope.Name"/>
-                
-                <!-- Main Info Content -->
-                <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full">
-                    @* Content *@
-                    <div>
-                        <h3 class="text-lg font-semibold text-(--color-base-95) truncate">
-                            @loreScope.Name
-                        </h3>
-                        <p class="text-sm text-(--color-base-60) line-clamp-4">
-                            @loreScope.Description
-                        </p>
-                        <p class="text-sm text-(--color-base-60) line-clamp-4">
-                            Owner: @loreScope.OwnerId
-                        </p>
-                    </div>
-
-                    @* Links *@
-                    <div class="flex flex-row gap-2 justify-start">
-                        <InfiniButton IconName="file" OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">Markdown files</InfiniButton>
-                        
-                    </div>
-                </div>
-
-                <!-- Stats Section -->
-                <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full">
-                    @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
-                    <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
-                </div>
-
+    @if (LoreScopeResponses is not null) {
+        if (LoreScopeResponses.IsEmpty()) {
+            <div class="flex flex-col items-center">
+                <h3 class="text-lg font-semibold text-(--color-base-90)">
+                    No LoreScopes Found
+                </h3>
+                <p class="text-sm text-(--color-base-50)">
+                    Create a new one by clicking the button above
+                </p>
             </div>
-        </div>
+        }
+        
+        foreach (ILoreScopeModel loreScope in LoreScopeResponses) {
+            <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all " onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
+                <div class=" flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
+
+                    <!-- Poster Image -->
+                    <LoreScopePoster ImageUrl="@loreScope.S3PosterImageUrl" Name="@loreScope.Name"/>
+                    
+                    <!-- Main Info Content -->
+                    <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full">
+                        @* Content *@
+                        <div>
+                            <h3 class="text-lg font-semibold text-(--color-base-95) truncate">
+                                @loreScope.Name
+                            </h3>
+                            <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                @loreScope.Description
+                            </p>
+                            <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                Owner: @loreScope.OwnerId
+                            </p>
+                        </div>
+
+                        @* Links *@
+                        <div class="flex flex-row gap-2 justify-start">
+                            <InfiniButton IconName="file" OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">Markdown files</InfiniButton>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Stats Section -->
+                    <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full">
+                        @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
+                        <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete</InfiniButton>
+                    </div>
+
+                </div>
+            </div>
+        }   
     }
 </InfiniSection>
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -95,7 +97,7 @@
 @code {
     [CascadingParameter] 
     private Task<AuthenticationState>? AuthenticationState { get; set; }
-    private ILoreScopeModel[] LoreScopeResponses { get; set; } = [];
+    private ILoreScopeModel[]? LoreScopeResponses { get; set; } = [];
     
     private string? NewLoreScopeName { get; set; }
     private string UserId { get; set; } = string.Empty;

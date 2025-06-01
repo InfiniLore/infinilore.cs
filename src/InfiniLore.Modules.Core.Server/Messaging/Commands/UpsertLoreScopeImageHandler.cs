@@ -35,13 +35,15 @@ public class UpsertUserProfileImageHandler(
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         Result<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
-        return await userModelResult.MatchAsync(
-            model => ProcessUserModelAsync(command, model, unitOfWork, ct),
+        MessageResponse result =  await userModelResult.MatchAsync(
+            async model => await ProcessUserModelAsync(command, model, unitOfWork, ct),
             _ => {
                 logger.Warning("Failed to find user with id {UserId}", command.UserId);
                 return Task.FromResult(MessageResponse.FromErrorString("Failed to find user with id"));
             }
         );
+
+        return result;
     }
 
     private async Task<MessageResponse> ProcessUserModelAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel userModel,IUnitOfWork unitOfWork, CancellationToken ct) {
@@ -51,7 +53,7 @@ public class UpsertUserProfileImageHandler(
         }
 
         Result result = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
-        return await result.MatchAsync(async state => {
+        MessageResponse response =  await result.MatchAsync(async state => {
             if (state is false) {
                 logger.Warning("Failed to upload file to s3 bucket");
                 return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");
@@ -68,6 +70,8 @@ public class UpsertUserProfileImageHandler(
             logger.Warning("Failed to upload file to s3 bucket");
             return Task.FromResult(MessageResponse.FromErrorString("Failed to upload file to s3 bucket"));
         });
+        
+        return response;
     }
     
     private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {

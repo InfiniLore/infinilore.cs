@@ -34,16 +34,23 @@ public class UpsertLsMarkdownFileHandler(
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         
-        Result idExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
-        if (!idExistsResult.TryGetAsState(out bool? success) || success is false) {
+        Result loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
+        if (!loreScopeExistsResult.TryGetAsState(out bool? success) || success is false) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return MessageResponse.FromErrorString("Failed to find lorescope with id");
         }
-
-        var s3FileMetaData = new S3FileMetaDataModel {
-            ContentType = "text/markdown",
-            FileName = command.FileName
-        };
+        
+        Result<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct:ct);
+        
+        // If the Known is set to default, it will be empty and thus result in a new file being created.
+        S3FileMetaDataModel s3FileMetaData = knownFileResult.Match(
+            model => model.S3FileMetaData ?? throw new InvalidOperationException("Known file model does not have a S3FileMetaDataModel"),
+            _ => new S3FileMetaDataModel {
+                ContentType = "text/markdown",
+                FileName = command.FileName
+            }
+        );
+        
         ValidationResult? validationResult = await s3FileValidator.ValidateAsync(s3FileMetaData, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Failed to validate S3FileMetaDataModel");
@@ -55,22 +62,21 @@ public class UpsertLsMarkdownFileHandler(
             logger.Warning("Failed to add or update S3FileMetaDataModel");
             return MessageResponse.FromErrorString("Failed to add or update S3FileMetaDataModel");
         }
-        
-        Result<LsMarkdownFileModel> existingModelResult = await markdownFileRepo.GetByNameAndOwnerAsync(command.FileName, command.LoreScopeId, ct:ct);
-        if (!existingModelResult.TryGetAsSuccess(out LsMarkdownFileModel? markdownFileModel)) {
-            markdownFileModel = new LsMarkdownFileModel {
+
+        LsMarkdownFileModel markdownFileModel = knownFileResult.Match(
+            model => {
+                model.LastUserToEditId = command.AccessingUser.UserId;
+                model.S3FileMetaDataId = s3FileMetaData.Id;
+                model.Name = command.FileName;
+                return model;
+            },
+            _ => new LsMarkdownFileModel {
                 OwnerId = command.LoreScopeId,
-                
+
                 LastUserToEditId = command.AccessingUser.UserId,
                 S3FileMetaDataId = s3FileMetaData.Id,
                 Name = command.FileName,
-            };
-        }
-        else {
-            markdownFileModel.LastUserToEditId = command.AccessingUser.UserId;
-            markdownFileModel.S3FileMetaDataId = s3FileMetaData.Id;
-            markdownFileModel.Name = command.FileName;
-        }
+            });
         
         Result fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
         if (!fileRepoResult.TryGetAsState(out success) || success is false) {
@@ -79,12 +85,13 @@ public class UpsertLsMarkdownFileHandler(
         }
         
         Result fileUploadResult = await fileStorage.TryUploadFileAsync(
-            $"lorescope-{command.LoreScopeId.ToString().ToLowerInvariant()}", // TODO - make this a service or something globally handled
+            S3BucketNames.GetLoreScopeBucket(command.LoreScopeId),
             s3FileMetaData.FileName,
             command.FileStream,
             "text/markdown", 
             ct
         );
+        
         if (!fileUploadResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to upload file to S3");
             return MessageResponse.FromErrorString("Failed to upload file to S3");
