@@ -33,7 +33,6 @@ public class DeleteLsMarkdownFileEndpoint(
         Delete("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
         Permissions(PermissionsStore.LorescopeDelete);
         Policies(ApiPolicies.JwtProtected);
-        AllowFileUploads();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

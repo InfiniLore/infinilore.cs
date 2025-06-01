@@ -111,7 +111,6 @@ public class InteractiveApiWasmLsMarkdownFile(
             Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
 
             if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
-
             return Result.FromState(true);
         }
         catch (Exception e) {

@@ -57,11 +57,16 @@ public class InteractiveApiWasmLoreScopes(
         }
     }
 
-    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, PaginationInfo pagination, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
-            KiotaLoreScopesResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
+            KiotaLoreScopesResponse? result = await requestBuilder.GetAsync(requestConfiguration: config => {
+                    config.QueryParameters.PageNumber = pagination.PageNumber;
+                    config.QueryParameters.Reverse = false;
+                },
+                ct
+            );
 
             logger.LogInformation("{@result}", result);
 
@@ -125,7 +130,6 @@ public class InteractiveApiWasmLoreScopes(
             );
             
             await using Stream? stream = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
-            if (stream is null) return Result.FromError(interactiveApi.DefaultApiError);
             return Result.FromState(true);
         }
         catch (Exception e) {

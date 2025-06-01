@@ -131,9 +131,7 @@
     }
 
     private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {
-        Result result = await InteractiveApi.DeleteLsMarkdownFileAsync(file.OwnerId.ToString(), file.Id.ToString());
-        if (!result.TryGetAsState(out bool? deleted) || deleted is false) return;
-
+        await InteractiveApi.DeleteLsMarkdownFileAsync(file.OwnerId.ToString(), file.Id.ToString());
         await FetchFilesAsync(0);
         StateHasChanged();
     }

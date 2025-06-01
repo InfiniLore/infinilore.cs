@@ -52,7 +52,7 @@ public class DeleteLsMarkdownFileHandler(
         
         // Delete the registrations
         Result deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
-        if (deleteResult.TryGetAsState(out bool? deleted) || deleted is false) {
+        if (!deleteResult.TryGetAsState(out bool? deleted) || deleted is false) {
             logger.Warning("Failed to delete markdown file");
             return MessageResponse.FromErrorString("Failed to delete markdown file");       
         }

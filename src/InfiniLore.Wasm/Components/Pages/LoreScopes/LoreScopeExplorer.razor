@@ -115,7 +115,7 @@
     }
     
     private async Task RefreshLoreScopeListAsync() {
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, PaginationInfo.Default);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? response)) {
             return;
         }

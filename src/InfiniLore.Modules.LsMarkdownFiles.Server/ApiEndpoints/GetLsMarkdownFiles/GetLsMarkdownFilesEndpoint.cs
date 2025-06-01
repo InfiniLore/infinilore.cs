@@ -36,7 +36,6 @@ public class GetLsMarkdownFilesEndpoint(
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file");
         Permissions(PermissionsStore.LorescopeRead);
         Policies(ApiPolicies.JwtProtected);
-        AllowFileUploads();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

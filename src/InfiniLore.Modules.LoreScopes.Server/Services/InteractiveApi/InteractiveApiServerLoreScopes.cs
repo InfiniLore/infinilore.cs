@@ -51,13 +51,14 @@ public class InteractiveApiServerLoreScopes(
         return loreScope;
     }
     
-    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, PaginationInfo pagination, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) 
             return PaginatedResult<ILoreScopeModel>.FromError("Invalid userId");
 
         // Form and Execute Query
         MessageResponse<PaginatedData<LoreScopeModel>> result = await interactiveApi.MessageBroker.GetLoreScopesByOwnerAsync(
             parsedUserId,
+            paginationInfo:pagination,
             ct: ct
         );
 

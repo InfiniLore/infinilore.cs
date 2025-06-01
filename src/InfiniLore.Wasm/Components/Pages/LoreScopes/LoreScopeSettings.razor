@@ -116,7 +116,7 @@
             );
 
             if (!result.TryGetAsState(out bool? success) || success is false) {
-                Logger.LogError("Failed to upload image");
+                Logger.LogError("Failed to upload image, {@e}", result);
                 return;
             }
 
