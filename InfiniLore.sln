@@ -98,6 +98,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LsMarkdo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LsMarkdownFiles.Wasm", "src\InfiniLore.Modules.LsMarkdownFiles.Wasm\InfiniLore.Modules.LsMarkdownFiles.Wasm.csproj", "{5073005F-C929-4F6A-969C-856724BABED8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Shared.JsInterop", "src\InfiniLore.Shared.JsInterop\InfiniLore.Shared.JsInterop.csproj", "{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -456,6 +458,18 @@ Global
 		{5073005F-C929-4F6A-969C-856724BABED8}.Release|x64.Build.0 = Release|Any CPU
 		{5073005F-C929-4F6A-969C-856724BABED8}.Release|x86.ActiveCfg = Release|Any CPU
 		{5073005F-C929-4F6A-969C-856724BABED8}.Release|x86.Build.0 = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|x64.Build.0 = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|x64.ActiveCfg = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|x64.Build.0 = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -501,5 +515,6 @@ Global
 		{DE461DC6-14B6-429E-9FF9-C1E7AFF71D38} = {2EFB4FD3-3795-46E4-B450-B4D3293B69EA}
 		{5073005F-C929-4F6A-969C-856724BABED8} = {2EFB4FD3-3795-46E4-B450-B4D3293B69EA}
 		{72ED6C62-941D-435C-9800-0AC9A99B2916} = {42683F79-9091-4617-B46F-53069E1C6F8B}
+		{D85B103A-E2EE-4122-9E67-7A3E2F3AD5D3} = {73AF94AD-722A-4B4F-8425-00AFB9FBE866}
 	EndGlobalSection
 EndGlobal
