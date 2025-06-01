@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Server.Cli.DataSeeding.Seeders;
-using InfiniLore.Server.Services;
 
 namespace InfiniLore.Server.Cli.DataSeeding;
 
@@ -14,7 +13,7 @@ namespace InfiniLore.Server.Cli.DataSeeding;
 public partial class DataSeedingCommand(
     ILogger<DataSeedingCommand> logger,
     IServiceProvider serviceProvider,
-    ICliPostRunEffects cliPostRunEffects
+    CliPostRunEffects cliPostRunEffects
 ) : ICliCommand<DataSeedingParameters> {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods

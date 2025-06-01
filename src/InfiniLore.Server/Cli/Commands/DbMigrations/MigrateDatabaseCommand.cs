@@ -4,7 +4,6 @@
 using CodeOfChaos.CliArgsParser;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Server.Database;
-using InfiniLore.Server.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Server.Cli.DbMigrations;
@@ -16,7 +15,7 @@ namespace InfiniLore.Server.Cli.DbMigrations;
 public partial class MigrateDatabaseCommand(
     ILogger<MigrateDatabaseCommand> logger,
     IUnitOfWorkFactory unitOfWorkFactory,
-    ICliPostRunEffects cliPostRunStatus
+    CliPostRunEffects cliPostRunStatus
 ) : ICliCommand<MigrateDatabaseParameters> {
     public async ValueTask ExecuteAsync(MigrateDatabaseParameters parameters, CancellationToken ct = new()) {
         try {

@@ -18,7 +18,7 @@ using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
-using InfiniLore.Server.Services;
+using InfiniLore.Server.Cli;
 using InfiniLore.Shared;
 using InfiniLore.Shared.JwtToken;
 using InfiniLore.Shared.Services.JwtToken;
@@ -73,7 +73,7 @@ public static class Program {
             .Build();
         
         await parser.ExecuteAsync(args);
-        var cliPostRunStatus = app.Services.GetRequiredService<ICliPostRunEffects>();
+        var cliPostRunStatus = app.Services.GetRequiredService<CliPostRunEffects>();
         if (!cliPostRunStatus.ShouldExit) return false;
 
         // If we get here, we should exit with a specific code
