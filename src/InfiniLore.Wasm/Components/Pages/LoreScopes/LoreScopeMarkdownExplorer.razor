@@ -28,12 +28,12 @@
                    class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
 
         <InfiniButton IconName="check" OnClick="CreateNewMarkdownFileAsync"
-                      Disabled="NewMarkdownFileName.IsNullOrWhiteSpace()"/>
+                      Disabled="@(NewMarkdownFileName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
     </div>
 
     <hr class="my-4"/>
 
-    @if (Files is null) {
+    @if (Files is null  || !RendererInfo.IsInteractive) {
         <span>Loading...</span>
     } else {
         <div class="flex flex-col gap-2">
