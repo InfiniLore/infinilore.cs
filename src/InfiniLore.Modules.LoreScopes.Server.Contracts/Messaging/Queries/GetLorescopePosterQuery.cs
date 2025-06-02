@@ -8,4 +8,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetLorescopePosterImageQuery(Guid LorescopeId) : MessageRequest<string>;
+public record GetLorescopePosterImageQuery(
+    Guid LorescopeId
+) : MessageRequest<string>;

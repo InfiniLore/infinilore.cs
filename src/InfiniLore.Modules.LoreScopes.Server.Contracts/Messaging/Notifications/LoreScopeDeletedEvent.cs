@@ -8,4 +8,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record LoreScopeDeletedEvent(Guid LoreScopeId) : IEvent;
+public record LoreScopeDeletedEvent(
+    Guid LoreScopeId
+) : IEvent;

@@ -7,4 +7,6 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Notifications;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record InfiniLoreUserCreatedEvent(Guid UserId) : IEvent;
+public record InfiniLoreUserCreatedEvent(
+    Guid UserId
+) : IEvent;
