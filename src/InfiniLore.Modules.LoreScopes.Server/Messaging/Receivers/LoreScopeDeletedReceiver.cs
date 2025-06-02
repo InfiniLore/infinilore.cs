@@ -24,7 +24,7 @@ public class LoreScopeDeletedReceiver(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task ExecuteAsync(LoreScopeDeletedEvent eventModel, CancellationToken ct) {
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 

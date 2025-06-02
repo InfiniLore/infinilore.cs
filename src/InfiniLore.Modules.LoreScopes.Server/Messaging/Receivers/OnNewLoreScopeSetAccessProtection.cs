@@ -24,8 +24,7 @@ public class OnNewLoreScopeSetAccessProtection(
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var accessProtectionRepo = await unitOfWork.GetRepositoryAsync<IAccessProtectionRepository>(ct);
-
-
+        
         Result<LoreScopeModel> result = await repo.GetByIdAsync(eventModel.LoreScopeId, ct:ct);
         if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to get lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
