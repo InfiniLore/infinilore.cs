@@ -333,6 +333,9 @@
   .h-192 {
     height: calc(var(--spacing) * 192);
   }
+  .h-fit {
+    height: fit-content;
+  }
   .h-full {
     height: 100%;
   }

@@ -17,7 +17,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection>
+<InfiniSection class="flex flex-col h-screen gap-2">
     <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
         LoreScope Markdown Files
     </h2>
@@ -36,9 +36,9 @@
     @if (Files is null  || !RendererInfo.IsInteractive) {
         <span>Loading...</span>
     } else {
-        <div class="flex flex-col gap-2">
-            @* Table *@
-            <InfiniTable TItem="ILsMarkdownFileModel" Items="@Files">
+        @* Table *@
+        <div class="flex flex-col">
+            <InfiniTable TItem="ILsMarkdownFileModel" Items="@Files" Class="h-fit">
                 <Header>
                     <InfiniTableHeader Class="w-4/5">File Name</InfiniTableHeader>
                     <InfiniTableHeader Class="w-1/5">Actions</InfiniTableHeader>
@@ -54,31 +54,31 @@
                     </InfiniTableCell>
                 </Content>
             </InfiniTable>
+        </div>
 
-            @* Navigation *@
-            <div class="mt-4 flex justify-center items-center">
-                <div class="flex gap-2">
-                    @if (TotalPages > 1) {
-                        <InfiniButton
-                            OnClick="() => NavigationButton(CurrentPage - 1)"
-                            Disabled="@(CurrentPage <= 0)">
-                            Previous
-                        </InfiniButton>
-                    }
-                    
-                    <div class="text-(--color-base-70) flex flex-col justify-center items-center">
-                        <span class="text-sm">Page @(CurrentPage + 1) of @TotalPages</span>
-                        <span class="text-xs">@TotalCount total items</span>
-                    </div>
-                    
-                    @if (TotalPages > 1) {
-                        <InfiniButton
-                            OnClick="() => NavigationButton(CurrentPage + 1)"
-                            Disabled="@(CurrentPage >= TotalPages - 1)">
-                            Next
-                        </InfiniButton>
-                    }
+        @* Navigation *@
+        <div class="flex justify-center items-end grow">
+            <div class="flex gap-2">
+                @if (TotalPages > 1) {
+                    <InfiniButton
+                        OnClick="() => NavigationButton(CurrentPage - 1)"
+                        Disabled="@(CurrentPage <= 0)">
+                        Previous
+                    </InfiniButton>
+                }
+                
+                <div class="text-(--color-base-70) flex flex-col justify-center items-center">
+                    <span class="text-sm">Page @(CurrentPage + 1) of @TotalPages</span>
+                    <span class="text-xs">@TotalCount total items</span>
                 </div>
+                
+                @if (TotalPages > 1) {
+                    <InfiniButton
+                        OnClick="() => NavigationButton(CurrentPage + 1)"
+                        Disabled="@(CurrentPage >= TotalPages - 1)">
+                        Next
+                    </InfiniButton>
+                }
             </div>
         </div>
     }
