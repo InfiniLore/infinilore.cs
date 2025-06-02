@@ -1,11 +1,16 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Kiota
+@using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
+@using InfiniLore.Kiota.Extensions
+@using InfiniLore.Modules.Core.Wasm.Contracts.Services
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using InfiniLore.Shared
 @using InfiniLore.Shared.Auth
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Kiota.Abstractions
 @using System.Security.Claims
 @using System.Text.Json
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -16,22 +21,33 @@
 @rendermode InteractiveWebAssembly
 @inject ILogger<ApiTest> Logger
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
+@inject IServiceProvider Provider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection>
-    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
+<InfiniSection class="h-screen flex flex-col gap-4">
+    <h2 class="text-lg font-semibold text-(--color-base-90)">
         API Test
     </h2>
 
     <div class="flex flex-col gap-4">
         <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
-        
+        <div class="flex flex-col h-48">
+            Request Data:
+            @if (RendererInfo.IsInteractive) {
+                <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">
+                    @GetUrl()
+                </pre>
+            }
+        </div>
+
         <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
             Call Internal API
         </InfiniButton>
-        
-        <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words">@_apiResponse</pre>
+    </div>
+
+    <div class="grow flex overflow-y-auto overflow-x-clip">
+        <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">@_apiResponse</pre>
     </div>
 </InfiniSection>
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -41,26 +57,29 @@
 @code {
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
     private string _apiResponse = "Nothing called yet";
+    private string? _userId = string.Empty;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    private async Task CallInternalApi() {
+    protected override async Task OnInitializedAsync() {
         if (AuthenticationState is null) {
-            _apiResponse = "NOT AUTHENTICATED";
+            Logger.Warning("user is not authenticated");
             return;
         }
 
         AuthenticationState state = await AuthenticationState;
-        string? userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+        _userId = state.User.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+    }
 
-        if (userId.IsNullOrWhiteSpace()) {
-            Logger.Information("user: {@user}", state.User);
+    private async Task CallInternalApi() {
+        if (_userId.IsNullOrWhiteSpace()) {
+            Logger.Information("user: {@user}", _userId);
             _apiResponse = "User Id Not Found";
             return;
         }
 
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId, Pagination.Default);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(_userId, Pagination.Default);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
             StateHasChanged();
@@ -72,5 +91,16 @@
         });
         _apiResponse = dataAsJson;
         StateHasChanged();
+    }
+
+    private string GetUrl() {
+        if (Provider.GetService<IInteractiveApiWasm>() is not {} interactiveApiWasm) return string.Empty;
+        InfiniLoreApiClient client = interactiveApiWasm.ApiClient;
+        LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[_userId].Lorescope;
+        RequestInformation info =  requestBuilder.ToGetRequestInformation();
+            
+        string method = info.HttpMethod.ToHttpMethodString();
+        string url = info.URI.AbsoluteUri;
+        return $"{method} {url}";
     }
 }

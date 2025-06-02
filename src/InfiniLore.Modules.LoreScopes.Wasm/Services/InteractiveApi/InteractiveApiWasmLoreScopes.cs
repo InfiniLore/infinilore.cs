@@ -63,6 +63,7 @@ public class InteractiveApiWasmLoreScopes(
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
+
             KiotaLoreScopesResponse? result = await requestBuilder.GetAsync(requestConfiguration: config => {
                     config.QueryParameters.PageNumber = pagination.PageNumber;
                     config.QueryParameters.PageSize = pagination.PageSize;
