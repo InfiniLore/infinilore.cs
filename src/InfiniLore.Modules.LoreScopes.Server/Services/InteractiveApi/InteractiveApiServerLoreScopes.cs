@@ -22,6 +22,11 @@ public class InteractiveApiServerLoreScopes(
     ILogger<InteractiveApiServerLoreScopes> logger,
     IInteractiveApiServer interactiveApi
 ) : IInteractiveApiLoreScopes {
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid LoreScope Id");
         
@@ -98,7 +103,7 @@ public class InteractiveApiServerLoreScopes(
         // if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Result.FromError("Invalid lorescopeId");
 
-        await using MemoryStream stream = await fileStream.ToMemoryStreamAsync(ct: ct);
+        await using MemoryStream stream = await fileStream.ToMemoryStreamAsync(MaxFileSize, ct: ct);
         MessageResponse result = await interactiveApi.MessageBroker.UpsertLoreScopeImageAsync(
             parsedLoreScopeId,
             fileStream.Name,

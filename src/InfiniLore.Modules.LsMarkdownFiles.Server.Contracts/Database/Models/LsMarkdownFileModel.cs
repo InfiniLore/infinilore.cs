@@ -20,7 +20,6 @@ public class LsMarkdownFileModel : OwnedModel<LoreScopeModel>, ILsMarkdownFileMo
     public required Guid S3FileMetaDataId { get; set; } 
     public S3FileMetaDataModel? S3FileMetaData { get; set; }
 
-    public string GetLoreScopeBucketName() => $"lorescope-{OwnerId:D}";
     [NotMapped] public string? ResourceUrl => S3FileMetaData?.S3ResourceUrl;
     
     // -----------------------------------------------------------------------------------------------------------------

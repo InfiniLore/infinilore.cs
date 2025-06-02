@@ -17,7 +17,11 @@ namespace InfiniLore.Modules.Core.Server.InteractiveApi;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IInteractiveApiUsers>]
 public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : IInteractiveApiUsers {
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<IInfiniLoreUserModel>.FromError("Invalid userId");
         
@@ -31,7 +35,7 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
     public async ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
         
-        await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
+        await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
         MessageResponse result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
             parsedUserId, 
             file.ContentType,

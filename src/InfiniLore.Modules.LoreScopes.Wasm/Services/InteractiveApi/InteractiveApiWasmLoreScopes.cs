@@ -26,6 +26,7 @@ public class InteractiveApiWasmLoreScopes(
     ILogger<InteractiveApiWasmLoreScopes> logger,
     IInteractiveApiWasm interactiveApi
 ) : IInteractiveApiLoreScopes {
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
     public async ValueTask<Result> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         try {
@@ -117,7 +118,7 @@ public class InteractiveApiWasmLoreScopes(
             PosterImageRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].PosterImage;
             
             // Read the stream into a memory stream first
-            await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
+            await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
             
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(

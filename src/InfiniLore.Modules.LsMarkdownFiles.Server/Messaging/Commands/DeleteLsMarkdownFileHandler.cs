@@ -38,7 +38,7 @@ public class DeleteLsMarkdownFileHandler(
 
         // Delete the file and the metadata
         if (markdownFileModel.S3FileMetaData is {} metaData) {
-            string bucketName = markdownFileModel.GetLoreScopeBucketName();
+            string bucketName = S3BucketNames.GetLoreScopeBucket(markdownFileModel.OwnerId);
             Result s3DeleteResult = await fileStorage.TryDeleteFileAsync(bucketName, metaData.FileName, ct);
             if (!s3DeleteResult.TryGetAsState(out bool? success) || success is false) {
                 logger.Warning("Failed to delete file from S3");

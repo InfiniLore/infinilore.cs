@@ -20,8 +20,4 @@
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Messaging\Receivers\" />
-    </ItemGroup>
-
 </Project>

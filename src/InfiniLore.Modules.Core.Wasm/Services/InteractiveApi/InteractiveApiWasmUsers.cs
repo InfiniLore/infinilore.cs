@@ -25,7 +25,11 @@ public class InteractiveApiWasmUsers(
     ILogger<InteractiveApiWasmUsers> logger,
     IInteractiveApiWasm interactiveApi
 ) : IInteractiveApiUsers {
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
@@ -50,7 +54,7 @@ public class InteractiveApiWasmUsers(
             ProfileImageRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId].ProfileImage;
         
             // Read the stream into a memory stream first
-            await using MemoryStream stream = await file.ToMemoryStreamAsync(ct: ct);
+            await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
 
             var multipartBody = new MultipartBody();
             multipartBody.AddOrReplacePart(

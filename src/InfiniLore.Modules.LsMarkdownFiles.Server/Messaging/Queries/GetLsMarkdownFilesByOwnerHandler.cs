@@ -4,6 +4,7 @@
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
@@ -35,7 +36,7 @@ public class GetLsMarkdownFilesByOwnerHandler(
 
         IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
             if (model.S3FileMetaData is null) return;
-            string bucketName = model.GetLoreScopeBucketName();
+            string bucketName = S3BucketNames.GetLoreScopeBucket(model.OwnerId);
             Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
             urlResult.Switch(
                 url => model.S3FileMetaData.S3ResourceUrl = url,

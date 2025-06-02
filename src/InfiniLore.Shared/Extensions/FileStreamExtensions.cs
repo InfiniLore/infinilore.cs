@@ -10,17 +10,6 @@ namespace InfiniLore.Shared.Extensions;
 public static class FileStreamExtensions {
     public static async Task<MemoryStream> ToMemoryStreamAsync(
         this IBrowserFile file,
-        CancellationToken ct = default
-    ) {
-        var memoryStream = new MemoryStream();
-        await using Stream stream = file.OpenReadStream(cancellationToken: ct);
-        await stream.CopyToAsync(memoryStream, ct);
-        memoryStream.Position = 0;
-        return memoryStream;
-    }
-    
-    public static async Task<MemoryStream> ToMemoryStreamAsync(
-        this IBrowserFile file,
         long maxFileSize,
         CancellationToken ct = default
     ) {

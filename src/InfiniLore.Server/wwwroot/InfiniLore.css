@@ -427,9 +427,6 @@
   .items-start {
     align-items: flex-start;
   }
-  .justify-around {
-    justify-content: space-around;
-  }
   .justify-between {
     justify-content: space-between;
   }
@@ -661,9 +658,6 @@
   }
   .text-\(--color-base-95\) {
     color: var(--color-base-95);
-  }
-  .text-\(--color-primary-500\) {
-    color: var(--color-primary-500);
   }
   .text-emerald-500 {
     color: var(--color-emerald-500);
