@@ -29,39 +29,30 @@
     </Header>
 
     <Body>
-    <SideNavMenuLink Href="/about">
-        <Icon>
-            <LiEqualApproximately/>
-        </Icon>
-        <Text>About</Text>
-    </SideNavMenuLink>
+        <SideNavMenuLink Href="/about">
+            <Icon><LiEqualApproximately/></Icon>
+            <Text>About</Text>
+        </SideNavMenuLink>
 
-    <SideNavMenuLink Href="/api-test">
-        <Icon>
-            <LiPlus/>
-        </Icon>
-        <Text>Api Test</Text>
-    </SideNavMenuLink>
+        <AuthorizeView>
+            <NotAuthorized></NotAuthorized>
+            <Authorized>
+                <SideNavMenuLink Href="/api-test">
+                    <Icon><LiPlus/></Icon>
+                    <Text>Api Test</Text>
+                </SideNavMenuLink>
 
-    <SideNavMenuLink Href="/lorescopes">
-        <Icon>
-            <LiSignature/>
-        </Icon>
-        <Text>LoreScopes</Text>
-    </SideNavMenuLink>
-
-    <AuthorizeView>
-        <NotAuthorized></NotAuthorized>
-        <Authorized>
-            <SideNavMenuLink Href="/claims-viewer">
-                <Icon>
-                    <LiView/>
-                </Icon>
-                <Text>Claims viewer</Text>
-            </SideNavMenuLink>
-        </Authorized>
-    </AuthorizeView>
-
+                <SideNavMenuLink Href="/lorescopes">
+                    <Icon><LiSignature/></Icon>
+                    <Text>LoreScopes</Text>
+                </SideNavMenuLink>
+                
+                <SideNavMenuLink Href="/claims-viewer">
+                    <Icon><LiView/></Icon>
+                    <Text>Claims viewer</Text>
+                </SideNavMenuLink>
+            </Authorized>
+        </AuthorizeView>
     </Body>
 
     <Footer>
@@ -69,7 +60,7 @@
             <NotAuthorized>
                 <SideNavMenuLink Href="Account/Login?redirectUri=/">
                     <Icon>
-                        <LiKeyRound class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/> 
+                        <LiKeyRound class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                     </Icon>
                     <Text>Login</Text>
                 </SideNavMenuLink>
@@ -82,6 +73,11 @@
             </NotAuthorized>
 
             <Authorized>
+                <SideNavMenuLink Href="/swagger">
+                    <Icon><LiBraces/></Icon>
+                    <Text>Swagger</Text>
+                </SideNavMenuLink>
+                
                 <!-- Profile Icon -->
                 <SideNavMenuUser
                     HrefUserProfile="/account/profile"
@@ -89,8 +85,7 @@
                     <Icon>
                         <UserIcon
                             HrefUserProfile="/account/profile"
-                            ImageUrl="@UserModel.ProfileImageUrl"
-                        />
+                            ImageUrl="@UserModel.ProfileImageUrl"/>
                     </Icon>
                     <AdditionalLinks>
                         <button class="@(SideNavMenuUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">

@@ -10,5 +10,5 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 public record GetUsersQuery(
     QueryConfig QueryConfig,
-    PaginationInfo PaginationInfo
+    Pagination Pagination
 ) : MessageRequest<PaginatedData<InfiniLoreUserModel>>;

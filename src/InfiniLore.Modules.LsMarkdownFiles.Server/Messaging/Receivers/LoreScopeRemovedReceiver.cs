@@ -12,7 +12,6 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Receivers;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -26,7 +25,7 @@ public class LoreScopeRemovedReceiver(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task HandleAsync(LoreScopeRemovedEvent eventModel, CancellationToken ct) {
-        await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
+        await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 

@@ -8,4 +8,6 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record NewLoreScopeCreatedEvent([UsedImplicitly] Guid LoreScopeId) : IEvent;
+public record NewLoreScopeCreatedEvent(
+    [UsedImplicitly] Guid LoreScopeId
+) : IEvent;

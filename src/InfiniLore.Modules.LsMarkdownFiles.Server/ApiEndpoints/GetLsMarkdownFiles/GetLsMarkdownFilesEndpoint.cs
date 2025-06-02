@@ -47,7 +47,7 @@ public class GetLsMarkdownFilesEndpoint(
         MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
             req.LoreScopeId,
             QueryConfig.From(req),
-            PaginationInfo.From(req),
+            Pagination.From(req),
             ct: ct
         );
         return result.Match<Response>(

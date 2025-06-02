@@ -35,7 +35,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ProfileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/account/profile?pageNumber={pageNumber}&reverse={reverse}", pathParameters)
+        public ProfileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/account/profile?pageNumber={pageNumber}&pageSize={pageSize}&reverse={reverse}", pathParameters)
         {
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ProfileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/account/profile?pageNumber={pageNumber}&reverse={reverse}", rawUrl)
+        public ProfileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/account/profile?pageNumber={pageNumber}&pageSize={pageSize}&reverse={reverse}", rawUrl)
         {
         }
         /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaUserUserProfilesResponse"/></returns>
@@ -98,6 +98,8 @@ namespace InfiniLore.Kiota.Api.V1.Account.Profile
         {
             [QueryParameter("pageNumber")]
             public int? PageNumber { get; set; }
+            [QueryParameter("pageSize")]
+            public int? PageSize { get; set; }
             [QueryParameter("reverse")]
             public bool? Reverse { get; set; }
         }

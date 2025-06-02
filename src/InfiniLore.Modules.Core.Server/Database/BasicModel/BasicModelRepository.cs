@@ -57,7 +57,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Result<TModel[]>.FromSuccess(data);
     }
 
-    public async ValueTask<PaginatedResult<TModel>> GetAllAsync(PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<TModel>> GetAllAsync(Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 

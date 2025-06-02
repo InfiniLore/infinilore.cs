@@ -20,10 +20,10 @@ public readonly record struct PaginatedData<T>(
     int CurrentPage,
     int TotalPages
 ) where T : class {
-    public bool HasNextPage => CurrentPage < TotalPages;
-    public bool HasPreviousPage => CurrentPage > 1;
-    public bool IsFirstPage => CurrentPage == 1;
-    public bool IsLastPage => CurrentPage == TotalPages;
+    public bool HasNextPage => CurrentPage < TotalPages - 1;
+    public bool HasPreviousPage => CurrentPage > 0;
+    public bool IsFirstPage => CurrentPage == 0;
+    public bool IsLastPage => CurrentPage == TotalPages - 1;
 
     public bool IsEmpty => Items.Length == 0;
     public bool IsNotEmpty => Items.Length > 0;
@@ -46,4 +46,28 @@ public readonly record struct PaginatedData<T>(
             CurrentPage,
             TotalPages
         );
+
+    public bool TryGetNextPage(int pageSize, out Pagination pagination) {
+        if (!HasNextPage) {
+            pagination = Pagination.Default with {
+                PageSize = pageSize,
+            };
+            return false;
+        }
+        
+        pagination = new Pagination(CurrentPage + 1, pageSize);
+        return true;
+    }
+
+    public bool TryGetPreviousPage(int pageSize, out Pagination pagination) {
+        if (!HasPreviousPage) {
+            pagination = Pagination.Empty;
+            return false;
+        }
+        
+        pagination = new Pagination(CurrentPage - 1, pageSize);
+        return true;
+    }
+    
+    public Pagination GetCurrentPage(int pageSize) => new(CurrentPage, pageSize);
 }

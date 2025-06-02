@@ -35,7 +35,7 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MarkdownFileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&reverse={reverse}", pathParameters)
+        public MarkdownFileRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&pageSize={pageSize}&reverse={reverse}", pathParameters)
         {
         }
         /// <summary>
@@ -43,7 +43,7 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MarkdownFileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&reverse={reverse}", rawUrl)
+        public MarkdownFileRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/v1/data-lorescope/{loreScopeId}/markdown-file?pageNumber={pageNumber}&pageSize={pageSize}&reverse={reverse}", rawUrl)
         {
         }
         /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaLsMarkdownFilesResponse"/></returns>
@@ -138,6 +138,8 @@ namespace InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile
         {
             [QueryParameter("pageNumber")]
             public int? PageNumber { get; set; }
+            [QueryParameter("pageSize")]
+            public int? PageSize { get; set; }
             [QueryParameter("reverse")]
             public bool? Reverse { get; set; }
         }

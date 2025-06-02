@@ -42,7 +42,7 @@ public class GetUserProfilesEndpoint(
 
         MessageResponse<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(
             QueryConfig.From(req),
-            PaginationInfo.From(req), 
+            Pagination.From(req), 
             ct: ct
         );
 

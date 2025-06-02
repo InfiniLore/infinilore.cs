@@ -14,5 +14,5 @@ public interface IHasGetByOwnerAsync<TOwner, TInterface>
 {
     ValueTask<Result<TInterface[]>> GetByOwnerAsync(Guid owner, QueryConfig config = default, CancellationToken ct = default);
     
-    ValueTask<PaginatedResult<TInterface>> GetByOwnerAsync(Guid owner, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default);
+    ValueTask<PaginatedResult<TInterface>> GetByOwnerAsync(Guid owner, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default);
 }

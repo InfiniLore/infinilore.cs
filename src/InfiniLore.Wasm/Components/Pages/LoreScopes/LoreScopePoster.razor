@@ -9,7 +9,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="w-40 h-60 rounded-md overflow-hidden relative group/poster">
+<div class="@Class w-40 h-60 rounded-md overflow-hidden relative group/poster">
     @if (ImageUrl is not null) {
         <img src="@ImageUrl"
              alt="LoreScope: @Name"
@@ -27,4 +27,6 @@
 @code {
     [Parameter, EditorRequired] public string? ImageUrl { get; set; }
     [Parameter, EditorRequired] public string? Name { get; set; }
+
+    [Parameter] public string Class { get; set; } = string.Empty;
 }

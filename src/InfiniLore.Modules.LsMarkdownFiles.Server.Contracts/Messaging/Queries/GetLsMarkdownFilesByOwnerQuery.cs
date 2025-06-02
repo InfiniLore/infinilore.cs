@@ -14,5 +14,5 @@ namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 public record GetLsMarkdownFilesByOwnerQuery(
     Guid OwnerId,
     QueryConfig QueryConfig = default,
-    PaginationInfo PaginationInfo = default
+    Pagination Pagination = default
 ) : MessageRequest<PaginatedData<LsMarkdownFileModel>>;

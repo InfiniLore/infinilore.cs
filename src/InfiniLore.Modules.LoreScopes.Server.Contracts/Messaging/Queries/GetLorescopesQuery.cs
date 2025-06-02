@@ -13,5 +13,5 @@ namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 public record GetLoreScopesByOwnerQuery(
     Guid UserId,
     QueryConfig QueryConfig = default,
-    PaginationInfo PaginationInfo = default
+    Pagination Pagination = default
 ) : MessageRequest<PaginatedData<LoreScopeModel>>;
