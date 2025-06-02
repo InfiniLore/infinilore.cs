@@ -16,35 +16,35 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection class="flex flex-col h-screen">
-    <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
-        LoreScope Markdown File Editor
-    </h2>
+<InfiniPage>
+    <InfiniSection class="flex flex-col h-screen">
+        <InfiniHeading3>LoreScope Markdown File Editor</InfiniHeading3>
 
-    @if (FileModel is null) {
-        <span>Loading...</span>
-    } else {
-        @* File changes *@
-        <div class="flex flex-col gap-4">
-            <div class="flex flex-row items-center space-x-3">
-                <InputText @bind-Value="@FileModel.Name"
-                           placeholder="Enter a file name..."
-                           class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
+        @if (FileModel is null) {
+            <span>Loading...</span>
+        } else {
+            @* File changes *@
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-row items-center space-x-3">
+                    <InputText @bind-Value="@FileModel.Name"
+                               placeholder="Enter a file name..."
+                               class="w-full placeholder-(--color-base-50) bg-(--color-base-70) rounded-md border border-(--border-color) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
 
-                <InfiniButton IconName="check" OnClick="SetFileNameAsync" Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
+                    <InfiniButton IconName="check" OnClick="SetFileNameAsync" Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
+                </div>
+                <div class="flex flex-row justify-center items-center space-x-3">
+                    <InfiniButton IconName="save" OnClick="SaveFileAsync" Disabled="@(FileModel is null)">Save File</InfiniButton>
+                </div>
             </div>
-            <div class="flex flex-row justify-center items-center space-x-3">
-                <InfiniButton IconName="save" OnClick="SaveFileAsync" Disabled="@(FileModel is null)">Save File</InfiniButton>
-            </div>
-        </div>
-        
-        @* Editor *@
-        <div class="grow mt-4">
-            <MarkdownEditor Source="@TextSource"/>
-        </div>
-    }
 
-</InfiniSection>
+            @* Editor *@
+            <div class="grow mt-4">
+                <MarkdownEditor Source="@TextSource"/>
+            </div>
+        }
+
+    </InfiniSection>
+</InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@

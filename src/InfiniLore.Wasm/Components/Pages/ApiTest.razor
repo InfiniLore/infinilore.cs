@@ -25,31 +25,31 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection class="h-screen flex flex-col gap-4">
-    <h2 class="text-lg font-semibold text-(--color-base-90)">
-        API Test
-    </h2>
+<InfiniPage>
+    <InfiniSection class="h-screen flex flex-col gap-4">
+        <InfiniHeading3>API Test</InfiniHeading3>
 
-    <div class="flex flex-col gap-4">
-        <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
-        <div class="flex flex-col h-48">
-            Request Data:
-            @if (RendererInfo.IsInteractive) {
-                <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">
+        <div class="flex flex-col gap-4">
+            <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
+            <div class="flex flex-col h-48">
+                Request Data:
+                @if (RendererInfo.IsInteractive) {
+                    <pre class="bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">
                     @GetUrl()
                 </pre>
-            }
+                }
+            </div>
+
+            <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
+                Call Internal API
+            </InfiniButton>
         </div>
 
-        <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
-            Call Internal API
-        </InfiniButton>
-    </div>
-
-    <div class="grow flex overflow-y-auto overflow-x-clip">
-        <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">@_apiResponse</pre>
-    </div>
-</InfiniSection>
+        <div class="grow flex overflow-y-auto overflow-x-clip">
+            <pre class="bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">@_apiResponse</pre>
+        </div>
+    </InfiniSection>
+</InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@

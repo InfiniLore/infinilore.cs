@@ -10,73 +10,75 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection class="w-full bg-white tails-selected-element">
-    <div class="mx-auto max-w-7xl">
-        <div class="flex flex-col lg:flex-row justify-center">
-            <div class="w-full bg-white lg:w-6/12 xl:w-5/12">
-                <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24">
-                    <h4 class="w-full text-3xl font-bold">
-                        Finishing Signup
-                    </h4>
-                    <p class="text-sm text-zinc-400">
-                        We just need a little bit more information about you before you can start exploring
-                    </p>
-                    <div class="relative w-full mt-10 space-y-8">
-                        <div class="relative">
-                            <label class="font-medium text-zinc-900">
-                                Username
-                            </label>
+<InfiniPage>
+    <InfiniSection class="w-full tails-selected-element">
+        <div class="mx-auto max-w-7xl">
+            <div class="flex flex-col lg:flex-row justify-center">
+                <div class="w-full lg:w-6/12 xl:w-5/12">
+                    <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24">
+                        <h4 class="w-full text-3xl font-bold">
+                            Finishing Signup
+                        </h4>
+                        <p class="text-sm text-zinc-400">
+                            We just need a little bit more information about you before you can start exploring
+                        </p>
+                        <div class="relative w-full mt-10 space-y-8">
                             <div class="relative">
-                                <input
-                                    @oninput="OnUsernameInputAsync"
-                                    value="@userModel.Username"
+                                <label class="font-medium">
+                                    Username
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        @oninput="OnUsernameInputAsync"
+                                        value="@userModel.Username"
 
-                                    type="text"
-                                    id="username"
-                                    class="block w-full px-4 py-4 mt-2 text-base placeholder-zinc-400 bg-zinc-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50 peer"
-                                    placeholder="Enter Your Name"/>
+                                        type="text"
+                                        id="username"
+                                        class="block w-full px-4 py-4 mt-2 text-base placeholder-(--color-base-50) bg-(--color-base-70) rounded-lg focus:outline-none focus:ring-4 focus:ring-(--color-accent) focus:ring-opacity-50 peer"
+                                        placeholder="Enter Your Name"/>
 
-                                <!-- Validation Message for taken username -->
-                                @switch (_usernameStatus) {
-                                    case UsernameStatus.Checking:
-                                        <span id="loading-spinner"
-                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                                    <!-- Validation Message for taken username -->
+                                    @switch (_usernameStatus) {
+                                        case UsernameStatus.Checking:
+                                            <span id="loading-spinner"
+                                                  class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                                             <span class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></span>
                                             <span
                                                 class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-150"></span>
                                             <span
                                                 class="w-2 h-2 bg-amber-500 rounded-full animate-bounce delay-300"></span>
                                         </span>
-                                        break;
-                                    case UsernameStatus.Taken:
-                                        <span id="username-error"
-                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">
+                                            break;
+                                        case UsernameStatus.Taken:
+                                            <span id="username-error"
+                                                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">
                                             Username taken
                                         </span>
-                                        break;
-                                    case UsernameStatus.Available:
-                                        <span id="username-valid"
-                                              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-emerald-500 text-sm">
+                                            break;
+                                        case UsernameStatus.Available:
+                                            <span id="username-valid"
+                                                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-emerald-500 text-sm">
                                             Username available
                                         </span>
-                                        break;
-                                    case UsernameStatus.None: break;
-                                    default: throw new ArgumentOutOfRangeException();
-                                }
+                                            break;
+                                        case UsernameStatus.None: break;
+                                        default: throw new ArgumentOutOfRangeException();
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="relative">
-                            <button
-                                class="w-full px-5 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg transition transform duration-150 ease-in-out hover:bg-blue-700 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                @onclick="HandleValidSubmitAsync"
-                                disabled="@_isFormDisabled">
-                                Register
-                            </button>
+                            <div class="relative">
+                                <button
+                                    class="w-full px-5 py-4 text-lg font-medium text-white bg-(--color-accent) rounded-lg transition transform duration-150 ease-in-out hover:bg-(--color-accent) active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                    @onclick="HandleValidSubmitAsync"
+                                    disabled="@_isFormDisabled">
+                                    Register
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</InfiniSection>
+    </InfiniSection>
+</InfiniPage>
