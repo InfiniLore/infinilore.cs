@@ -52,49 +52,56 @@
             </div>
         }
         else {
-            foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
-                <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all "
-                     onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
-                    <div class="flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
+            <div class="flex flex-col overflow-auto gap-2">
+                @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
+                    <div class="px-2 py-1">
+                        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all "
+                             onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
+                            <div
+                                class="flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
 
-                        <!-- Poster Image -->
-                        <LoreScopePoster Class="w-1/5" ImageUrl="@loreScope.S3PosterImageUrl" Name="@loreScope.Name"/>
+                                <!-- Poster Image -->
+                                <LoreScopePoster Class="w-1/5" ImageUrl="@loreScope.S3PosterImageUrl"
+                                                 Name="@loreScope.Name"/>
 
-                        <!-- Main Info Content -->
-                        <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full w-3/5">
-                            @* Content *@
-                            <div>
-                                <h3 class="text-lg font-semibold text-(--color-base-95) truncate w-full">
-                                    @loreScope.Name
-                                </h3>
-                                <p class="text-sm text-(--color-base-60) line-clamp-4">
-                                    @loreScope.Description
-                                </p>
-                                <p class="text-sm text-(--color-base-60) line-clamp-4">
-                                    Owner: @loreScope.OwnerId
-                                </p>
-                            </div>
+                                <!-- Main Info Content -->
+                                <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full w-3/5">
+                                    @* Content *@
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-(--color-base-95) truncate w-full">
+                                            @loreScope.Name
+                                        </h3>
+                                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                            @loreScope.Description
+                                        </p>
+                                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                            Owner: @loreScope.OwnerId
+                                        </p>
+                                    </div>
 
-                            @* Links *@
-                            <div class="flex flex-row gap-2 justify-start">
-                                <InfiniButton IconName="file"
-                                              OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">
-                                    Markdown files
-                                </InfiniButton>
+                                    @* Links *@
+                                    <div class="flex flex-row gap-2 justify-start">
+                                        <InfiniButton IconName="file"
+                                                      OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">
+                                            Markdown files
+                                        </InfiniButton>
+
+                                    </div>
+                                </div>
+
+                                <!-- Stats Section -->
+                                <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
+                                    @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
+                                    <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">
+                                        Delete
+                                    </InfiniButton>
+                                </div>
 
                             </div>
                         </div>
-
-                        <!-- Stats Section -->
-                        <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
-                            @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
-                            <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">Delete
-                            </InfiniButton>
-                        </div>
-
                     </div>
-                </div>
-            }
+                }
+            </div>
 
             @* Navigation *@
             <div class="flex justify-center items-end grow">
@@ -157,7 +164,7 @@
         Pagination pagination;
         if (pageNumber is 0) pagination = Pagination.Default with { PageSize = FilesPerPage };
         else if (!PaginatedLoreScopes.TryGetNextPage(FilesPerPage, out pagination)) pagination = PaginatedLoreScopes.GetCurrentPage(FilesPerPage);
-        
+
         PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
