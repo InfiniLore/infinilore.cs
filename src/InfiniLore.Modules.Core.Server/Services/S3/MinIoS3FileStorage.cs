@@ -72,7 +72,7 @@ public class MinIoS3FileStorage(
         }
     }
 
-    public async ValueTask<Result> TryDeleteBucketAsync(string bucketName, CancellationToken ct = default) {
+    public async ValueTask<Result> TryRemoveBucketAsync(string bucketName, CancellationToken ct = default) {
         try {
             // First, remove all objects
             ListObjectsArgs listArgs = new ListObjectsArgs()
@@ -146,7 +146,7 @@ public class MinIoS3FileStorage(
         }
     }
     
-    public async ValueTask<Result> TryDeleteFileAsync(string bucketName, string fileName, CancellationToken ct = default) {
+    public async ValueTask<Result> TryRemoveFileAsync(string bucketName, string fileName, CancellationToken ct = default) {
         try {
             RemoveObjectArgs args = new RemoveObjectArgs()
                 .WithBucket(bucketName)
