@@ -46,4 +46,28 @@ public readonly record struct PaginatedData<T>(
             CurrentPage,
             TotalPages
         );
+
+    public bool TryGetNextPage(int pageSize, out Pagination pagination) {
+        if (!HasNextPage) {
+            pagination = Pagination.Default with {
+                PageSize = pageSize,
+            };
+            return false;
+        }
+        
+        pagination = new Pagination(CurrentPage + 1, pageSize);
+        return true;
+    }
+
+    public bool TryGetPreviousPage(int pageSize, out Pagination pagination) {
+        if (!HasPreviousPage) {
+            pagination = Pagination.Empty;
+            return false;
+        }
+        
+        pagination = new Pagination(CurrentPage - 1, pageSize);
+        return true;
+    }
+    
+    public Pagination GetCurrentPage(int pageSize) => new(CurrentPage, pageSize);
 }

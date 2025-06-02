@@ -137,7 +137,7 @@
     private string UserId { get; set; } = string.Empty;
 
     private PaginatedData<ILoreScopeModel> PaginatedLoreScopes { get; set; } = PaginatedData<ILoreScopeModel>.Empty;
-
+    private const int FilesPerPage = 12;
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -154,7 +154,11 @@
     }
 
     private async Task FetchFilesAsync(int pageNumber) {
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pageNumber);
+        Pagination pagination;
+        if (pageNumber is 0) pagination = Pagination.Default with { PageSize = FilesPerPage };
+        else if (!PaginatedLoreScopes.TryGetNextPage(FilesPerPage, out pagination)) pagination = PaginatedLoreScopes.GetCurrentPage(FilesPerPage);
+        
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
         PaginatedLoreScopes = data.Value;

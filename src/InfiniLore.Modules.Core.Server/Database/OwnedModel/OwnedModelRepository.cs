@@ -33,7 +33,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
         return Result<TModel[]>.FromSuccess(result);
     }
 
-    public async ValueTask<PaginatedResult<TModel>> GetByOwnerAsync(Guid userId, PaginationInfo pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 

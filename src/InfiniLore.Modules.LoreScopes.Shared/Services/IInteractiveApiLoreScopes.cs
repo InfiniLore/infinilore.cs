@@ -13,7 +13,7 @@ namespace InfiniLore.Modules.LoreScopes.Shared.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInteractiveApiLoreScopes  {
     ValueTask<Result<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default);
-    ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, int pageNumber, CancellationToken ct = default);
+    ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, Pagination pagination, CancellationToken ct = default);
     
     ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default);
     ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default);

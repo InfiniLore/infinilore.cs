@@ -60,7 +60,7 @@
             return;
         }
 
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId, 0);
+        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(userId, Pagination.Default);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
             StateHasChanged();

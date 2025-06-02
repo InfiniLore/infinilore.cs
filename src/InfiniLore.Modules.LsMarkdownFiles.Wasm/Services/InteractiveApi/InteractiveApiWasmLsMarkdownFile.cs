@@ -44,13 +44,14 @@ public class InteractiveApiWasmLsMarkdownFile(
         }
     }
 
-    public async ValueTask<PaginatedResult<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, int pageNumber, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MarkdownFileRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
 
             KiotaLsMarkdownFilesResponse? result = await requestBuilder.GetAsync(requestConfiguration: config => {
-                    config.QueryParameters.PageNumber = pageNumber;
+                    config.QueryParameters.PageNumber = pagination.PageNumber;
+                    config.QueryParameters.PageSize = pagination.PageSize;
                     config.QueryParameters.Reverse = false;
                 },
                 ct

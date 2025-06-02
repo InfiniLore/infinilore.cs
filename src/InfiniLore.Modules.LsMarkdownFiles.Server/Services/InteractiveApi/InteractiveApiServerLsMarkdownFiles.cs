@@ -29,12 +29,12 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
         );
     }
     
-    public async ValueTask<PaginatedResult<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, int pageNumber, CancellationToken ct = default) {
+    public async ValueTask<PaginatedResult<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return PaginatedResult<ILsMarkdownFileModel>.FromError("Invalid LoreScope Id");
 
         MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await interactiveApi.MessageBroker.GetLsMarkdownFilesByOwnerAsync(
             parsedLoreScopeId,
-            paginationInfo:new PaginationInfo(pageNumber:pageNumber),
+            pagination:pagination,
             ct: ct
         );
         

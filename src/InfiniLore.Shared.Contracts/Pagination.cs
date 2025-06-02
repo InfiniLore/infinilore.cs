@@ -5,8 +5,7 @@ namespace InfiniLore.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly record struct PaginationInfo {
-
+public readonly record struct Pagination {
     private readonly int _pageNumber;
     public int PageNumber {
         get => _pageNumber;
@@ -24,37 +23,50 @@ public readonly record struct PaginationInfo {
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    public PaginationInfo(int pageNumber = 0, int pageSize = 64) {
+    public Pagination(int pageNumber = 0, int pageSize = 64) {
         PageNumber = pageNumber;
         PageSize = pageSize;
     }
     
-    public static PaginationInfo Empty => new() {
+    public static Pagination Empty => new() {
         PageNumber = 0,
         PageSize = 0
     };
     
-    public static PaginationInfo Default => new() {
+    public static Pagination Default => new() {
         PageNumber = 0,
         PageSize = 64
     };
     
-    public static PaginationInfo From(IHasPageNumber entity) => Default with {
+    public static Pagination From(IHasPageNumber entity) => Default with {
         PageNumber = entity.PageNumber
+    };
+    
+    public static Pagination From(IHasPageSize entity) => Default with {
+        PageSize = entity.PageSize
+    };
+
+    public static Pagination From<T>(T entity) where T : IHasPageNumber, IHasPageSize => Default with {
+        PageNumber = entity.PageNumber,
+        PageSize = entity.PageSize
     };
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public PaginationInfo NextPage() => this with {
+    public Pagination NextPage() => this with {
         PageNumber = PageNumber + 1
     };
     
-    public PaginationInfo PreviousPage() =>this with {
+    public Pagination PreviousPage() =>this with {
         PageNumber = PageNumber - 1
     };
 }
 
 public interface IHasPageNumber {
     int PageNumber { get; }
+}
+
+public interface IHasPageSize {
+    int PageSize { get; }   
 }

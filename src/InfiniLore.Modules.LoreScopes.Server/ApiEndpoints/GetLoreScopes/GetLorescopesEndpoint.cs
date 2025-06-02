@@ -49,7 +49,7 @@ public class GetLoreScopesEndpoint(
         MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
             req.UserId,
             QueryConfig.From(req),
-            PaginationInfo.From(req),
+            Pagination.From(req),
             ct:ct
         );
 

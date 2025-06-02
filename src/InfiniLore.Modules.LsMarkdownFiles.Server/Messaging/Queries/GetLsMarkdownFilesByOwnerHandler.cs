@@ -31,7 +31,7 @@ public class GetLsMarkdownFilesByOwnerHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         
-        PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.PaginationInfo, command.QueryConfig, ct);
+        PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
         if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return MessageResponse.FromErrorString("Failed to get markdown file");
 
         IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
