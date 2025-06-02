@@ -20,10 +20,10 @@ public readonly record struct PaginatedData<T>(
     int CurrentPage,
     int TotalPages
 ) where T : class {
-    public bool HasNextPage => CurrentPage < TotalPages;
-    public bool HasPreviousPage => CurrentPage > 1;
-    public bool IsFirstPage => CurrentPage == 1;
-    public bool IsLastPage => CurrentPage == TotalPages;
+    public bool HasNextPage => CurrentPage < TotalPages - 1;
+    public bool HasPreviousPage => CurrentPage > 0;
+    public bool IsFirstPage => CurrentPage == 0;
+    public bool IsLastPage => CurrentPage == TotalPages - 1;
 
     public bool IsEmpty => Items.Length == 0;
     public bool IsNotEmpty => Items.Length > 0;

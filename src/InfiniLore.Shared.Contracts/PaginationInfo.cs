@@ -10,20 +10,21 @@ public readonly record struct PaginationInfo {
     private readonly int _pageNumber;
     public int PageNumber {
         get => _pageNumber;
-        init => _pageNumber = Math.Max(1, value);
+        init => _pageNumber = Math.Max(0, value);
     } 
     
     private readonly int _pageSize;
     public int PageSize {
         get => _pageSize;
-        init => _pageSize = value != 0 
-        ? Math.Max(1, value)
-        : 64;
+        init => _pageSize = Math.Max(1, value);
     }
     
-    public int SkipAmount => (PageNumber - 1) * PageSize;
+    public int SkipAmount => PageNumber * PageSize;
 
-    public PaginationInfo(int pageNumber = 1, int pageSize = 64) {
+    // -----------------------------------------------------------------------------------------------------------------
+    // Constructors
+    // -----------------------------------------------------------------------------------------------------------------
+    public PaginationInfo(int pageNumber = 0, int pageSize = 64) {
         PageNumber = pageNumber;
         PageSize = pageSize;
     }
@@ -34,7 +35,7 @@ public readonly record struct PaginationInfo {
     };
     
     public static PaginationInfo Default => new() {
-        PageNumber = 1,
+        PageNumber = 0,
         PageSize = 64
     };
     
