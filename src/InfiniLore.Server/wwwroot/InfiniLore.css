@@ -273,9 +273,6 @@
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
   }
-  .mb-2 {
-    margin-bottom: calc(var(--spacing) * 2);
-  }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
   }
@@ -523,68 +520,23 @@
   .border-\(--border-color\) {
     border-color: var(--border-color);
   }
-  .border-\(--color-base-10\) {
-    border-color: var(--color-base-10);
-  }
-  .border-gray-200 {
-    border-color: var(--color-gray-200);
-  }
-  .border-gray-300 {
-    border-color: var(--color-gray-300);
-  }
   .bg-\(--color-accent\) {
     background-color: var(--color-accent);
-  }
-  .bg-\(--color-base-00\) {
-    background-color: var(--color-base-00);
-  }
-  .bg-\(--color-base-05\) {
-    background-color: var(--color-base-05);
-  }
-  .bg-\(--color-base-30\) {
-    background-color: var(--color-base-30);
   }
   .bg-\(--color-base-40\) {
     background-color: var(--color-base-40);
   }
-  .bg-\(--color-base-50\) {
-    background-color: var(--color-base-50);
-  }
-  .bg-\(--color-base-60\) {
-    background-color: var(--color-base-60);
-  }
   .bg-\(--color-base-70\) {
     background-color: var(--color-base-70);
-  }
-  .bg-\(--color-base-80\) {
-    background-color: var(--color-base-80);
-  }
-  .bg-\(--color-base-90\) {
-    background-color: var(--color-base-90);
   }
   .bg-amber-500 {
     background-color: var(--color-amber-500);
   }
-  .bg-blue-600 {
-    background-color: var(--color-blue-600);
-  }
-  .bg-gray-50 {
-    background-color: var(--color-gray-50);
-  }
-  .bg-gray-100 {
-    background-color: var(--color-gray-100);
-  }
   .bg-transparent {
     background-color: transparent;
   }
-  .bg-white {
-    background-color: var(--color-white);
-  }
   .bg-yellow-100 {
     background-color: var(--color-yellow-100);
-  }
-  .bg-zinc-200 {
-    background-color: var(--color-zinc-200);
   }
   .object-cover {
     object-fit: cover;
@@ -631,10 +583,6 @@
   .font-mono {
     font-family: var(--font-mono);
   }
-  .text-2xl {
-    font-size: var(--text-2xl);
-    line-height: var(--tw-leading, var(--text-2xl--line-height));
-  }
   .text-3xl {
     font-size: var(--text-3xl);
     line-height: var(--tw-leading, var(--text-3xl--line-height));
@@ -650,10 +598,6 @@
   .text-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
-  }
-  .text-xl {
-    font-size: var(--text-xl);
-    line-height: var(--tw-leading, var(--text-xl--line-height));
   }
   .text-xs {
     font-size: var(--text-xs);
@@ -695,29 +639,14 @@
   .text-\(--color-base-50\) {
     color: var(--color-base-50);
   }
-  .text-\(--color-base-60\) {
-    color: var(--color-base-60);
-  }
   .text-\(--color-base-70\) {
     color: var(--color-base-70);
   }
   .text-\(--color-base-90\) {
     color: var(--color-base-90);
   }
-  .text-\(--color-base-95\) {
-    color: var(--color-base-95);
-  }
   .text-emerald-500 {
     color: var(--color-emerald-500);
-  }
-  .text-gray-600 {
-    color: var(--color-gray-600);
-  }
-  .text-gray-700 {
-    color: var(--color-gray-700);
-  }
-  .text-gray-800 {
-    color: var(--color-gray-800);
   }
   .text-red-500 {
     color: var(--color-red-500);
@@ -728,9 +657,6 @@
   .text-zinc-400 {
     color: var(--color-zinc-400);
   }
-  .text-zinc-900 {
-    color: var(--color-zinc-900);
-  }
   .italic {
     font-style: italic;
   }
@@ -740,16 +666,6 @@
   .placeholder-\(--color-base-50\) {
     &::placeholder {
       color: var(--color-base-50);
-    }
-  }
-  .placeholder-\(--color-base-60\) {
-    &::placeholder {
-      color: var(--color-base-60);
-    }
-  }
-  .placeholder-zinc-400 {
-    &::placeholder {
-      color: var(--color-zinc-400);
     }
   }
   .opacity-0 {
@@ -803,13 +719,6 @@
   .outline-none {
     --tw-outline-style: none;
     outline-style: none;
-  }
-  .group-hover\/item\:bg-\(--color-base-10\) {
-    &:is(:where(.group\/item):hover *) {
-      @media (hover: hover) {
-        background-color: var(--color-base-10);
-      }
-    }
   }
   .group-hover\/item\:bg-\(--color-base-50\) {
     &:is(:where(.group\/item):hover *) {
@@ -890,13 +799,6 @@
       }
     }
   }
-  .hover\:bg-blue-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-700);
-      }
-    }
-  }
   .hover\:text-\(--color-accent\) {
     &:hover {
       @media (hover: hover) {
@@ -965,11 +867,6 @@
   .focus\:ring-\(--color-accent\) {
     &:focus {
       --tw-ring-color: var(--color-accent);
-    }
-  }
-  .focus\:ring-blue-600 {
-    &:focus {
-      --tw-ring-color: var(--color-blue-600);
     }
   }
   .focus\:outline-none {
