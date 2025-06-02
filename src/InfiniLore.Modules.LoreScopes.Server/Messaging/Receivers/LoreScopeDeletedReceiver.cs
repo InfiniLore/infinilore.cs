@@ -45,7 +45,7 @@ public class LoreScopeDeletedReceiver(
         }
         
         Result result = await s3FileMetaDataRepository.DeleteByIdAsync(posterImageMetaDataId, ct);
-        if (result.TryGetAsState(out bool? deleted) || deleted is false) {
+        if (!result.TryGetAsState(out bool? deleted) || deleted is false) {
             logger.Warning("Failed to delete poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
