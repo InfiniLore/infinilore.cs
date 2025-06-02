@@ -3,9 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
@@ -15,8 +15,12 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class UploadUsernameToAuth0Handler(IReadonlyUnitOfWorkFactory unitOfWorkFactory, ILogger<UploadUsernameToAuth0Handler> logger, IAuth0UserUtility auth0UserUtility) : IEventHandler<InfiniLoreUserCreatedEvent> {
-    public async Task HandleAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
+public class UploadUsernameToAuth0Handler(
+    IReadonlyUnitOfWorkFactory unitOfWorkFactory, 
+    ILogger<UploadUsernameToAuth0Handler> logger,
+    IAuth0UserUtility auth0UserUtility
+) : EventReceiver<InfiniLoreUserCreatedEvent>(logger) {
+    protected override async Task ExecuteAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
         Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
 

@@ -3,9 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -21,11 +21,11 @@ public class LoreScopeRemovedReceiver(
     IUnitOfWorkFactory unitOfWorkFactory,
     IS3FileStorage fileStorage,
     ILogger<LoreScopeRemovedReceiver> logger
-) : IEventHandler<LoreScopeRemovedEvent> {
+) : EventReceiver<LoreScopeRemovedEvent>(logger) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async Task HandleAsync(LoreScopeRemovedEvent eventModel, CancellationToken ct) {
+    protected override async Task ExecuteAsync(LoreScopeRemovedEvent eventModel, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);

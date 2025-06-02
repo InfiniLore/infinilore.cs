@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -18,9 +18,9 @@ namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Receivers;
 public class OnNewLoreScopeSetAccessProtection(
     ILogger<OnNewLoreScopeSetAccessProtection> logger,
     IUnitOfWorkFactory unitOfWorkFactory
-) : IEventHandler<NewLoreScopeCreatedEvent> {
+) : EventReceiver<NewLoreScopeCreatedEvent>(logger) {
 
-    public async Task HandleAsync(NewLoreScopeCreatedEvent eventModel, CancellationToken ct) {
+    protected override async Task ExecuteAsync(NewLoreScopeCreatedEvent eventModel, CancellationToken ct) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var accessProtectionRepo = await unitOfWork.GetRepositoryAsync<IAccessProtectionRepository>(ct);
