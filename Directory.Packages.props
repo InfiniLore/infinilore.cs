@@ -45,12 +45,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.40" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.40" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Core" Version="0.1.0-preview.40" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.40" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.40" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.40" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.43" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.43" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Core" Version="0.1.0-preview.43" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.43" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.43" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.43" />
     <PackageVersion Include="InfiniLore.Lucide" Version="0.26.511" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />

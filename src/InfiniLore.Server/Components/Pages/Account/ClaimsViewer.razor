@@ -21,124 +21,123 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@if (_user is null) {
-    <InfiniSection>
-        <p class="text-gray-600">Loading user information...</p>
-    </InfiniSection>
-}
-else {
-    <InfiniSection>
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">Claims Viewer</h3>
-    
-        <p class="text-lg">
-            <strong>Authenticated User:</strong> @_user.Identity?.Name
-        </p>
-    
-        <InfiniTable TItem="Claim" Items="@_user.Claims">
-            <Header>
-                <InfiniTableHeader>Claim Type</InfiniTableHeader>
-                <InfiniTableHeader>Claim Value</InfiniTableHeader>
-                <InfiniTableHeader Class="w-min-128 flex flex-col items-center">
-                    <span>Actions</span>
-                    <div class="flex flex-row gap-3.5 text-(--color-base-40)">
-                        <span>Copy Type</span>
-                        <span>Copy Value</span>
-                    </div>
-                </InfiniTableHeader>
-            </Header>
-            <Content Context="claim">
-                <InfiniTableCell>@claim.Type</InfiniTableCell>
-                <InfiniTableCell>@claim.Value</InfiniTableCell>
-    
-                <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128">
-                    <InfiniButton
-                        IconName="copy"
-                        OnClick="async () => await CopyToClipboardAsync(claim.Type)"
-                        TooltipAnchor="Anchor.Bottom | Anchor.Left"
-                        Tooltip="Copy Type"
-                    />
-                    <InfiniButton
-                        IconName="copy"
-                        OnClick="async () => await CopyToClipboardAsync(claim.Value)"
-                        TooltipAnchor="Anchor.Bottom | Anchor.Left"
-                        Tooltip="Copy Value"
-                    />
-                </InfiniTableCell>
-            </Content>
-        </InfiniTable>
-    
-    </InfiniSection>
+<InfiniPage>
+    @if (_user is null) {
+        <InfiniSection>
+            <p class="text-(--color-base-30)">Loading user information...</p>
+        </InfiniSection>
+    } else {
+        <InfiniSection>
+            <InfiniHeading3>Claims Viewer</InfiniHeading3>
+            
+            <p class="text-lg">
+                <strong>Authenticated User:</strong> @_user.Identity?.Name
+            </p>
 
-    <div class="w-full h-4 bg-transparent"></div>
-
-    <InfiniSection>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">Access Token Viewer</h3>
-        <div class="flex flex-col gap-2">
-            <div class="flex flex-row gap-4 justify-between w-full items-start h-192 max-h-192 ">
-                <!-- Access Token Section -->
-                <div class="flex flex-col w-[calc(50%-0.5rem)] h-full gap-2">
-                    <h5 class="text-lg font-medium text-gray-700">Original JWT</h5>
-                    <p class="h-full bg-gray-100 border border-gray-300 rounded px-4 py-2 break-words whitespace-pre-wrap overflow-y-auto">@_accessToken</p>
-                </div>
-
-                <!-- JWT Viewer Section -->
-                <div class="flex flex-col w-[calc(50%-0.5rem)] h-full">
-                    <h5 class="text-lg font-medium text-gray-700">Decoded JWT Details</h5>
-
-                    <div class="flex flex-col h-full">
-                        <!-- Header Section -->
-                        <div class="h-2/8 w-full flex flex-col gap-2">
-                            <h6 class="font-semibold text-gray-600 mb-1">Header</h6>
-                            @if (!string.IsNullOrWhiteSpace(_header)) {
-                                <pre class="bg-gray-50 border text-sm border-gray-200 rounded p-4 overflow-auto">@_header</pre>
-                            }
-                            else {
-                                <p class="text-gray-600 italic">Header not available</p>
-                            }
+            <InfiniTable TItem="Claim" Items="@_user.Claims">
+                <Header>
+                    <InfiniTableHeader>Claim Type</InfiniTableHeader>
+                    <InfiniTableHeader>Claim Value</InfiniTableHeader>
+                    <InfiniTableHeader Class="w-min-128 flex flex-col items-center">
+                        <span>Actions</span>
+                        <div class="flex flex-row gap-3.5 text-(--color-base-40)">
+                            <span>Copy Type</span>
+                            <span>Copy Value</span>
                         </div>
+                    </InfiniTableHeader>
+                </Header>
+                <Content Context="claim">
+                    <InfiniTableCell>@claim.Type</InfiniTableCell>
+                    <InfiniTableCell>@claim.Value</InfiniTableCell>
 
-                        <!-- Payload Section -->
-                        <div class="h-4/7 w-full flex flex-col gap-2">
-                            <h6 class="font-semibold text-gray-600">Payload</h6>
-                            @if (!string.IsNullOrWhiteSpace(_decodedPayload)) {
-                                <pre
-                                    class="bg-gray-50 font-mono border text-sm border-gray-200 rounded p-4 overflow-auto whitespace-pre-wrap break-words">
+                    <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128">
+                        <InfiniButton
+                            IconName="copy"
+                            OnClick="async () => await CopyToClipboardAsync(claim.Type)"
+                            TooltipAnchor="Anchor.Bottom | Anchor.Left"
+                            Tooltip="Copy Type"/>
+                        <InfiniButton
+                            IconName="copy"
+                            OnClick="async () => await CopyToClipboardAsync(claim.Value)"
+                            TooltipAnchor="Anchor.Bottom | Anchor.Left"
+                            Tooltip="Copy Value"/>
+                    </InfiniTableCell>
+                </Content>
+            </InfiniTable>
+
+        </InfiniSection>
+
+        <div class="w-full h-4 bg-transparent"></div>
+
+        <InfiniSection>
+            <InfiniHeading3>Access Token Viewer</InfiniHeading3>
+            
+            <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-4 justify-between w-full items-start h-192 max-h-192 ">
+                    <!-- Access Token Section -->
+                    <div class="flex flex-col w-[calc(50%-0.5rem)] h-full gap-2">
+                        <h5 class="text-lg font-medium text-(--text-color))">Original JWT</h5>
+                        <p class="h-full bg-(--color-base-70) text-(--color-base-20) border border-(--border-color) rounded px-4 py-2 break-words whitespace-pre-wrap overflow-y-auto">@_accessToken</p>
+                    </div>
+
+                    <!-- JWT Viewer Section -->
+                    <div class="flex flex-col w-[calc(50%-0.5rem)] h-full">
+                        <h5 class="text-lg font-medium text-(--text-color))">Decoded JWT Details</h5>
+
+                        <div class="flex flex-col h-full">
+                            <!-- Header Section -->
+                            <div class="h-2/8 w-full flex flex-col gap-2">
+                                <h6 class="font-semibold text-(--color-base-30) mb-1">Header</h6>
+                                @if (!string.IsNullOrWhiteSpace(_header)) {
+                                    <pre
+                                        class="bg-(--color-base-70) text-(--color-base-20) border text-sm border-(--border-color) rounded p-4 overflow-auto">@_header</pre>
+                                } else {
+                                    <p class="text-(--color-base-30) italic">Header not available</p>
+                                }
+                            </div>
+
+                            <!-- Payload Section -->
+                            <div class="h-4/7 w-full flex flex-col gap-2">
+                                <h6 class="font-semibold text-(--color-base-30)">Payload</h6>
+                                @if (!string.IsNullOrWhiteSpace(_decodedPayload)) {
+                                    <pre
+                                        class="infini-scrollbar bg-(--color-base-70) text-(--color-base-20) font-mono border text-sm border-(--border-color) rounded p-4 overflow-auto whitespace-pre-wrap break-words">
                                     @_decodedPayload
                                 </pre>
-                            }
-                            else {
-                                <p class="text-gray-600 italic">Payload not available</p>
-                            }
-                        </div>
+                                } else {
+                                    <p class="text-(--color-base-30) italic">Payload not available</p>
+                                }
+                            </div>
 
-                        <!-- Signature Section -->
-                        <div class="h-1/7 w-full flex flex-col gap-2 mt-2">
-                            <h6 class="font-semibold text-gray-600 ">Signature</h6>
-                            @if (!string.IsNullOrWhiteSpace(_signature)) {
-                                <pre
-                                    class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto">@_signature</pre>
-                            }
-                            else {
-                                <p class="text-gray-600 italic">Signature not available</p>
-                            }
+                            <!-- Signature Section -->
+                            <div class="h-1/7 w-full flex flex-col gap-2 mt-2">
+                                <h6 class="font-semibold text-(--color-base-30) ">Signature</h6>
+                                @if (!string.IsNullOrWhiteSpace(_signature)) {
+                                    <pre
+                                        class="infini-scrollbar bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto">@_signature</pre>
+                                } else {
+                                    <p class="text-(--color-base-30) italic">Signature not available</p>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex flex-row gap-2">
-                <div class="w-1/2">
-                    <div class="flex justify-center">
-                        <InfiniButton IconName="copy" OnClick="async () => await CopyToClipboardAsync(_accessToken)">
-                            Copy Access Token
-                        </InfiniButton>
+                <div class="flex flex-row gap-2">
+                    <div class="w-1/2">
+                        <div class="flex justify-center">
+                            <InfiniButton IconName="copy"
+                                          OnClick="async () => await CopyToClipboardAsync(_accessToken)">
+                                Copy Access Token
+                            </InfiniButton>
+                        </div>
+                    </div>
+                    <div class="w-1/2">
                     </div>
                 </div>
-                <div class="w-1/2">
-                </div>
             </div>
-        </div>
-    </InfiniSection>
-}
+        </InfiniSection>
+    }
+</InfiniPage>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code

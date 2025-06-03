@@ -22,19 +22,14 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="h-screen flex flex-col">
+<InfiniPage>
     <InfiniSection class="h-32 flex flex-col grow-0">
-        <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
-            Create New Lorescope
-        </h2>
+        <InfiniHeading3>Create New LoreScope</InfiniHeading3>
 
         <div class="flex items-center space-x-3">
-            <InputText @bind-Value="@NewLoreScopeName"
-                       placeholder="Enter a new Lorescope name..."
-                       class="w-full bg-(--color-base-05) rounded-md border border-(--color-base-10) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
-
-            <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync"
-                          Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
+            <InfiniTextInput @bind-Value="@NewLoreScopeName" Placeholder="Enter a new Lorescope name...">
+                <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
+            </InfiniTextInput>
         </div>
     </InfiniSection>
 
@@ -58,7 +53,7 @@
                         <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all "
                              onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
                             <div
-                                class="flex items-start bg-(--color-base-00) border border-(--color-base-10) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-10) transition">
+                                class="flex items-start bg-(--color-base-70) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-64 group-hover/item:bg-(--color-base-50) transition">
 
                                 <!-- Poster Image -->
                                 <LoreScopePoster Class="w-1/5" ImageUrl="@loreScope.S3PosterImageUrl"
@@ -68,13 +63,13 @@
                                 <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full w-3/5">
                                     @* Content *@
                                     <div>
-                                        <h3 class="text-lg font-semibold text-(--color-base-95) truncate w-full">
+                                        <h3 class="text-lg font-semibold text-(--color-accent) truncate w-full">
                                             @loreScope.Name
                                         </h3>
-                                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4">
                                             @loreScope.Description
                                         </p>
-                                        <p class="text-sm text-(--color-base-60) line-clamp-4">
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4">
                                             Owner: @loreScope.OwnerId
                                         </p>
                                     </div>
@@ -114,7 +109,7 @@
                         </InfiniButton>
                     }
 
-                    <div class="text-(--color-base-70) flex flex-col justify-center items-center">
+                    <div class="text-(--color-base-50) flex flex-col justify-center items-center">
                     <span
                         class="text-sm">Page @(PaginatedLoreScopes.CurrentPage + 1) of @PaginatedLoreScopes.TotalPages</span>
                         <span class="text-xs">@PaginatedLoreScopes.TotalCount total items</span>
@@ -131,7 +126,7 @@
             </div>
         }
     </InfiniSection>
-</div>
+</InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@

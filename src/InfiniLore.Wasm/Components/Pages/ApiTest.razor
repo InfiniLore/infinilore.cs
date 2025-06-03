@@ -25,31 +25,30 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSection class="h-screen flex flex-col gap-4">
-    <h2 class="text-lg font-semibold text-(--color-base-90)">
-        API Test
-    </h2>
+<InfiniPage>
+    <InfiniSection class="h-screen flex flex-col gap-4">
+        <InfiniHeading3>API Test</InfiniHeading3>
 
-    <div class="flex flex-col gap-4">
-        <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
-        <div class="flex flex-col h-48">
-            Request Data:
-            @if (RendererInfo.IsInteractive) {
-                <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">
-                    @GetUrl()
-                </pre>
-            }
+        <div class="flex flex-col gap-4">
+            <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
+            <div class="flex flex-col h-48">
+                Request Data:
+                
+                @if (RendererInfo.IsInteractive) {
+                    <InfiniCodeBlock Content="@GetUrl()" EnableCopy="false"></InfiniCodeBlock>
+                }
+            </div>
+
+            <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
+                Call Internal API
+            </InfiniButton>
         </div>
 
-        <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
-            Call Internal API
-        </InfiniButton>
-    </div>
-
-    <div class="grow flex overflow-y-auto overflow-x-clip">
-        <pre class="bg-gray-50 text-sm border border-gray-200 rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">@_apiResponse</pre>
-    </div>
-</InfiniSection>
+        <div class="grow flex overflow-y-auto overflow-x-clip">
+            <InfiniCodeBlock Content="@_apiResponse" Class="w-full" Language="json"/>
+        </div>
+    </InfiniSection>
+</InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
