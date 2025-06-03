@@ -8,8 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
-      <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" />
-      <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

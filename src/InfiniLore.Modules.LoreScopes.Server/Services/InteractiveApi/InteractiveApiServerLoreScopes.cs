@@ -6,7 +6,6 @@ using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Modules.LoreScopes.Shared.Services;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Shared;
 using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;

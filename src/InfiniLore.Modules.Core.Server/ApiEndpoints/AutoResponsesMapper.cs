@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Shared;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
 

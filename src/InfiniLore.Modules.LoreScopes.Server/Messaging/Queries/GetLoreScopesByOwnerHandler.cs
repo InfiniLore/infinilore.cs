@@ -6,7 +6,6 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Result=InfiniLore.Modules.Core.Server.Result;
