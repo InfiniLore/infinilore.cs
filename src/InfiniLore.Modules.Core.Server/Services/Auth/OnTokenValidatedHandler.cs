@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Shared.Auth;
 using InfiniLore.Shared.Services.ClaimsHelper;
 using JetBrains.Annotations;

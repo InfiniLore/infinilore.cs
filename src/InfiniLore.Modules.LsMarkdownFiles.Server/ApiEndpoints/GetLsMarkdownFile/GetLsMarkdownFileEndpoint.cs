@@ -4,7 +4,6 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;

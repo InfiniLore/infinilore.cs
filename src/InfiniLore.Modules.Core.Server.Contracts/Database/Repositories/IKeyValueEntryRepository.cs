@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database.RepoMethods;
-using InfiniLore.Modules.Core.Server.Messaging;
 
 namespace InfiniLore.Modules.Core.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------

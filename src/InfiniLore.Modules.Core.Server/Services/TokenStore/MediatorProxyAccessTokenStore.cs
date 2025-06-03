@@ -4,7 +4,6 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Credentials.Auth0;
 using InfiniLore.Credentials.Auth0.Services;
-using InfiniLore.Modules.Core.Server.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
