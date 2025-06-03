@@ -63,7 +63,7 @@ public class JwtTokenHelper(
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         var query = new GetUserIdByAuth0IdQuery(auth0UserId) { AccessingUser = AccessingUser.Empty };
-        MessageResponse<Guid> result = await query.ExecuteAsync(ct);
+        Result<Guid> result = await query.ExecuteAsync(ct);
         
         if (!result.TryGetAsSuccess(out Guid userId)) return Guid.Empty;
         return userId;

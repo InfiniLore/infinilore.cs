@@ -27,7 +27,7 @@ public class UploadUsernameToAuth0Handler(
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Result<InfiniLoreUserModel> userResult = await userRepo.GetByIdAsync(userId, ct: ct);
+        AterraEngine.Unions.Result<InfiniLoreUserModel> userResult = await userRepo.GetByIdAsync(userId, ct: ct);
         if (!userResult.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
             logger.Warning("Could not find user with id {UserId} in database.", userId);
             return;

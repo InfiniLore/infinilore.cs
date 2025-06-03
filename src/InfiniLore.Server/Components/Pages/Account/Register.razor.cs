@@ -7,6 +7,7 @@ using InfiniLore.Modules.Core.Server.Messaging;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Server.Components.Pages.Account;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -69,9 +70,9 @@ public partial class Register(
         }
 
         // Call the backend to check username availability
-        MessageResponse mediatorResponse = await messageBroker.UsernameExistsAsync(username);
+        Result mediatorResult = await messageBroker.UsernameExistsAsync(username);
 
-        if (!mediatorResponse.TryGetState(out bool? isTaken)) {
+        if (!mediatorResult.TryGetState(out bool? isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
             _isFormDisabled = true;
             await InvokeAsync(StateHasChanged);// Refresh UI
@@ -92,7 +93,7 @@ public partial class Register(
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MessageResponse<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
+        InfiniLore.Modules.Core.Server.Result<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
         if (result.TryGetAsError(out Error<ICollection<string>>? errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false; // Allow retry

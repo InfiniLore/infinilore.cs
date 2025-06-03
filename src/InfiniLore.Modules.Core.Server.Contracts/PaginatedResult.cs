@@ -2,20 +2,21 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Shared;
 
-namespace InfiniLore.Modules.Core.Server.Messaging;
+namespace InfiniLore.Modules.Core.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("PaginatedData", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record struct PaginatedMessageResponse<T>() : IUnion<PaginatedData<T>, AccessRefused, Error<string>> where T : class {
-    public static PaginatedMessageResponse<T> FromError(string value) => FromError(new Error<string>(value));
-    public static PaginatedMessageResponse<T> FromAccessRefused(string value) => FromAccessRefused(new AccessRefused(value));
+public partial record struct PaginatedResult<T>() : IUnion<PaginatedData<T>, AccessRefused, Error<string>> where T : class {
+    public static PaginatedResult<T> FromError(string value) => FromError(new Error<string>(value));
+    public static PaginatedResult<T> FromAccessRefused(string value) => FromAccessRefused(new AccessRefused(value));
     
-    public static implicit operator PaginatedMessageResponse<T>(MessageResponse responseWithError) {
-        return responseWithError.Match(
+    public static implicit operator PaginatedResult<T>(Result resultWithError) {
+        return resultWithError.Match(
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             FromAccessRefused,

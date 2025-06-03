@@ -10,6 +10,7 @@ using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using JetBrains.Annotations;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Queries;
 
@@ -20,29 +21,29 @@ namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Queries;
 public class GetLorescopePosterImageHandler(
     IReadonlyUnitOfWorkFactory readonlyUnitOfWorkFactory,
     IS3FileStorage s3FileStorage
-): CommandHandler<GetLorescopePosterImageQuery, MessageResponse<string>> {
+): CommandHandler<GetLorescopePosterImageQuery, Core.Server.Result<string>> {
 
-    public override async Task<MessageResponse<string>> ExecuteAsync(GetLorescopePosterImageQuery command, CancellationToken ct = new()) {
+    public override async Task<Core.Server.Result<string>> ExecuteAsync(GetLorescopePosterImageQuery command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-    
-        Result<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
+
+        AterraEngine.Unions.Result<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
         if (!foundModelResult.TryGetAsSuccess(out LoreScopeModel? foundModel)) {
-            return MessageResponse.FromErrorString($"Failed to find lorescope with id {command.LorescopeId}");
+            return Result.FromError($"Failed to find lorescope with id {command.LorescopeId}");
         }
 
         if (foundModel.PosterImageMetaData == null || foundModel.PosterImageMetaDataId == null) {
-            return MessageResponse.FromErrorString("No poster image found for this lorescope");
+            return Result.FromError("No poster image found for this lorescope");
         }
 
-        Result<string> result = await s3FileStorage.GetFileUrlAsync(
+        AterraEngine.Unions.Result<string> result = await s3FileStorage.GetFileUrlAsync(
             S3BucketNames.GetLoreScopeBucket(foundModel.Id),
             foundModel.PosterImageMetaData.FileName,
             ct: ct
         );
         return result.Match(
-            MessageResponse.FromSuccess,
-            _ => MessageResponse.FromErrorString("Failed to get poster image url")
+            Result.FromSuccess,
+            _ => Result.FromError("Failed to get poster image url")
         );
     }
 }

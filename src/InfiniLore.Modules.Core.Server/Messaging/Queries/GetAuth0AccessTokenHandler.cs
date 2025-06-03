@@ -22,32 +22,32 @@ public class GetAuth0AccessTokenHandler(
     IAuth0AccessTokenEncryptionService encryptionService
 ) : AccessProtectedCommandHandler<GetAuth0AccessTokenQuery, IAuth0AccessToken>(logger) {
 
-    protected override MessageResponse<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
+    protected override Server.Result<IAuth0AccessToken> AccessDeniedResult => throw new NotImplementedException();
     
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<IAuth0AccessToken>> HandleCommandAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) {
+    protected override async Task<Server.Result<IAuth0AccessToken>> HandleCommandAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
-        Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        AterraEngine.Unions.Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
-            return MessageResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Key not found.");
+            return Server.Result<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Key not found.");
         }
 
         KeyValueEntryModel store = storeResult.AsSuccess;
         if (store.Value.IsNullOrEmpty()) {
             logger.Warning("Auth0 access token value is empty.");
-            return MessageResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Value is empty.");
+            return Server.Result<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Value is empty.");
         }
 
         store.Value = encryptionService.Decrypt(store.Value);
 
         if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
             logger.Error("Failed to convert Auth0 access token JSON to object.");
-            return MessageResponse<IAuth0AccessToken>.FromErrorString("Cannot get auth0 access token. Json conversion failed.");
+            return Server.Result<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Json conversion failed.");
         }
 
         logger.Information("Successfully retrieved and parsed Auth0 access token.");

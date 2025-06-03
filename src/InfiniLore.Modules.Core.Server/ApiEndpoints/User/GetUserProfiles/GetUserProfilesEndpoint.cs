@@ -40,7 +40,7 @@ public class GetUserProfilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(
+        Result<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(
             QueryConfig.From(req),
             Pagination.From(req), 
             ct: ct
@@ -48,7 +48,7 @@ public class GetUserProfilesEndpoint(
 
         // MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
         return result.Match<Response>(
-            successCase: model => {
+            dataCase: model => {
                 logger.Information("Successfully retrieved users");
                 UserProfilesResponse mappedModel = Map.FromEntity(model);
                 return TypedResults.Ok(mappedModel);

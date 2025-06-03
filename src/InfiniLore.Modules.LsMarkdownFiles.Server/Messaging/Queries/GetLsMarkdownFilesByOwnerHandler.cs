@@ -12,6 +12,7 @@ using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Queries;
 
@@ -27,17 +28,17 @@ public class GetLsMarkdownFilesByOwnerHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Server.Result<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
-        
-        PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
-        if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return MessageResponse.FromErrorString("Failed to get markdown file");
+
+        InfiniLore.Shared.PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
+        if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return Result.FromError("Failed to get markdown file");
 
         IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
             if (model.S3FileMetaData is null) return;
             string bucketName = S3BucketNames.GetLoreScopeBucket(model.OwnerId);
-            Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
+            AterraEngine.Unions.Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
             urlResult.Switch(
                 url => model.S3FileMetaData.S3ResourceUrl = url,
                 _ => logger.Warning("Failed to get s3 resource url for file {FileName} in bucket {BucketName}", model.S3FileMetaData.FileName, bucketName)

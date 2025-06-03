@@ -44,8 +44,8 @@ public class GetLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
-        MessageResponse<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
+
+        Core.Server.Result<LoreScopeModel> result = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
 
         // Verify Response
         if (!result.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
@@ -58,7 +58,7 @@ public class GetLorescopeEndpoint(
         // Return
         LoreScopeResponse response = Map.FromEntity(loreScope);
 
-        MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
+        Core.Server.Result<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
         if (imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
             response.ImageUrl = imageUrl;
         }

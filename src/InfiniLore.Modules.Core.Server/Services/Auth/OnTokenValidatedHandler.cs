@@ -48,10 +48,10 @@ public class OnTokenValidatedHandler(
         }
 
         // Run all checks and return to the new user page if needed
-        Task<MessageResponse> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
-        Task<MessageResponse<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
+        Task<Result> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
+        Task<Result<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
 
-        (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
+        (Result userExistsResponse, Result<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId

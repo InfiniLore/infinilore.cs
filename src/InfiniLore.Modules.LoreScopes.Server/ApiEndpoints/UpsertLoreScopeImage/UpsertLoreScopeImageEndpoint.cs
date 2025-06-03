@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -46,7 +47,7 @@ public class UpsertLoreScopeImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
+        Result result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
             file.FileName,
             file.ContentType,
             fileStream,

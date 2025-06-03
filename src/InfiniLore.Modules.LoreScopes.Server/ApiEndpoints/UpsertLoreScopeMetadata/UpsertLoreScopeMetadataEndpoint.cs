@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,7 +44,7 @@ public class UpsertLoreScopeMetadataEndpoint(
     public override async Task<Response> ExecuteAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        MessageResponse result = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
+        Result result = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
 
         // Verify Response
         if (!result.TryGetState(out bool? successful)) {

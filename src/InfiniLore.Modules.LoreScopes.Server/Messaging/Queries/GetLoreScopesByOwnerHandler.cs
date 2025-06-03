@@ -10,6 +10,7 @@ using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,20 +23,20 @@ public class GetLoreScopesByOwnerHandler(
     ILogger<GetLoreScopesByOwnerHandler> logger
 ) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
 
-    protected override async Task<MessageResponse<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Server.Result<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        PaginatedResult<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
+        InfiniLore.Shared.PaginatedResult<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
 
         // Todo lorescopes can be hidden so only the owner can access view it.
         //      Do we do that in the config level, or here?
 
         return response.Match(
-            MessageResponse.FromSuccess,
+            Result.FromSuccess,
             _ => {
                 logger.Warning("Failed to get LoreScopes");
-                return MessageResponse.FromErrorString("Failed to get LoreScopes");
+                return Result.FromError("Failed to get LoreScopes");
             }
         );
     }

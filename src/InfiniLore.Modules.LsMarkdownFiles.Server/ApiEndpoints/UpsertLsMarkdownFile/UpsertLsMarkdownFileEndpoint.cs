@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ public class UpsertLsMarkdownFileEndpoint(
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLsMarkdownFileAsync(
+        Result result = await messageBroker.UpsertLsMarkdownFileAsync(
             req.LoreScopeId, 
             file.FileName,
             fileStream,

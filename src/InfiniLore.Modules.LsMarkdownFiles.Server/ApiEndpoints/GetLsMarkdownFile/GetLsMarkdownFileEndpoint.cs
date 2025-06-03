@@ -42,7 +42,7 @@ public class GetLsMarkdownFileEndpoint(
     public override async Task<Response> ExecuteAsync(GetLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<LsMarkdownFileModel> result = await messageBroker.GetLsMarkdownFileByIdAsync(req.MarkdownFileId, ct: ct);
+        Core.Server.Result<LsMarkdownFileModel> result = await messageBroker.GetLsMarkdownFileByIdAsync(req.MarkdownFileId, ct: ct);
         return result.Match<Response>(
             model => TypedResults.Ok(Map.FromEntity(model)),
             _ => TypedResults.NotFound()       

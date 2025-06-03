@@ -11,6 +11,7 @@ using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Commands;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Commands;
 
@@ -22,39 +23,39 @@ public class DeleteLsMarkdownFileHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
     IS3FileStorage fileStorage,
     ILogger<DeleteLsMarkdownFileHandler> logger
-) : CommandHandler<DeleteLsMarkdownFileRequest, MessageResponse> {
+) : CommandHandler<DeleteLsMarkdownFileRequest, Result> {
 
-    public override async Task<MessageResponse> ExecuteAsync(DeleteLsMarkdownFileRequest command, CancellationToken ct = new()) {
+    public override async Task<Result> ExecuteAsync(DeleteLsMarkdownFileRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
         // Try and find an existing model
-        Result<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
+        AterraEngine.Unions.Result<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
         if (!existingModel.TryGetAsSuccess(out LsMarkdownFileModel? markdownFileModel)) {
             logger.Warning("Failed to find markdown file with id {MarkdownFileId}", command.MarkdownFileId);
-            return MessageResponse.FromErrorString("Failed to find markdown file with id");
+            return Result.FromError("Failed to find markdown file with id");
         }
 
         // Delete the file and the metadata
         if (markdownFileModel.S3FileMetaData is {} metaData) {
             string bucketName = S3BucketNames.GetLoreScopeBucket(markdownFileModel.OwnerId);
-            Result s3DeleteResult = await fileStorage.TryRemoveFileAsync(bucketName, metaData.FileName, ct);
+            AterraEngine.Unions.Result s3DeleteResult = await fileStorage.TryRemoveFileAsync(bucketName, metaData.FileName, ct);
             if (!s3DeleteResult.TryGetAsState(out bool? success) || success is false) {
                 logger.Warning("Failed to delete file from S3");
             }
             
-            Result metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
+            AterraEngine.Unions.Result metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
             if (!metaDataDeleteResult.TryGetAsState(out success) || success is false) {
                 logger.Warning("Failed to delete S3FileMetaDataModel");
             }
         }
         
         // Delete the registrations
-        Result deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
+        AterraEngine.Unions.Result deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
         if (!deleteResult.TryGetAsState(out bool? deleted) || deleted is false) {
             logger.Warning("Failed to delete markdown file");
-            return MessageResponse.FromErrorString("Failed to delete markdown file");       
+            return Result.FromError("Failed to delete markdown file");       
         }
         await unitOfWork.TryCommitTransactionAsync(ct);
         return true;

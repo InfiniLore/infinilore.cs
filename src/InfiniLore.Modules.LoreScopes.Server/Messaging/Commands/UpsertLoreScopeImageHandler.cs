@@ -13,6 +13,7 @@ using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Commands;
 
@@ -26,25 +27,25 @@ public class UpsertLoreScopeImageHandler(
     IValidator<LoreScopeModel> loreScopeValidator,
     IValidator<S3FileMetaDataModel> s3FileValidator,
     ILogger<UpsertLoreScopeImageHandler> logger
-) : CommandHandler<UpsertLoreScopeImageRequest, MessageResponse> {
+) : CommandHandler<UpsertLoreScopeImageRequest, Result> {
 
-    public override async Task<MessageResponse> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {
+    public override async Task<Result> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        
-        Result<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
+
+        AterraEngine.Unions.Result<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
         if (!loreScopeResult.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
-            return MessageResponse.FromErrorString("Failed to find lorescope with id");
+            return Result.FromError("Failed to find lorescope with id");
         }
         
         S3FileMetaDataModel? metaData = await TryCreateNewMetaDataAsync(command, loreScope, unitOfWork, ct);
         if (metaData is null) {
             logger.Warning("Failed to create new lorescope image metadata");
-            return MessageResponse.FromErrorString("Failed to create new lorescope image metadata");
+            return Result.FromError("Failed to create new lorescope image metadata");
         }
 
-        Result result = await fileStorage.TryUploadFileAsync(
+        AterraEngine.Unions.Result result = await fileStorage.TryUploadFileAsync(
             S3BucketNames.GetLoreScopeBucket(loreScope.Id),
             metaData.FileName,
             command.FileStream,
@@ -54,7 +55,7 @@ public class UpsertLoreScopeImageHandler(
         
         if (!result.TryGetAsState(out bool? success) || success is false) {
             logger.Warning("Failed to upload file to s3 bucket");
-            return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");       
+            return Result.FromError("Failed to upload file to s3 bucket");       
         }
         logger.LogInformation("Uploaded file to s3 bucket");
 
@@ -62,7 +63,7 @@ public class UpsertLoreScopeImageHandler(
         // ReSharper disable once InvertIf
         if (!await unitOfWork.TryCommitTransactionAsync(ct)) {
             logger.Warning("Failed to commit transaction");
-            return MessageResponse.FromErrorString("Failed to commit transaction");      
+            return Result.FromError("Failed to commit transaction");      
         }
         return true;
     }

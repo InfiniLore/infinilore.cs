@@ -2,14 +2,15 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Server.Messaging;
 
-namespace InfiniLore.Modules.Core.Server.Messaging;
+namespace InfiniLore.Modules.Core.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("True","False", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record struct MessageResponse() : IUnion<True, False, AccessRefused, Error<string>> {
+public partial record struct Result() : IUnion<True, False, AccessRefused, Error<string>> {
     public bool TryGetAsState(out bool state) {
         if (!IsTrue || !IsFalse) {
             state = false;
@@ -22,10 +23,10 @@ public partial record struct MessageResponse() : IUnion<True, False, AccessRefus
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static MessageResponse FromError(string value) 
+    public static Result FromError(string value) 
         => FromError(new Error<string>(value));
     
-    public static MessageResponse FromAccessRefused(string value) 
+    public static Result FromAccessRefused(string value) 
         => FromAccessRefused(new AccessRefused(value));
     
     public TOutput Match<TOutput>(
@@ -55,10 +56,10 @@ public partial record struct MessageResponse() : IUnion<True, False, AccessRefus
 
 [UnionAliases("Data", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record struct MessageResponse<T>() : IUnion<T, AccessRefused, Error<string>> {
+public partial record struct Result<T>() : IUnion<T, AccessRefused, Error<string>> {
     
-    public static implicit operator MessageResponse<T>(MessageResponse responseWithError) {
-        return responseWithError.Match(
+    public static implicit operator Result<T>(Result resultWithError) {
+        return resultWithError.Match(
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             FromAccessRefused,
@@ -69,10 +70,10 @@ public partial record struct MessageResponse<T>() : IUnion<T, AccessRefused, Err
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static MessageResponse<T> FromError(string value)
+    public static Result<T> FromError(string value)
         => FromError(new Error<string>(value));
     
-    public static MessageResponse<T> FromAccessRefused(string value)
+    public static Result<T> FromAccessRefused(string value)
         => FromAccessRefused(new AccessRefused(value));
     
     public TOutput Match<TOutput>(

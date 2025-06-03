@@ -9,6 +9,7 @@ using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
 using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.Core.Server.InteractiveApi;
 
@@ -22,29 +23,29 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result<IInfiniLoreUserModel>.FromError("Invalid userId");
-        
-        MessageResponse<InfiniLoreUserModel> result = await interactiveApi.MessageBroker.GetUserByIdAsync(parsedUserId, ct: ct);
+    public async ValueTask<AterraEngine.Unions.Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromError("Invalid userId");
+
+        Result<InfiniLoreUserModel> result = await interactiveApi.MessageBroker.GetUserByIdAsync(parsedUserId, ct: ct);
         return result.Match(
-            successCase: Result<IInfiniLoreUserModel>.FromSuccess,
-            errorCase: _ => Result<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
+            successCase: AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromSuccess,
+            errorCase: _ => AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
         );
     }
     
-    public async ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Result.FromError("Invalid userId");
+    public async ValueTask<AterraEngine.Unions.Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return AterraEngine.Unions.Result.FromError("Invalid userId");
         
         await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
-        MessageResponse result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
+        Result result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
             parsedUserId, 
             file.ContentType,
             stream,
             ct: ct
         );
-        return result.Match<Result>(
+        return result.Match<AterraEngine.Unions.Result>(
             stateCase: state => state,
-            errorCase: _ => Result.FromError("Failed to retrieve user.")
+            errorCase: _ => AterraEngine.Unions.Result.FromError("Failed to retrieve user.")
         );
     }
 }

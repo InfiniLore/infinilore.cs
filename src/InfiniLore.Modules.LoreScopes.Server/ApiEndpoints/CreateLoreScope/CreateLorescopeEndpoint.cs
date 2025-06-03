@@ -44,7 +44,7 @@ public class CreateLorescopeEndpoint(
     public override async Task<Response> ExecuteAsync(CreateLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<Guid> result = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
+        Core.Server.Result<Guid> result = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
         return result.Match<Response>(
             id => TypedResults.Ok(id),
             error => {

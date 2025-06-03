@@ -11,6 +11,7 @@ using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Queries;
 
@@ -26,17 +27,17 @@ public class GetLsMarkdownFileByIdHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Server.Result<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
-        
-        Result<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
-        if (!response.TryGetAsSuccess(out LsMarkdownFileModel? model)) return MessageResponse.FromErrorString("Failed to get markdown file");
-        if (model.S3FileMetaData is null) return MessageResponse.FromErrorString("Failed to get complete S3FileMetaData");
+
+        AterraEngine.Unions.Result<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
+        if (!response.TryGetAsSuccess(out LsMarkdownFileModel? model)) return Result.FromError("Failed to get markdown file");
+        if (model.S3FileMetaData is null) return Result.FromError("Failed to get complete S3FileMetaData");
         
         // Get the url for the file
         string bucketName =  S3BucketNames.GetLoreScopeBucket(model.OwnerId);
-        Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
+        AterraEngine.Unions.Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
         urlResult.Switch(
             url => model.S3FileMetaData.S3ResourceUrl = url,
             _ => logger.Warning("Failed to get s3 resource url")

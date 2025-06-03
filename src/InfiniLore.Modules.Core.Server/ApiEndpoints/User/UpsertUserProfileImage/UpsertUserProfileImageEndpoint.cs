@@ -44,7 +44,7 @@ public class UpsertUserProfileImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(
+        Result result = await messageBroker.UpsertUserProfileImageAsync(
             req.UserId,
             file.ContentType,
             fileStream,
@@ -52,9 +52,8 @@ public class UpsertUserProfileImageEndpoint(
         );
         
         return result.Match<Response>(
-            state => state 
-                ? TypedResults.Ok()
-                : TypedResults.BadRequest(), // This shouldn't happen, right?
+            _ => TypedResults.Ok(),
+            _ => TypedResults.BadRequest(),
             error => {
                 logger.Warning("Failed to update user poster image. {@error}", error);
                 return TypedResults.NotFound();

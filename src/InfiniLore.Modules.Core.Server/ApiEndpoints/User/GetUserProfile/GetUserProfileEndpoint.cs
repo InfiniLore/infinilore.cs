@@ -39,14 +39,19 @@ public class GetUserProfileEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
+        Result<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
         return result.Match<Response>(
-            successCase: model => {
+            model => {
                 logger.Information("Successfully retrieved user with id {id}", req.UserId);
                 UserProfileResponse mappedModel = Map.FromEntity(model);
                 return TypedResults.Ok(mappedModel);
+                
             },
-            errorCase: error => {
+            refused => {
+                logger.Warning("Access was refused because : {reason}", refused.Reason);
+                return TypedResults.Forbid();
+            },
+            error => {
                 logger.Warning("Failed to get user with id {id} because '{reason}'", req.UserId, error.Value);
                 return TypedResults.NotFound();
             }
