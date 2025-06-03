@@ -1,19 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
-using InfiniLore.Shared;
+using CodeOfChaos.Extensions.DependencyInjection;
 
-namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
+namespace InfiniLore.Modules.Core.Shared;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetLsMarkdownFilesByOwnerQuery(
-    Guid OwnerId,
-    QueryConfig QueryConfig = default,
-    Pagination Pagination = default
-) : MessageRequest<PaginatedData<LsMarkdownFileModel>>;
+[InjectableScoped<IJsRuntimeHelper>]
+public class JsRuntimeHelper(
+    IJsSecureStorage jsSecureStorage
+) : IJsRuntimeHelper {
+
+    public IJsSecureStorage SecureStorage { get; } = jsSecureStorage;
+}

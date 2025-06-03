@@ -29,48 +29,48 @@ public class UpsertUserProfileImageHandler(
     protected override async ValueTask<bool> ValidateAccessAsync(UpsertUserProfileImageRequest command, CancellationToken ct = default) 
         => await protectionRules.IsOwnerAsync(command.AccessingUser, command.UserId, ct);
     
-    protected override async Task<Result> HandleCommandAsync(UpsertUserProfileImageRequest command, CancellationToken ct = default) {
+    protected override async Task<Shared.Outcome> HandleCommandAsync(UpsertUserProfileImageRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         AterraEngine.Unions.Result<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
-        Result result =  await userModelResult.MatchAsync(
+        Shared.Outcome outcome =  await userModelResult.MatchAsync(
             async model => await ProcessUserModelAsync(command, model, unitOfWork, ct),
             _ => {
                 logger.Warning("Failed to find user with id {UserId}", command.UserId);
-                return Task.FromResult(Result.FromError("Failed to find user with id"));
+                return Task.FromResult(Shared.Outcome.FromError("Failed to find user with id"));
             }
         );
 
-        return result;
+        return outcome;
     }
 
-    private async Task<Result> ProcessUserModelAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel userModel,IUnitOfWork unitOfWork, CancellationToken ct) {
+    private async Task<Shared.Outcome> ProcessUserModelAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel userModel,IUnitOfWork unitOfWork, CancellationToken ct) {
         if (await TryCreateNewMetaDataAsync(command, userModel, unitOfWork, ct) is not {} metaData) {
             logger.Warning("Failed to create new lorescope image metadata");
-            return Result.FromError("Failed to create new lorescope image metadata");
+            return Shared.Outcome.FromError("Failed to create new lorescope image metadata");
         }
 
         AterraEngine.Unions.Result result = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
-        Result result =  await result.MatchAsync(async state => {
+        Shared.Outcome outcome =  await outcome.MatchAsync(async state => {
             if (state is false) {
                 logger.Warning("Failed to upload file to s3 bucket");
-                return Result.FromError("Failed to upload file to s3 bucket");
+                return Shared.Outcome.FromError("Failed to upload file to s3 bucket");
             }
 
             // ReSharper disable once InvertIf
             if (!await unitOfWork.TryCommitTransactionAsync(ct)) {
                 logger.Warning("Failed to commit transaction");
-                return Result.FromError("Failed to commit transaction");
+                return Shared.Outcome.FromError("Failed to commit transaction");
             }
 
             return true;
         }, _ => {
             logger.Warning("Failed to upload file to s3 bucket");
-            return Task.FromResult(Result.FromError("Failed to upload file to s3 bucket"));
+            return Task.FromResult(Shared.Outcome.FromError("Failed to upload file to s3 bucket"));
         });
         
-        return result;
+        return outcome;
     }
     
     private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {

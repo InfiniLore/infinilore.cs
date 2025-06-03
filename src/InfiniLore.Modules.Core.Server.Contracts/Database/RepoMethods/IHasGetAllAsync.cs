@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Shared;
 
 namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
@@ -8,7 +9,7 @@ namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasGetAllAsync<T> where T : BasicModel {
-    ValueTask<Result<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default);
+    ValueTask<Outcome<T[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default);
 
-    ValueTask<PaginatedResult<T>> GetAllAsync(Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default);
+    ValueTask<PaginatedOutcome<T>> GetAllAsync(Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default);
 }

@@ -4,12 +4,12 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ public class UpsertLsMarkdownFileEndpoint(
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        Result result = await messageBroker.UpsertLsMarkdownFileAsync(
+        Outcome outcome = await messageBroker.UpsertLsMarkdownFileAsync(
             req.LoreScopeId, 
             file.FileName,
             fileStream,
@@ -60,8 +60,8 @@ public class UpsertLsMarkdownFileEndpoint(
         );
 
         // Verify Response
-        if (!result.TryGetState(out bool? successful)) {
-            logger.Warning("FAILED, {@state}", result.AsError);
+        if (!outcome.TryGetAsState(out bool successful)) {
+            logger.Warning("FAILED, {@state}", outcome.AsError);
             AddError("Failed to upsert markdown file.");
             return new ProblemDetails(ValidationFailures);
         }

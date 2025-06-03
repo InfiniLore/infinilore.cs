@@ -11,6 +11,6 @@ namespace InfiniLore.Modules.Core.Server.Database;
 public interface IKeyValueEntryRepository :
     IUnitOfWorkRepository,
     IHasGetCountAsync {
-    ValueTask<Result> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default);
-    ValueTask<Result<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default);
+    ValueTask<Shared.Outcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default);
+    ValueTask<Shared.Outcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default);
 }

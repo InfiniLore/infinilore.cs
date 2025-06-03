@@ -4,11 +4,11 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 using ProblemDetails=FastEndpoints.ProblemDetails;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
@@ -43,8 +43,8 @@ public class CreateLorescopeEndpoint(
     public override async Task<Response> ExecuteAsync(CreateLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Core.Server.Result<Guid> result = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
-        return result.Match<Response>(
+        Core.Shared.Outcome<Guid> outcome = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
+        return outcome.Match<Response>(
             id => TypedResults.Ok(id),
             error => {
                 logger.Error("Failed to create lorescope for user with id {id} because '{reason}'", req.UserId, error);

@@ -4,7 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
-namespace InfiniLore.Shared.Services;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -5,11 +5,11 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Queries;
 
@@ -25,12 +25,12 @@ public class GetLsMarkdownFilesByOwnerHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Core.Server.Result<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Shared.Outcome<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
         InfiniLore.Shared.PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
-        if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return Result.FromError("Failed to get markdown file");
+        if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return Outcome.FromError("Failed to get markdown file");
 
         IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
             if (model.S3FileMetaData is null) return;

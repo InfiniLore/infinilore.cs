@@ -4,7 +4,7 @@
 using InfiniLore.Credentials;
 using System.Diagnostics.CodeAnalysis;
 
-namespace InfiniLore.Shared.Auth;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -1,10 +1,16 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
+using InfiniLore.Credentials;
+
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IHasGetByIdAsync<T> where T : BasicModel {
-    ValueTask<Shared.Outcome<T>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default);
+[CredentialsStore(CredentialsFlags.ToLowerCaseInvariant, true, "/")]
+public static partial class InfiniLoreClaimsStore {
+    private const string UrlPrefix = "https://claims.infinilore.dev";
+
+    [Prefix(UrlPrefix)] public static partial string UserId { get; }
+    [Prefix(UrlPrefix)] public static partial string UserName { get; }
 }

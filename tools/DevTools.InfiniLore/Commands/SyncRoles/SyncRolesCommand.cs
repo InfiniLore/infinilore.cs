@@ -5,7 +5,6 @@ using Auth0.ManagementApi.Models;
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0.Services;
 using InfiniLore.Credentials.Auth0.Utility;
-using InfiniLore.Shared.Auth;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.Collections.Frozen;

@@ -6,9 +6,9 @@ namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasDeleteAsync<in T> where T : BasicModel {
-    ValueTask<Result> DeleteAsync(T model, CancellationToken ct = default);
-    ValueTask<Result> DeleteByIdAsync(Guid id, CancellationToken ct = default);
+    ValueTask<Shared.Outcome> DeleteAsync(T model, CancellationToken ct = default);
+    ValueTask<Shared.Outcome> DeleteByIdAsync(Guid id, CancellationToken ct = default);
 
-    ValueTask<Result> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
-    ValueTask<Result> DeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
+    ValueTask<Shared.Outcome> DeleteRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
+    ValueTask<Shared.Outcome> DeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default);
 }

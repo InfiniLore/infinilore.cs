@@ -1,7 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using System.Diagnostics.CodeAnalysis
@@ -75,7 +74,7 @@
             LoreScopeId.ToString()
         );
         
-        if (!result.TryGetAsSuccess(out ILoreScopeModel? model)) {
+        if (!result.TryGetAsData(out ILoreScopeModel? model)) {
             Logger.Warning("Could not retrieve model");
 
             LoreScopeModel = null;
@@ -109,7 +108,7 @@
                 SelectedFile
             );
 
-            if (!result.TryGetAsState(out bool? success) || success is false) {
+            if (!result.TryGetAsState(out bool success) || !success ) {
                 Logger.LogError("Failed to upload image, {@e}", result);
                 return;
             }

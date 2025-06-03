@@ -4,7 +4,6 @@
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Extensions;
 using InfiniLore.InfiniBlazor.Markdown.Config;
-using InfiniLore.Shared;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Wasm;

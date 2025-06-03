@@ -35,7 +35,7 @@ public class LoreScopeRemovedReceiver(
             ct: ct
         );
         
-        if (!markdownFilesResult.TryGetAsSuccess(out LsMarkdownFileModel[]? markdownFiles)) {
+        if (!markdownFilesResult.TryGetAsData(out LsMarkdownFileModel[]? markdownFiles)) {
             logger.Warning("Failed to get markdown files for lore scope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }

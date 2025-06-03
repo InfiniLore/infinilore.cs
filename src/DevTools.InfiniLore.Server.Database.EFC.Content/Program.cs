@@ -6,7 +6,6 @@ using InfiniLore.Server.Database;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
-using InfiniLore.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

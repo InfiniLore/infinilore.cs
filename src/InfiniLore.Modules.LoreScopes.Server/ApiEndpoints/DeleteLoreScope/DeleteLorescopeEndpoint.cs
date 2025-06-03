@@ -4,12 +4,12 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,11 +43,11 @@ public class DeleteLorescopeEndpoint(
     public override async Task<Response> ExecuteAsync(DeleteLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        Result result = await messageBroker.DeleteLoreScopeAsync(req.LoreScopeId, ct: ct);
+        Outcome outcome = await messageBroker.DeleteLoreScopeAsync(req.LoreScopeId, ct: ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool? successful)) {
-            logger.Warning("FAILED, {@state}", result.AsError);
+        if (!outcome.TryGetAsState(out bool successful)) {
+            logger.Warning("FAILED, {@state}", outcome.AsError);
             AddError("Failed to delte lorescope");
             return new ProblemDetails(ValidationFailures);
         }

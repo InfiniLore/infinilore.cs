@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
+using PermissionsStore = InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -37,9 +37,9 @@ public class GetUserProfileEndpoint(
 
     public override async Task<Response> ExecuteAsync(GetUserProfileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
-        Result<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
-        return result.Match<Response>(
+
+        Shared.Outcome<InfiniLoreUserModel> outcome = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
+        return outcome.Match<Response>(
             model => {
                 logger.Information("Successfully retrieved user with id {id}", req.UserId);
                 UserProfileResponse mappedModel = Map.FromEntity(model);

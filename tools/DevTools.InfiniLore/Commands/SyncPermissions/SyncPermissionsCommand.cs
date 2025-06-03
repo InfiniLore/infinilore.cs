@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using InfiniLore.Credentials.Auth0.Utility;
-using InfiniLore.Shared.Auth;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 

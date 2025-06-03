@@ -5,7 +5,7 @@ using InfiniLore.Credentials;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 
-namespace InfiniLore.Shared.Auth;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

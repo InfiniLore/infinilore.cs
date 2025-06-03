@@ -6,7 +6,6 @@ using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +43,7 @@ public class GetLoreScopesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Result<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
+        Core.Shared.Outcome<PaginatedData<LoreScopeModel>> outcome = await messageBroker.GetLoreScopesByOwnerAsync(
             req.UserId,
             QueryConfig.From(req),
             Pagination.From(req),
@@ -52,8 +51,8 @@ public class GetLoreScopesEndpoint(
         );
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedResult)) {
-            logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
+        if (!outcome.TryGetAsData(out PaginatedData<LoreScopeModel> paginatedResult)) {
+            logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, outcome.AsError.Value);
             return TypedResults.NotFound();
         }
 
@@ -64,8 +63,8 @@ public class GetLoreScopesEndpoint(
         LoreScopesResponse response = Map.FromEntity(paginatedResult);
 
         List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {
-            Result<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
-            if (imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
+            Core.Shared.Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
+            if (imageUrlResponse.TryGetAsData(out string? imageUrl)) {
                 item.ImageUrl = imageUrl;
             }
             return item;

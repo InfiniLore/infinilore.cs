@@ -14,11 +14,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
-        <PackageReference Include="InfiniLore.Credentials" />
-        <PackageReference Include="InfiniLore.Credentials.Generators">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
         <PackageReference Include="Microsoft.AspNetCore.Components"/>
         <PackageReference Include="Microsoft.Extensions.Http"/>

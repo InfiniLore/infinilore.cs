@@ -2,17 +2,17 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Shared.Services.JwtToken;
+using InfiniLore.Modules.Core.Shared.JwtToken;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace InfiniLore.Shared.JwtToken;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IJwtTokenJsSecureStorage>]
-public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenJsSecureStorage> logger, IJwtTokenEncoder encoder) : IJwtTokenJsSecureStorage {
+[InjectableScoped<IJsSecureStorage>]
+public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenJsSecureStorage> logger, IJwtTokenEncoder encoder) : IJsSecureStorage {
     private const string StorageKey = "jwt_token";
 
     private const string JsSaveTokenAsync = "secureStorage.saveTokenAsync";

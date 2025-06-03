@@ -1,19 +1,16 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
 @using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
-@using InfiniLore.Shared.Auth
-@using InfiniLore.Shared.Services.JwtToken
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @rendermode InteractiveServer
-@inject IJwtTokenJsSecureStorage JsTokenProvider
+@inject IJsSecureStorage JsTokenProvider
 @inject IThemeSelector ThemeSelector
 @inject IInteractiveApiUsers UserInteractiveApi
 @inject NavigationManager NavigationManager
@@ -133,8 +130,8 @@
                 return;
             }
 
-            Result<IInfiniLoreUserModel> result = await UserInteractiveApi.GetUserAsync(userId);
-            if (!result.TryGetAsSuccess(out IInfiniLoreUserModel? userModel)) {
+            Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
+            if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) {
                 await JsTokenProvider.RemoveTokenAsync();
                 NavigationManager.NavigateTo("/account/logout");
                 return;

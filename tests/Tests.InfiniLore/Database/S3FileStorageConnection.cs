@@ -25,7 +25,7 @@ public class S3FileStorageConnection(ServiceProviderDataSource serviceProvider) 
         Result result = await S3FileStorageService.CanConnectAsync();
 
         // Assert
-        await Assert.That(result.TryGetState(out bool? isConnected)).IsTrue();
+        await Assert.That(result.TryGetAsState(out bool isConnected)).IsTrue();
         await Assert.That(isConnected).IsTrue();
     }
 }

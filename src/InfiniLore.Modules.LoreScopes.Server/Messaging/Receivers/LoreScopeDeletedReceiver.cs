@@ -34,7 +34,7 @@ public class LoreScopeDeletedReceiver(
             ct: ct
         );
 
-        if (!modelResult.TryGetAsSuccess(out LoreScopeModel? model)) {
+        if (!modelResult.TryGetAsData(out LoreScopeModel? model)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }

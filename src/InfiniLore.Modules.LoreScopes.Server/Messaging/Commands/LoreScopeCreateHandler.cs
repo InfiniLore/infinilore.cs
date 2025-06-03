@@ -24,16 +24,16 @@ public class LoreScopeCreateHandler(
     ILogger<LoreScopeCreateHandler> logger,
     IValidator<LoreScopeModel> validator,
     [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
-) : CommandHandler<CreateLoreScopeRequest, Core.Server.Result<Guid>> {
-    public override async Task<Core.Server.Result<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
+) : CommandHandler<CreateLoreScopeRequest, Core.Shared.Outcome<Guid>> {
+    public override async Task<Core.Shared.Outcome<Guid>> ExecuteAsync(CreateLoreScopeRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         Result loreScopeNameTakenResult = await loreScopeRepo.IsNameTakenAsync(command.LoreScopeName, command.OwnerId, ct:ct);
         Result userIdExistsResult = await userRepo.IsIdTakenAsync(command.OwnerId, ct);
-        if (loreScopeNameTakenResult.TryGetState(out bool? isTaken) && isTaken is true) return Core.Server.Result<Guid>.FromError("LoreScope name already taken for this user");
-        if (userIdExistsResult.IsError) return Core.Server.Result<Guid>.FromError("Owner id does not exist");
+        if (loreScopeNameTakenResult.TryGetAsState(out bool isTaken) && isTaken is true) return Core.Shared.Outcome<Guid>.FromError("LoreScope name already taken for this user");
+        if (userIdExistsResult.IsError) return Core.Shared.Outcome<Guid>.FromError("Owner id does not exist");
 
         // Create a new lorescope based on the request
         var id = Guid.CreateVersion7();
@@ -48,12 +48,12 @@ public class LoreScopeCreateHandler(
         ValidationResult validationResult = await validator.ValidateAsync(loreScope, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors);
-            return Core.Server.Result<Guid>.FromError("Validation failed");
+            return Core.Shared.Outcome<Guid>.FromError("Validation failed");
         }
 
         // Save to Db
         Result result = await loreScopeRepo.AddAsync(loreScope, ct);
-        if (result.IsError) return Core.Server.Result<Guid>.FromError("Failed to save user to database");
+        if (result.IsError) return Core.Shared.Outcome<Guid>.FromError("Failed to save user to database");
 
 
         await messageBroker.InvokeNewLoreScopeCreatedAsync(loreScope.Id, Mode.WaitForAll, ct);

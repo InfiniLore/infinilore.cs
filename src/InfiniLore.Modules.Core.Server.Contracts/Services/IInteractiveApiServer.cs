@@ -1,7 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.Services.InteractiveApi;
+using InfiniLore.Modules.Core.Shared.InteractiveApi;
 
 namespace InfiniLore.Modules.Core.Server;
 

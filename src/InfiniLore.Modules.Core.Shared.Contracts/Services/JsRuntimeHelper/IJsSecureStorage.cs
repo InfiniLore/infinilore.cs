@@ -1,12 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Shared.Services.JwtToken;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IJwtTokenJsSecureStorage {
-    Task SaveTokenAsync(string token, DateTime expiresAt, CancellationToken ct = default);
-    Task<string?> GetTokenAsync(CancellationToken ct = default);
-    Task RemoveTokenAsync(CancellationToken ct = default);
-}
+public interface IJsSecureStorage;

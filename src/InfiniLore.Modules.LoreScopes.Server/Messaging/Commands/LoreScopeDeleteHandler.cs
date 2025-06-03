@@ -5,13 +5,13 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
-using InfiniLore.Shared.Auth;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,26 +27,26 @@ public class LoreScopeDeleteHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Result> HandleCommandAsync(DeleteLoreScopeRequest command, CancellationToken ct = default) {
+    protected override async Task<Outcome> HandleCommandAsync(DeleteLoreScopeRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         AterraEngine.Unions.Result result = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
-        Result result = await result.MatchAsync(
+        Outcome outcome = await outcome.MatchAsync(
             async state => {
                 if (!state) {
                     logger.Warning("Failed to delete lorescope at id {id}", command.LoreScopeId);
-                    return Result.FromError("Failed to delete lorescope");
+                    return Outcome.FromError("Failed to delete lorescope");
                 }
 
                 await messageBroker.InvokeLoreScopeDeletedAsync(command.LoreScopeId, Mode.WaitForNone, ct: ct);
-                return Result.FromState(true);
+                return Outcome.FromState(true);
             }, _ => {
                 logger.Warning("Error occured during operation trying to delete lorescope at id {id}", command.LoreScopeId);
-                return Task.FromResult(Result.FromError("Failed to delete lorescope"));
+                return Task.FromResult(Outcome.FromError("Failed to delete lorescope"));
             }
         );
-        return result;
+        return outcome;
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(DeleteLoreScopeRequest command, CancellationToken ct = default) 

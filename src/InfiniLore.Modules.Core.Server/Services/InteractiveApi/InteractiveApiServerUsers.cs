@@ -5,7 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
-using InfiniLore.Shared.Extensions;
+using InfiniLore.Modules.Core.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace InfiniLore.Modules.Core.Server.InteractiveApi;
@@ -23,8 +23,8 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
     public async ValueTask<AterraEngine.Unions.Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromError("Invalid userId");
 
-        Result<InfiniLoreUserModel> result = await interactiveApi.MessageBroker.GetUserByIdAsync(parsedUserId, ct: ct);
-        return result.Match(
+        Outcome<InfiniLoreUserModel> outcome = await interactiveApi.MessageBroker.GetUserByIdAsync(parsedUserId, ct: ct);
+        return outcome.Match(
             successCase: AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromSuccess,
             errorCase: _ => AterraEngine.Unions.Result<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
         );
@@ -34,13 +34,13 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return AterraEngine.Unions.Result.FromError("Invalid userId");
         
         await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
-        Result result = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
+        Outcome outcome = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
             parsedUserId, 
             file.ContentType,
             stream,
             ct: ct
         );
-        return result.Match<AterraEngine.Unions.Result>(
+        return outcome.Match<AterraEngine.Unions.Result>(
             stateCase: state => state,
             errorCase: _ => AterraEngine.Unions.Result.FromError("Failed to retrieve user.")
         );

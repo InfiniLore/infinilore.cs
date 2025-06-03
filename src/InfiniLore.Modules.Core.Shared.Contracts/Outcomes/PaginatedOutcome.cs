@@ -2,21 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Shared;
 
-namespace InfiniLore.Modules.Core.Server;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UnionAliases("PaginatedData", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record struct PaginatedResult<T>() : IUnion<PaginatedData<T>, AccessRefused, Error<string>> where T : class {
-    public static PaginatedResult<T> FromError(string value) => FromError(new Error<string>(value));
-    public static PaginatedResult<T> FromAccessRefused(string value) => FromAccessRefused(new AccessRefused(value));
-    
-    public static implicit operator PaginatedResult<T>(Result resultWithError) {
-        return resultWithError.Match(
+public partial record struct PaginatedOutcome<T>() : IUnion<PaginatedData<T>, AccessRefused, Error<string>> where T : class {
+    public static implicit operator PaginatedOutcome<T>(Outcome outcomeWithError) {
+        return outcomeWithError.Match(
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             FromAccessRefused,
@@ -27,6 +22,12 @@ public partial record struct PaginatedResult<T>() : IUnion<PaginatedData<T>, Acc
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public static PaginatedOutcome<T> FromError(string value) 
+        => FromError(new Error<string>(value));
+    
+    public static PaginatedOutcome<T> FromAccessRefused(string value)
+        => FromAccessRefused(new AccessRefused(value));
+    
     public TOutput Match<TOutput>(
         Func<PaginatedData<T>, TOutput> dataCase,
         Func<Error<string>, TOutput> errorCase

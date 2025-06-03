@@ -5,11 +5,11 @@ using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Queries;
 
@@ -25,13 +25,13 @@ public class GetLsMarkdownFileByIdHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Core.Server.Result<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Shared.Outcome<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
         AterraEngine.Unions.Result<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
-        if (!response.TryGetAsSuccess(out LsMarkdownFileModel? model)) return Result.FromError("Failed to get markdown file");
-        if (model.S3FileMetaData is null) return Result.FromError("Failed to get complete S3FileMetaData");
+        if (!response.TryGetAsData(out LsMarkdownFileModel? model)) return Outcome.FromError("Failed to get markdown file");
+        if (model.S3FileMetaData is null) return Outcome.FromError("Failed to get complete S3FileMetaData");
         
         // Get the url for the file
         string bucketName =  S3BucketNames.GetLoreScopeBucket(model.OwnerId);

@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Shared.ClaimsHelper;
-using InfiniLore.Shared.Services.ClaimsHelper;
+using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.ClaimsHelper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;

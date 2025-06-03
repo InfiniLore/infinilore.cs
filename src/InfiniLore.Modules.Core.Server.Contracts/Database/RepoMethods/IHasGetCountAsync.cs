@@ -6,5 +6,5 @@ namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasGetCountAsync {
-    ValueTask<Result<int>> GetCountAsync(CancellationToken ct = default);
+    ValueTask<Shared.Outcome<int>> GetCountAsync(CancellationToken ct = default);
 }

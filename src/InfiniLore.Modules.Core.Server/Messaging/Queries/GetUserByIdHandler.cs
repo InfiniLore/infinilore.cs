@@ -18,25 +18,25 @@ public class GetUserByIdHandler(
     ILogger<GetUserByIdHandler> logger,
     IS3FileStorage fileStorage   
 ) : AccessProtectedCommandHandler<GetUserByIdQuery, InfiniLoreUserModel>(logger) {
-    protected override Result<InfiniLoreUserModel> AccessDeniedResult => Result.FromError("Cannot get user by id. Access denied.");
+    protected override Shared.Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Shared.Outcome.FromError("Cannot get user by id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Result<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
-        if (command.UserId == Guid.Empty) return Result.FromError("Cannot get user by id.  id is empty.");
+    protected override async Task<Shared.Outcome<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
+        if (command.UserId == Guid.Empty) return Shared.Outcome.FromError("Cannot get user by id.  id is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         AterraEngine.Unions.Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
-        if (!result.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
+        if (!result.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
-            return Result.FromError("Cannot get user by id.");
+            return Shared.Outcome.FromError("Cannot get user by id.");
         }
 
         // Skip if there is no profile image.
-        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Result.FromSuccess(user);
+        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Shared.Outcome.FromSuccess(user);
 
         AterraEngine.Unions.Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
             S3BucketNames.UserProfileImages,
@@ -50,7 +50,7 @@ public class GetUserByIdHandler(
             error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
         );
             
-        return Result.FromSuccess(user);
+        return Shared.Outcome.FromSuccess(user);
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByIdQuery command, CancellationToken ct = default)

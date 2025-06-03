@@ -14,24 +14,21 @@ using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
+using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.JwtToken;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Server.Cli;
-using InfiniLore.Shared;
-using InfiniLore.Shared.JwtToken;
-using InfiniLore.Shared.Services.JwtToken;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
-using SharedAssemblyEntry = InfiniLore.Shared.IAssemblyEntry;
 
 namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -193,7 +190,6 @@ public static class Program {
             .AddInteractiveWebAssemblyComponents();
         
         builder.Services.RegisterServicesFromInfiniLoreServer();
-        builder.Services.RegisterServicesFromInfiniLoreShared();
 
         return builder.Build();
     }
@@ -211,19 +207,7 @@ public static class Program {
         }
 
         app.UseHttpsRedirection();
-
-        // Reference the library containing the static files
-        var embeddedProvider = new EmbeddedFileProvider(
-            typeof(SharedAssemblyEntry).Assembly,// Replace with a type from the external library
-            "InfiniLore.Shared.wwwroot"// The root path defined in the library
-        );
-
-        app.UseStaticFiles(new StaticFileOptions {
-                FileProvider = embeddedProvider,
-                RequestPath = ""
-            }
-        );
-
+        
         app.UseStaticFiles();
         app.UseAntiforgery();
 

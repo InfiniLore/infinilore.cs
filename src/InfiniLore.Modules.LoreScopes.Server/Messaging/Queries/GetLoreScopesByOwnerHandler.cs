@@ -4,11 +4,11 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Result=InfiniLore.Modules.Core.Server.Result;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ public class GetLoreScopesByOwnerHandler(
     ILogger<GetLoreScopesByOwnerHandler> logger
 ) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
 
-    protected override async Task<Result<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<Core.Shared.Outcome<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
@@ -31,10 +31,10 @@ public class GetLoreScopesByOwnerHandler(
         //      Do we do that in the config level, or here?
 
         return response.Match(
-            Result.FromSuccess,
+            Outcome.FromSuccess,
             _ => {
                 logger.Warning("Failed to get LoreScopes");
-                return Result.FromError("Failed to get LoreScopes");
+                return Outcome.FromError("Failed to get LoreScopes");
             }
         );
     }

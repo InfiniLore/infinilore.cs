@@ -21,9 +21,9 @@ public class MediatorProxyAccessTokenStore(
     // -----------------------------------------------------------------------------------------------------------------
     // ReSharper disable once InvertIf
     public async ValueTask<IAuth0AccessToken> GetAccessTokenAsync(CancellationToken ct = default) {
-        Result<IAuth0AccessToken> mediatorResponse = await messageBroker.GetAuth0AccessTokenAsync(ct);
+        Shared.Outcome<IAuth0AccessToken> mediatorResponse = await messageBroker.GetAuth0AccessTokenAsync(ct);
         
-        if (!mediatorResponse.TryGetAsSuccess(out IAuth0AccessToken? token)) {
+        if (!mediatorResponse.TryGetAsData(out IAuth0AccessToken? token)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;
             logger.Warning("Failed to retrieve access token. Errors: {Errors}", errors);
             return Auth0AccessToken.Empty;
@@ -33,9 +33,9 @@ public class MediatorProxyAccessTokenStore(
     }
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
-        Result<bool> mediatorResponse = await messageBroker.StoreAuth0AccessTokenAsync(token, ct);
+        Shared.Outcome<bool> mediatorResponse = await messageBroker.StoreAuth0AccessTokenAsync(token, ct);
         
-        if (!mediatorResponse.TryGetAsSuccess(out bool success)) {
+        if (!mediatorResponse.TryGetAsData(out bool success)) {
             ICollection<string> errors = mediatorResponse.AsError.Value;
             logger.Critical("Failed to retrieve access token. Errors: {Errors}", errors);
             throw new ApplicationException(errors.ToString());

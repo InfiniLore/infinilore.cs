@@ -29,7 +29,7 @@ public class LoreScopeDeletedReceiver(
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
         Result<LsMarkdownFileModel[]> markdownFilesResult = await markdownFileRepository.GetByOwnerAsync(eventModel.LoreScopeId, ct: ct);
-        if (!markdownFilesResult.TryGetAsSuccess(out LsMarkdownFileModel[]? markdownFiles)) {
+        if (!markdownFilesResult.TryGetAsData(out LsMarkdownFileModel[]? markdownFiles)) {
             logger.Warning("Failed to get markdown files for lore scope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
