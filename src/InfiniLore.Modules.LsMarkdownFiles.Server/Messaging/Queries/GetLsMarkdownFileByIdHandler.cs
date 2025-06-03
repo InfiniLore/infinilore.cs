@@ -25,17 +25,17 @@ public class GetLsMarkdownFileByIdHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Core.Shared.Outcome<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
+    protected override async Task<Outcome<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
-        AterraEngine.Unions.Result<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
+        Outcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
         if (!response.TryGetAsData(out LsMarkdownFileModel? model)) return Outcome.FromError("Failed to get markdown file");
         if (model.S3FileMetaData is null) return Outcome.FromError("Failed to get complete S3FileMetaData");
         
         // Get the url for the file
         string bucketName =  S3BucketNames.GetLoreScopeBucket(model.OwnerId);
-        AterraEngine.Unions.Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
+        Outcome<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
         urlResult.Switch(
             url => model.S3FileMetaData.S3ResourceUrl = url,
             _ => logger.Warning("Failed to get s3 resource url")

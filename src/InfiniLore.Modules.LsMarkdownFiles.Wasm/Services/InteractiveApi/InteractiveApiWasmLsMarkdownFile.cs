@@ -7,6 +7,7 @@ using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile;
 using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile.Item;
 using InfiniLore.Kiota.Models;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
@@ -27,7 +28,7 @@ public class InteractiveApiWasmLsMarkdownFile(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<ILsMarkdownFileModel>> GetLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {
+    public async ValueTask<Outcome<ILsMarkdownFileModel>> GetLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithMarkdownFileItemRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[lsMarkdownFileId];
@@ -35,7 +36,7 @@ public class InteractiveApiWasmLsMarkdownFile(
 
             if (result is null) return Result<ILsMarkdownFileModel>.FromError(interactiveApi.DefaultApiError);
 
-            return Result<ILsMarkdownFileModel>.FromSuccess(WasmLsMarkdownFileModel.FromKiotaModel(result));
+            return Result<ILsMarkdownFileModel>.FromData(WasmLsMarkdownFileModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Could not get ls markdown file by id {id}", lsMarkdownFileId);
@@ -43,7 +44,7 @@ public class InteractiveApiWasmLsMarkdownFile(
         }
     }
 
-    public async ValueTask<PaginatedResult<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
+    public async ValueTask<PaginatedOutcome<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MarkdownFileRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
@@ -56,7 +57,7 @@ public class InteractiveApiWasmLsMarkdownFile(
                 ct
             );
 
-            if (result is null) return PaginatedResult<ILsMarkdownFileModel>.FromError("Could not get data from API");
+            if (result is null) return PaginatedOutcome<ILsMarkdownFileModel>.FromError("Could not get data from API");
             
             ILsMarkdownFileModel[] items = (result.Items ?? Enumerable.Empty<KiotaLsMarkdownFileResponse>())
                 .Select(WasmLsMarkdownFileModel.FromKiotaModel)
@@ -71,11 +72,11 @@ public class InteractiveApiWasmLsMarkdownFile(
         }
         catch (Exception e) {
             logger.Error(e, "Could not get ls markdown files");
-            return PaginatedResult<ILsMarkdownFileModel>.FromError("Could not get ls markdown files");
+            return PaginatedOutcome<ILsMarkdownFileModel>.FromError("Could not get ls markdown files");
         }
     }
 
-    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
+    public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MarkdownFileRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile;
@@ -94,17 +95,17 @@ public class InteractiveApiWasmLsMarkdownFile(
             );
 
             Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
-            if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
 
-            return Result.FromState(true);
+            return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.Error(e, "Could not upsert ls markdown file");
-            return Result.FromError("Could not upsert ls markdown file");
+            return Outcome.FromError("Could not upsert ls markdown file");
         }
     }
     
-    public async ValueTask<Result> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
+    public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
         byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
         await using var stream = new MemoryStream(textBytes);
         
@@ -112,19 +113,19 @@ public class InteractiveApiWasmLsMarkdownFile(
         return result;
     }
 
-    public async ValueTask<Result> DeleteLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {
+    public async ValueTask<Outcome> DeleteLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithMarkdownFileItemRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[lsMarkdownFileId];
 
             Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
 
-            if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
-            return Result.FromState(true);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.Error(e, "Could not delete ls markdown file");
-            return Result.FromError("Could not delete ls markdown file");
+            return Outcome.FromError("Could not delete ls markdown file");
         }
     }
 }

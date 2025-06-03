@@ -186,7 +186,7 @@ public class MinIoS3FileStorage(
                 .WithExpiry((int)(expiry ?? DefaultUrlExpiry).TotalSeconds); // Reduce expiry to 5 minutes
         
             string url = await minioClient.PresignedGetObjectAsync(presignedArgs);
-            return Shared.Outcome<string>.FromSuccess(url);
+            return Shared.Outcome<string>.FromData(url);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to generate presigned URL for file {FileName} in bucket {BucketName}", fileName, bucketName);

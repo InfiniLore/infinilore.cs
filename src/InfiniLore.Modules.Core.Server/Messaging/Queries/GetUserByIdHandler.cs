@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -29,16 +30,16 @@ public class GetUserByIdHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        AterraEngine.Unions.Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
+        Outcome<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
         if (!result.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
             return Shared.Outcome.FromError("Cannot get user by id.");
         }
 
         // Skip if there is no profile image.
-        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Shared.Outcome.FromSuccess(user);
+        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Shared.Outcome.FromData(user);
 
-        AterraEngine.Unions.Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
+        Outcome<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
             S3BucketNames.UserProfileImages,
             user.ProfileImageMetaData.FileName,
             expiry: TimeSpan.FromDays(1),
@@ -50,7 +51,7 @@ public class GetUserByIdHandler(
             error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
         );
             
-        return Shared.Outcome.FromSuccess(user);
+        return Shared.Outcome.FromData(user);
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByIdQuery command, CancellationToken ct = default)

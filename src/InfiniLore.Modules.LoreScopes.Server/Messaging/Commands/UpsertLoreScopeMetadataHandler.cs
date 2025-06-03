@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
@@ -28,7 +27,7 @@ public class UpsertLoreScopeMetadataHandler(
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        AterraEngine.Unions.Result<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, ct: ct);
+        Outcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, ct: ct);
         if (!foundModelResult.TryGetAsData(out LoreScopeModel? foundModel)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
@@ -39,12 +38,8 @@ public class UpsertLoreScopeMetadataHandler(
         foundModel.UpdateLastModifiedDate();
         
         ValidationResult? validationResult = await validator.ValidateAsync(foundModel, ct);
-        if (!validationResult.IsValid) return Outcome.FromError(new Error<ICollection<string>>(validationResult.Errors.Select(x => x.ErrorMessage).ToList()));
+        if (!validationResult.IsValid) return Outcome.FromError(string.Join(',', validationResult.Errors.Select(x => x.ErrorMessage)));
         
-        AterraEngine.Unions.Result result = await loreScopeRepo.UpdateAsync(foundModel, ct);
-        return !result.IsError 
-            ? result.State
-            : Outcome.FromError("Failed to save lorescope to database");
-
+        return await loreScopeRepo.UpdateAsync(foundModel, ct);
     }
 }

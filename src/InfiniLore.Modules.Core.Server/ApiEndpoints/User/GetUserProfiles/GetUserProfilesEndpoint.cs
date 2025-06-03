@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ public class GetUserProfilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Shared.Outcome<PaginatedData<InfiniLoreUserModel>> outcome = await messageBroker.GetUsersAsync(
+        Outcome<PaginatedData<InfiniLoreUserModel>> outcome = await messageBroker.GetUsersAsync(
             QueryConfig.From(req),
             Pagination.From(req), 
             ct: ct

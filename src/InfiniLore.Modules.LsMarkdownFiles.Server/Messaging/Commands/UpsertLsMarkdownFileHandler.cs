@@ -33,13 +33,13 @@ public class UpsertLsMarkdownFileHandler(
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         
-        AterraEngine.Unions.Result loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
+        Outcome loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
         if (!loreScopeExistsResult.TryGetAsState(out bool success) || !success ) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
         }
 
-        AterraEngine.Unions.Result<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct:ct);
+        Outcome<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct:ct);
         
         // If the Known is set to default, it will be empty and thus result in a new file being created.
         S3FileMetaDataModel s3FileMetaData = knownFileResult.Match(
@@ -56,7 +56,7 @@ public class UpsertLsMarkdownFileHandler(
             return Outcome.FromError("Failed to validate S3FileMetaDataModel");
         }
 
-        AterraEngine.Unions.Result s3RepoResult = await s3FileMetaDataRepo.AddOrUpdateAsync(s3FileMetaData, ct);
+        Outcome s3RepoResult = await s3FileMetaDataRepo.AddOrUpdateAsync(s3FileMetaData, ct);
         if (!s3RepoResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to add or update S3FileMetaDataModel");
             return Outcome.FromError("Failed to add or update S3FileMetaDataModel");
@@ -77,13 +77,13 @@ public class UpsertLsMarkdownFileHandler(
                 Name = command.FileName,
             });
         
-        AterraEngine.Unions.Result fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
+        Outcome fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
         if (!fileRepoResult.TryGetAsState(out success) || success is false) {
             logger.Warning("Failed to add or update LsMarkdownFileModel");
             return Outcome.FromError("Failed to add or update LsMarkdownFileModel");
         }
         
-        AterraEngine.Unions.Result fileUploadResult = await fileStorage.TryUploadFileAsync(
+        Outcome fileUploadResult = await fileStorage.TryUploadFileAsync(
             S3BucketNames.GetLoreScopeBucket(command.LoreScopeId),
             s3FileMetaData.FileName,
             command.FileStream,

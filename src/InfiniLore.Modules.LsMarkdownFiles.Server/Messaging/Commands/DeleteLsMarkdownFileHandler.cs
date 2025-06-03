@@ -29,7 +29,7 @@ public class DeleteLsMarkdownFileHandler(
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
         // Try and find an existing model
-        AterraEngine.Unions.Result<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
+        Outcome<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
         if (!existingModel.TryGetAsData(out LsMarkdownFileModel? markdownFileModel)) {
             logger.Warning("Failed to find markdown file with id {MarkdownFileId}", command.MarkdownFileId);
             return Outcome.FromError("Failed to find markdown file with id");
@@ -38,20 +38,20 @@ public class DeleteLsMarkdownFileHandler(
         // Delete the file and the metadata
         if (markdownFileModel.S3FileMetaData is {} metaData) {
             string bucketName = S3BucketNames.GetLoreScopeBucket(markdownFileModel.OwnerId);
-            AterraEngine.Unions.Result s3DeleteResult = await fileStorage.TryRemoveFileAsync(bucketName, metaData.FileName, ct);
+            Outcome s3DeleteResult = await fileStorage.TryRemoveFileAsync(bucketName, metaData.FileName, ct);
             if (!s3DeleteResult.TryGetAsState(out bool success) || !success ) {
                 logger.Warning("Failed to delete file from S3");
             }
             
-            AterraEngine.Unions.Result metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
-            if (!metaDataDeleteResult.TryGetAsState(out success) || success is false) {
+            Outcome metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
+            if (!metaDataDeleteResult.TryGetAsState(out success) || !success) {
                 logger.Warning("Failed to delete S3FileMetaDataModel");
             }
         }
         
         // Delete the registrations
-        AterraEngine.Unions.Result deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
-        if (!deleteResult.TryGetAsState(out bool? deleted) || deleted is false) {
+        Outcome deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
+        if (!deleteResult.TryGetAsState(out bool deleted) || !deleted) {
             logger.Warning("Failed to delete markdown file");
             return Outcome.FromError("Failed to delete markdown file");       
         }

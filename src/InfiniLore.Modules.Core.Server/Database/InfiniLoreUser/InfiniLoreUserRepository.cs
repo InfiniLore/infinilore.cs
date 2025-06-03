@@ -34,7 +34,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         Guid result = await query.FirstOrDefaultAsync(cancellationToken: ct);
         if (result == Guid.Empty) return Shared.Outcome<Guid>.FromError(RepositoryFailures.ModelNotFound);
 
-        return Shared.Outcome<Guid>.FromSuccess(result);
+        return Shared.Outcome<Guid>.FromData(result);
     }
 
     public async ValueTask<Shared.Outcome> IsUsernameTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
@@ -106,7 +106,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         InfiniLoreUserModel[] result = await query.ToArrayAsync(cancellationToken: ct);
         if (result.IsEmpty()) return Shared.Outcome<InfiniLoreUserModel[]>.FromError(RepositoryFailures.ModelsNotFound);
 
-        return Shared.Outcome<InfiniLoreUserModel[]>.FromSuccess(result);
+        return Shared.Outcome<InfiniLoreUserModel[]>.FromData(result);
     }
 
     #region ByAuth0Id
@@ -131,7 +131,7 @@ public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel
         // Retrieve
         if (result is null) return Shared.Outcome<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelNotFound);
 
-        return Shared.Outcome<InfiniLoreUserModel>.FromSuccess(result);
+        return Shared.Outcome<InfiniLoreUserModel>.FromData(result);
     }
     #endregion
 }

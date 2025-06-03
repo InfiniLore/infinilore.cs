@@ -7,7 +7,7 @@ namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UnionAliases("PaginatedData", "AccessRefused", "Error")]
+[UnionAliases("Data", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
 public partial record struct PaginatedOutcome<T>() : IUnion<PaginatedData<T>, AccessRefused, Error<string>> where T : class {
     public static implicit operator PaginatedOutcome<T>(Outcome outcomeWithError) {
@@ -32,7 +32,7 @@ public partial record struct PaginatedOutcome<T>() : IUnion<PaginatedData<T>, Ac
         Func<PaginatedData<T>, TOutput> dataCase,
         Func<Error<string>, TOutput> errorCase
     ) => this switch {
-        { IsPaginatedData: true, AsPaginatedData: var value } => dataCase(value),
+        { IsData: true, AsData: var value } => dataCase(value),
         { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
         { IsError: true, AsError: var value } => errorCase(value),
         _ => throw new ArgumentException("Union does not contain a valid value")
@@ -42,7 +42,7 @@ public partial record struct PaginatedOutcome<T>() : IUnion<PaginatedData<T>, Ac
         Func<PaginatedData<T>, Task<TOutput>> dataCase,
         Func<Error<string>, Task<TOutput>> errorCase
     ) => this switch {
-        { IsPaginatedData: true, AsPaginatedData: var value } => await dataCase(value),
+        { IsData: true, AsData: var value } => await dataCase(value),
         { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
         { IsError: true, AsError: var value } => await errorCase(value),
         _ => throw new ArgumentException("Union does not contain a valid value")

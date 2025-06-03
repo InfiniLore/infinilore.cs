@@ -4,6 +4,7 @@
 @using InfiniLore.Kiota
 @using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope
 @using InfiniLore.Kiota.Extensions
+@using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Wasm.Contracts.Services
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
@@ -76,14 +77,14 @@
             return;
         }
 
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(_userId, Pagination.Default);
+        PaginatedOutcome<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopesAsync(_userId, Pagination.Default);
         if (result.TryGetAsErrorValue(out string? value)) {
             _apiResponse = value;
             StateHasChanged();
             return;
         }
 
-        string dataAsJson = JsonSerializer.Serialize(result.AsData, new JsonSerializerOptions {
+        string dataAsJson = JsonSerializer.Serialize(result.AsPaginatedData, new JsonSerializerOptions {
             WriteIndented = true,
         });
         _apiResponse = dataAsJson;

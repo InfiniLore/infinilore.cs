@@ -31,17 +31,17 @@ public class LoreScopeDeleteHandler(
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        AterraEngine.Unions.Result result = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
-        Outcome outcome = await outcome.MatchAsync(
-            async state => {
-                if (!state) {
-                    logger.Warning("Failed to delete lorescope at id {id}", command.LoreScopeId);
-                    return Outcome.FromError("Failed to delete lorescope");
-                }
-
+        Outcome result = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
+        Outcome outcome = await result.MatchAsync(
+            async _ => {
                 await messageBroker.InvokeLoreScopeDeletedAsync(command.LoreScopeId, Mode.WaitForNone, ct: ct);
                 return Outcome.FromState(true);
-            }, _ => {
+            },
+            _ => {
+                logger.Warning("Failed to delete lorescope at id {id}", command.LoreScopeId);
+                return Task.FromResult(Outcome.FromError("Failed to delete lorescope"));
+            },
+            _ => {
                 logger.Warning("Error occured during operation trying to delete lorescope at id {id}", command.LoreScopeId);
                 return Task.FromResult(Outcome.FromError("Failed to delete lorescope"));
             }

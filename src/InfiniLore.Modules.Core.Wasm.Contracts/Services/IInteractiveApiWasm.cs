@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Kiota;
-using InfiniLore.Shared.Services.InteractiveApi;
+using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
 

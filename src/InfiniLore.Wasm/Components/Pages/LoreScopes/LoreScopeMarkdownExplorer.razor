@@ -1,6 +1,8 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
+@using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
 @using System.Text
@@ -108,7 +110,7 @@
         if (pageNumber is 0) pagination = Pagination.Default with { PageSize = FilesPerPage };
         else if (!PaginatedFiles.TryGetNextPage(FilesPerPage, out pagination)) pagination = PaginatedFiles.GetCurrentPage(FilesPerPage);
 
-        PaginatedResult<ILsMarkdownFileModel> result = await InteractiveApi.GetLsMarkdownFilesAsync(LoreScopeId.ToString(), pagination);
+        PaginatedOutcome<ILsMarkdownFileModel> result = await InteractiveApi.GetLsMarkdownFilesAsync(LoreScopeId.ToString(), pagination);
         if (!result.TryGetAsData(out PaginatedData<ILsMarkdownFileModel>? data)) return;
 
         PaginatedFiles = data.Value;

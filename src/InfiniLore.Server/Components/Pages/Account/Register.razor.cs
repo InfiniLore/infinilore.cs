@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Components;
@@ -92,7 +91,7 @@ public partial class Register(
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        InfiniLore.Modules.Core.Shared.Outcome<Guid> outcome = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
+        Outcome<Guid> outcome = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
         if (outcome.TryGetAsError(out Error<string>? errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage.Value);
             _isFormDisabled = false; // Allow retry

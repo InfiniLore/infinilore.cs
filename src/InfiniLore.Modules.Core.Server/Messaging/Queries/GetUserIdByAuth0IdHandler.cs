@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
@@ -18,7 +19,7 @@ public class GetUserIdByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : Com
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        AterraEngine.Unions.Result<Guid> result = await userRepository.TryGetIdByAuth0IdAsync(command.Auth0Id, ct);
+        Outcome<Guid> result = await userRepository.TryGetIdByAuth0IdAsync(command.Auth0Id, ct);
         if (result.IsError) return Shared.Outcome<Guid>.FromError("Cannot get user id by auth0 id. Auth0 id not found.");
 
         return result.AsSuccess;

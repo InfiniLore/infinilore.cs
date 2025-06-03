@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
@@ -18,7 +19,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : Command
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        AterraEngine.Unions.Result result = await userRepository.IsUsernameTakenAsync(command.Username, ct: ct);
+        Outcome result = await userRepository.IsUsernameTakenAsync(command.Username, ct: ct);
         if (!result.TryGetAsState(out bool state)) return result.AsError;
 
         return state;

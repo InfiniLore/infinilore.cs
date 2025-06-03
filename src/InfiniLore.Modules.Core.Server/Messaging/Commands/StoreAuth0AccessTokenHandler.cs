@@ -6,6 +6,7 @@ using FluentValidation;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -27,7 +28,7 @@ public class StoreAuth0AccessTokenHandler(
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(command.Token);
 
-        AterraEngine.Unions.Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Outcome<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         KeyValueEntryModel store = storeResult.TryGetAsData(out KeyValueEntryModel? foundStore)
             ? foundStore
             : new KeyValueEntryModel { Key = "Auth0AccessToken" };
@@ -37,7 +38,7 @@ public class StoreAuth0AccessTokenHandler(
         store.Value = encryptionService.Encrypt(store.Value);
         if (!(await validator.ValidateAsync(store, ct)).IsValid) return Shared.Outcome<bool>.FromError("Cannot store auth0 access token. Validation failed.");
 
-        AterraEngine.Unions.Result result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
+        Outcome result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetAsState(out bool state)) return result.AsError;
 
         return state;

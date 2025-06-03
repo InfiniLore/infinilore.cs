@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------

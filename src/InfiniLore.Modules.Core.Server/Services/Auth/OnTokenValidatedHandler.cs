@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -46,10 +47,10 @@ public class OnTokenValidatedHandler(
         }
 
         // Run all checks and return to the new user page if needed
-        Task<Shared.Outcome> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
-        Task<Shared.Outcome<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
+        Task<Outcome> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
+        Task<Outcome<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
 
-        (Shared.Outcome userExistsResponse, Shared.Outcome<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
+        (Outcome userExistsResponse, Outcome<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId

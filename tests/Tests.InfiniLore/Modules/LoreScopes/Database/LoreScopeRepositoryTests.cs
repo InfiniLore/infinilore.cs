@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using InfiniLore.Modules.LoreScopes.Server.Database;

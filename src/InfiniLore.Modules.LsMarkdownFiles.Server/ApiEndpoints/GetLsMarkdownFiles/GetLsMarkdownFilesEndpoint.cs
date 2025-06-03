@@ -5,6 +5,7 @@ using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -42,7 +43,7 @@ public class GetLsMarkdownFilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Core.Shared.Outcome<PaginatedData<LsMarkdownFileModel>> outcome = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
+        Outcome<PaginatedData<LsMarkdownFileModel>> outcome = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
             req.LoreScopeId,
             QueryConfig.From(req),
             Pagination.From(req),

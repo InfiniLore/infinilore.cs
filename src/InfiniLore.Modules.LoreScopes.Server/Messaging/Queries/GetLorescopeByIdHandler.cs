@@ -22,17 +22,17 @@ public class GetLorescopeByIdHandler(
     IAccessProtectionRules protectionRules,
     ILogger<GetLorescopeByIdHandler> logger
 ) : AccessProtectedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
-    protected override Core.Shared.Outcome<LoreScopeModel> AccessDeniedOutcome => Outcome.FromError("Access denied");
+    protected override Outcome<LoreScopeModel> AccessDeniedOutcome => Outcome.FromError("Access denied");
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Core.Shared.Outcome<LoreScopeModel>> HandleCommandAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
+    protected override async Task<Outcome<LoreScopeModel>> HandleCommandAsync(GetLorescopeByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         var queryConfig = new QueryConfig(OptionalInclude: command.AutoInclude);
-        AterraEngine.Unions.Result<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
+        Outcome<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
 
         if (!response.TryGetAsData(out LoreScopeModel? value)) {
             logger.Warning("Failed to get lorescope");
@@ -45,7 +45,7 @@ public class GetLorescopeByIdHandler(
             return Outcome.FromError("User does not own this lorescope");
         }
 
-        return Outcome.FromSuccess(value);
+        return Outcome.FromData(value);
     } 
     
     protected override ValueTask<bool> ValidateAccessAsync(GetLorescopeByIdQuery command, CancellationToken ct = default)

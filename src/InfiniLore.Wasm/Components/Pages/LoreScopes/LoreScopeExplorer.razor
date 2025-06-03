@@ -1,7 +1,9 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using AterraEngine.Unions
 @using InfiniLore.InfiniBlazor.Toasting
+@using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using Microsoft.AspNetCore.Components.Authorization
@@ -157,7 +159,7 @@
         if (pageNumber is 0) pagination = Pagination.Default with { PageSize = FilesPerPage };
         else if (!PaginatedLoreScopes.TryGetNextPage(FilesPerPage, out pagination)) pagination = PaginatedLoreScopes.GetCurrentPage(FilesPerPage);
 
-        PaginatedResult<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
+        PaginatedOutcome<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
         if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
         PaginatedLoreScopes = data.Value;

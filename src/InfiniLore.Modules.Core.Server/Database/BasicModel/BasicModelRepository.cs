@@ -40,7 +40,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         // Retrieve
         if (result is null) return Outcome<TModel>.FromError(RepositoryFailures.ModelNotFound);
-        return Outcome<TModel>.FromSuccess(result);
+        return Outcome<TModel>.FromData(result);
     }
 
     public async ValueTask<Outcome<TModel[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default) {
@@ -53,7 +53,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
         // Query & Retrieve
         TModel[] data = await query.ToArrayAsync(cancellationToken: ct);
-        return Outcome<TModel[]>.FromSuccess(data);
+        return Outcome<TModel[]>.FromData(data);
     }
 
     public async ValueTask<PaginatedOutcome<TModel>> GetAllAsync(Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
@@ -88,7 +88,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
             .AsNoTracking()
             .CountAsync(cancellationToken: ct);
 
-        return Outcome<int>.FromSuccess(data);
+        return Outcome<int>.FromData(data);
     }
 
     public async ValueTask<Outcome> IsIdTakenAsync(Guid id, CancellationToken ct = default) {

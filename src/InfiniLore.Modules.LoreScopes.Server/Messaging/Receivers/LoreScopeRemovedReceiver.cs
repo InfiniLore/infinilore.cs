@@ -1,11 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -31,7 +31,7 @@ public class LoreScopeRemovedReceiver(
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         string bucketName = S3BucketNames.GetLoreScopeBucket(eventModel.LoreScopeId);
 
-        Result<LoreScopeModel> modelResult = await loreScopeRepo.GetByIdAsync(
+        Outcome<LoreScopeModel> modelOutcome = await loreScopeRepo.GetByIdAsync(
             eventModel.LoreScopeId,
             new QueryConfig {
                 OptionalInclude = true,
@@ -40,7 +40,7 @@ public class LoreScopeRemovedReceiver(
             ct: ct
         );
 
-        if (!modelResult.TryGetAsData(out LoreScopeModel? model)) {
+        if (!modelOutcome.TryGetAsData(out LoreScopeModel? model)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
@@ -52,8 +52,8 @@ public class LoreScopeRemovedReceiver(
         
         string fileName = posterModel.FileName;
         
-        Result result = await s3FileMetaDataRepository.RemoveAsync(posterModel, ct);
-        if (!result.TryGetAsState(out bool? removed) || removed is false) {
+        Outcome result = await s3FileMetaDataRepository.RemoveAsync(posterModel, ct);
+        if (!result.TryGetAsState(out bool removed) || !removed) {
             logger.Warning("Failed to remove poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
@@ -61,18 +61,18 @@ public class LoreScopeRemovedReceiver(
         await unitOfWork.TryCommitTransactionAsync(ct);
         
         // Remove from S3, only after db has been commited
-        Result s3Result = await fileStorage.TryRemoveFileAsync(
+        Outcome s3Outcome = await fileStorage.TryRemoveFileAsync(
             bucketName,
             fileName,
             ct
         );
         
-        if (!s3Result.TryGetAsState(out removed) || removed is false){
+        if (!s3Outcome.TryGetAsState(out removed) || !removed){
             logger.Warning("Failed to remove poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
         }
 
-        Result bucketRemovedResult = await fileStorage.TryRemoveBucketAsync(bucketName, ct);
-        if (!bucketRemovedResult.TryGetAsState(out removed) || removed is false) {
+        Outcome bucketRemovedOutcome = await fileStorage.TryRemoveBucketAsync(bucketName, ct);
+        if (!bucketRemovedOutcome.TryGetAsState(out removed) || !removed) {
             logger.Warning("Failed to remove bucket for lorescope {LoreScopeId}", eventModel.LoreScopeId);
         }
         

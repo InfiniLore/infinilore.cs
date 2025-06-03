@@ -25,17 +25,17 @@ public class GetLsMarkdownFilesByOwnerHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Core.Shared.Outcome<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<Outcome<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
-        InfiniLore.Shared.PaginatedResult<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
+        InfiniLore.Shared.PaginatedOutcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
         if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return Outcome.FromError("Failed to get markdown file");
 
         IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
             if (model.S3FileMetaData is null) return;
             string bucketName = S3BucketNames.GetLoreScopeBucket(model.OwnerId);
-            AterraEngine.Unions.Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
+            Outcome<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
             urlResult.Switch(
                 url => model.S3FileMetaData.S3ResourceUrl = url,
                 _ => logger.Warning("Failed to get s3 resource url for file {FileName} in bucket {BucketName}", model.S3FileMetaData.FileName, bucketName)

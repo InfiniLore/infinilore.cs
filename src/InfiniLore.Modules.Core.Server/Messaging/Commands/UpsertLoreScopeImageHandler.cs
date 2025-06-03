@@ -6,6 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ public class UpsertUserProfileImageHandler(
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        AterraEngine.Unions.Result<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
+        Outcome<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
         Shared.Outcome outcome =  await userModelResult.MatchAsync(
             async model => await ProcessUserModelAsync(command, model, unitOfWork, ct),
             _ => {
@@ -51,7 +52,7 @@ public class UpsertUserProfileImageHandler(
             return Shared.Outcome.FromError("Failed to create new lorescope image metadata");
         }
 
-        AterraEngine.Unions.Result result = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
+        Outcome result = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
         Shared.Outcome outcome =  await outcome.MatchAsync(async state => {
             if (state is false) {
                 logger.Warning("Failed to upload file to s3 bucket");

@@ -8,6 +8,7 @@ using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
@@ -56,7 +57,7 @@ public partial class UserCreateHandler(
         }
 
         // Save to Db
-        AterraEngine.Unions.Result result = await userRepo.AddAsync(user, ct);
+        Outcome result = await userRepo.AddAsync(user, ct);
         if (result.IsError) return Shared.Outcome<Guid>.FromError("Failed to save user to database");
 
         await new InfiniLoreUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);

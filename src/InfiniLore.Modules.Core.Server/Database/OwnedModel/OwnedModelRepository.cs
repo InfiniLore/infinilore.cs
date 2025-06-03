@@ -29,7 +29,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
 
         // Retrieve
         TModel[] result = await query.ToArrayAsync(cancellationToken: ct);
-        return Outcome<TModel[]>.FromSuccess(result);
+        return Outcome<TModel[]>.FromData(result);
     }
 
     public async ValueTask<PaginatedOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {

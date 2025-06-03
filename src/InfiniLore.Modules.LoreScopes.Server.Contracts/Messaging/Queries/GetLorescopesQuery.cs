@@ -5,7 +5,6 @@ using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Shared;
 
 namespace InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------

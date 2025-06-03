@@ -6,6 +6,7 @@ using InfiniLore.Credentials.Auth0;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +31,7 @@ public class GetAuth0AccessTokenHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
-        AterraEngine.Unions.Result<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        Outcome<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
         if (storeResult.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return Shared.Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Key not found.");

@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -17,21 +18,21 @@ public class GetUsersHandler(
     IAccessProtectionRules protectionRules,
     ILogger<GetUsersHandler> logger
 ) : AccessProtectedCommandHandler<GetUsersQuery, PaginatedData<InfiniLoreUserModel>>(logger) {
-    protected override Shared.Outcome<PaginatedData<InfiniLoreUserModel>> AccessDeniedOutcome => Shared.Outcome.FromError("Cannot get users. Access denied.");
+    protected override Outcome<PaginatedData<InfiniLoreUserModel>> AccessDeniedOutcome => Outcome.FromError("Cannot get users. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Shared.Outcome<PaginatedData<InfiniLoreUserModel>>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
+    protected override async Task<Outcome<PaginatedData<InfiniLoreUserModel>>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        InfiniLore.Shared.PaginatedResult<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
+        InfiniLore.Shared.PaginatedOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
         return result.Match(
-            dataCase: Shared.Outcome.FromSuccess,
+            dataCase: Outcome.FromData,
             errorCase: error => {
                 logger.Error("Failed to get users. {Error}", error);
-                return Shared.Outcome.FromError("Cannot get users.");
+                return Outcome.FromError("Cannot get users.");
             }
         );
     }

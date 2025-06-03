@@ -37,7 +37,7 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         // Retrieve
         if (result is null) return Shared.Outcome<KeyValueEntryModel>.FromError(RepositoryFailures.ModelNotFound);
 
-        return Shared.Outcome<KeyValueEntryModel>.FromSuccess(result);
+        return Shared.Outcome<KeyValueEntryModel>.FromData(result);
     }
 
     public async ValueTask<Shared.Outcome<int>> GetCountAsync(CancellationToken ct = default) {
@@ -48,6 +48,6 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         int result = await dbSet.CountAsync(cancellationToken: ct);
 
         // Retrieve
-        return Shared.Outcome<int>.FromSuccess(result);
+        return Shared.Outcome<int>.FromData(result);
     }
 }
