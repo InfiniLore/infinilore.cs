@@ -2,58 +2,96 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using AterraEngine.Unions;
-using JetBrains.Annotations;
 
 namespace InfiniLore.Modules.Core.Server.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UnionAliases("State", "Error")]
+[UnionAliases("True","False", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record MessageResponse : IUnion<bool, Error<ICollection<string>>> {
-
-    public bool State => AsState;
-    public bool TryGetState(out bool? state) => TryGetAsState(out state);
-
-    public static MessageResponse FromErrorString(string value) => new() {
-        IsError = true,
-        AsError = new Error<ICollection<string>>([value])
+public partial record struct MessageResponse() : IUnion<True, False, AccessRefused, Error<string>> {
+    public bool TryGetAsState(out bool state) {
+        if (!IsTrue || !IsFalse) {
+            state = false;
+            return false;
+        }
+        state = IsTrue || !IsFalse;
+        return true;
+    }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static MessageResponse FromError(string value) 
+        => FromError(new Error<string>(value));
+    
+    public static MessageResponse FromAccessRefused(string value) 
+        => FromAccessRefused(new AccessRefused(value));
+    
+    public TOutput Match<TOutput>(
+        Func<True, TOutput> trueCase,
+        Func<False, TOutput> falseCase,
+        Func<Error<string>, TOutput> errorCase
+    ) => this switch {
+        { IsTrue: true, AsTrue: var value } => trueCase(value),
+        { IsFalse: true, AsFalse: var value } => falseCase(value),
+        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
+        { IsError: true, AsError: var value } => errorCase(value),
+        _ => throw new ArgumentException("Union does not contain a value")
     };
 
-    public static MessageResponse FromErrorString(ICollection<string> value) => new() {
-        IsError = true,
-        AsError = new Error<ICollection<string>>(value)
+    public async Task<TOutput> MatchAsync<TOutput>(
+        Func<True, Task<TOutput>> trueCase,
+        Func<False, Task<TOutput>> falseCase,
+        Func<Error<string>, Task<TOutput>> errorCase
+    ) => this switch {
+        { IsTrue: true, AsTrue: var value } => await trueCase(value),
+        { IsFalse: true, AsFalse: var value } => await falseCase(value),
+        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
+        { IsError: true, AsError: var value } => await errorCase(value),
+        _ => throw new ArgumentException("Union does not contain a value")
     };
-
-    public static implicit operator MessageResponse(string value) => FromErrorString(value);
-    public static implicit operator MessageResponse(Error<string> error) => FromErrorString(error.Value);
-
-    public static MessageResponse<T> FromSuccess<T>(T data) => MessageResponse<T>.FromSuccess(data);
 }
 
-[UnionAliases("Success", "Error")]
+[UnionAliases("Data", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public partial record MessageResponse<T>() : IUnion<T, Error<ICollection<string>>> {
-
-    // Used by ValidateRequestBehaviour
-    [UsedImplicitly] public MessageResponse(string error) : this() {
-        FromErrorString(error);
-    }
-
-    public static MessageResponse<T> FromErrorString(string value) => new() {
-        IsError = true,
-        AsError = new Error<ICollection<string>>([value])
-    };
-
-    public static MessageResponse<T> FromErrorString(ICollection<string> value) => new() {
-        IsError = true,
-        AsError = new Error<ICollection<string>>(value)
-    };
-
-    public static implicit operator MessageResponse<T>(string value) => FromErrorString(value);
-    public static implicit operator MessageResponse<T>(Error<string> error) => FromErrorString(error.Value);
+public partial record struct MessageResponse<T>() : IUnion<T, AccessRefused, Error<string>> {
+    
     public static implicit operator MessageResponse<T>(MessageResponse responseWithError) {
-        if (!responseWithError.TryGetAsError(out Error<ICollection<string>>? value)) throw new InvalidOperationException();
-        return value;    
+        return responseWithError.Match(
+            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            FromAccessRefused,
+            FromError
+        );
     }
+    
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public static MessageResponse<T> FromError(string value)
+        => FromError(new Error<string>(value));
+    
+    public static MessageResponse<T> FromAccessRefused(string value)
+        => FromAccessRefused(new AccessRefused(value));
+    
+    public TOutput Match<TOutput>(
+        Func<T, TOutput> dataCase,
+        Func<Error<string>, TOutput> errorCase
+    ) => this switch {
+        { IsData: true, AsData: var value } => dataCase(value),
+        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
+        { IsError: true, AsError: var value } => errorCase(value),
+        _ => throw new ArgumentException("Union does not contain a valid value")
+    };
+
+    public async Task<TOutput> MatchAsync<TOutput>(
+        Func<T, Task<TOutput>> dataCase,
+        Func<Error<string>, Task<TOutput>> errorCase
+    ) => this switch {
+        { IsData: true, AsData: var value } => await dataCase(value),
+        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
+        { IsError: true, AsError: var value } => await errorCase(value),
+        _ => throw new ArgumentException("Union does not contain a valid value")
+    };
 }
