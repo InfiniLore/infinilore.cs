@@ -12,9 +12,9 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : CommandHandler<UsernameExistsQuery, Server.Result> {
-    public override async Task<Server.Result> ExecuteAsync(UsernameExistsQuery command, CancellationToken ct = new()) {
-        if (command.Username.IsNullOrWhiteSpace()) return Server.Result.FromError("Cannot check for username existence. Username is empty.");
+public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : CommandHandler<UsernameExistsQuery, Result> {
+    public override async Task<Result> ExecuteAsync(UsernameExistsQuery command, CancellationToken ct = new()) {
+        if (command.Username.IsNullOrWhiteSpace()) return Result.FromError("Cannot check for username existence. Username is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);

@@ -46,7 +46,7 @@ public class GetLoreScopesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Core.Server.Result<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
+        Result<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
             req.UserId,
             QueryConfig.From(req),
             Pagination.From(req),
@@ -66,7 +66,7 @@ public class GetLoreScopesEndpoint(
         LoreScopesResponse response = Map.FromEntity(paginatedResult);
 
         List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {
-            Core.Server.Result<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
+            Result<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
             if (imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
                 item.ImageUrl = imageUrl;
             }

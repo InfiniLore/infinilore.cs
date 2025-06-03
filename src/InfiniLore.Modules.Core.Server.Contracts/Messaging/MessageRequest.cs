@@ -7,7 +7,7 @@ namespace InfiniLore.Modules.Core.Server.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record MessageRequest : CommonRequestData, ICommand<Server.Result>;
+public abstract record MessageRequest : CommonRequestData, ICommand<Result>;
 
 // ReSharper disable once UnusedTypeParameter
-public abstract record MessageRequest<TResponse> : CommonRequestData, ICommand<Server.Result<TResponse>>;
+public abstract record MessageRequest<TResponse> : CommonRequestData, ICommand<Result<TResponse>>;

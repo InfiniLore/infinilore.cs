@@ -60,29 +60,29 @@ public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
 #region Actual implementations
 public abstract class AccessProtectedCommandHandler<TCommand, TResult>(
     ILogger<AccessProtectedCommandHandler<TCommand, TResult>> logger
-) : AccessProtectedCommandHandlerBase<TCommand, Server.Result<TResult>>(logger)
-    where TCommand : ICommand<Server.Result<TResult>>, ICommonRequestData 
+) : AccessProtectedCommandHandlerBase<TCommand, Result<TResult>>(logger)
+    where TCommand : ICommand<Result<TResult>>, ICommonRequestData 
 {
-    protected override Server.Result<TResult> AccessDeniedResult { get; } = Server.Result.FromAccessRefused("Access denied");
-    protected override Server.Result<TResult> UncaughtErrorResult { get; } = Server.Result.FromError("Uncaught error");
+    protected override Result<TResult> AccessDeniedResult { get; } = Result.FromAccessRefused("Access denied");
+    protected override Result<TResult> UncaughtErrorResult { get; } = Result.FromError("Uncaught error");
 }
 
 public abstract class AccessProtectedCommandHandler<TCommand>(
     ILogger<AccessProtectedCommandHandler<TCommand>> logger
-) : AccessProtectedCommandHandlerBase<TCommand, Server.Result>(logger)
-    where TCommand : ICommand<Server.Result>, ICommonRequestData 
+) : AccessProtectedCommandHandlerBase<TCommand, Result>(logger)
+    where TCommand : ICommand<Result>, ICommonRequestData 
 {
-    protected override Server.Result AccessDeniedResult { get; } = Server.Result.FromError("Access denied");
-    protected override Server.Result UncaughtErrorResult { get; } = Server.Result.FromError("Uncaught error");
+    protected override Result AccessDeniedResult { get; } = Result.FromError("Access denied");
+    protected override Result UncaughtErrorResult { get; } = Result.FromError("Uncaught error");
 }
 
 public abstract class PaginatedAccessProtectedCommandHandler<TCommand, TResult>(
     ILogger<PaginatedAccessProtectedCommandHandler<TCommand, TResult>> logger
-) : AccessProtectedCommandHandlerBase<TCommand, Server.PaginatedResult<TResult>>(logger)
-    where TCommand : ICommand<Server.PaginatedResult<TResult>>, ICommonRequestData 
+) : AccessProtectedCommandHandlerBase<TCommand, PaginatedResult<TResult>>(logger)
+    where TCommand : ICommand<PaginatedResult<TResult>>, ICommonRequestData 
     where TResult : class
 {
-    protected override Server.PaginatedResult<TResult> AccessDeniedResult { get; } = Server.Result.FromAccessRefused("Access denied");
-    protected override Server.PaginatedResult<TResult> UncaughtErrorResult { get; } = Server.Result.FromError("Uncaught error");
+    protected override PaginatedResult<TResult> AccessDeniedResult { get; } = Result.FromAccessRefused("Access denied");
+    protected override PaginatedResult<TResult> UncaughtErrorResult { get; } = Result.FromError("Uncaught error");
 }
 #endregion

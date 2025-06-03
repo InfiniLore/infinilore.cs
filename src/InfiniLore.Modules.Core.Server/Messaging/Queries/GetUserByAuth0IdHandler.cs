@@ -18,21 +18,21 @@ public class GetUserByAuth0IdHandler(
     IAccessProtectionRules protectionRules,
     ILogger<GetUserByAuth0IdHandler> logger
 ) : AccessProtectedCommandHandler<GetUserByAuth0IdQuery, InfiniLoreUserModel>(logger) {
-    protected override Server.Result<InfiniLoreUserModel> AccessDeniedResult => Server.Result.FromError("Cannot get user by auth0 id. Access denied.");
+    protected override Result<InfiniLoreUserModel> AccessDeniedResult => Result.FromError("Cannot get user by auth0 id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Server.Result<InfiniLoreUserModel>> HandleCommandAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
-        if (command.Auth0Id.IsNullOrEmpty()) return Server.Result.FromError("Cannot get user id by auth0 id. Auth0 id is empty.");
+    protected override async Task<Result<InfiniLoreUserModel>> HandleCommandAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default) {
+        if (command.Auth0Id.IsNullOrEmpty()) return Result.FromError("Cannot get user id by auth0 id. Auth0 id is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
         AterraEngine.Unions.Result<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
         return !result.IsError
-            ? Server.Result.FromSuccess(result.AsSuccess)
-            : Server.Result.FromError("Cannot get user id by auth0 id. Auth0 id not found.");
+            ? Result.FromSuccess(result.AsSuccess)
+            : Result.FromError("Cannot get user id by auth0 id. Auth0 id not found.");
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default)

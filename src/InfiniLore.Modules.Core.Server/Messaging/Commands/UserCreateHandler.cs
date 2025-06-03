@@ -36,7 +36,7 @@ public partial class UserCreateHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Server.Result<Guid>> HandleCommandAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default){
+    protected override async Task<Result<Guid>> HandleCommandAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default){
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
@@ -53,12 +53,12 @@ public partial class UserCreateHandler(
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors);
-            return Server.Result<Guid>.FromError("Validation failed");
+            return Result<Guid>.FromError("Validation failed");
         }
 
         // Save to Db
         AterraEngine.Unions.Result result = await userRepo.AddAsync(user, ct);
-        if (result.IsError) return Server.Result<Guid>.FromError("Failed to save user to database");
+        if (result.IsError) return Result<Guid>.FromError("Failed to save user to database");
 
         await new InfiniLoreUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
         return newUserId;

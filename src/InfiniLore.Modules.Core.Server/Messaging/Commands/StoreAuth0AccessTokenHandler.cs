@@ -22,7 +22,7 @@ public class StoreAuth0AccessTokenHandler(
     ILogger<StoreAuth0AccessTokenHandler> logger,
     IAccessProtectionRules protectionRules   
 ) : AccessProtectedCommandHandler<StoreAuth0AccessTokenRequest, bool>(logger) {
-    protected override async Task<Server.Result<bool>> HandleCommandAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) {
+    protected override async Task<Result<bool>> HandleCommandAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
@@ -33,10 +33,10 @@ public class StoreAuth0AccessTokenHandler(
             ? foundStore
             : new KeyValueEntryModel { Key = "Auth0AccessToken" };
 
-        if (!KeyValueEntryModel.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return Server.Result<bool>.FromError("Cannot store auth0 access token. Json conversion failed.");
+        if (!KeyValueEntryModel.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return Result<bool>.FromError("Cannot store auth0 access token. Json conversion failed.");
 
         store.Value = encryptionService.Encrypt(store.Value);
-        if (!(await validator.ValidateAsync(store, ct)).IsValid) return Server.Result<bool>.FromError("Cannot store auth0 access token. Validation failed.");
+        if (!(await validator.ValidateAsync(store, ct)).IsValid) return Result<bool>.FromError("Cannot store auth0 access token. Validation failed.");
 
         AterraEngine.Unions.Result result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
         if (!result.TryGetState(out bool? state)) return result.AsError;
