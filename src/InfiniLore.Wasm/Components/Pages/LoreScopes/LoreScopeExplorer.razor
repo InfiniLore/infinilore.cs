@@ -27,12 +27,9 @@
         <InfiniHeading3>Create New LoreScope</InfiniHeading3>
 
         <div class="flex items-center space-x-3">
-            <InputText @bind-Value="@NewLoreScopeName"
-                       placeholder="Enter a new Lorescope name..."
-                       class="w-full placeholder-(--color-base-50) bg-(--color-base-70) rounded-md border border-(--border-color) focus:ring-2 outline-none hover:ring-2 ring-(--color-accent) text-sm p-2 shadow-sm transition"/>
-
-            <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync"
-                          Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
+            <InfiniTextInput @bind-Value="@NewLoreScopeName" Placeholder="Enter a new Lorescope name...">
+                <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
+            </InfiniTextInput>
         </div>
     </InfiniSection>
 

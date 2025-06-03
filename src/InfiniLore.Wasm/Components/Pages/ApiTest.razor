@@ -33,10 +33,9 @@
             <span> Render Mode: <span class="font-bold">@RendererInfo.Name</span> </span>
             <div class="flex flex-col h-48">
                 Request Data:
+                
                 @if (RendererInfo.IsInteractive) {
-                    <pre class="bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">
-                    @GetUrl()
-                </pre>
+                    <InfiniCodeBlock Content="@GetUrl()" EnableCopy="false"></InfiniCodeBlock>
                 }
             </div>
 
@@ -46,7 +45,7 @@
         </div>
 
         <div class="grow flex overflow-y-auto overflow-x-clip">
-            <pre class="bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto w-full break-words whitespace-pre-wrap">@_apiResponse</pre>
+            <InfiniCodeBlock Content="@_apiResponse" Class="w-full" Language="json"/>
         </div>
     </InfiniSection>
 </InfiniPage>
