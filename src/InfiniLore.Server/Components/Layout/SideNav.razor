@@ -20,7 +20,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<SideNavMenu @bind-MenuCollapsed="@MenuCollapsed" Size="SideNavMenuSize.Large">
+<InfiniSideNav @bind-MenuCollapsed="@MenuCollapsed" Size="SideNavSize.Large">
     <Header>
         <a href="/"
            class="@(!MenuCollapsed ? "text-1xl font-bold text-(--color-base-00) hover:text-(--color-accent) no-underline" : "hidden")">
@@ -29,28 +29,28 @@
     </Header>
 
     <Body>
-        <SideNavMenuLink Href="/about">
+        <InfiniSideNavLink Href="/about">
             <Icon><LiEqualApproximately/></Icon>
             <Text>About</Text>
-        </SideNavMenuLink>
+        </InfiniSideNavLink>
 
         <AuthorizeView>
             <NotAuthorized></NotAuthorized>
             <Authorized>
-                <SideNavMenuLink Href="/api-test">
+                <InfiniSideNavLink Href="/api-test">
                     <Icon><LiPlus/></Icon>
                     <Text>Api Test</Text>
-                </SideNavMenuLink>
+                </InfiniSideNavLink>
 
-                <SideNavMenuLink Href="/lorescopes">
+                <InfiniSideNavLink Href="/lorescopes">
                     <Icon><LiSignature/></Icon>
                     <Text>LoreScopes</Text>
-                </SideNavMenuLink>
+                </InfiniSideNavLink>
                 
-                <SideNavMenuLink Href="/claims-viewer">
+                <InfiniSideNavLink Href="/claims-viewer">
                     <Icon><LiView/></Icon>
                     <Text>Claims viewer</Text>
-                </SideNavMenuLink>
+                </InfiniSideNavLink>
             </Authorized>
         </AuthorizeView>
     </Body>
@@ -58,51 +58,51 @@
     <Footer>
         <AuthorizeView>
             <NotAuthorized>
-                <SideNavMenuLink Href="Account/Login?redirectUri=/">
+                <InfiniSideNavLink Href="Account/Login?redirectUri=/">
                     <Icon>
                         <LiKeyRound class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                     </Icon>
                     <Text>Login</Text>
-                </SideNavMenuLink>
-                <SideNavMenuLink Href="Account/Login?redirectUri=/">
+                </InfiniSideNavLink>
+                <InfiniSideNavLink Href="Account/Login?redirectUri=/">
                     <Icon>
                         <LiSignpost class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                     </Icon>
                     <Text>SignUp</Text>
-                </SideNavMenuLink>
+                </InfiniSideNavLink>
             </NotAuthorized>
 
             <Authorized>
-                <SideNavMenuLink Href="/swagger">
+                <InfiniSideNavLink Href="/swagger">
                     <Icon><LiBraces/></Icon>
                     <Text>Swagger</Text>
-                </SideNavMenuLink>
+                </InfiniSideNavLink>
                 
                 <!-- Profile Icon -->
-                <SideNavMenuUser
+                <InfiniSideNavUser
                     HrefUserProfile="/account/profile"
                     UserName="@UserModel.Username">
                     <Icon>
-                        <UserIcon
+                        <InfiniUserIcon
                             HrefUserProfile="/account/profile"
                             ImageUrl="@UserModel.ProfileImageUrl"/>
                     </Icon>
                     <AdditionalLinks>
-                        <button class="@(SideNavMenuUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">
+                        <button class="@(InfiniSideNavUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">
                             theme
                         </button>
 
                         <NavLink @onclick="LogoutCallbackAsync"
                                  href="/account/logout"
-                                 class="@(SideNavMenuUser.AdditionalLinkClasses)">
+                                 class="@(InfiniSideNavUser.AdditionalLinkClasses)">
                             logout
                         </NavLink>
                     </AdditionalLinks>
-                </SideNavMenuUser>
+                </InfiniSideNavUser>
             </Authorized>
         </AuthorizeView>
     </Footer>
-</SideNavMenu>
+</InfiniSideNav>
 
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code *@
