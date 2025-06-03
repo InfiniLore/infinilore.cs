@@ -7,16 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />
-      <PackageReference Include="FastEndpoints" />
-      <PackageReference Include="InfiniLore.Credentials.Auth0" />
-      <PackageReference Include="JetBrains.Annotations" />
         <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
+        <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />
+        <PackageReference Include="FastEndpoints" />
+        <PackageReference Include="InfiniLore.Credentials.Auth0" />
+        <PackageReference Include="JetBrains.Annotations" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
