@@ -4,8 +4,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AterraEngine.Unions" Version="5.0.0" />
-    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.0.0">
+    <PackageVersion Include="AterraEngine.Unions" Version="5.2.0" />
+    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
