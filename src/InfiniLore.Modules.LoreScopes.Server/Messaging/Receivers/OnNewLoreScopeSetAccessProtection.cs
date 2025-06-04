@@ -4,7 +4,6 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -25,7 +24,7 @@ public class OnNewLoreScopeSetAccessProtection(
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var accessProtectionRepo = await unitOfWork.GetRepositoryAsync<IAccessProtectionRepository>(ct);
         
-        Outcome<LoreScopeModel> outcome = await repo.GetByIdAsync(eventModel.LoreScopeId, ct: ct);
+        RepoOutcome<LoreScopeModel> outcome = await repo.GetByIdAsync(eventModel.LoreScopeId, ct: ct);
         if (!outcome.TryGetAsData(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to get lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
             return;

@@ -28,9 +28,9 @@ public class GetUserByAuth0IdHandler(
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
-
-        Outcome<InfiniLoreUserModel> result = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
-        return result;
+        
+        RepoOutcome<InfiniLoreUserModel> outcome = await userRepository.TryGetByAuth0IdAsync(command.Auth0Id, ct: ct);
+        return outcome.ToOutcome();
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByAuth0IdQuery command, CancellationToken ct = default)

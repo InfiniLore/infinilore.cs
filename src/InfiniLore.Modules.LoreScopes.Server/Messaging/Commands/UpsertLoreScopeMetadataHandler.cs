@@ -5,6 +5,7 @@ using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
@@ -27,7 +28,7 @@ public class UpsertLoreScopeMetadataHandler(
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, ct: ct);
+        RepoOutcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, ct: ct);
         if (!foundModelResult.TryGetAsData(out LoreScopeModel? foundModel)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
@@ -40,6 +41,7 @@ public class UpsertLoreScopeMetadataHandler(
         ValidationResult? validationResult = await validator.ValidateAsync(foundModel, ct);
         if (!validationResult.IsValid) return Outcome.FromError(string.Join(',', validationResult.Errors.Select(x => x.ErrorMessage)));
         
-        return await loreScopeRepo.UpdateAsync(foundModel, ct);
+        RepoOutcome outcome = await loreScopeRepo.UpdateAsync(foundModel, ct);
+        return outcome.ToOutcome();
     }
 }

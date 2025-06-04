@@ -3,15 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Database.RepoMethods;
-using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.LoreScopes.Server;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class IAccessProtectionRulesLoreScopes {
+public static class AccessProtectionRulesLoreScopes {
     public static async ValueTask<bool> CanAccessRepoWithPermission<TRepo>(
         this IAccessProtectionRules rules,
         Guid loreScopeId,
@@ -24,7 +24,7 @@ public static class IAccessProtectionRulesLoreScopes {
         await using IReadonlyUnitOfWork unitOfWork = rules.CreateReadonlyUnitOfWork();
         var repository = await unitOfWork.GetRepositoryAsync<TRepo>(ct);
 
-        Outcome outcome = await repository.HasAccessPermissionAsync(
+        RepoOutcome outcome = await repository.HasAccessPermissionAsync(
             loreScopeId,
             access.UserId,
             requiredPermission, 

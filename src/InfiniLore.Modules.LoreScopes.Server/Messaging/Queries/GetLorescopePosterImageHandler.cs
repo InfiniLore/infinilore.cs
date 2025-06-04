@@ -25,7 +25,7 @@ public class GetLorescopePosterImageHandler(
         await using IUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
+        RepoOutcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
         if (!foundModelResult.TryGetAsData(out LoreScopeModel? foundModel)) {
             return Outcome.FromError($"Failed to find lorescope with id {command.LorescopeId}");
         }

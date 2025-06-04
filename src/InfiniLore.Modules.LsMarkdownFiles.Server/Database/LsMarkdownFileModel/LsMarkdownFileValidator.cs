@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 
@@ -31,7 +30,7 @@ public class LsMarkdownFileValidator : OwnedModelValidator<LoreScopeModel, LsMar
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         
-        Outcome outcome = await markdownFileRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct: ct);
+        RepoOutcome outcome = await markdownFileRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct: ct);
         if (outcome.TryGetAsState(out bool isTaken)) return false; 
         return !isTaken;
     }

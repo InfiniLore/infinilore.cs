@@ -21,27 +21,25 @@ public class StoreAuth0AccessTokenHandler(
     IValidator<KeyValueEntryModel> validator,
     ILogger<StoreAuth0AccessTokenHandler> logger,
     IAccessProtectionRules protectionRules   
-) : AccessProtectedCommandHandler<StoreAuth0AccessTokenRequest, bool>(logger) {
-    protected override async Task<Outcome<bool>> HandleCommandAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) {
+) : AccessProtectedCommandHandler<StoreAuth0AccessTokenRequest>(logger) {
+    protected override async Task<Outcome> HandleCommandAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) {
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
         Auth0AccessTokenJsonDto token = Auth0AccessTokenJsonDto.FromToken(command.Token);
 
-        Outcome<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        KeyValueEntryModel store = storeResult.TryGetAsData(out KeyValueEntryModel? foundStore)
+        RepoOutcome<KeyValueEntryModel> storeOutcome = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        KeyValueEntryModel store = storeOutcome.TryGetAsData(out KeyValueEntryModel? foundStore)
             ? foundStore
             : new KeyValueEntryModel { Key = "Auth0AccessToken" };
 
-        if (!KeyValueEntryModel.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return Outcome<bool>.FromError("Cannot store auth0 access token. Json conversion failed.");
+        if (!KeyValueEntryModel.CanSetObjectAsValueJson(token) || !store.TrySetObjectAsJsonValue(token)) return Outcome.FromError("Cannot store auth0 access token. Json conversion failed.");
 
         store.Value = encryptionService.Encrypt(store.Value);
-        if (!(await validator.ValidateAsync(store, ct)).IsValid) return Outcome<bool>.FromError("Cannot store auth0 access token. Validation failed.");
+        if (!(await validator.ValidateAsync(store, ct)).IsValid) return Outcome.FromError("Cannot store auth0 access token. Validation failed.");
 
-        Outcome result = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
-        if (!result.TryGetAsState(out bool state)) return result.AsError;
-
-        return state;
+        RepoOutcome outcome = await keyValueEntryRepository.TryAddOrUpdateAsync(store, ct);
+        return outcome.ToOutcome();
     }
     
     protected override ValueTask<bool> ValidateAccessAsync(StoreAuth0AccessTokenRequest command, CancellationToken ct = default) 

@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +38,7 @@ public class LsMarkdownFileRepository : OwnedModelRepository<LoreScopeModel, LsM
 
         // Retrieve
         return result is not null 
-            ? Outcome.FromData(result) 
-            : Outcome.FromError(RepositoryFailures.ModelNotFound);
+            ? RepoOutcome.FromData(result) 
+            : RepoOutcome.FromError(RepositoryFailures.ModelNotFound);
     }
 }

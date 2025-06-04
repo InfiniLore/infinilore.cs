@@ -29,7 +29,7 @@ public class DeleteLsMarkdownFileHandler(
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
         // Try and find an existing model
-        Outcome<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
+        RepoOutcome<LsMarkdownFileModel> existingModel = await markdownFileRepo.GetByIdAsync(command.MarkdownFileId, ct: ct);
         if (!existingModel.TryGetAsData(out LsMarkdownFileModel? markdownFileModel)) {
             logger.Warning("Failed to find markdown file with id {MarkdownFileId}", command.MarkdownFileId);
             return Outcome.FromError("Failed to find markdown file with id");
@@ -43,14 +43,14 @@ public class DeleteLsMarkdownFileHandler(
                 logger.Warning("Failed to delete file from S3");
             }
             
-            Outcome metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
+            RepoOutcome metaDataDeleteResult = await s3FileMetaDataRepo.DeleteAsync(metaData, ct);
             if (!metaDataDeleteResult.TryGetAsState(out success) || !success) {
                 logger.Warning("Failed to delete S3FileMetaDataModel");
             }
         }
         
         // Delete the registrations
-        Outcome deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
+        RepoOutcome deleteResult = await markdownFileRepo.DeleteAsync(markdownFileModel, ct);
         if (!deleteResult.TryGetAsState(out bool deleted) || !deleted) {
             logger.Warning("Failed to delete markdown file");
             return Outcome.FromError("Failed to delete markdown file");       

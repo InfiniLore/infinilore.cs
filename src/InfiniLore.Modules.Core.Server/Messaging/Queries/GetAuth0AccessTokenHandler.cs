@@ -31,13 +31,13 @@ public class GetAuth0AccessTokenHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
-        Outcome<KeyValueEntryModel> storeResult = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        if (storeResult.IsError) {
+        RepoOutcome<KeyValueEntryModel> storeOutcome = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
+        if (storeOutcome.IsError) {
             logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
             return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Key not found.");
         }
 
-        KeyValueEntryModel store = storeResult.AsData;
+        KeyValueEntryModel store = storeOutcome.AsData;
         if (store.Value.IsNullOrEmpty()) {
             logger.Warning("Auth0 access token value is empty.");
             return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Value is empty.");

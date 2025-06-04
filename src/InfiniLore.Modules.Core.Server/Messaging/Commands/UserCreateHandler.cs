@@ -57,8 +57,8 @@ public partial class UserCreateHandler(
         }
 
         // Save to Db
-        Outcome result = await userRepo.AddAsync(user, ct);
-        if (result.IsError) return Outcome<Guid>.FromError("Failed to save user to database");
+        RepoOutcome outcome = await userRepo.AddAsync(user, ct);
+        if (outcome.IsError) return Outcome<Guid>.FromError("Failed to save user to database");
 
         await new InfiniLoreUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
         return newUserId;

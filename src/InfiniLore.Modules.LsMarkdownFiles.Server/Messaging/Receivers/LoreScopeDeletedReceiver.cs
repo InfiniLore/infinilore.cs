@@ -4,7 +4,6 @@
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using JetBrains.Annotations;
@@ -28,7 +27,7 @@ public class LoreScopeDeletedReceiver(
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
-        Outcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(eventModel.LoreScopeId, ct: ct);
+        RepoOutcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(eventModel.LoreScopeId, ct: ct);
         if (!markdownFilesOutcome.TryGetAsData(out LsMarkdownFileModel[]? markdownFiles)) {
             logger.Warning("Failed to get markdown files for lore scope {LoreScopeId}", eventModel.LoreScopeId);
             return;
@@ -54,7 +53,7 @@ public class LoreScopeDeletedReceiver(
         async model => {
             if (model.S3FileMetaData is null) return;
             
-            Outcome deletedOutcome = await s3FileMetaDataRepository.DeleteAsync(model.S3FileMetaData, ct);
+            RepoOutcome deletedOutcome = await s3FileMetaDataRepository.DeleteAsync(model.S3FileMetaData, ct);
             if (!deletedOutcome.TryGetAsState(out bool deleted) || !deleted) {
                 logger.Warning("Failed to delete S3FileMetaDataModel");
                 return;
@@ -69,7 +68,7 @@ public class LoreScopeDeletedReceiver(
         ILsMarkdownFileRepository markdownFileRepository,
         CancellationToken ct
     ) =>  markdownFileModels.Select(async model => {
-            Outcome deletedOutcome = await markdownFileRepository.DeleteAsync(model, ct);
+            RepoOutcome deletedOutcome = await markdownFileRepository.DeleteAsync(model, ct);
             if (!deletedOutcome.TryGetAsState(out bool deleted) || !deleted) {
                 logger.Warning("Failed to delete markdown file");
                 return;

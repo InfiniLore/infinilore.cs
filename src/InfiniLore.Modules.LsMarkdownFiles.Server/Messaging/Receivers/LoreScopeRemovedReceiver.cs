@@ -29,7 +29,7 @@ public class LoreScopeRemovedReceiver(
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
-        Outcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(
+        RepoOutcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(
             eventModel.LoreScopeId,
             QueryConfig.WithRetrieveSoftDeleted,
             ct: ct
@@ -89,7 +89,7 @@ public class LoreScopeRemovedReceiver(
         async model => {
             if (model.S3FileMetaData is null) return;
             
-            Outcome removedOutcome = await s3FileMetaDataRepository.RemoveAsync(model.S3FileMetaData, ct);
+            RepoOutcome removedOutcome = await s3FileMetaDataRepository.RemoveAsync(model.S3FileMetaData, ct);
             if (!removedOutcome.TryGetAsState(out bool removed) || !removed) {
                 logger.Warning("Failed to remove S3FileMetaDataModel");
                 return;
@@ -104,7 +104,7 @@ public class LoreScopeRemovedReceiver(
         ILsMarkdownFileRepository markdownFileRepository,
         CancellationToken ct
     ) =>  markdownFileModels.Select(async model => {
-            Outcome removedOutcome = await markdownFileRepository.RemoveAsync(model, ct);
+            RepoOutcome removedOutcome = await markdownFileRepository.RemoveAsync(model, ct);
             if (!removedOutcome.TryGetAsState(out bool removed) || !removed) {
                 logger.Warning("Failed to remove markdown file");
                 return;

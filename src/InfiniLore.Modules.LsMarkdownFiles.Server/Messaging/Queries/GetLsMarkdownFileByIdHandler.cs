@@ -29,7 +29,7 @@ public class GetLsMarkdownFileByIdHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
-        Outcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
+        RepoOutcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
         if (!response.TryGetAsData(out LsMarkdownFileModel? model)) return Outcome.FromError("Failed to get markdown file");
         if (model.S3FileMetaData is null) return Outcome.FromError("Failed to get complete S3FileMetaData");
         

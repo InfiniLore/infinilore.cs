@@ -31,8 +31,8 @@ public class UpsertLoreScopeImageHandler(
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct: ct);
-        if (!loreScopeResult.TryGetAsData(out LoreScopeModel? loreScope)) {
+        RepoOutcome<LoreScopeModel> loreScopeOutcome = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct: ct);
+        if (!loreScopeOutcome.TryGetAsData(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
         }

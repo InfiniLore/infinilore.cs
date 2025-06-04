@@ -40,6 +40,9 @@ public partial record struct RepoOutcome() : IUnion<True, False, Error<string>> 
     
     public static RepoOutcome FromError(string value) 
         => FromError(new Error<string>(value));
+    
+    public static RepoOutcome<T> FromError<T>(string value) 
+        => FromError(new Error<string>(value));
 
     public static RepoOutcome FromTrue()
         => FromTrue(new True());
@@ -104,6 +107,13 @@ public partial record struct RepoOutcome<T>() : IUnion<T, Error<string>> {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    public static implicit operator RepoOutcome<T>(RepoOutcome outcomeWithError) {
+        return outcomeWithError.Match(
+            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            FromError
+        );
+    }
     
     public Outcome<T> ToOutcome()
         => Match(

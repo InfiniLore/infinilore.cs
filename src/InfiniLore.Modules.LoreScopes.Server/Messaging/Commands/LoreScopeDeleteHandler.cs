@@ -4,6 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
@@ -31,8 +32,8 @@ public class LoreScopeDeleteHandler(
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome result = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
-        Outcome outcome = await result.MatchAsync(
+        RepoOutcome outcome = await loreScopeRepo.DeleteByIdAsync(command.LoreScopeId, ct);
+        return await outcome.MatchAsync(
             async _ => {
                 await messageBroker.InvokeLoreScopeDeletedAsync(command.LoreScopeId, Mode.WaitForNone, ct: ct);
                 return Outcome.FromState(true);
@@ -46,7 +47,6 @@ public class LoreScopeDeleteHandler(
                 return Task.FromResult(Outcome.FromError("Failed to delete lorescope"));
             }
         );
-        return outcome;
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(DeleteLoreScopeRequest command, CancellationToken ct = default) 

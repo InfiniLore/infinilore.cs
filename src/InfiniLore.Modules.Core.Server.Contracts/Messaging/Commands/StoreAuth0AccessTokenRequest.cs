@@ -9,4 +9,4 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------
 public record StoreAuth0AccessTokenRequest(
     IAuth0AccessToken Token
-) : MessageRequest<bool>;
+) : MessageRequest;

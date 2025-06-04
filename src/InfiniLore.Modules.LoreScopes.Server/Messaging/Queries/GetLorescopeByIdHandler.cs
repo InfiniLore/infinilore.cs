@@ -32,7 +32,7 @@ public class GetLorescopeByIdHandler(
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
         var queryConfig = new QueryConfig(OptionalInclude: command.AutoInclude);
-        Outcome<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
+        RepoOutcome<LoreScopeModel> response = await loreScopeRepository.GetByIdAsync(command.LorescopeId, queryConfig, ct);
 
         if (!response.TryGetAsData(out LoreScopeModel? value)) {
             logger.Warning("Failed to get lorescope");

@@ -30,9 +30,9 @@ public class GetUserByIdHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
-        if (!result.TryGetAsData(out InfiniLoreUserModel? user)) {
-            logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
+        RepoOutcome<InfiniLoreUserModel> outcome = await userRepository.GetByIdAsync(command.UserId, ct: ct);
+        if (!outcome.TryGetAsData(out InfiniLoreUserModel? user)) {
+            logger.Error("Failed to get user by id. {Error}", outcome.AsError.Value);
             return Outcome.FromError("Cannot get user by id.");
         }
 

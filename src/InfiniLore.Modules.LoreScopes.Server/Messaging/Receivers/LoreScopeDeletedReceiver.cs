@@ -4,7 +4,6 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -28,7 +27,7 @@ public class LoreScopeDeletedReceiver(
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> modelResult = await loreScopeRepo.GetByIdAsync(
+        RepoOutcome<LoreScopeModel> modelResult = await loreScopeRepo.GetByIdAsync(
             eventModel.LoreScopeId,
             QueryConfig.WithRetrieveSoftDeleted,
             ct: ct
@@ -44,7 +43,7 @@ public class LoreScopeDeletedReceiver(
             return;
         }
         
-        Outcome result = await s3FileMetaDataRepository.DeleteByIdAsync(posterImageMetaDataId, ct);
+        RepoOutcome result = await s3FileMetaDataRepository.DeleteByIdAsync(posterImageMetaDataId, ct);
         if (!result.TryGetAsState(out bool deleted) || !deleted) {
             logger.Warning("Failed to delete poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
             return;
