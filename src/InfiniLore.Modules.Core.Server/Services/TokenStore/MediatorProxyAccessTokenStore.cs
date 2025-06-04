@@ -34,14 +34,17 @@ public class MediatorProxyAccessTokenStore(
     }
 
     public async ValueTask SetAccessTokenAsync(IAuth0AccessToken token, CancellationToken ct = default) {
-        Outcome<bool> mediatorResponse = await messageBroker.StoreAuth0AccessTokenAsync(token, ct);
-        
-        if (!mediatorResponse.TryGetAsData(out bool success)) {
-            string errors = mediatorResponse.AsError.Value;
-            logger.Critical("Failed to retrieve access token. Errors: {Errors}", errors);
-            throw new ApplicationException(errors);
-        }
-
-        if (!success) throw new Exception("Failed to store access token");
+        Outcome mediatorOutcome = await messageBroker.StoreAuth0AccessTokenAsync(token, ct);
+        mediatorOutcome.Switch(
+            () => logger.Information("Successfully stored access token"),
+            () => {
+                logger.Warning("Failed to store access token");
+                throw new Exception("Failed to store access token");
+            },
+            error => {
+                logger.Critical("Failed to retrieve access token. Errors: {Errors}", error);
+                throw new ApplicationException(error);
+            }
+        );
     }
 }

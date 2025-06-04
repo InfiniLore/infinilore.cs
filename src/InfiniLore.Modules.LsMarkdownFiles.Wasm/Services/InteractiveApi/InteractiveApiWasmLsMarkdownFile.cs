@@ -33,13 +33,13 @@ public class InteractiveApiWasmLsMarkdownFile(
             WithMarkdownFileItemRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[lsMarkdownFileId];
             KiotaLsMarkdownFileResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
 
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome<ILsMarkdownFileModel>.FromError(interactiveApi.DefaultApiError);
 
             return Outcome.FromData(WasmLsMarkdownFileModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Could not get ls markdown file by id {id}", lsMarkdownFileId);
-            return Outcome.FromError("Could not get ls markdown file by id");
+            return Outcome<ILsMarkdownFileModel>.FromError("Could not get ls markdown file by id");
         }
     }
 

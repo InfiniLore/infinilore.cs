@@ -21,7 +21,7 @@ public class GetLorescopeByIdHandler(
     IAccessProtectionRules protectionRules,
     ILogger<GetLorescopeByIdHandler> logger
 ) : AccessProtectedCommandHandler<GetLorescopeByIdQuery, LoreScopeModel>(logger) {
-    protected override Outcome<LoreScopeModel> AccessDeniedOutcome => Outcome.FromError("Access denied");
+    protected override Outcome<LoreScopeModel> AccessDeniedOutcome => Outcome<LoreScopeModel>.FromError("Access denied");
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -35,13 +35,13 @@ public class GetLorescopeByIdHandler(
 
         if (!response.TryGetAsData(out LoreScopeModel? value)) {
             logger.Warning("Failed to get lorescope");
-            return Outcome.FromError("Failed to get lorescope");
+            return Outcome<LoreScopeModel>.FromError("Failed to get lorescope");
         }
 
         // ReSharper disable once InvertIf
         if (!command.IsLoreScopeOnly && value.OwnerId != command.UserId) {
             logger.Warning("User does not own this lorescope");
-            return Outcome.FromError("User does not own this lorescope");
+            return Outcome<LoreScopeModel>.FromError("User does not own this lorescope");
         }
 
         return Outcome.FromData(value);

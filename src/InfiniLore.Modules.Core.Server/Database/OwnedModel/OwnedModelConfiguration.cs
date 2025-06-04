@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Modules.Core.Server.Database;
@@ -18,8 +17,7 @@ public abstract class OwnedModelConfiguration<TOwner, TModel> : BasicModelConfig
         
         builder.HasOne(x => x.Owner)
             .WithMany()
-            .HasForeignKey(x => x.OwnerId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(x => x.OwnerId);
         
         builder.Property(x => x.OwnerId).IsRequired();
         builder.HasIndex(x => x.OwnerId);

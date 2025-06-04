@@ -25,14 +25,12 @@ public class LoreScopeConfiguration : OwnedModelConfiguration<InfiniLoreUserMode
         builder.HasOne(x => x.AccessProtection)
             .WithOne()
             .HasForeignKey<LoreScopeModel>(x => x.AccessProtectionId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .IsRequired(false);
         
         builder.HasOne(x => x.PosterImageMetaData)
             .WithOne()
             .HasForeignKey<LoreScopeModel>(x => x.PosterImageMetaDataId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .IsRequired(false);
         
         builder.Ignore(x => x.HasAccessProtection);
     }

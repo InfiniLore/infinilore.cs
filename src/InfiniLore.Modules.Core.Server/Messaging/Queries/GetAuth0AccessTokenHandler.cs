@@ -36,13 +36,13 @@ public class GetAuth0AccessTokenHandler(
             model => {
                 if (model.Value.IsNullOrEmpty()) {
                     logger.Warning("Auth0 access token value is empty.");
-                    return Outcome.FromError("Cannot get auth0 access token. Value is empty.");
+                    return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Value is empty.");
                 }
 
                 model.Value = encryptionService.Decrypt(model.Value);
                 if (!model.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
                     logger.Error("Failed to convert Auth0 access token JSON to object.");
-                    return Outcome.FromError("Cannot get auth0 access token. Json conversion failed.");
+                    return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Json conversion failed.");
                 }
                 
                 logger.Information("Successfully retrieved and parsed Auth0 access token.");
@@ -50,7 +50,7 @@ public class GetAuth0AccessTokenHandler(
             },
             error => {
                 logger.Warning("Failed to retrieve Auth0 access token. {reason}", error.Value);
-                return Outcome.FromError($"Cannot get auth0 access token. {error.Value}");
+                return Outcome<IAuth0AccessToken>.FromError($"Cannot get auth0 access token. {error.Value}");
             }
         );
     }

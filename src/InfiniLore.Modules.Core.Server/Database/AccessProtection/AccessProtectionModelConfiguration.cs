@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Modules.Core.Server.Database;
@@ -17,8 +16,7 @@ public class AccessProtectionModelConfiguration : BasicModelConfiguration<Access
         
         builder.HasOne(x => x.ModelOwner)
             .WithMany()
-            .HasForeignKey(x => x.ModelOwnerId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(x => x.ModelOwnerId);
         
         builder.HasMany(x => x.Rules);
 

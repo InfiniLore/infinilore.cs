@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Modules.Core.Server.Database.InfiniLoreUser;
@@ -31,7 +30,6 @@ public class InfiniLoreUserConfiguration : BasicModelConfiguration<InfiniLoreUse
         builder.HasOne(x => x.ProfileImageMetaData)
             .WithOne()
             .HasForeignKey<InfiniLoreUserModel>(x => x.ProfileImageMetaDataId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .IsRequired(false);
     }
 }

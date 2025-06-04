@@ -165,15 +165,6 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
 public partial record struct Outcome<T>() : IUnion<T, AccessRefused, Error<string>> {
     
-    public static implicit operator Outcome<T>(Outcome outcomeWithError) {
-        return outcomeWithError.Match(
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
-            FromAccessRefused,
-            FromError
-        );
-    }
-    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

@@ -19,13 +19,13 @@ public class GetUserByIdHandler(
     ILogger<GetUserByIdHandler> logger,
     IS3FileStorage fileStorage   
 ) : AccessProtectedCommandHandler<GetUserByIdQuery, InfiniLoreUserModel>(logger) {
-    protected override Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome.FromError("Cannot get user by id. Access denied.");
+    protected override Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome<InfiniLoreUserModel>.FromError("Cannot get user by id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task<Outcome<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
-        if (command.UserId == Guid.Empty) return Outcome.FromError("Cannot get user by id.  id is empty.");
+        if (command.UserId == Guid.Empty) return Outcome<InfiniLoreUserModel>.FromError("Cannot get user by id.  id is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
@@ -33,7 +33,7 @@ public class GetUserByIdHandler(
         RepoOutcome<InfiniLoreUserModel> outcome = await userRepository.GetByIdAsync(command.UserId, ct: ct);
         if (!outcome.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Error("Failed to get user by id. {Error}", outcome.AsError.Value);
-            return Outcome.FromError("Cannot get user by id.");
+            return Outcome<InfiniLoreUserModel>.FromError("Cannot get user by id.");
         }
 
         // Skip if there is no profile image.
