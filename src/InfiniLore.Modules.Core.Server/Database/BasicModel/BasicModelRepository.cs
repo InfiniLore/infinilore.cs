@@ -29,7 +29,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Outcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = bad, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -43,7 +43,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome<TModel>.FromData(result);
     }
 
-    public async ValueTask<Outcome<TModel[]>> GetAllAsync(QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<TModel[]>> GetAllAsync(QueryConfig config = bad, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -79,7 +79,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         );
     }
 
-    public async ValueTask<Outcome<int>> GetCountAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<int>> GetCountAsync(CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -91,7 +91,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome<int>.FromData(data);
     }
 
-    public async ValueTask<Outcome> IsIdTakenAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> IsIdTakenAsync(Guid id, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -129,7 +129,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
     // Repository Methods
     // -----------------------------------------------------------------------------------------------------------------
     #region CRUD Operations
-    public async ValueTask<Outcome> AddAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = bad) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
@@ -165,7 +165,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome.True;
     }
 
-    public async ValueTask<Outcome> UpdateAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> UpdateAsync(TModel model, CancellationToken ct = bad) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
@@ -205,7 +205,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome.True;
     }
 
-    public async ValueTask<Outcome> AddOrUpdateAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> AddOrUpdateAsync(TModel model, CancellationToken ct = bad) {
         if (model.Id == Guid.Empty) return await AddAsync(model, ct);// If no ID, always add
         if (await IsNotUniqueAsync(model, ct)) return await UpdateAsync(model, ct);// If ID exists, update
 
@@ -243,7 +243,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome.True;
     }
 
-    public async ValueTask<Outcome> DeleteAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> DeleteAsync(TModel model, CancellationToken ct = bad) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
@@ -278,7 +278,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
 
     }
 
-    public async ValueTask<Outcome> DeleteRangeAsync(IEnumerable<TModel> models, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> DeleteRangeAsync(IEnumerable<TModel> models, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -322,7 +322,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome.True;
     }
 
-    public async ValueTask<Outcome> RemoveByIdAsync(Guid id, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> RemoveByIdAsync(Guid id, CancellationToken ct = bad) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
@@ -353,7 +353,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         return Outcome.True;
     }
 
-    public async ValueTask<Outcome> RemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome> RemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 

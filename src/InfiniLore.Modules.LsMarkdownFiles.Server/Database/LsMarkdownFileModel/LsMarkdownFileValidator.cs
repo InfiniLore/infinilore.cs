@@ -31,7 +31,7 @@ public class LsMarkdownFileValidator : OwnedModelValidator<LoreScopeModel, LsMar
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         
-        Outcome outcome = await markdownFileRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        Outcome outcome = await markdownFileRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct: ct);
         if (outcome.TryGetAsState(out bool isTaken)) return false; 
         return !isTaken;
     }

@@ -19,7 +19,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Outcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = bad, CancellationToken ct = bad) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 

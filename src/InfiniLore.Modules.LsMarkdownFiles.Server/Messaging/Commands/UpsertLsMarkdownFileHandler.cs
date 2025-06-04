@@ -33,13 +33,13 @@ public class UpsertLsMarkdownFileHandler(
         var markdownFileRepo = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         
-        Outcome loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct:ct);
+        Outcome loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct: ct);
         if (!loreScopeExistsResult.TryGetAsState(out bool success) || !success ) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
         }
 
-        Outcome<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct:ct);
+        Outcome<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct: ct);
         
         // If the Known is set to default, it will be empty and thus result in a new file being created.
         S3FileMetaDataModel s3FileMetaData = knownFileResult.Match(

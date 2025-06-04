@@ -34,7 +34,7 @@ public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreS
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         
-        Outcome outcome = await loreScopeRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        Outcome outcome = await loreScopeRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct: ct);
         if (!outcome.TryGetAsState(out bool isTaken)) return false;
         return !isTaken;
     }

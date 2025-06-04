@@ -34,7 +34,7 @@ public class UpsertUserProfileImageHandler(
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
+        Outcome<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct: ct);
         Outcome outcome =  await userModelResult.MatchAsync(
             async model => await ProcessUserModelAsync(command, model, unitOfWork, ct),
             _ => {

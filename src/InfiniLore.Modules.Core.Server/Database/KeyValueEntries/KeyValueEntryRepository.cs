@@ -41,7 +41,7 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         return Outcome<KeyValueEntryModel>.FromData(result);
     }
 
-    public async ValueTask<Outcome<int>> GetCountAsync(CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<int>> GetCountAsync(CancellationToken ct = bad) {
         // Access
         DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
