@@ -44,6 +44,19 @@
       "_readme": "Setup a new module and all of its packages",
       "commandName": "Project",
       "commandLineArgs": "module-setup"
+    },
+    "set Server Secrets": {
+      "_readme": "Setup the server secrets, required to run the application ",
+      "commandName": "Project",
+      "commandLineArgs": "set-server-secrets"
+    },
+    "sync auth0 Permissions": {
+      "commandName": "Project",
+      "commandLineArgs": "sync-permission"
+    },
+    "sync auth0 Roles": {
+      "commandName": "Project",
+      "commandLineArgs": "sync-roles"
     }
   }
 }

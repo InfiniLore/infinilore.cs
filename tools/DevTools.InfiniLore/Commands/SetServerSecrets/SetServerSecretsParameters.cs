@@ -20,4 +20,5 @@ public record SetServerSecretsParameters : ICliParameters {
     [CliData("audience", "a")] public string Audience { get; init; } = "https://localhost:7059/api";
     
     public string InfiniLoreServerFolder => Path.Join(Root, "src/InfiniLore.Server/");
+    public string DevToolsInfiniLoreFolder => Path.Join(Root, "tools/DevTools.InfiniLore/");
 }
