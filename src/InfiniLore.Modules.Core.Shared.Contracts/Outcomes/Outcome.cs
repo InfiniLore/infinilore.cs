@@ -17,12 +17,8 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public bool TryGetAsState(out bool state) {
-        if (!IsTrue || !IsFalse) {
-            state = false;
-            return false;
-        }
-        state = IsTrue || !IsFalse;
-        return true;
+        state = IsTrue;
+        return IsTrue || IsFalse;
     }
     
     #region From Overloads
