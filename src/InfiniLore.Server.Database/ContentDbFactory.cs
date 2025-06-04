@@ -36,7 +36,6 @@ public static class ContentDbFactory {
 
         // Our UnitOfWork is integral to the correct execution of the repo pattern
         services.AddReadonlyUnitOfWork<ContentDb>();
-        services.RegisterServicesFromInfiniLoreServerDatabase();
     }
     
     internal static void ConfigureModel(ModelBuilder modelBuilder) {

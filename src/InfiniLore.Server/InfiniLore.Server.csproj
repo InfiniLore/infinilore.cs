@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AterraEngine.Unions" />
         <PackageReference Include="Auth0.AspNetCore.Authentication" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" />
         <PackageReference Include="CodeOfChaos.CliArgsParser.Contracts" />
@@ -50,6 +49,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+
+        <PackageReference Include="Testcontainers.Minio" />
+
+        <PackageReference Include="Testcontainers.MsSql" />
     </ItemGroup>
 
     <ItemGroup>
