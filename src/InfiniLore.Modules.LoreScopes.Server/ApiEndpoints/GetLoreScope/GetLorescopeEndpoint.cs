@@ -1,37 +1,22 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
-using ProblemDetails=FastEndpoints.ProblemDetails;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok<LoreScopeResponse>,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class GetLorescopeEndpoint(
     ILogger<GetLorescopeEndpoint> logger, 
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLorescopeEndpointRequest, Response, LoreScopeMapper> {
+) : InfiniLoreEndpoint<GetLorescopeEndpointRequest, LoreScopeResponse, LoreScopeMapper> {
 
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}");
@@ -40,29 +25,31 @@ public class GetLorescopeEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
         Outcome<LoreScopeModel> outcome = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
-
-        // Verify Response
-        if (!outcome.TryGetAsData(out LoreScopeModel? loreScope)) {
-            logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, outcome.AsError.Value);
-            return TypedResults.NotFound();
-        }
-
-        logger.Information("Successfully retrieved lorescope with id {id}", req.LoreScopeId);
-
-        // Return
-        LoreScopeResponse response = Map.FromEntity(loreScope);
-
+        
+        await outcome.SwitchAsync(
+            OnFoundDataAsync,
+            (error, token) => OnErrorAsync(error, req, token),
+            ct
+        );
+    }   
+    
+    private async Task OnFoundDataAsync(LoreScopeModel loreScope, CancellationToken ct = default) {
         Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
         if (imageUrlResponse.TryGetAsData(out string? imageUrl)) {
-            response.ImageUrl = imageUrl;
+            loreScope.S3PosterImageUrl = imageUrl;
         }
-        
-        return TypedResults.Ok(response);
+
+        logger.Information("Successfully retrieved lorescope with id {id}", loreScope.Id);
+        Response = TypedResults.Ok(Map.FromEntity(loreScope));
+    }
+
+    private Task OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
+        logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, error);
+        Response = TypedResults.NotFound();
+        return Task.CompletedTask;
     }
 }

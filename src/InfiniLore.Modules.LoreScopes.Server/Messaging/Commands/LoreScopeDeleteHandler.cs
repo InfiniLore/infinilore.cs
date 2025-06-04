@@ -12,7 +12,6 @@ using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Commands;
 // ---------------------------------------------------------------------------------------------------------------------

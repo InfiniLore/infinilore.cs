@@ -1,35 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class UpsertLoreScopeMetadataEndpoint(
     ILogger<UpsertLoreScopeMetadataEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertLoreScopeMetadataEndpointRequest, Response, LoreScopeMapper> {
+) : InfiniLoreEndpointWithEmptyResponse<UpsertLoreScopeMetadataEndpointRequest, LoreScopeMapper> {
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lorescope/{LoreScopeId:guid}/metadata");
@@ -38,22 +24,17 @@ public class UpsertLoreScopeMetadataEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
+    public override async Task HandleAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
         Outcome outcome = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
-
-        // Verify Response
-        if (!outcome.TryGetAsState(out bool successful)) {
-            logger.Warning("FAILED, {@state}", outcome.AsError);
-            AddError("Failed to update lorescope metadata");
-            return new ProblemDetails(ValidationFailures);
-        }
-
-        // Return
-        if (successful is false) return TypedResults.BadRequest();
-        return TypedResults.Ok();
+        outcome.Switch(
+            () =>  Response = TypedResults.Ok(),
+            () =>  Response = TypedResults.BadRequest(),
+            error => {
+                logger.Error("Failed to lorescope metadata because '{reason}'", error);
+                Response = TypedResults.BadRequest();
+            }
+        );
     }
 }

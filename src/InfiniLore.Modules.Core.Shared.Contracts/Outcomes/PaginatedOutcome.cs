@@ -28,23 +28,64 @@ public partial record struct PaginatedOutcome<T>() : IUnion<PaginatedData<T>, Ac
     public static PaginatedOutcome<T> FromAccessRefused(string value)
         => FromAccessRefused(new AccessRefused(value));
     
+    #region Match Overloads
     public TOutput Match<TOutput>(
         Func<PaginatedData<T>, TOutput> dataCase,
-        Func<Error<string>, TOutput> errorCase
+        Func<string, TOutput> errorCase
     ) => this switch {
         { IsData: true, AsData: var value } => dataCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => errorCase(value),
+        {IsAccessRefused: true, AsAccessRefused: var value} => errorCase(value.Reason),
+        { IsError: true, AsError: var value } => errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a valid value")
     };
 
     public async Task<TOutput> MatchAsync<TOutput>(
         Func<PaginatedData<T>, Task<TOutput>> dataCase,
-        Func<Error<string>, Task<TOutput>> errorCase
+        Func<string, Task<TOutput>> errorCase
     ) => this switch {
         { IsData: true, AsData: var value } => await dataCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => await errorCase(value),
+        {IsAccessRefused: true, AsAccessRefused: var value} => await errorCase(value.Reason),
+        { IsError: true, AsError: var value } => await errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a valid value")
     };
+    #endregion
+    
+    #region Switch Overloads
+    public void Switch(
+        Action<PaginatedData<T>> dataCase,
+        Action<string> errorCase
+    ){
+        switch (this) {
+            case {IsData: true, AsData: var value} : dataCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value} : errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : errorCase(value.Value); return;
+        }
+        throw new ArgumentException("Union does not contain a value");
+    }
+
+    public async Task SwitchAsync(
+        Func<PaginatedData<T>, Task> dataCase,
+        Func<string, Task> errorCase
+    ){
+        switch (this) {
+            case {IsData: true, AsData: var value} : await dataCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value} : await errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} :await  errorCase(value.Value); return;
+        }
+        throw new ArgumentException("Union does not contain a value");
+    }
+
+    public async Task SwitchAsync(
+        Func<PaginatedData<T>, CancellationToken, Task> dataCase,
+        Func<string, CancellationToken, Task> errorCase,
+        CancellationToken ct
+    ){
+        switch (this) {
+            case {IsData: true, AsData: var value} : await dataCase(value, ct); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value} : await errorCase(value.Reason, ct); return;
+            case {IsError: true, AsError: var value} :await  errorCase(value.Value, ct); return;
+        }
+        throw new ArgumentException("Union does not contain a value");
+    }
+    #endregion
 }

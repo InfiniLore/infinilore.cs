@@ -13,8 +13,8 @@ namespace InfiniLore.Modules.Core.Server.Database;
 public partial record struct PaginatedRepoOutcome<T>() : IUnion<PaginatedData<T>, Error<string>> where T : class {
     public static implicit operator PaginatedRepoOutcome<T>(Outcome outcomeWithError) {
         return outcomeWithError.Match(
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            () => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
+            () => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
             FromError
         );
     }

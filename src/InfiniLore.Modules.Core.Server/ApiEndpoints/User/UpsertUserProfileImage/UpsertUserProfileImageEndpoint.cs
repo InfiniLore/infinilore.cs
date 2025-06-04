@@ -1,10 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -12,21 +10,10 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class UpsertUserProfileImageEndpoint(
     ILogger<UpsertUserProfileImageEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertUserProfileImageEndpointRequest, Response> {
+) : InfiniLoreEndpointWithEmptyResponse<UpsertUserProfileImageEndpointRequest> {
 
     public override void Configure() {
         Post("/account/profile/{UserId:guid}/profile-image");
@@ -36,11 +23,9 @@ public class UpsertUserProfileImageEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertUserProfileImageEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(UpsertUserProfileImageEndpointRequest req, CancellationToken ct) {
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
         
@@ -50,13 +35,13 @@ public class UpsertUserProfileImageEndpoint(
             fileStream,
             ct: ct
         );
-        
-        return outcome.Match<Response>(
-            _ => TypedResults.Ok(),
-            _ => TypedResults.BadRequest(),
+
+        outcome.Switch(
+            () => Response = TypedResults.Ok(),
+            () => Response = TypedResults.BadRequest(),
             error => {
                 logger.Warning("Failed to update user poster image. {@error}", error);
-                return TypedResults.NotFound();
+                Response = TypedResults.NotFound();
             }
         );
     }

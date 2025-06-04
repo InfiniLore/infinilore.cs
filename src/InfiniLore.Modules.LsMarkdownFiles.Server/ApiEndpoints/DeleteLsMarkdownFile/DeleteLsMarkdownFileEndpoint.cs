@@ -1,33 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class DeleteLsMarkdownFileEndpoint(
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<DeleteLsMarkdownFileEndpointRequest, Response> {
+) : InfiniLoreEndpointWithEmptyResponse<DeleteLsMarkdownFileEndpointRequest> {
 
     public override void Configure() {
         Delete("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
@@ -36,15 +22,14 @@ public class DeleteLsMarkdownFileEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(DeleteLsMarkdownFileEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
+    public override async Task HandleAsync(DeleteLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         Outcome outcome = await messageBroker.DeleteLsMarkdownFileAsync(req.MarkdownFileId, ct: ct);
-        return outcome.Match<Response>(
-            data => data ? TypedResults.Ok() : TypedResults.NotFound(),
-            _ => TypedResults.NotFound()       
+        outcome.Switch(
+            () => Response = TypedResults.Ok(),
+            () => Response = TypedResults.NotFound(),
+            _ => Response = TypedResults.NotFound()      
         );
     }
 }

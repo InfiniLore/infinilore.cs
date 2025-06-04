@@ -1,34 +1,20 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok<LsMarkdownFileResponse>,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class GetLsMarkdownFileEndpoint(
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLsMarkdownFileEndpointRequest, Response, LsMarkdownFileMapper> {
+) : InfiniLoreEndpoint<GetLsMarkdownFileEndpointRequest, LsMarkdownFileResponse, LsMarkdownFileMapper> {
 
     public override void Configure() {
         Get("/data-lorescope/{LoreScopeId:guid}/markdown-file/{MarkdownFileId:guid}");
@@ -37,15 +23,13 @@ public class GetLsMarkdownFileEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLsMarkdownFileEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(GetLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         Outcome<LsMarkdownFileModel> outcome = await messageBroker.GetLsMarkdownFileByIdAsync(req.MarkdownFileId, ct: ct);
-        return outcome.Match<Response>(
-            model => TypedResults.Ok(Map.FromEntity(model)),
-            _ => TypedResults.NotFound()       
-        );
+        outcome.Switch(
+            model => Response = TypedResults.Ok(Map.FromEntity(model)),
+            _ => Response = TypedResults.NotFound()      
+        );   
     }
 }

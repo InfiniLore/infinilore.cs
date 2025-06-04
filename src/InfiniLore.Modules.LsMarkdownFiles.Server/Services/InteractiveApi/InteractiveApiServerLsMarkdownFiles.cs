@@ -45,11 +45,7 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
     public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
         if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Outcome.FromError("Invalid LoreScope Id");
 
-        Outcome outcome = await interactiveApi.MessageBroker.UpsertLsMarkdownFileAsync(parsedLoreScopeId, fileName, fileData, knownFileId, ct: ct);
-        return outcome.Match(
-            Outcome.FromState, 
-            error => Outcome.FromError(string.Join(',', error.Value))
-        );
+        return await interactiveApi.MessageBroker.UpsertLsMarkdownFileAsync(parsedLoreScopeId, fileName, fileData, knownFileId, ct: ct);
     }
     public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
         byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
@@ -63,10 +59,6 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
         // if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Outcome.FromError("Invalid LoreScope Id");
         if (!Guid.TryParse(lsMarkdownFileId, out Guid parsedLsMarkdownFileId)) return Outcome.FromError("Invalid LsMarkdownFile Id");
         
-        Outcome outcome = await interactiveApi.MessageBroker.DeleteLsMarkdownFileAsync(parsedLsMarkdownFileId, ct: ct);
-        return outcome.Match(
-            Outcome.FromState, 
-            error => Outcome.FromError(string.Join(',', error.Value))
-        );      
+        return await interactiveApi.MessageBroker.DeleteLsMarkdownFileAsync(parsedLsMarkdownFileId, ct: ct);
     }
 }

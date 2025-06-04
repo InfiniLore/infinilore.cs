@@ -10,7 +10,6 @@ using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
