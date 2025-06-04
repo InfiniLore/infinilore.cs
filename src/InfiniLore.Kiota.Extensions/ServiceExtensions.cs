@@ -4,44 +4,29 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 
-namespace InfiniLore.Kiota.Extensions;
+namespace InfiniLore.Kiota;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ServiceExtensions {
     /// <summary>
-    ///     Adds the Kiota handlers to the service collection.
+    /// Adds and configures the InfiniLore Kiota client to the specified service collection.
+    /// This includes setting up the necessary HTTP client, default handlers, and the InfiniLore API client factory.
     /// </summary>
-    /// <param name="services"><see cref="IServiceCollection" /> to add the services to</param>
-    /// <returns><see cref="IServiceCollection" /> as per convention</returns>
-    /// <remarks>
-    ///     The handlers are added to the http client by the <see cref="AttachKiotaHandlers(IHttpClientBuilder)" /> call,
-    ///     which requires them to be pre-registered in DI
-    /// </remarks>
-    public static IServiceCollection AddKiotaHandlers(this IServiceCollection services) {
-        IList<KiotaClientFactory.ActivatableType> kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
-        foreach (KiotaClientFactory.ActivatableType handler in kiotaHandlers) {
+    /// <param name="services">The service collection instance to which the InfiniLore Kiota client should be added.</param>
+    /// <returns>The same service collection instance with the InfiniLore Kiota client registered.</returns>
+    public static IServiceCollection AddInfiniLoreKiotaClient(this IServiceCollection services) {
+        services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
+        
+        IHttpClientBuilder httpClientBuilder =  services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI",
+            configureClient: static client => client.BaseAddress = new Uri("https://localhost:7059/")
+        );
+        
+        foreach (KiotaClientFactory.ActivatableType handler in  KiotaClientFactory.GetDefaultHandlerActivatableTypes()) {
             services.AddTransient(handler);
+            httpClientBuilder.AddHttpMessageHandler(sp => (DelegatingHandler)sp.GetRequiredService(handler));
         }
 
         return services;
-    }
-
-    /// <summary>
-    ///     Adds the Kiota handlers to the http client builder.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    /// <remarks>
-    ///     Requires the handlers to be registered in DI by <see cref="AddKiotaHandlers(IServiceCollection)" />.
-    ///     The order in which the handlers are added is important, as it defines the order in which they will be executed.
-    /// </remarks>
-    public static IHttpClientBuilder AttachKiotaHandlers(this IHttpClientBuilder builder) {
-        IList<KiotaClientFactory.ActivatableType> kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
-        foreach (KiotaClientFactory.ActivatableType handler in kiotaHandlers) {
-            builder.AddHttpMessageHandler(sp => (DelegatingHandler)sp.GetRequiredService(handler));
-        }
-
-        return builder;
     }
 }

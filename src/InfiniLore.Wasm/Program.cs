@@ -1,9 +1,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Kiota;
-using InfiniLore.Kiota.Extensions;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.Kiota;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
@@ -44,12 +43,7 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreWasm();
         builder.Services.RegisterServicesFromInfiniLoreModulesCoreShared();
 
-        builder.Services.AddKiotaHandlers();
-        builder.Services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI",
-            configureClient: static client => client.BaseAddress = new Uri("https://localhost:7059/")
-        ).AttachKiotaHandlers();
-
-        builder.Services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
+        builder.Services.AddInfiniLoreKiotaClient();
             
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {

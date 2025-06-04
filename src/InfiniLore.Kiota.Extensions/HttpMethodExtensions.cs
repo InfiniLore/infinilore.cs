@@ -3,8 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using Microsoft.Kiota.Abstractions;
 
-namespace InfiniLore.Kiota.Extensions;
-
+namespace InfiniLore.Kiota;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -19,6 +18,6 @@ public static class HttpMethodExtensions {
         Method.HEAD => "HEAD",
         Method.CONNECT => "CONNECT",
         Method.TRACE => "TRACE",
-        _ => throw new ArgumentOutOfRangeException()
+        _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
     };
 }
