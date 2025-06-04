@@ -32,8 +32,8 @@
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.68.0" />
     <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.11.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
-    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1" />
-    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1" />
+    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.26.0" />
+    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.26.0" />
     <PackageVersion Include="FastEndpoints" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.1.0" />
