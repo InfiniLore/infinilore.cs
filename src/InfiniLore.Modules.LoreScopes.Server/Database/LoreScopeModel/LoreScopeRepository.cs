@@ -26,13 +26,13 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public ValueTask<RepoOutcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = bad, CancellationToken ct = bad) 
+    public ValueTask<RepoOutcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) 
         => CommonRepoMethods.IsNameTakenAsync(GetCachedDbSet<LoreScopeModel>(), name, ownerId, notIncludedId, ct);
     
-    public ValueTask<RepoOutcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = bad, CancellationToken ct = bad)
+    public ValueTask<RepoOutcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default)
         => CommonRepoMethods.IsNameNotTakenAsync(GetCachedDbSet<LoreScopeModel>(),name, ownerId, notIncludedId, ct);
     
-    public async ValueTask<RepoOutcome> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = bad) {
+    public async ValueTask<RepoOutcome> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default) {
         if (resourceId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return Outcome.FromError(RepositoryFailures.ModelFailedValidation);
         
         DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
