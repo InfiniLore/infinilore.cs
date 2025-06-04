@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore = InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -49,8 +48,7 @@ public class GetUserProfilesEndpoint(
         return outcome.Match<Response>(
             dataCase: model => {
                 logger.Information("Successfully retrieved users");
-                UserProfilesResponse mappedModel = Map.FromEntity(model);
-                return TypedResults.Ok(mappedModel);
+                return TypedResults.Ok(Map.FromEntity(model));
             },
             errorCase: error => {
                 logger.Warning("Failed to get users because '{reason}'", error.Value);

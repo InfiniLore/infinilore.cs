@@ -32,26 +32,27 @@ public class GetAuth0AccessTokenHandler(
         var keyValueEntryRepository = await unitOfWork.GetRepositoryAsync<IKeyValueEntryRepository>(ct);
 
         RepoOutcome<KeyValueEntryModel> storeOutcome = await keyValueEntryRepository.TryGetByKeyAsync("Auth0AccessToken", ct);
-        if (storeOutcome.IsError) {
-            logger.Warning("Failed to retrieve Auth0 access token. Key not found.");
-            return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Key not found.");
-        }
+        return storeOutcome.Match<Outcome<IAuth0AccessToken>>(
+            model => {
+                if (model.Value.IsNullOrEmpty()) {
+                    logger.Warning("Auth0 access token value is empty.");
+                    return Outcome.FromError("Cannot get auth0 access token. Value is empty.");
+                }
 
-        KeyValueEntryModel store = storeOutcome.AsData;
-        if (store.Value.IsNullOrEmpty()) {
-            logger.Warning("Auth0 access token value is empty.");
-            return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Value is empty.");
-        }
-
-        store.Value = encryptionService.Decrypt(store.Value);
-
-        if (!store.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
-            logger.Error("Failed to convert Auth0 access token JSON to object.");
-            return Outcome<IAuth0AccessToken>.FromError("Cannot get auth0 access token. Json conversion failed.");
-        }
-
-        logger.Information("Successfully retrieved and parsed Auth0 access token.");
-        return dto;
+                model.Value = encryptionService.Decrypt(model.Value);
+                if (!model.TryGetConvertJsonValueToObject(out Auth0AccessTokenJsonDto? dto)) {
+                    logger.Error("Failed to convert Auth0 access token JSON to object.");
+                    return Outcome.FromError("Cannot get auth0 access token. Json conversion failed.");
+                }
+                
+                logger.Information("Successfully retrieved and parsed Auth0 access token.");
+                return Outcome<IAuth0AccessToken>.FromData(dto);
+            },
+            error => {
+                logger.Warning("Failed to retrieve Auth0 access token. {reason}", error.Value);
+                return Outcome.FromError($"Cannot get auth0 access token. {error.Value}");
+            }
+        );
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetAuth0AccessTokenQuery command, CancellationToken ct = default) 

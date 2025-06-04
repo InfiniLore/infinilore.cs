@@ -1,19 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class DefaultSummary : EndpointSummary{
-    public DefaultSummary() {
-        Responses[401] = "Unauthorized";
-        // Responses[402] = "Payment Required";
-        Responses[403] = "Forbidden";
-        Responses[404] = "Not Found";
-        Responses[500] = "Internal Server Error";
-    }
+public static class AuthorizationBuilderExtensions {
+    public static AuthorizationBuilder AddJwtProtectedPolicy(this AuthorizationBuilder builder) 
+        => builder.AddPolicy(ApiPolicies.JwtProtected, configurePolicy: policy => {
+            policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+            policy.RequireAuthenticatedUser(); // Enforce authentication
+        });
 }

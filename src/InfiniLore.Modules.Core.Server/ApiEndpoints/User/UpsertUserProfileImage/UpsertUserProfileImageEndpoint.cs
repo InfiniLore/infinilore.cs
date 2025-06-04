@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -44,6 +43,7 @@ public class UpsertUserProfileImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
+        
         Outcome outcome = await messageBroker.UpsertUserProfileImageAsync(
             req.UserId,
             file.ContentType,

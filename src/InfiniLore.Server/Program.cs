@@ -142,7 +142,10 @@ public static class Program {
         });
 
         builder.Services.AddAuthorizationBuilder()
-            .AddJwtProtectedPolicy();
+            .AddPolicy(ApiPolicies.JwtProtected, configurePolicy: policy => {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();// Enforce authentication
+            });
 
         builder.Services.AddCascadingAuthenticationState();
         #endregion
