@@ -36,6 +36,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+        <ProjectReference Include="..\..\src\InfiniLore.Modules.Core.Shared.Contracts\InfiniLore.Modules.Core.Shared.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

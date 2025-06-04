@@ -39,7 +39,7 @@ public class GetUserProfilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Outcome<PaginatedData<InfiniLoreUserModel>> outcome = await messageBroker.GetUsersAsync(
+        PaginatedOutcome<InfiniLoreUserModel> outcome = await messageBroker.GetUsersAsync(
             QueryConfig.From(req),
             Pagination.From(req), 
             ct: ct

@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile;
@@ -34,13 +33,13 @@ public class InteractiveApiWasmLsMarkdownFile(
             WithMarkdownFileItemRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[lsMarkdownFileId];
             KiotaLsMarkdownFileResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
 
-            if (result is null) return Result<ILsMarkdownFileModel>.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
 
-            return Result<ILsMarkdownFileModel>.FromData(WasmLsMarkdownFileModel.FromKiotaModel(result));
+            return Outcome.FromData(WasmLsMarkdownFileModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Could not get ls markdown file by id {id}", lsMarkdownFileId);
-            return Result<ILsMarkdownFileModel>.FromError("Could not get ls markdown file by id");
+            return Outcome.FromError("Could not get ls markdown file by id");
         }
     }
 
@@ -109,7 +108,7 @@ public class InteractiveApiWasmLsMarkdownFile(
         byte[] textBytes = Encoding.UTF8.GetBytes(fileData);
         await using var stream = new MemoryStream(textBytes);
         
-        Result result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, knownFileId,ct);
+        Outcome result = await UpsertLsMarkdownFileAsync(loreScopeId, fileName, stream, knownFileId,ct);
         return result;
     }
 

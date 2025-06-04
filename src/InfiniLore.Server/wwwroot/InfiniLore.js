@@ -2,9 +2,9 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/InfiniLore.Shared.JsInterop/TsLib/SecureStorage.ts":
+/***/ "./src/JsInterop/TsLib/SecureStorage.ts":
 /*!****************************************************************!*\
-  !*** ./src/InfiniLore.Shared.JsInterop/TsLib/SecureStorage.ts ***!
+  !*** ./src/JsInterop/TsLib/SecureStorage.ts ***!
   \****************************************************************/
 /***/ (function(__unused_webpack_module, exports) {
 
@@ -123,11 +123,11 @@ var __webpack_exports__ = {};
 (() => {
 var exports = __webpack_exports__;
 /*!********************************************************!*\
-  !*** ./src/InfiniLore.Shared.JsInterop/TsLib/index.ts ***!
+  !*** ./src/JsInterop/TsLib/index.ts ***!
   \********************************************************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const SecureStorage_1 = __webpack_require__(/*! ./SecureStorage */ "./src/InfiniLore.Shared.JsInterop/TsLib/SecureStorage.ts");
+const SecureStorage_1 = __webpack_require__(/*! ./SecureStorage */ "./src/JsInterop/TsLib/SecureStorage.ts");
 window.secureStorage = new SecureStorage_1.SecureStorageService();
 
 })();

@@ -101,6 +101,7 @@ public class UpsertLsMarkdownFileHandler(
             logger.Warning("Failed to commit transaction");
             return Outcome.FromError("Failed to commit transaction");      
         }
-        return true;
+        
+        return Outcome.True;
     }
 } 

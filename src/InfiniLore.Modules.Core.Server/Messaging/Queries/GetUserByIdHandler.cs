@@ -19,13 +19,13 @@ public class GetUserByIdHandler(
     ILogger<GetUserByIdHandler> logger,
     IS3FileStorage fileStorage   
 ) : AccessProtectedCommandHandler<GetUserByIdQuery, InfiniLoreUserModel>(logger) {
-    protected override Shared.Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Shared.Outcome.FromError("Cannot get user by id. Access denied.");
+    protected override Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome.FromError("Cannot get user by id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Shared.Outcome<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
-        if (command.UserId == Guid.Empty) return Shared.Outcome.FromError("Cannot get user by id.  id is empty.");
+    protected override async Task<Outcome<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
+        if (command.UserId == Guid.Empty) return Outcome.FromError("Cannot get user by id.  id is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
@@ -33,11 +33,11 @@ public class GetUserByIdHandler(
         Outcome<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
         if (!result.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
-            return Shared.Outcome.FromError("Cannot get user by id.");
+            return Outcome.FromError("Cannot get user by id.");
         }
 
         // Skip if there is no profile image.
-        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Shared.Outcome.FromData(user);
+        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Outcome.FromData(user);
 
         Outcome<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
             S3BucketNames.UserProfileImages,
@@ -51,7 +51,7 @@ public class GetUserByIdHandler(
             error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
         );
             
-        return Shared.Outcome.FromData(user);
+        return Outcome.FromData(user);
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByIdQuery command, CancellationToken ct = default)

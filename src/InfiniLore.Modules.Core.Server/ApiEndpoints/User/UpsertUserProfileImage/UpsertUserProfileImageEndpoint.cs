@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,7 @@ public class UpsertUserProfileImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        Shared.Outcome outcome = await messageBroker.UpsertUserProfileImageAsync(
+        Outcome outcome = await messageBroker.UpsertUserProfileImageAsync(
             req.UserId,
             file.ContentType,
             fileStream,

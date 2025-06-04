@@ -56,6 +56,6 @@ public class DeleteLsMarkdownFileHandler(
             return Outcome.FromError("Failed to delete markdown file");       
         }
         await unitOfWork.TryCommitTransactionAsync(ct);
-        return true;
+        return Outcome.True;
     }
 } 

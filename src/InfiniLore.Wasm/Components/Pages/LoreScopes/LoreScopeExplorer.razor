@@ -1,7 +1,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
@@ -159,17 +158,17 @@
         if (pageNumber is 0) pagination = Pagination.Default with { PageSize = FilesPerPage };
         else if (!PaginatedLoreScopes.TryGetNextPage(FilesPerPage, out pagination)) pagination = PaginatedLoreScopes.GetCurrentPage(FilesPerPage);
 
-        PaginatedOutcome<ILoreScopeModel> result = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
-        if (!result.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
+        PaginatedOutcome<ILoreScopeModel> outcome = await LoreScopeApi.GetLoreScopesAsync(UserId, pagination);
+        if (!outcome.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
-        PaginatedLoreScopes = data.Value;
+        PaginatedLoreScopes = data;
     }
 
     private async Task CreateNewLoreScopeAsync() {
         if (NewLoreScopeName.IsNullOrWhiteSpace()) return;
 
-        Result result = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
-        if (result.AsState) {
+        Outcome outcome = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
+        if (outcome.IsTrue) {
             var toast = new ToastData(
                 "LoreScope Created",
                 10,
@@ -188,7 +187,7 @@
             "Could not create LoreScope",
             10,
             ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
-            Body: result.IsError ? result.AsError.Value : "UNKNOWN"
+            Body: outcome.IsError ? outcome.AsError.Value : "UNKNOWN"
         );
 
         await ToastStorage.AddToastAsync(toastFail);
@@ -196,8 +195,8 @@
     }
 
     private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
-        Result result = await LoreScopeApi.DeleteLoreScopesAsync(UserId, loreScope.Id.ToString());
-        if (result.AsState) {
+        Outcome outcome = await LoreScopeApi.DeleteLoreScopesAsync(UserId, loreScope.Id.ToString());
+        if (outcome.IsTrue) {
             var toast = new ToastData(
                 "LoreScope Deleted",
                 10,

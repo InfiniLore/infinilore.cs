@@ -21,29 +21,30 @@ public class GetLsMarkdownFilesByOwnerHandler(
     IReadonlyUnitOfWorkFactory factory,
     IS3FileStorage fileStorage,
     ILogger<GetLsMarkdownFilesByOwnerHandler> logger
-) : AccessProtectedCommandHandler<GetLsMarkdownFilesByOwnerQuery, PaginatedData<LsMarkdownFileModel>>(logger) {
+) : PaginatedAccessProtectedCommandHandler<GetLsMarkdownFilesByOwnerQuery, LsMarkdownFileModel>(logger) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Outcome<PaginatedData<LsMarkdownFileModel>>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<PaginatedOutcome<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
 
-        InfiniLore.Shared.PaginatedOutcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
+        PaginatedOutcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByOwnerAsync(command.OwnerId, command.Pagination, command.QueryConfig, ct);
         if (!response.TryGetAsData(out PaginatedData<LsMarkdownFileModel>? data)) return Outcome.FromError("Failed to get markdown file");
 
-        IEnumerable<Task> tasks = data.Value.Items.Select(async model => {
+        IEnumerable<Task> tasks = data.Items.Select(async model => {
             if (model.S3FileMetaData is null) return;
             string bucketName = S3BucketNames.GetLoreScopeBucket(model.OwnerId);
             Outcome<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
             urlResult.Switch(
                 url => model.S3FileMetaData.S3ResourceUrl = url,
+                _ => logger.Warning("refused"),
                 _ => logger.Warning("Failed to get s3 resource url for file {FileName} in bucket {BucketName}", model.S3FileMetaData.FileName, bucketName)
             );
         });
         
         await Task.WhenAll(tasks);
-        return data;
+        return response;
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetLsMarkdownFilesByOwnerQuery command, CancellationToken ct = default) {

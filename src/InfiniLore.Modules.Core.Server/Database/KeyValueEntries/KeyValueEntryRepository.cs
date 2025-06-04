@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace InfiniLore.Modules.Core.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IKeyValueEntryRepository>]
 public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValueEntryRepository {
-    public async ValueTask<Shared.Outcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default) {
+    public async ValueTask<Outcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default) {
         // Access
         ContentDb dbContext = GetDbContext();
         DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
@@ -23,10 +24,10 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         else dbContext.Entry(existing).CurrentValues.SetValues(model);
 
         await dbContext.SaveChangesAsync(ct);
-        return true;
+        return Outcome.True;
     }
 
-    public async ValueTask<Shared.Outcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
+    public async ValueTask<Outcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default) {
         // Access
         DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
@@ -35,12 +36,12 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
             .FirstOrDefaultAsync(predicate: ls => ls.Key == key, ct);
 
         // Retrieve
-        if (result is null) return Shared.Outcome<KeyValueEntryModel>.FromError(RepositoryFailures.ModelNotFound);
+        if (result is null) return Outcome<KeyValueEntryModel>.FromError(RepositoryFailures.ModelNotFound);
 
-        return Shared.Outcome<KeyValueEntryModel>.FromData(result);
+        return Outcome<KeyValueEntryModel>.FromData(result);
     }
 
-    public async ValueTask<Shared.Outcome<int>> GetCountAsync(CancellationToken ct = default) {
+    public async ValueTask<Outcome<int>> GetCountAsync(CancellationToken ct = default) {
         // Access
         DbSet<KeyValueEntryModel> dbSet = GetCachedDbSet<KeyValueEntryModel>();
 
@@ -48,6 +49,6 @@ public class KeyValueEntryRepository : UnitOfWorkRepository<ContentDb>, IKeyValu
         int result = await dbSet.CountAsync(cancellationToken: ct);
 
         // Retrieve
-        return Shared.Outcome<int>.FromData(result);
+        return Outcome<int>.FromData(result);
     }
 }

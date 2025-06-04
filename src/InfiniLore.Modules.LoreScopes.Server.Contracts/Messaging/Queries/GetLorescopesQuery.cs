@@ -14,4 +14,4 @@ public record GetLoreScopesByOwnerQuery(
     Guid UserId,
     QueryConfig QueryConfig = default,
     Pagination Pagination = default
-) : MessageRequest<PaginatedData<LoreScopeModel>>;
+) : PaginatedMessageRequest<LoreScopeModel>;

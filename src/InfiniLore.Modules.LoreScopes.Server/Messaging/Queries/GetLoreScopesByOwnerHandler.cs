@@ -19,13 +19,13 @@ public class GetLoreScopesByOwnerHandler(
     IReadonlyUnitOfWorkFactory factory,
     IAccessProtectionRules protectionRules,
     ILogger<GetLoreScopesByOwnerHandler> logger
-) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
+) : PaginatedAccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, LoreScopeModel>(logger) {
 
-    protected override async Task<Outcome<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<PaginatedOutcome<LoreScopeModel>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        InfiniLore.Shared.PaginatedOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
+        PaginatedOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
 
         // Todo lorescopes can be hidden so only the owner can access view it.
         //      Do we do that in the config level, or here?

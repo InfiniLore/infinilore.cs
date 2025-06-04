@@ -27,10 +27,10 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
         );
     }
     
-    public async ValueTask<InfiniLore.Shared.PaginatedOutcome<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
-        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return InfiniLore.Shared.PaginatedOutcome<ILsMarkdownFileModel>.FromError("Invalid LoreScope Id");
+    public async ValueTask<PaginatedOutcome<ILsMarkdownFileModel>> GetLsMarkdownFilesAsync(string loreScopeId, Pagination pagination, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return PaginatedOutcome<ILsMarkdownFileModel>.FromError("Invalid LoreScope Id");
 
-        Outcome<PaginatedData<LsMarkdownFileModel>> outcome = await interactiveApi.MessageBroker.GetLsMarkdownFilesByOwnerAsync(
+        PaginatedOutcome<LsMarkdownFileModel> outcome = await interactiveApi.MessageBroker.GetLsMarkdownFilesByOwnerAsync(
             parsedLoreScopeId,
             pagination:pagination,
             ct: ct
@@ -38,17 +38,17 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
         
         return outcome.Match(
             paginatedData => paginatedData.CastTo<ILsMarkdownFileModel>(),
-            _ => InfiniLore.Shared.PaginatedOutcome<ILsMarkdownFileModel>.FromError("Failed to get MarkdownFiles")
+            _ => PaginatedOutcome<ILsMarkdownFileModel>.FromError("Failed to get MarkdownFiles")
         );
     }
     
     public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, Stream fileData, Guid knownFileId = default, CancellationToken ct = default) {
-        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return AterraEngine.Unions.Outcome.FromError("Invalid LoreScope Id");
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Outcome.FromError("Invalid LoreScope Id");
 
         Outcome outcome = await interactiveApi.MessageBroker.UpsertLsMarkdownFileAsync(parsedLoreScopeId, fileName, fileData, knownFileId, ct: ct);
         return outcome.Match(
-            AterraEngine.Unions.Outcome.FromState, 
-            error => AterraEngine.Unions.Outcome.FromError(string.Join(',', error.Value))
+            Outcome.FromState, 
+            error => Outcome.FromError(string.Join(',', error.Value))
         );
     }
     public async ValueTask<Outcome> UpsertLsMarkdownFileAsync(string loreScopeId, string fileName, string fileData, Guid knownFileId = default, CancellationToken ct = default) {
@@ -61,12 +61,12 @@ public class InteractiveApiServerLsMarkdownFiles(IInteractiveApiServer interacti
 
     public async ValueTask<Outcome> DeleteLsMarkdownFileAsync(string loreScopeId, string lsMarkdownFileId, CancellationToken ct = default) {
         // if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Outcome.FromError("Invalid LoreScope Id");
-        if (!Guid.TryParse(lsMarkdownFileId, out Guid parsedLsMarkdownFileId)) return AterraEngine.Unions.Outcome.FromError("Invalid LsMarkdownFile Id");
+        if (!Guid.TryParse(lsMarkdownFileId, out Guid parsedLsMarkdownFileId)) return Outcome.FromError("Invalid LsMarkdownFile Id");
         
         Outcome outcome = await interactiveApi.MessageBroker.DeleteLsMarkdownFileAsync(parsedLsMarkdownFileId, ct: ct);
         return outcome.Match(
-            AterraEngine.Unions.Outcome.FromState, 
-            error => AterraEngine.Unions.Outcome.FromError(string.Join(',', error.Value))
+            Outcome.FromState, 
+            error => Outcome.FromError(string.Join(',', error.Value))
         );      
     }
 }

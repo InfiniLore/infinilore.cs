@@ -84,7 +84,7 @@
             return;
         }
 
-        string dataAsJson = JsonSerializer.Serialize(result.AsPaginatedData, new JsonSerializerOptions {
+        string dataAsJson = JsonSerializer.Serialize(result.AsData, new JsonSerializerOptions {
             WriteIndented = true,
         });
         _apiResponse = dataAsJson;

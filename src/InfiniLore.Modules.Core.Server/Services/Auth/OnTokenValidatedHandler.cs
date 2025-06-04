@@ -54,7 +54,7 @@ public class OnTokenValidatedHandler(
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId
-            case ({ IsState: true, State: true }, { IsSuccess: true, AsSuccess: var user }): {
+            case ({ IsTrue: true }, { IsData: true, AsData: var user }): {
                 _logger.Debug("User already exists, continuing...");
 
                 var addedClaims = new ClaimsIdentity();
@@ -72,19 +72,19 @@ public class OnTokenValidatedHandler(
             }
 
             // User does not exist, redirect to the registration page
-            case ({ IsState: true, State: true }, { IsSuccess: false }):
-            case ({ IsState: true, State: false }, _): {
+            case ({ IsTrue: true }, { IsData: false }):
+            case ({ IsFalse: true }, _): {
                 RedirectToUserRegistration(context, auth0Info);
                 return;
             }
 
             // Something else happened, which means an error
             default: {
-                if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
+                if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
-                else { failure = new[] { "Unknown error" }; }
+                else { failure = "Unknown error"; }
 
-                RedirectToLogout(context, failure);
+                RedirectToLogout(context, [failure]);
                 return;
 
             }

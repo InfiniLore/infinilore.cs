@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.Core.Server.Database.InfiniLoreUser;
@@ -53,7 +54,11 @@ public class InfiniLoreUserValidator : BasicModelValidator<InfiniLoreUserModel> 
         try {
             await using IReadonlyUnitOfWork unitOfWork = _unitOfWorkFactory.Create();
             var repo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
-            return await repo.IsUsernameNotTakenAsync(userName, user.Id, ct);
+            
+            Outcome outcome = await repo.IsUsernameNotTakenAsync(userName, user.Id, ct);
+            if (!outcome.TryGetAsState(out bool state)) return false;
+
+            return state;
         }
         catch (Exception ex) {
             _logger.Error(ex, "Error checking username existence in Auth0");

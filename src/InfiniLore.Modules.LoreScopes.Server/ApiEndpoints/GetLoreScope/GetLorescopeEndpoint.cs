@@ -4,6 +4,7 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -44,7 +45,7 @@ public class GetLorescopeEndpoint(
     public override async Task<Response> ExecuteAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Core.Shared.Outcome<LoreScopeModel> outcome = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
+        Outcome<LoreScopeModel> outcome = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
 
         // Verify Response
         if (!outcome.TryGetAsData(out LoreScopeModel? loreScope)) {
@@ -57,7 +58,7 @@ public class GetLorescopeEndpoint(
         // Return
         LoreScopeResponse response = Map.FromEntity(loreScope);
 
-        Core.Shared.Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
+        Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
         if (imageUrlResponse.TryGetAsData(out string? imageUrl)) {
             response.ImageUrl = imageUrl;
         }

@@ -4,43 +4,31 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Shared.JwtToken;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using System.Text.Json;
 
 namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<IJsSecureStorage>]
-public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory clientFactory, ILogger<JwtTokenJsSecureStorage> logger, IJwtTokenEncoder encoder) : IJsSecureStorage {
+[InjectableScoped<IJwtTokenManager>]
+public class JwtTokenManager(
+    IJsRuntimeHelper jsRuntimeHelper,
+    IHttpClientFactory clientFactory,
+    ILogger<JwtTokenManager> logger,
+    IJwtTokenEncoder encoder
+) : IJwtTokenManager {
     private const string StorageKey = "jwt_token";
-
-    private const string JsSaveTokenAsync = "secureStorage.saveTokenAsync";
-    private const string JsGetTokenAsync = "secureStorage.getTokenAsync";
-    private const string JsRemoveTokenAsync = "secureStorage.removeTokenAsync";
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    /// <summary>
-    ///     Save the JWT token securely along with its expiration timestamp.
-    /// </summary>
-    public async Task SaveTokenAsync(string token, DateTime expiresAt, CancellationToken ct = default) {
-        try {
-            await jsRuntime.InvokeVoidAsync(JsSaveTokenAsync, ct, StorageKey, token, expiresAt.ToString("o"));
-        }
-        catch (Exception e) {
-            logger.Error(e, "Failed to save token to secureStorage");
-        }
-    }
-
     /// <summary>
     ///     Retrieve the JWT token securely and check for validity.
     /// </summary>
     public async Task<string?> GetTokenAsync(CancellationToken ct = default) {
         try {
             // Retrieve token record from IndexedDB
-            var tokenRecord = await jsRuntime.InvokeAsync<JsTokenRecord?>(JsGetTokenAsync, ct, StorageKey);
+            var tokenRecord = await jsRuntimeHelper.SecureStorage.GetTokenAsync<JsTokenRecord?>(StorageKey, ct);
             if (tokenRecord?.Value is null) {
                 logger.LogInformation("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
@@ -55,7 +43,7 @@ public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory cl
                     return await RetrieveAndStoreTokenAsync(ct);
                 }
 
-                await SaveTokenAsync(tokenRecord.Value, expiresAt, ct);
+                await jsRuntimeHelper.SecureStorage.SaveTokenAsync(StorageKey, tokenRecord.Value, expiresAt, ct);
             }
 
             // ReSharper disable once InvertIf
@@ -76,14 +64,8 @@ public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory cl
     ///     Remove the JWT token securely (e.g., during logout).
     /// </summary>
     public async Task RemoveTokenAsync(CancellationToken ct = default) {
-        try {
-            await jsRuntime.InvokeVoidAsync(JsRemoveTokenAsync, ct, StorageKey);
-        }
-        catch (Exception e) {
-            logger.Error(e, "Failed to remove token from secureStorage");
-        }
+        await jsRuntimeHelper.SecureStorage.RemoveTokenAsync(StorageKey, ct);
     }
-
 
     private async Task<string?> RetrieveAndStoreTokenAsync(CancellationToken ct = default) {
         try {
@@ -105,7 +87,7 @@ public class JwtTokenJsSecureStorage(IJSRuntime jsRuntime, IHttpClientFactory cl
                 return null;
             }
 
-            await SaveTokenAsync(response.Token, newExpiresAt, ct);
+            await jsRuntimeHelper.SecureStorage.SaveTokenAsync(StorageKey, response.Token, newExpiresAt, ct);
             return response.Token;
         }
         catch (Exception ex) {

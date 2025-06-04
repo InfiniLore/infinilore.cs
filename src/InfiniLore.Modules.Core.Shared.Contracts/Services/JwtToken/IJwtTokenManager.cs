@@ -1,14 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
-
-namespace InfiniLore.Modules.Core.Shared;
+namespace InfiniLore.Modules.Core.Shared.JwtToken;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<ClipboardService>]
-public class ClipboardService(IJSRuntime jsRuntime) {
-    public ValueTask WriteTextAsync(string text) => jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+public interface IJwtTokenManager {
+    public Task<string?> GetTokenAsync(CancellationToken ct = default);
+    public Task RemoveTokenAsync(CancellationToken ct = default);
 }

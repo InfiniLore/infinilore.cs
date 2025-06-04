@@ -1,7 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
@@ -88,7 +87,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     [Parameter] public Guid UserId { get; set; }
     [Parameter] public Guid LoreScopeId { get; set; }
@@ -113,7 +111,7 @@
         PaginatedOutcome<ILsMarkdownFileModel> result = await InteractiveApi.GetLsMarkdownFilesAsync(LoreScopeId.ToString(), pagination);
         if (!result.TryGetAsData(out PaginatedData<ILsMarkdownFileModel>? data)) return;
 
-        PaginatedFiles = data.Value;
+        PaginatedFiles = data;
         Logger.Information("{@page}", PaginatedFiles with {
             Items = []
         });
@@ -139,7 +137,7 @@
             ? NewMarkdownFileName
             : $"{NewMarkdownFileName}.md";
 
-        Result _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
+        await InteractiveApi.UpsertLsMarkdownFileAsync(
             LoreScopeId.ToString(),
             fileName,
             stream

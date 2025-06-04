@@ -38,6 +38,7 @@ public class GetLsMarkdownFileByIdHandler(
         Outcome<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
         urlResult.Switch(
             url => model.S3FileMetaData.S3ResourceUrl = url,
+            _ => logger.Warning("Failed to get s3 resource url"), 
             _ => logger.Warning("Failed to get s3 resource url")
         );
         

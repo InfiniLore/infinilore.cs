@@ -25,13 +25,13 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
 
         Outcome<InfiniLoreUserModel> outcome = await interactiveApi.MessageBroker.GetUserByIdAsync(parsedUserId, ct: ct);
         return outcome.Match(
-            successCase: Outcome<IInfiniLoreUserModel>.FromData,
-            errorCase: _ => Outcome<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
+            Outcome<IInfiniLoreUserModel>.FromData,
+            _ => Outcome<IInfiniLoreUserModel>.FromError("Failed to retrieve user.")
         );
     }
     
     public async ValueTask<Outcome> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
-        if (!Guid.TryParse(userId, out Guid parsedUserId)) return AterraEngine.Unions.Outcome.FromError("Invalid userId");
+        if (!Guid.TryParse(userId, out Guid parsedUserId)) return Outcome.FromError("Invalid userId");
         
         await using MemoryStream stream = await file.ToMemoryStreamAsync(MaxFileSize, ct: ct);
         Outcome outcome = await interactiveApi.MessageBroker.UpsertUserProfileImageAsync(
@@ -40,9 +40,9 @@ public class InteractiveApiServerUsers(IInteractiveApiServer interactiveApi) : I
             stream,
             ct: ct
         );
-        return outcome.Match<Outcome>(
-            stateCase: state => state,
-            errorCase: _ => AterraEngine.Unions.Outcome.FromError("Failed to retrieve user.")
+        return outcome.Match(
+            Outcome.FromState, 
+            _ => Outcome.FromError("Failed to retrieve user.")
         );
     }
 }

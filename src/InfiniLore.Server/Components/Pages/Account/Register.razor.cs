@@ -92,8 +92,8 @@ public partial class Register(
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
         Outcome<Guid> outcome = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
-        if (outcome.TryGetAsError(out Error<string>? errorMessage)) {
-            _usernameValidationMessage = string.Join(", ", errorMessage.Value);
+        if (outcome.TryGetAsErrorValue(out string? errorMessage)) {
+            _usernameValidationMessage = string.Join(", ", errorMessage);
             _isFormDisabled = false; // Allow retry
             await InvokeAsync(StateHasChanged);
             return;

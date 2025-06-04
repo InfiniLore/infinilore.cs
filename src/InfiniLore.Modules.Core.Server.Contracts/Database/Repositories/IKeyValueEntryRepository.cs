@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database.RepoMethods;
+using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Server.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -11,6 +12,6 @@ namespace InfiniLore.Modules.Core.Server.Database;
 public interface IKeyValueEntryRepository :
     IUnitOfWorkRepository,
     IHasGetCountAsync {
-    ValueTask<Shared.Outcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default);
-    ValueTask<Shared.Outcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default);
+    ValueTask<Outcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default);
+    ValueTask<Outcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default);
 }

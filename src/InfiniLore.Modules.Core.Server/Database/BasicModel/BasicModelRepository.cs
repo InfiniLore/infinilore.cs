@@ -143,7 +143,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> AddRangeAsync(IEnumerable<TModel> models, CancellationToken ct = default) {
@@ -162,7 +162,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> UpdateAsync(TModel model, CancellationToken ct = default) {
@@ -179,7 +179,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> UpdateRangeAsync(IEnumerable<TModel> models, CancellationToken ct = default) {
@@ -202,7 +202,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> AddOrUpdateAsync(TModel model, CancellationToken ct = default) {
@@ -240,7 +240,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         // Save all changes
         await dbContext.SaveChangesAsync(ct);
 
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> DeleteAsync(TModel model, CancellationToken ct = default) {
@@ -257,7 +257,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve   
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> DeleteByIdAsync(Guid id, CancellationToken ct = default) {
@@ -274,7 +274,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve   
-        return true;
+        return Outcome.True;
 
     }
 
@@ -290,7 +290,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicModel.SoftDelete(s), ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> DeleteRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
@@ -303,7 +303,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
             .ExecuteUpdateAsync(setPropertyCalls: s => BasicModel.SoftDelete(s), ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> RemoveAsync(TModel model, CancellationToken ct = default) {
@@ -319,7 +319,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> RemoveByIdAsync(Guid id, CancellationToken ct = default) {
@@ -335,7 +335,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
         await dbContext.SaveChangesAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> RemoveRangeAsync(IEnumerable<TModel> models, CancellationToken ct = default) {
@@ -350,7 +350,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
             .ExecuteDeleteAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
 
     public async ValueTask<Outcome> RemoveRangeByIdAsync(IEnumerable<Guid> ids, CancellationToken ct = default) {
@@ -363,7 +363,7 @@ public abstract class BasicModelRepository<TModel> : UnitOfWorkRepository<Conten
             .ExecuteDeleteAsync(ct);
 
         // Retrieve
-        return true;
+        return Outcome.True;
     }
     #endregion
 }

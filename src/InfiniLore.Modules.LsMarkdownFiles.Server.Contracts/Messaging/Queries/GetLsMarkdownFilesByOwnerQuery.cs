@@ -15,4 +15,4 @@ public record GetLsMarkdownFilesByOwnerQuery(
     Guid OwnerId,
     QueryConfig QueryConfig = default,
     Pagination Pagination = default
-) : MessageRequest<PaginatedData<LsMarkdownFileModel>>;
+) : PaginatedMessageRequest<LsMarkdownFileModel>;

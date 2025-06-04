@@ -17,17 +17,17 @@ public class GetUsersHandler(
     IReadonlyUnitOfWorkFactory factory,
     IAccessProtectionRules protectionRules,
     ILogger<GetUsersHandler> logger
-) : AccessProtectedCommandHandler<GetUsersQuery, PaginatedData<InfiniLoreUserModel>>(logger) {
-    protected override Outcome<PaginatedData<InfiniLoreUserModel>> AccessDeniedOutcome => Outcome.FromError("Cannot get users. Access denied.");
+) : PaginatedAccessProtectedCommandHandler<GetUsersQuery, InfiniLoreUserModel>(logger) {
+    protected override PaginatedOutcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome.FromError("Cannot get users. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<Outcome<PaginatedData<InfiniLoreUserModel>>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
+    protected override async Task<PaginatedOutcome<InfiniLoreUserModel>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        InfiniLore.Shared.PaginatedOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
+        PaginatedOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
         return result.Match(
             dataCase: Outcome.FromData,
             errorCase: error => {

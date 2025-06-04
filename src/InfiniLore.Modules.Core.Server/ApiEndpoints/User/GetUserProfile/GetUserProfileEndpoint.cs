@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ public class GetUserProfileEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Shared.Outcome<InfiniLoreUserModel> outcome = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
+        Outcome<InfiniLoreUserModel> outcome = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
         return outcome.Match<Response>(
             model => {
                 logger.Information("Successfully retrieved user with id {id}", req.UserId);

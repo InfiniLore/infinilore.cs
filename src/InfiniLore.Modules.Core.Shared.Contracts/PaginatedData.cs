@@ -14,7 +14,7 @@ namespace InfiniLore.Modules.Core.Shared;
 /// <param name="TotalCount">The total number of items across all pages.</param>
 /// <param name="CurrentPage">The current page number (starting from 1).</param>
 /// <param name="TotalPages">The total number of pages in the result set.</param>
-public readonly record struct PaginatedData<T>(
+public record PaginatedData<T>(
     T[] Items,
     int TotalCount,
     int CurrentPage,

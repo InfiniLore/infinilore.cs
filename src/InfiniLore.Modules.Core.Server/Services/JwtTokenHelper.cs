@@ -4,6 +4,7 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Messaging.Queries;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
@@ -62,7 +63,7 @@ public class JwtTokenHelper(
         if (auth0UserId.IsNullOrWhiteSpace()) return Guid.Empty;
 
         var query = new GetUserIdByAuth0IdQuery(auth0UserId) { AccessingUser = AccessingUser.Empty };
-        Shared.Outcome<Guid> outcome = await query.ExecuteAsync(ct);
+        Outcome<Guid> outcome = await query.ExecuteAsync(ct);
         
         if (!outcome.TryGetAsData(out Guid userId)) return Guid.Empty;
         return userId;

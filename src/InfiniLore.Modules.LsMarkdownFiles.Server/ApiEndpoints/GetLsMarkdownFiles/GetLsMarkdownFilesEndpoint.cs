@@ -43,7 +43,7 @@ public class GetLsMarkdownFilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        Outcome<PaginatedData<LsMarkdownFileModel>> outcome = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
+        PaginatedOutcome<LsMarkdownFileModel> outcome = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
             req.LoreScopeId,
             QueryConfig.From(req),
             Pagination.From(req),

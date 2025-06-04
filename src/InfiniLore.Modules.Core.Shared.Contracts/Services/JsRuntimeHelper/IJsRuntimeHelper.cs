@@ -7,4 +7,6 @@ namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IJsRuntimeHelper {
     IJsSecureStorage SecureStorage { get; }
-};
+
+    ValueTask WriteToClipboardAsync(string text);
+}

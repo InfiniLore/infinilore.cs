@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using DataSources.InfiniLore.Server;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Shared;
 
 namespace Tests.InfiniLore.Database;
 
@@ -21,7 +22,7 @@ public class S3FileStorageConnection(ServiceProviderDataSource serviceProvider) 
         // Arrange
         
         // Act
-        Result result = await S3FileStorageService.CanConnectAsync();
+        Outcome result = await S3FileStorageService.CanConnectAsync();
 
         // Assert
         await Assert.That(result.TryGetAsState(out bool isConnected)).IsTrue();

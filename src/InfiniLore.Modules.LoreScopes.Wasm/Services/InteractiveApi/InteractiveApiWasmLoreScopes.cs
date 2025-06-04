@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope;
@@ -50,12 +49,12 @@ public class InteractiveApiWasmLoreScopes(
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
-            if (result is null) return Result<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
-            return Result<ILoreScopeModel>.FromData(WasmLoreScopeModel.FromKiotaModel(result));
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromData(WasmLoreScopeModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
-            return Result<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 
