@@ -22,7 +22,6 @@
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Modules.Core.Shared\InfiniLore.Modules.Core.Shared.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
-      <ProjectReference Include="..\InfiniLore.Shared\InfiniLore.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,12 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Queries;
 using JetBrains.Annotations;
@@ -26,19 +25,20 @@ public class GetLsMarkdownFileByIdHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
+    protected override async Task<Outcome<LsMarkdownFileModel>> HandleCommandAsync(GetLsMarkdownFileByIdQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
-        
-        Result<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
-        if (!response.TryGetAsSuccess(out LsMarkdownFileModel? model)) return MessageResponse.FromErrorString("Failed to get markdown file");
-        if (model.S3FileMetaData is null) return MessageResponse.FromErrorString("Failed to get complete S3FileMetaData");
+
+        Outcome<LsMarkdownFileModel> response = await markdownFileRepository.GetByIdAsync(command.FileId, command.QueryConfig, ct);
+        if (!response.TryGetAsData(out LsMarkdownFileModel? model)) return Outcome.FromError("Failed to get markdown file");
+        if (model.S3FileMetaData is null) return Outcome.FromError("Failed to get complete S3FileMetaData");
         
         // Get the url for the file
         string bucketName =  S3BucketNames.GetLoreScopeBucket(model.OwnerId);
-        Result<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
+        Outcome<string> urlResult = await fileStorage.GetFileUrlAsync(bucketName, model.S3FileMetaData.FileName, ct:ct);
         urlResult.Switch(
             url => model.S3FileMetaData.S3ResourceUrl = url,
+            _ => logger.Warning("Failed to get s3 resource url"), 
             _ => logger.Warning("Failed to get s3 resource url")
         );
         

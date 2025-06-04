@@ -5,10 +5,8 @@ using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
-using InfiniLore.Shared;
-using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +44,7 @@ public class GetLoreScopesEndpoint(
     public override async Task<Response> ExecuteAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<PaginatedData<LoreScopeModel>> result = await messageBroker.GetLoreScopesByOwnerAsync(
+        PaginatedOutcome<LoreScopeModel> outcome = await messageBroker.GetLoreScopesByOwnerAsync(
             req.UserId,
             QueryConfig.From(req),
             Pagination.From(req),
@@ -54,8 +52,8 @@ public class GetLoreScopesEndpoint(
         );
 
         // Verify Response
-        if (!result.TryGetAsSuccess(out PaginatedData<LoreScopeModel> paginatedResult)) {
-            logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, result.AsError.Value);
+        if (!outcome.TryGetAsData(out PaginatedData<LoreScopeModel>? paginatedOutcome)) {
+            logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, outcome.AsError.Value);
             return TypedResults.NotFound();
         }
 
@@ -63,11 +61,11 @@ public class GetLoreScopesEndpoint(
 
         // Return
         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-        LoreScopesResponse response = Map.FromEntity(paginatedResult);
+        LoreScopesResponse response = Map.FromEntity(paginatedOutcome);
 
         List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {
-            MessageResponse<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
-            if (imageUrlResponse.TryGetAsSuccess(out string? imageUrl)) {
+            Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
+            if (imageUrlResponse.TryGetAsData(out string? imageUrl)) {
                 item.ImageUrl = imageUrl;
             }
             return item;

@@ -4,7 +4,7 @@
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
-using InfiniLore.Shared;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -17,22 +17,22 @@ public class GetUsersHandler(
     IReadonlyUnitOfWorkFactory factory,
     IAccessProtectionRules protectionRules,
     ILogger<GetUsersHandler> logger
-) : AccessProtectedCommandHandler<GetUsersQuery, PaginatedData<InfiniLoreUserModel>>(logger) {
-    protected override MessageResponse<PaginatedData<InfiniLoreUserModel>> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get users. Access denied.");
+) : PaginatedAccessProtectedCommandHandler<GetUsersQuery, InfiniLoreUserModel>(logger) {
+    protected override PaginatedOutcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome.FromError("Cannot get users. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<PaginatedData<InfiniLoreUserModel>>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
+    protected override async Task<PaginatedOutcome<InfiniLoreUserModel>> HandleCommandAsync(GetUsersQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
-            
-        PaginatedResult<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
+
+        PaginatedOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
         return result.Match(
-            dataCase: MessageResponse.FromSuccess,
+            dataCase: Outcome.FromData,
             errorCase: error => {
                 logger.Error("Failed to get users. {Error}", error);
-                return MessageResponse.FromErrorString("Cannot get users.");
+                return Outcome.FromError("Cannot get users.");
             }
         );
     }

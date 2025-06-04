@@ -1,7 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
+@using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -56,8 +56,8 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        Result<ILsMarkdownFileModel> result = await InteractiveApi.GetLsMarkdownFileAsync(LoreScopeId.ToString(), MarkdownId.ToString());
-        if (!result.TryGetAsSuccess(out ILsMarkdownFileModel? model)) return;
+        Outcome<ILsMarkdownFileModel> outcome = await InteractiveApi.GetLsMarkdownFileAsync(LoreScopeId.ToString(), MarkdownId.ToString());
+        if (!outcome.TryGetAsData(out ILsMarkdownFileModel? model)) return;
 
         FileModel = model;
 
@@ -79,7 +79,7 @@
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;
         
-        Result _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
+        Outcome _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
             FileModel.OwnerId.ToString(),
             FileModel.Name,
             TextSource.Text,

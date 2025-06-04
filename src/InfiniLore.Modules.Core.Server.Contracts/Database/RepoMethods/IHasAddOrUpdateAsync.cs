@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------=
-using AterraEngine.Unions;
+using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasAddOrUpdateAsync<in T> where T : BasicModel {
-    ValueTask<Result> AddOrUpdateAsync(T model, CancellationToken ct = default);
-    ValueTask<Result> AddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
+    ValueTask<Outcome> AddOrUpdateAsync(T model, CancellationToken ct = default);
+    ValueTask<Outcome> AddOrUpdateRangeAsync(IEnumerable<T> models, CancellationToken ct = default);
 }

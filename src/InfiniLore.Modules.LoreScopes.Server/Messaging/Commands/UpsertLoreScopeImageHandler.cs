@@ -1,14 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Commands;
 using JetBrains.Annotations;
@@ -26,25 +25,25 @@ public class UpsertLoreScopeImageHandler(
     IValidator<LoreScopeModel> loreScopeValidator,
     IValidator<S3FileMetaDataModel> s3FileValidator,
     ILogger<UpsertLoreScopeImageHandler> logger
-) : CommandHandler<UpsertLoreScopeImageRequest, MessageResponse> {
+) : CommandHandler<UpsertLoreScopeImageRequest, Outcome> {
 
-    public override async Task<MessageResponse> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {
+    public override async Task<Outcome> ExecuteAsync(UpsertLoreScopeImageRequest command, CancellationToken ct = new()) {
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        
-        Result<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
-        if (!loreScopeResult.TryGetAsSuccess(out LoreScopeModel? loreScope)) {
+
+        Outcome<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
+        if (!loreScopeResult.TryGetAsData(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
-            return MessageResponse.FromErrorString("Failed to find lorescope with id");
+            return Outcome.FromError("Failed to find lorescope with id");
         }
         
         S3FileMetaDataModel? metaData = await TryCreateNewMetaDataAsync(command, loreScope, unitOfWork, ct);
         if (metaData is null) {
             logger.Warning("Failed to create new lorescope image metadata");
-            return MessageResponse.FromErrorString("Failed to create new lorescope image metadata");
+            return Outcome.FromError("Failed to create new lorescope image metadata");
         }
 
-        Result result = await fileStorage.TryUploadFileAsync(
+        Outcome result = await fileStorage.TryUploadFileAsync(
             S3BucketNames.GetLoreScopeBucket(loreScope.Id),
             metaData.FileName,
             command.FileStream,
@@ -52,9 +51,9 @@ public class UpsertLoreScopeImageHandler(
             ct
         );
         
-        if (!result.TryGetAsState(out bool? success) || success is false) {
+        if (!result.TryGetAsState(out bool success) || !success ) {
             logger.Warning("Failed to upload file to s3 bucket");
-            return MessageResponse.FromErrorString("Failed to upload file to s3 bucket");       
+            return Outcome.FromError("Failed to upload file to s3 bucket");       
         }
         logger.LogInformation("Uploaded file to s3 bucket");
 
@@ -62,9 +61,10 @@ public class UpsertLoreScopeImageHandler(
         // ReSharper disable once InvertIf
         if (!await unitOfWork.TryCommitTransactionAsync(ct)) {
             logger.Warning("Failed to commit transaction");
-            return MessageResponse.FromErrorString("Failed to commit transaction");      
+            return Outcome.FromError("Failed to commit transaction");      
         }
-        return true;
+        
+        return Outcome.FromState(true);
     }
     
     private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(UpsertLoreScopeImageRequest command, LoreScopeModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {

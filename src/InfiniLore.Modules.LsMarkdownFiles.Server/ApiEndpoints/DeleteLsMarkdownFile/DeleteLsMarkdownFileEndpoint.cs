@@ -4,11 +4,11 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -41,8 +41,8 @@ public class DeleteLsMarkdownFileEndpoint(
     public override async Task<Response> ExecuteAsync(DeleteLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        MessageResponse result = await messageBroker.DeleteLsMarkdownFileAsync(req.MarkdownFileId, ct: ct);
-        return result.Match<Response>(
+        Outcome outcome = await messageBroker.DeleteLsMarkdownFileAsync(req.MarkdownFileId, ct: ct);
+        return outcome.Match<Response>(
             data => data ? TypedResults.Ok() : TypedResults.NotFound(),
             _ => TypedResults.NotFound()       
         );

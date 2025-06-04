@@ -5,13 +5,12 @@ using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
-using InfiniLore.Shared;
-using InfiniLore.Shared.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,14 +42,14 @@ public class GetLsMarkdownFilesEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task<Response> ExecuteAsync(GetLsMarkdownFilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-        
-        MessageResponse<PaginatedData<LsMarkdownFileModel>> result = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
+
+        PaginatedOutcome<LsMarkdownFileModel> outcome = await messageBroker.GetLsMarkdownFilesByOwnerAsync(
             req.LoreScopeId,
             QueryConfig.From(req),
             Pagination.From(req),
             ct: ct
         );
-        return result.Match<Response>(
+        return outcome.Match<Response>(
             data => TypedResults.Ok(Map.FromEntity(data)),
             _ => TypedResults.NotFound()       
         );

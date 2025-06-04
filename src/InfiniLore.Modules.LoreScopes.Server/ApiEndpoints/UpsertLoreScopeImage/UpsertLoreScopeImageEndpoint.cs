@@ -4,12 +4,12 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -46,15 +46,15 @@ public class UpsertLoreScopeImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
+        Outcome outcome = await messageBroker.UpsertLoreScopeImageAsync(req.LoreScopeId,
             file.FileName,
             file.ContentType,
             fileStream,
             ct: ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool? successful)) {
-            logger.Warning("FAILED, {@state}", result.AsError);
+        if (!outcome.TryGetAsState(out bool successful)) {
+            logger.Warning("FAILED, {@state}", outcome.AsError);
             AddError("Failed to update lorescope poster image.");
             return new ProblemDetails(ValidationFailures);
         }

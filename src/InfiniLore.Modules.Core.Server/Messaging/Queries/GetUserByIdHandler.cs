@@ -1,10 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -19,27 +19,27 @@ public class GetUserByIdHandler(
     ILogger<GetUserByIdHandler> logger,
     IS3FileStorage fileStorage   
 ) : AccessProtectedCommandHandler<GetUserByIdQuery, InfiniLoreUserModel>(logger) {
-    protected override MessageResponse<InfiniLoreUserModel> AccessDeniedResult => MessageResponse.FromErrorString("Cannot get user by id. Access denied.");
+    protected override Outcome<InfiniLoreUserModel> AccessDeniedOutcome => Outcome.FromError("Cannot get user by id. Access denied.");
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
-        if (command.UserId == Guid.Empty) return MessageResponse.FromErrorString("Cannot get user by id.  id is empty.");
+    protected override async Task<Outcome<InfiniLoreUserModel>> HandleCommandAsync(GetUserByIdQuery command, CancellationToken ct = default) {
+        if (command.UserId == Guid.Empty) return Outcome.FromError("Cannot get user by id.  id is empty.");
 
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
-            
-        Result<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
-        if (!result.TryGetAsSuccess(out InfiniLoreUserModel? user)) {
+
+        Outcome<InfiniLoreUserModel> result = await userRepository.GetByIdAsync(command.UserId, ct: ct);
+        if (!result.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Error("Failed to get user by id. {Error}", result.AsError.Value);
-            return MessageResponse.FromErrorString("Cannot get user by id.");
+            return Outcome.FromError("Cannot get user by id.");
         }
 
         // Skip if there is no profile image.
-        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return MessageResponse.FromSuccess(user);
+        if (user.ProfileImageMetaDataId is null || user.ProfileImageMetaData is null) return Outcome.FromData(user);
 
-        Result<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
+        Outcome<string> imageUrlResult = await fileStorage.GetFileUrlAsync(
             S3BucketNames.UserProfileImages,
             user.ProfileImageMetaData.FileName,
             expiry: TimeSpan.FromDays(1),
@@ -51,7 +51,7 @@ public class GetUserByIdHandler(
             error => logger.Error("Failed to get url from S3Bucket. {Error}", error)
         );
             
-        return MessageResponse.FromSuccess(user);
+        return Outcome.FromData(user);
     }
 
     protected override ValueTask<bool> ValidateAccessAsync(GetUserByIdQuery command, CancellationToken ct = default)

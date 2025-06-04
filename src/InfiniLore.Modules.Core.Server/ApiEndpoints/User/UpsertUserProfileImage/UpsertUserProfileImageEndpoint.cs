@@ -2,12 +2,12 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -44,17 +44,16 @@ public class UpsertUserProfileImageEndpoint(
 
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
-        MessageResponse result = await messageBroker.UpsertUserProfileImageAsync(
+        Outcome outcome = await messageBroker.UpsertUserProfileImageAsync(
             req.UserId,
             file.ContentType,
             fileStream,
             ct: ct
         );
         
-        return result.Match<Response>(
-            state => state 
-                ? TypedResults.Ok()
-                : TypedResults.BadRequest(), // This shouldn't happen, right?
+        return outcome.Match<Response>(
+            _ => TypedResults.Ok(),
+            _ => TypedResults.BadRequest(),
             error => {
                 logger.Warning("Failed to update user poster image. {@error}", error);
                 return TypedResults.NotFound();

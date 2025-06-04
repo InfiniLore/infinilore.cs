@@ -1,8 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
-using InfiniLore.Shared;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Modules.Core.Server.Database;
@@ -20,7 +19,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<Outcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
@@ -30,10 +29,10 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
 
         // Retrieve
         TModel[] result = await query.ToArrayAsync(cancellationToken: ct);
-        return Result<TModel[]>.FromSuccess(result);
+        return Outcome<TModel[]>.FromData(result);
     }
 
-    public async ValueTask<PaginatedResult<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 

@@ -1,9 +1,8 @@
-﻿// -----------------------------------------------------------------------------------------------------------------
-// Methods
-// -----------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Modules.Core.Server.Messaging;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -69,9 +68,9 @@ public partial class Register(
         }
 
         // Call the backend to check username availability
-        MessageResponse mediatorResponse = await messageBroker.UsernameExistsAsync(username);
+        Outcome mediatorOutcome = await messageBroker.UsernameExistsAsync(username);
 
-        if (!mediatorResponse.TryGetState(out bool? isTaken)) {
+        if (!mediatorOutcome.TryGetAsState(out bool isTaken)) {
             _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
             _isFormDisabled = true;
             await InvokeAsync(StateHasChanged);// Refresh UI
@@ -79,12 +78,12 @@ public partial class Register(
         }
 
         // Update the UI based on validation response
-        _usernameStatus = isTaken ?? false
+        _usernameStatus = isTaken
             ? UsernameStatus.Taken
             : UsernameStatus.Available;
 
         _usernameValidationMessage = string.Empty;// Clear message
-        _isFormDisabled = isTaken ?? false;// Disable form if a username is taken
+        _isFormDisabled = isTaken;// Disable form if a username is taken
         await InvokeAsync(StateHasChanged);// Refresh UI
     }
     
@@ -92,9 +91,9 @@ public partial class Register(
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
 
-        MessageResponse<Guid> result = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
-        if (result.TryGetAsError(out Error<ICollection<string>>? errorMessage)) {
-            _usernameValidationMessage = string.Join(", ", errorMessage.Value);
+        Outcome<Guid> outcome = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
+        if (outcome.TryGetAsErrorValue(out string? errorMessage)) {
+            _usernameValidationMessage = string.Join(", ", errorMessage);
             _isFormDisabled = false; // Allow retry
             await InvokeAsync(StateHasChanged);
             return;

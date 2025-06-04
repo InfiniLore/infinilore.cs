@@ -4,9 +4,8 @@
 using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared.Auth;
-using InfiniLore.Shared.Services.ClaimsHelper;
+using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,14 +47,14 @@ public class OnTokenValidatedHandler(
         }
 
         // Run all checks and return to the new user page if needed
-        Task<MessageResponse> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
-        Task<MessageResponse<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
+        Task<Outcome> userExistsTask = messageBroker.UserExistsByAuth0Async(auth0Info.Auth0UserId).AsTask();
+        Task<Outcome<InfiniLoreUserModel>> userTask = messageBroker.GetUserByAuth0IdAsync(auth0Info.Auth0UserId).AsTask();
 
-        (MessageResponse userExistsResponse, MessageResponse<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
+        (Outcome userExistsResponse, Outcome<InfiniLoreUserModel> userResponse) = await TaskWhenAllHelper.WhenAll(userExistsTask, userTask);
 
         switch (userExistsResponse, userResponse) {
             // User Exists and have a userId
-            case ({ IsState: true, State: true }, { IsSuccess: true, AsSuccess: var user }): {
+            case ({ IsTrue: true }, { IsData: true, AsData: var user }): {
                 _logger.Debug("User already exists, continuing...");
 
                 var addedClaims = new ClaimsIdentity();
@@ -73,19 +72,19 @@ public class OnTokenValidatedHandler(
             }
 
             // User does not exist, redirect to the registration page
-            case ({ IsState: true, State: true }, { IsSuccess: false }):
-            case ({ IsState: true, State: false }, _): {
+            case ({ IsTrue: true }, { IsData: false }):
+            case ({ IsFalse: true }, _): {
                 RedirectToUserRegistration(context, auth0Info);
                 return;
             }
 
             // Something else happened, which means an error
             default: {
-                if (userExistsResponse.TryGetAsErrorValue(out ICollection<string>? failure)) {}
+                if (userExistsResponse.TryGetAsErrorValue(out string? failure)) {}
                 else if (userResponse.TryGetAsErrorValue(out failure)) {}
-                else { failure = new[] { "Unknown error" }; }
+                else { failure = "Unknown error"; }
 
-                RedirectToLogout(context, failure);
+                RedirectToLogout(context, [failure]);
                 return;
 
             }

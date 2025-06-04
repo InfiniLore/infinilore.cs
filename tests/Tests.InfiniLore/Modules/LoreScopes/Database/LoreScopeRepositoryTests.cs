@@ -1,9 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.LoreScopes.Server.Database;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
@@ -41,10 +41,10 @@ public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider)
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        Result result = await repo.IsNameTakenAsync(name, GuidStore.GetGuid(userIdSeed));
+        Outcome result = await repo.IsNameTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
-        await Assert.That(result.TryGetState(out bool? isTaken)).IsTrue();
+        await Assert.That(result.TryGetAsState(out bool isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 
@@ -58,10 +58,10 @@ public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider)
         var repo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>();
 
         // Act
-        Result result = await repo.IsNameNotTakenAsync(name, GuidStore.GetGuid(userIdSeed));
+        Outcome result = await repo.IsNameNotTakenAsync(name, GuidStore.GetGuid(userIdSeed));
 
         // Assert
-        await Assert.That(result.TryGetState(out bool? isTaken)).IsTrue();
+        await Assert.That(result.TryGetAsState(out bool isTaken)).IsTrue();
         await Assert.That(isTaken).IsEqualTo(expected);
     }
 }

@@ -1,7 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
+@using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using System.Diagnostics.CodeAnalysis
@@ -70,12 +70,12 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
-        Result<ILoreScopeModel> result = await LoreScopeInteractiveApi.GetLoreScopeAsync(
+        Outcome<ILoreScopeModel> outcome = await LoreScopeInteractiveApi.GetLoreScopeAsync(
             UserId.ToString(),
             LoreScopeId.ToString()
         );
         
-        if (!result.TryGetAsSuccess(out ILoreScopeModel? model)) {
+        if (!outcome.TryGetAsData(out ILoreScopeModel? model)) {
             Logger.Warning("Could not retrieve model");
 
             LoreScopeModel = null;
@@ -103,14 +103,14 @@
                 return;
             }
             
-            Result result = await LoreScopeInteractiveApi.UpsertLoreScopeImageAsync(
+            Outcome outcome = await LoreScopeInteractiveApi.UpsertLoreScopeImageAsync(
                 UserId.ToString(),
                 LoreScopeId.ToString(),
                 SelectedFile
             );
 
-            if (!result.TryGetAsState(out bool? success) || success is false) {
-                Logger.LogError("Failed to upload image, {@e}", result);
+            if (!outcome.TryGetAsState(out bool success) || !success ) {
+                Logger.LogError("Failed to upload image, {@e}", outcome);
                 return;
             }
 

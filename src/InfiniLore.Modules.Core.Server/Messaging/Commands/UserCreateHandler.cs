@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using FluentValidation;
@@ -9,6 +8,7 @@ using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
@@ -36,7 +36,7 @@ public partial class UserCreateHandler(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task<MessageResponse<Guid>> HandleCommandAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default){
+    protected override async Task<Outcome<Guid>> HandleCommandAsync(CreateInfiniLoreUserRequest command, CancellationToken ct = default){
         await using IUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
@@ -53,12 +53,12 @@ public partial class UserCreateHandler(
         ValidationResult? validationResult = await validator.ValidateAsync(user, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed: {Reason}", validationResult.Errors);
-            return MessageResponse<Guid>.FromErrorString("Validation failed");
+            return Outcome<Guid>.FromError("Validation failed");
         }
 
         // Save to Db
-        Result result = await userRepo.AddAsync(user, ct);
-        if (result.IsError) return MessageResponse<Guid>.FromErrorString("Failed to save user to database");
+        Outcome result = await userRepo.AddAsync(user, ct);
+        if (result.IsError) return Outcome<Guid>.FromError("Failed to save user to database");
 
         await new InfiniLoreUserCreatedEvent(user.Id).PublishAsync(Mode.WaitForAll, ct);
         return newUserId;

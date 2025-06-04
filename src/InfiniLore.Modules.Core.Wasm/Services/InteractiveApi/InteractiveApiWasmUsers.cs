@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.Account.Profile.Item;
@@ -9,9 +8,9 @@ using InfiniLore.Kiota.Api.V1.Account.Profile.Item.ProfileImage;
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
+using InfiniLore.Modules.Core.Shared.Extensions;
 using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.Core.Wasm.KiotaModels;
-using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
@@ -30,25 +29,25 @@ public class InteractiveApiWasmUsers(
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Result<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
+    public async ValueTask<Outcome<IInfiniLoreUserModel>> GetUserAsync(string userId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithUserItemRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId];       
             KiotaUserUserProfileResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
-            if (result is null) return Result<IInfiniLoreUserModel>.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
 
             IInfiniLoreUserModel model =  WasmInfiniLoreUserModel.FromKiotaModel(result);
-            return Result<IInfiniLoreUserModel>.FromSuccess(model);
+            return Outcome.FromData(model);
         }
 
         catch (Exception e) {
             logger.LogError(e, "Error getting user");
-            return Result<IInfiniLoreUserModel>.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 
-    public async ValueTask<Result> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
+    public async ValueTask<Outcome> UpsertProfileImageAsync(string userId, IBrowserFile file, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             ProfileImageRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId].ProfileImage;
@@ -64,11 +63,11 @@ public class InteractiveApiWasmUsers(
                 file.Name
             );
             await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
-            return Result.FromState(true);
+            return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.LogError(e, "Error updating profile image");
-            return Result.FromError(interactiveApi.DefaultApiError);       
+            return Outcome.FromError(interactiveApi.DefaultApiError);       
         }
     }
 }

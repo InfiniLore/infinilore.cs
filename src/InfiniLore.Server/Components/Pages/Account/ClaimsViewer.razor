@@ -2,8 +2,8 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using Infinilore.InfiniBlazor
-@using InfiniLore.Shared.Services
-@using InfiniLore.Shared.Services.JwtToken
+@using InfiniLore.Modules.Core.Shared
+@using InfiniLore.Modules.Core.Shared.JwtToken
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -16,7 +16,7 @@
 @rendermode InteractiveServer
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
-@inject ClipboardService ClipboardService
+@inject IJsRuntimeHelper JsRuntimeHelper
 @inject IJwtTokenEncoder JwtTokenEncoder
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -178,7 +178,7 @@
 
     private async Task CopyToClipboardAsync(string? value) {
         if (!string.IsNullOrWhiteSpace(value)) {
-            await ClipboardService.WriteTextAsync(value);
+            await JsRuntimeHelper.WriteToClipboardAsync(value);
         }
     }
 }

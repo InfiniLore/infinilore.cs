@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Shared;
+using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -11,4 +11,4 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Queries;
 public record GetUsersQuery(
     QueryConfig QueryConfig,
     Pagination Pagination
-) : MessageRequest<PaginatedData<InfiniLoreUserModel>>;
+) : PaginatedMessageRequest<InfiniLoreUserModel>;

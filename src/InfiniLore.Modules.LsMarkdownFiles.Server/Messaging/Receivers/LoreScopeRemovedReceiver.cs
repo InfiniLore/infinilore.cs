@@ -1,11 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using JetBrains.Annotations;
@@ -29,13 +29,13 @@ public class LoreScopeRemovedReceiver(
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
-        Result<LsMarkdownFileModel[]> markdownFilesResult = await markdownFileRepository.GetByOwnerAsync(
+        Outcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(
             eventModel.LoreScopeId,
             QueryConfig.WithRetrieveSoftDeleted,
             ct: ct
         );
         
-        if (!markdownFilesResult.TryGetAsSuccess(out LsMarkdownFileModel[]? markdownFiles)) {
+        if (!markdownFilesOutcome.TryGetAsData(out LsMarkdownFileModel[]? markdownFiles)) {
             logger.Warning("Failed to get markdown files for lore scope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
@@ -58,7 +58,7 @@ public class LoreScopeRemovedReceiver(
         await Task.WhenAll(s3FileTasks);
         
         string bucketName = S3BucketNames.GetLoreScopeBucket(eventModel.LoreScopeId);
-        Result result = await fileStorage.TryRemoveBucketAsync(bucketName, ct);
+        Outcome result = await fileStorage.TryRemoveBucketAsync(bucketName, ct);
         result.Switch(
             state => logger.Information("Deletion bucket {BucketName} was {state}", bucketName, state),
             _ => logger.Warning("Failed to remove bucket {BucketName}", bucketName)
@@ -71,8 +71,8 @@ public class LoreScopeRemovedReceiver(
     ) => markdownFileModels.Select(async box => {
             string bucketName = S3BucketNames.GetLoreScopeBucket(box.LoreScopeId);
             
-            Result removedResult = await fileStorage.TryRemoveFileAsync(bucketName, box.FileName, ct);
-            if (!removedResult.TryGetAsState(out bool? removed) || removed is false) {
+            Outcome removedOutcome = await fileStorage.TryRemoveFileAsync(bucketName, box.FileName, ct);
+            if (!removedOutcome.TryGetAsState(out bool removed) || !removed) {
                 logger.Warning("Failed to remove file from S3");
                 return;
             }
@@ -89,8 +89,8 @@ public class LoreScopeRemovedReceiver(
         async model => {
             if (model.S3FileMetaData is null) return;
             
-            Result removedResult = await s3FileMetaDataRepository.RemoveAsync(model.S3FileMetaData, ct);
-            if (!removedResult.TryGetAsState(out bool? removed) || removed is false) {
+            Outcome removedOutcome = await s3FileMetaDataRepository.RemoveAsync(model.S3FileMetaData, ct);
+            if (!removedOutcome.TryGetAsState(out bool removed) || !removed) {
                 logger.Warning("Failed to remove S3FileMetaDataModel");
                 return;
             }
@@ -104,8 +104,8 @@ public class LoreScopeRemovedReceiver(
         ILsMarkdownFileRepository markdownFileRepository,
         CancellationToken ct
     ) =>  markdownFileModels.Select(async model => {
-            Result removedResult = await markdownFileRepository.RemoveAsync(model, ct);
-            if (!removedResult.TryGetAsState(out bool? removed) || removed is false) {
+            Outcome removedOutcome = await markdownFileRepository.RemoveAsync(model, ct);
+            if (!removedOutcome.TryGetAsState(out bool removed) || !removed) {
                 logger.Warning("Failed to remove markdown file");
                 return;
             }

@@ -1,11 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,14 +45,14 @@ public class KeyValueEntryRepositoryTest(ServiceProviderDataSource serviceProvid
         string? value = model.Value;
 
         // Act
-        Result result = await repo.TryAddOrUpdateAsync(model);
+        Outcome result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
         
         DbSet<KeyValueEntryModel> keyValueEntries = dbContext.Set<KeyValueEntryModel>();
         KeyValueEntryModel? actual = await keyValueEntries.FirstOrDefaultAsync(x => x.Key == key);
 
         // Assert
-        await Assert.That(result.IsState).IsTrue();
+        await Assert.That(result.IsTrue).IsTrue();
         await Assert.That(actual).IsNotNull()
             .And.HasMember(m => m.Key).EqualTo(key)
             .And.HasMember(m => m.Value).EqualTo(value);

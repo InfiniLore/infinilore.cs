@@ -1,10 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using JetBrains.Annotations;
@@ -28,8 +28,8 @@ public class LoreScopeDeletedReceiver(
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
 
-        Result<LsMarkdownFileModel[]> markdownFilesResult = await markdownFileRepository.GetByOwnerAsync(eventModel.LoreScopeId, ct: ct);
-        if (!markdownFilesResult.TryGetAsSuccess(out LsMarkdownFileModel[]? markdownFiles)) {
+        Outcome<LsMarkdownFileModel[]> markdownFilesOutcome = await markdownFileRepository.GetByOwnerAsync(eventModel.LoreScopeId, ct: ct);
+        if (!markdownFilesOutcome.TryGetAsData(out LsMarkdownFileModel[]? markdownFiles)) {
             logger.Warning("Failed to get markdown files for lore scope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
@@ -54,8 +54,8 @@ public class LoreScopeDeletedReceiver(
         async model => {
             if (model.S3FileMetaData is null) return;
             
-            Result deletedResult = await s3FileMetaDataRepository.DeleteAsync(model.S3FileMetaData, ct);
-            if (!deletedResult.TryGetAsState(out bool? deleted) || deleted is false) {
+            Outcome deletedOutcome = await s3FileMetaDataRepository.DeleteAsync(model.S3FileMetaData, ct);
+            if (!deletedOutcome.TryGetAsState(out bool deleted) || !deleted) {
                 logger.Warning("Failed to delete S3FileMetaDataModel");
                 return;
             }
@@ -69,8 +69,8 @@ public class LoreScopeDeletedReceiver(
         ILsMarkdownFileRepository markdownFileRepository,
         CancellationToken ct
     ) =>  markdownFileModels.Select(async model => {
-            Result deletedResult = await markdownFileRepository.DeleteAsync(model, ct);
-            if (!deletedResult.TryGetAsState(out bool? deleted) || deleted is false) {
+            Outcome deletedOutcome = await markdownFileRepository.DeleteAsync(model, ct);
+            if (!deletedOutcome.TryGetAsState(out bool deleted) || !deleted) {
                 logger.Warning("Failed to delete markdown file");
                 return;
             }

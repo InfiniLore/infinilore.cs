@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm.Contracts;
-using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +13,6 @@ namespace InfiniLore.Modules.Core.Wasm;
 [UsedImplicitly]
 public class CoreModuleSetup : WasmModuleSetup {
     public override void SetupServices(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreShared();
         services.RegisterServicesFromInfiniLoreModulesCoreShared();
         services.RegisterServicesFromInfiniLoreModulesCoreWasm();
     }

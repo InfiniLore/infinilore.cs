@@ -4,12 +4,12 @@
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared.Auth;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,11 +43,11 @@ public class UpsertLoreScopeMetadataEndpoint(
     public override async Task<Response> ExecuteAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
         
-        MessageResponse result = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
+        Outcome outcome = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
 
         // Verify Response
-        if (!result.TryGetState(out bool? successful)) {
-            logger.Warning("FAILED, {@state}", result.AsError);
+        if (!outcome.TryGetAsState(out bool successful)) {
+            logger.Warning("FAILED, {@state}", outcome.AsError);
             AddError("Failed to update lorescope metadata");
             return new ProblemDetails(ValidationFailures);
         }

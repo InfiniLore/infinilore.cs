@@ -1,10 +1,10 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
@@ -28,13 +28,13 @@ public class LoreScopeDeletedReceiver(
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Result<LoreScopeModel> modelResult = await loreScopeRepo.GetByIdAsync(
+        Outcome<LoreScopeModel> modelResult = await loreScopeRepo.GetByIdAsync(
             eventModel.LoreScopeId,
             QueryConfig.WithRetrieveSoftDeleted,
             ct: ct
         );
 
-        if (!modelResult.TryGetAsSuccess(out LoreScopeModel? model)) {
+        if (!modelResult.TryGetAsData(out LoreScopeModel? model)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }
@@ -44,8 +44,8 @@ public class LoreScopeDeletedReceiver(
             return;
         }
         
-        Result result = await s3FileMetaDataRepository.DeleteByIdAsync(posterImageMetaDataId, ct);
-        if (!result.TryGetAsState(out bool? deleted) || deleted is false) {
+        Outcome result = await s3FileMetaDataRepository.DeleteByIdAsync(posterImageMetaDataId, ct);
+        if (!result.TryGetAsState(out bool deleted) || !deleted) {
             logger.Warning("Failed to delete poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }

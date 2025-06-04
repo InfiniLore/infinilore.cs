@@ -1,10 +1,8 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using AterraEngine.Unions
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
-@using InfiniLore.Shared.Auth
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -103,8 +101,8 @@
             string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
             if (userId.IsNullOrEmpty()) return;
             
-            Result<IInfiniLoreUserModel> result = await UserInteractiveApi.GetUserAsync(userId);
-            if (!result.TryGetAsSuccess(out IInfiniLoreUserModel? userModel)) return;
+            Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
+            if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) return;
 
             UserModel = userModel;
         }
@@ -129,12 +127,12 @@
             }
             
             // Copy to MemoryStream first
-            Result result = await UserInteractiveApi.UpsertProfileImageAsync(
+            Outcome outcome = await UserInteractiveApi.UpsertProfileImageAsync(
                 UserModel.Id.ToString(),
                 SelectedFile
             );
 
-            if (!result.TryGetAsState(out bool? success) || success is false) {
+            if (!outcome.TryGetAsState(out bool success) || !success ) {
                 Logger.LogError("Failed to upload image");
                 return;
             }

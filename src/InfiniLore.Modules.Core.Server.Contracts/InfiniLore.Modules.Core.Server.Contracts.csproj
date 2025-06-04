@@ -30,7 +30,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Modules.Core.Shared\InfiniLore.Modules.Core.Shared.csproj" />
-        <ProjectReference Include="..\InfiniLore.Shared.Contracts\InfiniLore.Shared.Contracts.csproj" /> 
         <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 

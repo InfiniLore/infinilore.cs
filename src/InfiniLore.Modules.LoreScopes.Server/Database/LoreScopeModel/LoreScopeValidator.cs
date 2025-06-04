@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using CodeOfChaos.Types.UnitOfWork;
 using FluentValidation;
 using InfiniLore.Modules.Core.Server.Database;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Database;
@@ -32,6 +33,9 @@ public class LoreScopeValidator : OwnedModelValidator<InfiniLoreUserModel, LoreS
     private async Task<bool> VerifyNameAvailabilityAsync(LoreScopeModel model, string name, CancellationToken ct) {
         await using IReadonlyUnitOfWork unitOfWork = UnitOfWorkFactory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
-        return await loreScopeRepository.IsNameNotTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        
+        Outcome outcome = await loreScopeRepository.IsNameTakenAsync(name, model.OwnerId, model.Id, ct:ct);
+        if (!outcome.TryGetAsState(out bool isTaken)) return false;
+        return !isTaken;
     }
 }

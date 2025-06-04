@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Security.Claims;
-using InfiniLoreClaimsStore = InfiniLore.Shared.Auth.InfiniLoreClaimsStore;
+using InfiniLoreClaimsStore = InfiniLore.Modules.Core.Shared.InfiniLoreClaimsStore;
 
 namespace InfiniLore.Modules.Core.Server;
 

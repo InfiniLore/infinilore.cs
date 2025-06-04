@@ -3,13 +3,12 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Server.Messaging;
-using InfiniLore.Shared;
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore = InfiniLore.Shared.Auth.PermissionsStore;
+using PermissionsStore = InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints.User;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,15 +39,15 @@ public class GetUserProfilesEndpoint(
     public override async Task<Response> ExecuteAsync(GetUserProfilesEndpointRequest req, CancellationToken ct) {
         if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
 
-        MessageResponse<PaginatedData<InfiniLoreUserModel>> result = await messageBroker.GetUsersAsync(
+        PaginatedOutcome<InfiniLoreUserModel> outcome = await messageBroker.GetUsersAsync(
             QueryConfig.From(req),
             Pagination.From(req), 
             ct: ct
         );
 
         // MessageResponse<InfiniLoreUserModel> result = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
-        return result.Match<Response>(
-            successCase: model => {
+        return outcome.Match<Response>(
+            dataCase: model => {
                 logger.Information("Successfully retrieved users");
                 UserProfilesResponse mappedModel = Map.FromEntity(model);
                 return TypedResults.Ok(mappedModel);

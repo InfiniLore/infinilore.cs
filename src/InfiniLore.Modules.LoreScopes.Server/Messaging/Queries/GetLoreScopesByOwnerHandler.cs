@@ -3,11 +3,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
-using InfiniLore.Modules.Core.Server.Messaging;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Queries;
-using InfiniLore.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -20,22 +19,22 @@ public class GetLoreScopesByOwnerHandler(
     IReadonlyUnitOfWorkFactory factory,
     IAccessProtectionRules protectionRules,
     ILogger<GetLoreScopesByOwnerHandler> logger
-) : AccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, PaginatedData<LoreScopeModel>>(logger) {
+) : PaginatedAccessProtectedCommandHandler<GetLoreScopesByOwnerQuery, LoreScopeModel>(logger) {
 
-    protected override async Task<MessageResponse<PaginatedData<LoreScopeModel>>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
+    protected override async Task<PaginatedOutcome<LoreScopeModel>> HandleCommandAsync(GetLoreScopesByOwnerQuery command, CancellationToken ct = default) {
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        PaginatedResult<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
+        PaginatedOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
 
         // Todo lorescopes can be hidden so only the owner can access view it.
         //      Do we do that in the config level, or here?
 
         return response.Match(
-            MessageResponse.FromSuccess,
+            Outcome.FromData,
             _ => {
                 logger.Warning("Failed to get LoreScopes");
-                return MessageResponse.FromErrorString("Failed to get LoreScopes");
+                return Outcome.FromError("Failed to get LoreScopes");
             }
         );
     }

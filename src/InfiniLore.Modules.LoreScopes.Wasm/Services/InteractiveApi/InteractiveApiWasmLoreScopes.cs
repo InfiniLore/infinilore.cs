@@ -1,18 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using AterraEngine.Unions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.PosterImage;
 using InfiniLore.Kiota.Models;
+using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.Extensions;
 using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Modules.LoreScopes.Shared.Services;
-using InfiniLore.Shared;
-using InfiniLore.Shared.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
@@ -28,38 +27,38 @@ public class InteractiveApiWasmLoreScopes(
 ) : IInteractiveApiLoreScopes {
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
-    public async ValueTask<Result> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default) {
+    public async ValueTask<Outcome> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             await using Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
             
-            if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
-            return Result.FromState(true);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromState(true);
         }
 
         catch (Exception e) {
             logger.Warning(e, "Failed to delete LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
-            return Result.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 
-    public async ValueTask<Result<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {
+    public async ValueTask<Outcome<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
-            if (result is null) return Result<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
-            return Result<ILoreScopeModel>.FromSuccess(WasmLoreScopeModel.FromKiotaModel(result));
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromData(WasmLoreScopeModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
-            return Result<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 
-    public async ValueTask<PaginatedResult<ILoreScopeModel>> GetLoreScopesAsync(string userId, Pagination pagination, CancellationToken ct = default) {
+    public async ValueTask<PaginatedOutcome<ILoreScopeModel>> GetLoreScopesAsync(string userId, Pagination pagination, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
@@ -72,7 +71,7 @@ public class InteractiveApiWasmLoreScopes(
                 ct
             );
             
-            if (result is null) return PaginatedResult<ILoreScopeModel>.FromError("Could not get data from API");
+            if (result is null) return PaginatedOutcome<ILoreScopeModel>.FromError("Could not get data from API");
 
             // Ensure we always have a non-null array of items
             ILoreScopeModel[] items = (result.Items ?? Enumerable.Empty<KiotaLoreScopeResponse>())
@@ -89,11 +88,11 @@ public class InteractiveApiWasmLoreScopes(
         
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScopes for user {userId} because '{reason}'", userId, e.Message);
-            return PaginatedResult<ILoreScopeModel>.FromError("Unknown failure");
+            return PaginatedOutcome<ILoreScopeModel>.FromError("Unknown failure");
         }
     }
     
-    public async ValueTask<Result> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
+    public async ValueTask<Outcome> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             LorescopeRequestBuilder? requestBuilder = client.Api.V1.DataUser[userId].Lorescope;
@@ -103,16 +102,16 @@ public class InteractiveApiWasmLoreScopes(
             
             string? result = await requestBuilder.PostAsync(requestBody, cancellationToken: ct);
             
-            if (result is null) return Result.FromError(interactiveApi.DefaultApiError);
-            return Result.FromState(true);
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to create LoreScope {newLoreScopeName} because '{reason}'", newLoreScopeName, e.Message);
-            return Result.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 
-    public async ValueTask<Result> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default) {
+    public async ValueTask<Outcome> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             PosterImageRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].PosterImage;
@@ -129,11 +128,11 @@ public class InteractiveApiWasmLoreScopes(
             );
             
             await using Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
-            return Result.FromState(true);
+            return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.Error(e, "Failed to upload image for LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
-            return Result.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
 }

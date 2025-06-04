@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Shared;
+using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
