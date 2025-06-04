@@ -28,7 +28,7 @@ public class LsMarkdownFileRepository : OwnedModelRepository<LoreScopeModel, LsM
     public ValueTask<RepoOutcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = bad, CancellationToken ct = bad)
         => CommonRepoMethods.IsNameNotTakenAsync(GetCachedDbSet<LsMarkdownFileModel>(),name, ownerId, notIncludedId, ct);
 
-    public async ValueTask<Outcome<LsMarkdownFileModel>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<LsMarkdownFileModel>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = bad, CancellationToken ct = bad) {
         // Access
         DbSet<LsMarkdownFileModel> dbSet = GetCachedDbSet<LsMarkdownFileModel>();
 
