@@ -9,7 +9,7 @@ namespace InfiniLore.Kiota.Models
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
-    public partial class InfiniLoreModulesCoreSharedTokenResponse : IParsable
+    public partial class KiotaTokenResponse : IParsable
     #pragma warning restore CS1591
     {
         /// <summary>The expiresAt property</summary>
@@ -31,12 +31,12 @@ namespace InfiniLore.Kiota.Models
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.InfiniLoreModulesCoreSharedTokenResponse"/></returns>
+        /// <returns>A <see cref="global::InfiniLore.Kiota.Models.KiotaTokenResponse"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::InfiniLore.Kiota.Models.InfiniLoreModulesCoreSharedTokenResponse CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::InfiniLore.Kiota.Models.KiotaTokenResponse CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::InfiniLore.Kiota.Models.InfiniLoreModulesCoreSharedTokenResponse();
+            return new global::InfiniLore.Kiota.Models.KiotaTokenResponse();
         }
         /// <summary>
         /// The deserialization information for the current model
