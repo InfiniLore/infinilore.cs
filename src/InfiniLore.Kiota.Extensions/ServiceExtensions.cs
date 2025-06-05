@@ -17,7 +17,7 @@ public static class ServiceExtensions {
             configureClient: client => client.BaseAddress = new Uri(baseUrl)
         );
         
-        foreach (KiotaClientFactory.ActivatableType handler in  KiotaClientFactory.GetDefaultHandlerActivatableTypes()) {
+        foreach (KiotaClientFactory.ActivatableType handler in KiotaClientFactory.GetDefaultHandlerActivatableTypes()) {
             services.AddTransient(handler);
             httpClientBuilder.AddHttpMessageHandler(sp => (DelegatingHandler)sp.GetRequiredService(handler));
         }
