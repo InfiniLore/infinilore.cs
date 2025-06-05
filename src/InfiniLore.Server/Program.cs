@@ -36,26 +36,18 @@ namespace InfiniLore.Server;
 public static class Program {
     public static async Task<int> Main(string[] args) {
         return await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
-            // Builder is set up here first
-            //      This is so we can override the logging configuration
-            //      And have proper application exception catching 
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-            builder.OverrideLoggingWithSerilog(config => config
-                .AsAnnaSasDevServerConsole(
-                    24,
-                    configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
-                )
-                .WithTruncateSourceContextEnricher(maxLength: 24)
-            );
-            WebApplication app = BuildApp(builder);
+            WebApplicationBuilder builder = CreateBuilder(args);
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
+            //      This is required to run right here, as it defines some configuration required for the connectionStrings 
             await using var devEnv = InfiniLoreContainers.CreateForDevelopment();
             await devEnv.InitializeAsync();
             devEnv.AddToConfiguration(builder.Configuration);
             
+            WebApplication app = BuildApp(builder);
+            
             if (!args.IsEmpty()) {
-                bool shouldExit = await ExecuteCliCommands(args, app);
+                bool shouldExit = await ExecuteCliCommands(app, args);
                 if (shouldExit) return 200;
             }
             
@@ -63,8 +55,20 @@ public static class Program {
             return 0;
         });
     }
+
+    private static WebApplicationBuilder CreateBuilder(string[] args) {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        builder.OverrideLoggingWithSerilog(config => config
+            .AsAnnaSasDevServerConsole(
+                24,
+                configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
+            )
+            .WithTruncateSourceContextEnricher(maxLength: 24)
+        );
+        return builder;
+    }
     
-    private static async Task<bool> ExecuteCliCommands(string[] args, WebApplication app) {
+    private static async Task<bool> ExecuteCliCommands(WebApplication app, string[] args) {
         ICliParser parser = CliParser.CreateBuilder()
             .WithServiceProvider(() => app.Services)
             .AddFromAssembly<IServerEntry>()

@@ -38,7 +38,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "cli: migrate db" : {
+    "CLI: Migrate db" : {
       "commandName": "Project",
       "commandLineArgs": "database-migrate",
       "environmentVariables": {

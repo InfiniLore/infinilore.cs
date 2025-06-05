@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "DebugRoslynSourceGenerator": {
+    "Debug: SourceGenerator": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "../InfiniLore.Modules.Core.Server.Contracts/InfiniLore.Modules.Core.Server.Contracts.csproj"
     }
