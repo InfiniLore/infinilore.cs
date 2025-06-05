@@ -20,14 +20,14 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class StoreKnownPictureIdHandler(
-    IUnitOfWorkFactory unitOfWorkFactory, 
+    IUnitOfWorkFactory unitOfWorkFactory,
     ILogger<UploadUsernameToAuth0Handler> logger,
     IAuth0ClientService auth0ClientFactory,
     IHttpClientFactory httpClientFactory,
     IS3FileStorage fileStorage,
-    IValidator<S3FileMetaDataModel> s3FileValidator   
+    IValidator<S3FileMetaDataModel> s3FileValidator
 ) : EventReceiver<InfiniLoreUserCreatedEvent>(logger) {
-    
+
     protected override async Task ExecuteAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
         Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
@@ -40,12 +40,12 @@ public class StoreKnownPictureIdHandler(
             logger.Warning("Could not find user with id {UserId} in database.", userId);
             return;
         }
-        
+
         IManagementApiClient client = await auth0ClientFactory.GetClientAsync(ct);
         string? auth0Id = user.GetAuth0Ids().FirstOrDefault();
         if (auth0Id.IsNullOrWhiteSpace()) {
             logger.Warning("Could not find auth0 id for user {UserId}", userId);
-            return;       
+            return;
         }
 
         User auth0User = await client.Users.GetAsync(auth0Id, cancellationToken: ct);
@@ -59,11 +59,18 @@ public class StoreKnownPictureIdHandler(
             logger.Warning("Could not parse picture id for user {UserId}", userId);
             return;
         }
-        
+
         using HttpClient httpClient = httpClientFactory.CreateClient();
-        byte[] downloadedPicture = await httpClient.GetByteArrayAsync(pictureUri, ct);
-        string contentType = GetContentTypeFromUri(pictureUri);
-        
+        using HttpResponseMessage response = await httpClient.GetAsync(pictureUri, HttpCompletionOption.ResponseHeadersRead, ct);
+        response.EnsureSuccessStatusCode();
+
+        string contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";// Default to JPEG if not specified
+        if (!IsSupported(contentType)) {
+            logger.Warning("Unsupported content type {ContentType} for user {UserId}", contentType, userId);
+            return;
+        }
+        byte[] downloadedPicture = await response.Content.ReadAsByteArrayAsync(ct);
+
         // Create metadata for the file
         S3FileMetaDataModel? metaData = await TryCreateNewMetaDataAsync(user, unitOfWork, contentType, ct);
         if (metaData is null) {
@@ -74,10 +81,10 @@ public class StoreKnownPictureIdHandler(
         // Upload the file to S3
         using var memoryStream = new MemoryStream(downloadedPicture);
         Outcome outcome = await fileStorage.TryUploadFileAsync(
-            S3BucketNames.UserProfileImages, 
-            metaData.FileName, 
-            memoryStream, 
-            contentType, 
+            S3BucketNames.UserProfileImages,
+            metaData.FileName,
+            memoryStream,
+            contentType,
             ct
         );
 
@@ -90,53 +97,50 @@ public class StoreKnownPictureIdHandler(
             logger.Warning("Failed to commit transaction");
             return;
         }
-        
+
         logger.Information("Successfully stored profile picture for user {UserId}", userId);
     }
-    
+
     private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(
-        InfiniLoreUserModel foundModel, 
-        IUnitOfWork unitOfWork, 
+        InfiniLoreUserModel foundModel,
+        IUnitOfWork unitOfWork,
         string contentType,
-        CancellationToken ct) 
-    {
+        CancellationToken ct
+    ) {
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
         var s3FileMetaDataRepo = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
-        
+
         var metaData = new S3FileMetaDataModel {
             ContentType = contentType,
-            FileName = contentType switch {
-                "image/jpeg" => $"{foundModel.Id}.jpg",
-                "image/png" => $"{foundModel.Id}.png",
-                _ => throw new ArgumentOutOfRangeException(nameof(contentType), contentType, "Unknown content type")           
-            }
+            FileName = GetFileNameFromContentType(foundModel.Id, contentType)
         };
-        
+
+
         ValidationResult? validMetaData = await s3FileValidator.ValidateAsync(metaData, ct);
         if (!validMetaData.IsValid) {
             logger.Warning("Validation failed: {Reason}", validMetaData.Errors);
             return null;
         }
-        
+
         foundModel.ProfileImageMetaDataId = metaData.Id;
         foundModel.ProfileImageMetaData = metaData;
         foundModel.UpdateLastModifiedDate();
 
         await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await userRepo.UpdateAsync(foundModel, ct);
-        
+
         logger.Information("Created new user profile image metadata");
         return metaData;
     }
 
-    private static string GetContentTypeFromUri(Uri uri)
-    {
-        string extension = Path.GetExtension(uri.AbsolutePath).ToLowerInvariant();
-        return extension switch
-        {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            _ => throw new ArgumentException($"Unsupported image extension: {extension}", nameof(uri))
-        };
-    }
+    private static string GetFileNameFromContentType(Guid userId, string contentType) => contentType switch {
+        "image/jpeg" => $"{userId}.jpg",
+        "image/jpg" => $"{userId}.jpg",
+        "image/png" => $"{userId}.png",
+        _ => throw new ArgumentException($"Unsupported content type: {contentType}")
+    };
+
+    private static bool IsSupported(string contentType)
+        => contentType is "image/jpeg" or "image/jpg" or "image/png";
+
 }
