@@ -42,7 +42,7 @@ public class InteractiveApiWasmUsers(
         }
 
         catch (Exception e) {
-            logger.LogError(e, "Error getting user");
+            logger.Error(e, "Error getting user");
             return Outcome<IInfiniLoreUserModel>.FromError(interactiveApi.DefaultApiError);
         }
     }
@@ -66,7 +66,7 @@ public class InteractiveApiWasmUsers(
             return Outcome.FromState(true);
         }
         catch (Exception e) {
-            logger.LogError(e, "Error updating profile image");
+            logger.Error(e, "Error updating profile image");
             return Outcome.FromError(interactiveApi.DefaultApiError);       
         }
     }

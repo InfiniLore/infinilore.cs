@@ -32,7 +32,7 @@ public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
         }
 
         catch (Exception e) {
-            logger.LogError(e, "Uncaught error in command handler {Handler}", typeof(TInput).Name);
+            logger.Error(e, "Uncaught error in command handler {Handler}", typeof(TInput).Name);
             return UncaughtErrorOutcome;
         }
     }

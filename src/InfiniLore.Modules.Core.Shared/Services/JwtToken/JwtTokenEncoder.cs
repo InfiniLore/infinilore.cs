@@ -42,7 +42,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
             return expiry != DateTime.MinValue;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to extract token expiry");
+            logger.Error(ex, "Failed to extract token expiry");
             return false;
         }
     }
@@ -62,7 +62,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
             return true;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to decode JWT header");
+            logger.Error(ex, "Failed to decode JWT header");
             return false;
         }
     }
@@ -82,7 +82,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
             return true;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to decode JWT payload");
+            logger.Error(ex, "Failed to decode JWT payload");
             return false;
         }
     }
@@ -100,7 +100,7 @@ public class JwtTokenEncoder(ILogger<JwtTokenEncoder> logger) : IJwtTokenEncoder
             return true;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to extract JWT signature");
+            logger.Error(ex, "Failed to extract JWT signature");
             return false;
         }
     }

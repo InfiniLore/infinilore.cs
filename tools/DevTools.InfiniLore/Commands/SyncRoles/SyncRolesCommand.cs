@@ -33,8 +33,8 @@ public partial class SyncRolesCommand(
         string[] auth0Permissions = await auth0Utility.Permissions.GetApiPermissionsAsync(parameters.ApiIdentifier);
         IEnumerable<string> differences = allPermissions.Except(auth0Permissions);
         if (differences.Any()) {
-            logger.LogError("Permissions mismatch found. Differences: {Differences}", differences);
-            logger.LogCritical("Please run 'sync-permission' command to sync permissions first.");
+            logger.Error("Permissions mismatch found. Differences: {Differences}", differences);
+            logger.Error("Please run 'sync-permission' command to sync permissions first.");
             return;
         }
 
@@ -42,7 +42,7 @@ public partial class SyncRolesCommand(
         IEnumerable<RoleDto> roles = RolesStore.IterateValues().Select(role => new RoleDto(role, string.Empty));
         bool result = await auth0Utility.Roles.TrySyncRolesAsync(roles);
         if (!result) {
-            logger.LogError("Roles sync failed");
+            logger.Error("Roles sync failed");
             return;
         }
 

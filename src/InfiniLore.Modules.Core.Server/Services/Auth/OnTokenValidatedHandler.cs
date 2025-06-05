@@ -91,7 +91,7 @@ public class OnTokenValidatedHandler(
     }
 
     private void RedirectToLogout(TokenValidatedContext context, ICollection<string> failure) {
-        _logger.LogError("Error checking if user exists : {@failure}", failure);
+        _logger.Error("Error checking if user exists : {@failure}", failure);
         context.Response.Redirect("/account/logout?returnUrl=/");
         context.HandleResponse();
     }

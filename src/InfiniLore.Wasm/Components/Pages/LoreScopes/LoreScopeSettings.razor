@@ -99,7 +99,7 @@
         try {
             // 5MB limit
             if (SelectedFile.Size > MaxFileSize) {
-                Logger.LogWarning("File size exceeds 5MB limit");
+                Logger.Warning("File size exceeds 5MB limit");
                 return;
             }
             
@@ -110,7 +110,7 @@
             );
 
             if (!outcome.TryGetAsState(out bool success) || !success ) {
-                Logger.LogError("Failed to upload image, {@e}", outcome);
+                Logger.Error("Failed to upload image, {@e}", outcome);
                 return;
             }
 

@@ -45,7 +45,7 @@ public partial class RemoveContainerCommand(
             logger.Information("Successfully removed all InfiniLore development containers");
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to remove containers");
+            logger.Error(ex, "Failed to remove containers");
             throw;
         }
     }

@@ -54,7 +54,7 @@ public class JwtTokenManager(
             return tokenRecord.Value;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to retrieve token");
+            logger.Error(ex, "Failed to retrieve token");
             return null;
         }
     }
@@ -72,17 +72,17 @@ public class JwtTokenManager(
             using HttpClient client = clientFactory.CreateClient("ServerAPI");
             string responseJson = await client.GetStringAsync("account/token", ct);
             if (JsonSerializer.Deserialize<TokenResponse>(responseJson) is not {} response) {
-                logger.LogError("Failed to deserialize token response: {ResponseJson}", responseJson);
+                logger.Error("Failed to deserialize token response: {ResponseJson}", responseJson);
                 return null;
             }
 
             if (response.Token.IsNullOrEmpty()) {
-                logger.LogError("Failed to retrieve token from response: {ResponseJson}", responseJson);
+                logger.Error("Failed to retrieve token from response: {ResponseJson}", responseJson);
                 return null;
             }
 
             if (!DateTime.TryParse(response.ExpiresAt, out DateTime newExpiresAt)) {
-                logger.LogError("Failed to parse token expiry from response: {ResponseJson}", responseJson);
+                logger.Error("Failed to parse token expiry from response: {ResponseJson}", responseJson);
                 return null;
             }
 
@@ -90,7 +90,7 @@ public class JwtTokenManager(
             return response.Token;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to retrieve token from secureStorage or server.");
+            logger.Error(ex, "Failed to retrieve token from secureStorage or server.");
             return null;
         }
     }

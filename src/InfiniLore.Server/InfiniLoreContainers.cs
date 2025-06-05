@@ -121,7 +121,7 @@ public partial class InfiniLoreContainers : IAsyncDisposable {
 
         }
         catch (Exception ex) {
-            Logger.LogError(ex, "Failed to initialize development environment");
+            Logger.Error(ex, "Failed to initialize development environment");
             await DisposeAsync();
             throw;
         }
@@ -149,7 +149,7 @@ public partial class InfiniLoreContainers : IAsyncDisposable {
             GC.SuppressFinalize(this);
         }
         catch (Exception ex) {
-            Logger.LogError(ex, "Error during environment cleanup");
+            Logger.Error(ex, "Error during environment cleanup");
             throw;
         }
     }
