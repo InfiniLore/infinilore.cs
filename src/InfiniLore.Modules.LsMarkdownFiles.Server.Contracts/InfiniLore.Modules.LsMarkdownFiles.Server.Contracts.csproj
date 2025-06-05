@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <Folder Include="Database\RepoMethods\" />
-      <Folder Include="Messaging\Notifications\" />
     </ItemGroup>
 
 </Project>
