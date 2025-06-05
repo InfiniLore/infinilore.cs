@@ -69,7 +69,7 @@ public class JwtTokenManager(
     private async Task<string?> RetrieveAndStoreTokenAsync(CancellationToken ct = default) {
         try {
             // Fetch a new token from the server if no valid token is found
-            using HttpClient client = clientFactory.CreateClient("ServerAPI");
+            using HttpClient client = clientFactory.CreateClient(HttpClientNames.InfiniLoreApi);
             string responseJson = await client.GetStringAsync("account/token", ct);
             if (JsonSerializer.Deserialize<TokenResponse>(responseJson) is not {} response) {
                 logger.Error("Failed to deserialize token response: {ResponseJson}", responseJson);

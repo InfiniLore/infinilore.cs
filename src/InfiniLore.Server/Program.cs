@@ -14,6 +14,7 @@ using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
+using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
@@ -187,7 +188,7 @@ public static class Program {
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
-        builder.Services.AddHttpClient("ServerAPI");
+        builder.Services.AddHttpClient(HttpClientNames.InfiniLoreApi);
 
         builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()
