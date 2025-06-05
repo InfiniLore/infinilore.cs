@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Wasm.Contracts;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 

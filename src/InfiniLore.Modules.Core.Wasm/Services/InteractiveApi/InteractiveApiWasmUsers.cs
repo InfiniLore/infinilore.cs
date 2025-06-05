@@ -9,7 +9,6 @@ using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
 using InfiniLore.Modules.Core.Shared.Extensions;
-using InfiniLore.Modules.Core.Wasm.Contracts.Services;
 using InfiniLore.Modules.Core.Wasm.KiotaModels;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;

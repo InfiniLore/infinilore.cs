@@ -9,7 +9,7 @@ using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.PosterImage;
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Extensions;
-using InfiniLore.Modules.Core.Wasm.Contracts.Services;
+using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using InfiniLore.Modules.LoreScopes.Shared.Services;
 using Microsoft.AspNetCore.Components.Forms;

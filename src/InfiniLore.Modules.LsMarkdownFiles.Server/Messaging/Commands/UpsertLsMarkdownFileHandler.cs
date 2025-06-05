@@ -24,7 +24,8 @@ public class UpsertLsMarkdownFileHandler(
     IUnitOfWorkFactory unitOfWorkFactory,
     IS3FileStorage fileStorage,
     IValidator<S3FileMetaDataModel> s3FileValidator,
-    ILogger<UpsertLsMarkdownFileHandler> logger
+    ILogger<UpsertLsMarkdownFileHandler> logger,
+    IMessageBroker messageBroker
 ) : CommandHandler<UpsertLsMarkdownFileRequest, Outcome> {
 
     public override async Task<Outcome> ExecuteAsync(UpsertLsMarkdownFileRequest command, CancellationToken ct = new()) {
@@ -36,9 +37,10 @@ public class UpsertLsMarkdownFileHandler(
         RepoOutcome loreScopeExistsResult = await loreScopeRepository.IsIdTakenAsync(command.LoreScopeId, ct: ct);
         if (!loreScopeExistsResult.TryGetAsState(out bool success) || !success ) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
-            return Outcome.FromError("Failed to find lorescope with id");
+            return Outcome.FromError($"Failed to find lorescope with id {command.LoreScopeId}");
         }
 
+        bool isUpdate = false;
         RepoOutcome<LsMarkdownFileModel> knownFileResult = await markdownFileRepo.GetByIdAsync(command.KnownLsMarkdownFileId, ct: ct);
         
         // If the Known is set to default, it will be empty and thus result in a new file being created.
@@ -52,33 +54,38 @@ public class UpsertLsMarkdownFileHandler(
         
         ValidationResult? validationResult = await s3FileValidator.ValidateAsync(s3FileMetaData, ct);
         if (!validationResult.IsValid) {
-            logger.Warning("Failed to validate S3FileMetaDataModel");
-            return Outcome.FromError("Failed to validate S3FileMetaDataModel");
+            string errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+            logger.Warning("Failed to validate S3FileMetaDataModel: {Errors}", errors);
+            return Outcome.FromError($"Failed to validate S3FileMetaDataModel: {errors}");
         }
 
         RepoOutcome s3RepoResult = await s3FileMetaDataRepo.AddOrUpdateAsync(s3FileMetaData, ct);
-        if (!s3RepoResult.TryGetAsState(out success) || success is false) {
+        if (!s3RepoResult.TryGetAsState(out success) || !success) {
             logger.Warning("Failed to add or update S3FileMetaDataModel");
             return Outcome.FromError("Failed to add or update S3FileMetaDataModel");
         }
 
         LsMarkdownFileModel markdownFileModel = knownFileResult.Match(
             model => {
+                isUpdate = true;
                 model.LastUserToEditId = command.AccessingUser.UserId;
                 model.S3FileMetaDataId = s3FileMetaData.Id;
                 model.Name = command.FileName;
                 return model;
             },
-            _ => new LsMarkdownFileModel {
-                OwnerId = command.LoreScopeId,
+            _ => {
+                isUpdate = false;
+                return new LsMarkdownFileModel {
+                    OwnerId = command.LoreScopeId,
 
-                LastUserToEditId = command.AccessingUser.UserId,
-                S3FileMetaDataId = s3FileMetaData.Id,
-                Name = command.FileName,
+                    LastUserToEditId = command.AccessingUser.UserId,
+                    S3FileMetaDataId = s3FileMetaData.Id,
+                    Name = command.FileName,
+                };
             });
         
         RepoOutcome fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
-        if (!fileRepoResult.TryGetAsState(out success) || success is false) {
+        if (!fileRepoResult.TryGetAsState(out success) || !success) {
             logger.Warning("Failed to add or update LsMarkdownFileModel");
             return Outcome.FromError("Failed to add or update LsMarkdownFileModel");
         }
@@ -87,21 +94,32 @@ public class UpsertLsMarkdownFileHandler(
             S3BucketNames.GetLoreScopeBucket(command.LoreScopeId),
             s3FileMetaData.FileName,
             command.FileStream,
-            "text/markdown", 
+            ContentTypes.Markdown, 
             ct
         );
-        
-        if (!fileUploadResult.TryGetAsState(out success) || success is false) {
-            logger.Warning("Failed to upload file to S3");
-            return Outcome.FromError("Failed to upload file to S3");
-        }
-        
-        // ReSharper disable once InvertIf
-        if (!await unitOfWork.TryCommitTransactionAsync(ct)) {
-            logger.Warning("Failed to commit transaction");
-            return Outcome.FromError("Failed to commit transaction");      
-        }
-        
-        return Outcome.True;
+
+        return await fileUploadResult.Match(
+            async () => {
+                if (!await unitOfWork.TryCommitTransactionAsync(ct)) {
+                    logger.Warning("Failed to commit transaction");
+                    return Outcome.FromError("Failed to commit transaction");
+                }
+                
+                Func<Guid, Mode, CancellationToken, ValueTask> invoke = isUpdate 
+                    ? messageBroker.InvokeLsMarkdownFileUpdated 
+                    : messageBroker.InvokeLsMarkdownFileCreated;
+                await invoke(markdownFileModel.Id, Mode.WaitForNone, ct).ConfigureAwait(false);
+                
+                return Outcome.True;
+            },
+            () => {
+                logger.Warning("Failed to upload file to S3");
+                return Outcome.FromError("Failed to upload file to S3");
+            },
+            error => {
+                logger.Warning("Failed to upload file to S3 due to {error}", error);
+                return Outcome.FromError("Failed to upload file to S3");
+            }
+        );
     }
 } 

@@ -1,19 +1,9 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.{Mode};
-using InfiniLore.Modules.{ModuleName}.Shared;
-using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace InfiniLore.Modules.{ModuleName}.{Mode};
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UsedImplicitly]
-public class {ModuleName}ModuleSetup : {Mode}ModuleSetup {
-    public override void SetupServices(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModules{ModuleName}Shared();
-        services.RegisterServicesFromInfiniLoreModules{ModuleName}{Mode}();
-    }
-}
+public interface IModule{ModuleName}{Mode};

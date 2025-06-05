@@ -1,14 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using FastEndpoints;
 
-namespace InfiniLore.Modules.Core.Wasm;
+namespace InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Notifications;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class WasmModuleSetup {
-    public virtual void SetupBuilder(WebAssemblyHostBuilder builder) {}
-    public virtual void SetupServices(IServiceCollection services) {}
-}
+public record LsMarkdownFileCreated(
+    Guid LsMarkdownFileId    
+) : IEvent;

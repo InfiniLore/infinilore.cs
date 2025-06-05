@@ -1,14 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+namespace InfiniLore.Modules.Core.Shared;
 
-namespace InfiniLore.Modules.Core.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class WasmModuleSetup {
-    public virtual void SetupBuilder(WebAssemblyHostBuilder builder) {}
-    public virtual void SetupServices(IServiceCollection services) {}
+public static class ContentTypes {
+    public const string Markdown = "text/markdown";
+    
+    public const string Any = "*/*";
+    public const string AnyAudio = "audio/*";
+    public const string AnyImage = "image/*";
+    public const string AnyText = "text/*";
+    public const string AnyVideo = "video/*";
 }

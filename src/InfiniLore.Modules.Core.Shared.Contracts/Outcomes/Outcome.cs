@@ -13,6 +13,9 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
     public static Outcome True { get; } = FromTrue();
     public static Outcome False { get; } = FromFalse();
     
+    public static implicit operator Task<Outcome>(Outcome outcome) => Task.FromResult(outcome);
+    public static implicit operator ValueTask<Outcome>(Outcome outcome) => ValueTask.FromResult(outcome);
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
