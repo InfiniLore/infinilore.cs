@@ -44,8 +44,8 @@ public class CsprojHelper(ILogger<CsprojHelper> logger) {
 
     public Task SetPropertyAsync(string projectPath, string propertyName, string propertyValue, CancellationToken ct = default) {
         return ModifyProjectFileAsync(projectPath, doc => {
-            var propertyGroups = doc.Descendants("PropertyGroup");
-            var firstPropertyGroup = propertyGroups.First();
+            IEnumerable<XElement> propertyGroups = doc.Descendants("PropertyGroup");
+            XElement firstPropertyGroup = propertyGroups.First();
             
             // Remove existing property if it exists
             firstPropertyGroup.Descendants(propertyName).Remove();

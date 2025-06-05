@@ -141,22 +141,18 @@ public partial class ModuleSetupCommand(
             }
 
             // Add project references
-            if (ProjectReferences.TryGetValue(section, out var references)) {
+            if (ProjectReferences.TryGetValue(section, out string[]? references)) {
                 foreach (string reference in references) {
                     string referencePath = Path.Combine("src", reference, $"{reference}.csproj");
                     await cliHelper.ExecuteCommandAsync("dotnet", $"add \"{csprojPath}\" reference \"{referencePath}\"", parameters.Root, ct);
                 }
             }
-        
-            await Task.Delay(1000, ct);
+            if (!section.EndsWith(".Contracts")) continue;
 
             // Set RootNamespace for contract projects after all other operations
-            if (section.EndsWith(".Contracts")) {
-                string fullCsprojPath = Path.Combine(parameters.Root, csprojPath);
-                string baseNamespace = projectName[..^9]; // Remove ".Contracts"
-                await csprojHelper.SetPropertyAsync(fullCsprojPath, "RootNamespace", baseNamespace, ct);
-            }
-
+            string fullCsprojPath = Path.Combine(parameters.Root, csprojPath);
+            string baseNamespace = projectName[..^9]; // Remove ".Contracts"
+            await csprojHelper.SetPropertyAsync(fullCsprojPath, "RootNamespace", baseNamespace, ct);
         }
     }
 
