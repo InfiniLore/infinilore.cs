@@ -35,11 +35,6 @@
       "commandName": "Project",
       "commandLineArgs": "kiota-wrapper --namespace=\"InfiniLore.Kiota\" --output=\"src/InfiniLore.Kiota/\" --classname=\"InfiniLoreApiClient\" --openapi=\"https://localhost:7059/swagger/v1/swagger.json\" --csproj=\"src/InfiniLore.Kiota/InfiniLore.Kiota.csproj\""
     },
-    "cli: download Repos": {
-      "_readme": "Download all externally self built packages",
-      "commandName": "Project",
-      "commandLineArgs": "download-repo --output=\"\" --link --solution=\"InfiniLore.sln\""
-    },
     "cli: setup module": {
       "_readme": "Setup a new module and all of its packages",
       "commandName": "Project",
