@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Modules.Core.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 
@@ -9,17 +10,11 @@ namespace InfiniLore.Kiota;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ServiceExtensions {
-    /// <summary>
-    /// Adds and configures the InfiniLore Kiota client to the specified service collection.
-    /// This includes setting up the necessary HTTP client, default handlers, and the InfiniLore API client factory.
-    /// </summary>
-    /// <param name="services">The service collection instance to which the InfiniLore Kiota client should be added.</param>
-    /// <returns>The same service collection instance with the InfiniLore Kiota client registered.</returns>
-    public static IServiceCollection AddInfiniLoreKiotaClient(this IServiceCollection services) {
+    public static IServiceCollection AddInfiniLoreKiotaClient(this IServiceCollection services, string baseUrl) {
         services.AddTransient<InfiniLoreApiClient>(static sp => sp.GetRequiredService<InfiniLoreApiClientFactory>().GetClient());
         
-        IHttpClientBuilder httpClientBuilder =  services.AddHttpClient<InfiniLoreApiClientFactory>("ServerAPI",
-            configureClient: static client => client.BaseAddress = new Uri("https://localhost:7059/")
+        IHttpClientBuilder httpClientBuilder =  services.AddHttpClient<InfiniLoreApiClientFactory>(HttpClientNames.InfiniLoreApi,
+            configureClient: client => client.BaseAddress = new Uri(baseUrl)
         );
         
         foreach (KiotaClientFactory.ActivatableType handler in  KiotaClientFactory.GetDefaultHandlerActivatableTypes()) {

@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Shared.JwtToken;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 

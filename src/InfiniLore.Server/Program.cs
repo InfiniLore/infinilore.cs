@@ -15,7 +15,6 @@ using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.JwtToken;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;

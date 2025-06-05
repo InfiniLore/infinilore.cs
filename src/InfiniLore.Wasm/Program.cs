@@ -25,7 +25,7 @@ public static class Program {
 
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
-            .WriteTo.BrowserConsole()// Log to browser console for WASM
+            .WriteTo.BrowserConsole()// Log to the browser console for WASM
             .CreateLogger();
 
         builder.Logging.AddSerilog();
@@ -43,7 +43,7 @@ public static class Program {
         builder.Services.RegisterServicesFromInfiniLoreWasm();
         builder.Services.RegisterServicesFromInfiniLoreModulesCoreShared();
 
-        builder.Services.AddInfiniLoreKiotaClient();
+        builder.Services.AddInfiniLoreKiotaClient(builder.HostEnvironment.BaseAddress);
             
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {

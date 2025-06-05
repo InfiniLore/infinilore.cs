@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
