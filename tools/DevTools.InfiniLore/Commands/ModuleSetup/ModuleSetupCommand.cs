@@ -53,16 +53,17 @@ public partial class ModuleSetupCommand(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     private string GetNewModuleName() {
-        logger.Information("Please give the name fore the new module:");
-        string? moduleName = Console.ReadLine();
+        for (int i = 0; i < 5; i++) {
+            logger.Information("Please give the name fore the new module (try {i}/5):", i);
+            string? moduleName = Console.ReadLine();
 
-        // ReSharper disable once InvertIf
-        if (moduleName is null) {
-            logger.Error("No module name given");
-            throw new Exception("No module name given");
+            // ReSharper disable once InvertIf
+            if (!moduleName.IsNullOrWhiteSpace()) return moduleName;
+            logger.Error("No valid module name given");
         }
-
-        return moduleName;
+        
+        logger.Error("No valid module name given after 5 tries");
+        throw new Exception("No valid module name given after 5 tries");
     }
 
     private string GetModuleProjectName(string moduleName, string section) {
