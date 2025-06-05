@@ -26,30 +26,38 @@
     </Header>
 
     <Body>
-        <InfiniSideNavLink Href="/about">
-            <Icon><LiEqualApproximately/></Icon>
-            <Text>About</Text>
-        </InfiniSideNavLink>
+    <InfiniSideNavLink Href="/about">
+        <Icon>
+            <LiEqualApproximately/>
+        </Icon>
+        <Text>About</Text>
+    </InfiniSideNavLink>
 
-        <AuthorizeView>
-            <NotAuthorized></NotAuthorized>
-            <Authorized>
-                <InfiniSideNavLink Href="/api-test">
-                    <Icon><LiPlus/></Icon>
-                    <Text>Api Test</Text>
-                </InfiniSideNavLink>
+    <AuthorizeView>
+        <NotAuthorized></NotAuthorized>
+        <Authorized>
+            <InfiniSideNavLink Href="/api-test">
+                <Icon>
+                    <LiPlus/>
+                </Icon>
+                <Text>Api Test</Text>
+            </InfiniSideNavLink>
 
-                <InfiniSideNavLink Href="/lorescopes">
-                    <Icon><LiSignature/></Icon>
-                    <Text>LoreScopes</Text>
-                </InfiniSideNavLink>
-                
-                <InfiniSideNavLink Href="/claims-viewer">
-                    <Icon><LiView/></Icon>
-                    <Text>Claims viewer</Text>
-                </InfiniSideNavLink>
-            </Authorized>
-        </AuthorizeView>
+            <InfiniSideNavLink Href="/lorescopes">
+                <Icon>
+                    <LiSignature/>
+                </Icon>
+                <Text>LoreScopes</Text>
+            </InfiniSideNavLink>
+
+            <InfiniSideNavLink Href="/claims-viewer">
+                <Icon>
+                    <LiView/>
+                </Icon>
+                <Text>Claims viewer</Text>
+            </InfiniSideNavLink>
+        </Authorized>
+    </AuthorizeView>
     </Body>
 
     <Footer>
@@ -57,13 +65,15 @@
             <NotAuthorized>
                 <InfiniSideNavLink Href="account/login?redirectUri=/">
                     <Icon>
-                        <LiKeyRound class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                        <LiKeyRound
+                            class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                     </Icon>
                     <Text>Login</Text>
                 </InfiniSideNavLink>
                 <InfiniSideNavLink Href="account/login?redirectUri=/">
                     <Icon>
-                        <LiSignpost class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                        <LiSignpost
+                            class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                     </Icon>
                     <Text>SignUp</Text>
                 </InfiniSideNavLink>
@@ -71,10 +81,12 @@
 
             <Authorized>
                 <InfiniSideNavLink Href="/swagger">
-                    <Icon><LiBraces/></Icon>
+                    <Icon>
+                        <LiBraces/>
+                    </Icon>
                     <Text>Swagger</Text>
                 </InfiniSideNavLink>
-                
+
                 <!-- Profile Icon -->
                 <InfiniSideNavUser
                     HrefUserProfile="/account/profile"
@@ -104,14 +116,19 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     // Cascading authentication state
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
 
     // State for user details
-    private bool MenuCollapsed { get; set; } // Tracks whether the menu is collapsed
+    private bool MenuCollapsed { get; set; }// Tracks whether the menu is collapsed
     private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
+    
+    private bool _isFirstRender = true;
+    private string? _userIdToLogout;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -120,20 +137,17 @@
 
         AuthenticationState authState = await AuthenticationStateTask;
         ClaimsPrincipal user = authState.User;
-        
+
         if (user.Identity is { IsAuthenticated: true }) {
-            // try find userId
             string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
             if (userId is null) {
-                await JsTokenProvider.RemoveTokenAsync();
-                NavigationManager.NavigateTo("/account/logout");
+                _userIdToLogout = userId;// Set flag instead of calling JS
                 return;
             }
 
             Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
             if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) {
-                await JsTokenProvider.RemoveTokenAsync();
-                NavigationManager.NavigateTo("/account/logout");
+                _userIdToLogout = userId;// Set flag instead of calling JS
                 return;
             }
 
@@ -143,11 +157,25 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (!firstRender) return;
+
+        _isFirstRender = false; 
+        if (_userIdToLogout == null) return;
+
+        await JsTokenProvider.RemoveTokenAsync();
+        NavigationManager.NavigateTo("/account/logout");
+    }
+
     private async Task LogoutCallbackAsync() {
+        if (_isFirstRender) return;
+
         await JsTokenProvider.RemoveTokenAsync();
     }
 
     private async Task OnThemeSwitchAsync() {
+        if (_isFirstRender) return;
+
         await ThemeSelector.TrySelectNextThemeModeAsync();
     }
 }
