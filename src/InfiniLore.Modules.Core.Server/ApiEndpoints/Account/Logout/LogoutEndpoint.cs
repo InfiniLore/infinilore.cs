@@ -16,7 +16,7 @@ public class LogoutEndpoint(IHttpContextAccessor accessor) : Endpoint<LogoutRequ
     
     public override void Configure() {
         Get("/account/logout");
-        RoutePrefixOverride(string.Empty); // Remove the default prefix (account/logout)
+        RoutePrefixOverride(RoutePrefixes.Empty);
         AllowAnonymous();
         DontAutoSendResponse();
     }

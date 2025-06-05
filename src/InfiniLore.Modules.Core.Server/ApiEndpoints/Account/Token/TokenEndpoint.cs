@@ -14,7 +14,7 @@ public class TokenEndpoint(IHttpContextAccessor httpContextAccessor, IJwtTokenEn
 
     public override void Configure() {
         Get("/account/token");
-        RoutePrefixOverride(string.Empty); // Remove the default prefix (account/token)
+        RoutePrefixOverride(RoutePrefixes.Empty);
     }
     
     // -----------------------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ public class LoginEndpoint(IHttpContextAccessor accessor) : Endpoint<LoginReques
 
     public override void Configure() {
         Get("/account/login");
-        RoutePrefixOverride(string.Empty);// Remove the default prefix (account/login)
+        RoutePrefixOverride(RoutePrefixes.Empty);
         AllowAnonymous();
         DontAutoSendResponse();
     }

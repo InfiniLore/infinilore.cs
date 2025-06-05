@@ -14,14 +14,11 @@ using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Server.Cli;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
@@ -223,7 +220,7 @@ public static class Program {
         app.UseAuthorization();
 
         app.UseFastEndpoints(config => {
-            config.Endpoints.RoutePrefix = "api/v1";
+            config.Endpoints.RoutePrefix = RoutePrefixes.ApiV1;
             config.Errors.UseProblemDetails();
 
             config.Security.PermissionsClaimType = "permissions";
