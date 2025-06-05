@@ -34,7 +34,7 @@
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.26.0" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.26.0" />
-    <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.126.1" />
+    <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.128.1" />
     <PackageVersion Include="FastEndpoints" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.1.0" />
@@ -98,11 +98,11 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="Testcontainers.Minio" Version="4.4.0" />
+    <PackageVersion Include="Testcontainers.Minio" Version="4.5.0" />
     <PackageVersion Include="TUnit" Version="0.25.0" />
     <PackageVersion Include="TUnit.Core" Version="0.25.0" />
-    <PackageVersion Include="Testcontainers" Version="4.4.0" />
-    <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
+    <PackageVersion Include="Testcontainers" Version="4.5.0" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.5.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
 </Project>
