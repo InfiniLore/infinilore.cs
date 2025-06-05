@@ -7,6 +7,7 @@ using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
@@ -15,13 +16,16 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class UploadUsernameToAuth0Handler(
-    IReadonlyUnitOfWorkFactory unitOfWorkFactory, 
+    IServiceScopeFactory serviceScopeFactory,
     ILogger<UploadUsernameToAuth0Handler> logger,
     IAuth0UserUtility auth0UserUtility
 ) : EventReceiver<InfiniLoreUserCreatedEvent>(logger) {
     protected override async Task ExecuteAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
         Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
+
+        using IServiceScope scope = serviceScopeFactory.CreateScope();
+        var unitOfWorkFactory = scope.ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>();
 
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);

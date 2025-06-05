@@ -9,6 +9,7 @@ using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Receivers;
@@ -17,7 +18,7 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class LoreScopeRemovedReceiver(
-    IUnitOfWorkFactory unitOfWorkFactory,
+    IServiceScopeFactory serviceScopeFactory,
     IS3FileStorage fileStorage,
     ILogger<LoreScopeRemovedReceiver> logger
 ) : IEventHandler<LoreScopeRemovedEvent> {
@@ -25,6 +26,9 @@ public class LoreScopeRemovedReceiver(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async Task HandleAsync(LoreScopeRemovedEvent eventModel, CancellationToken ct) {
+        using IServiceScope scope = serviceScopeFactory.CreateScope();
+        var unitOfWorkFactory = scope.ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var markdownFileRepository = await unitOfWork.GetRepositoryAsync<ILsMarkdownFileRepository>(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);

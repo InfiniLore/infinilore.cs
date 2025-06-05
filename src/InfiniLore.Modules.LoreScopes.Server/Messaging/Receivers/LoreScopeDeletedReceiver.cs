@@ -7,6 +7,7 @@ using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LoreScopes.Messaging.Notifications;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Receivers;
@@ -16,13 +17,16 @@ namespace InfiniLore.Modules.LoreScopes.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class LoreScopeDeletedReceiver(
-    IUnitOfWorkFactory unitOfWorkFactory,
+    IServiceScopeFactory serviceScopeFactory,
     ILogger<LoreScopeDeletedReceiver> logger
 ) : EventReceiver<LoreScopeDeletedEvent>(logger) {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task ExecuteAsync(LoreScopeDeletedEvent eventModel, CancellationToken ct) {
+        using IServiceScope scope = serviceScopeFactory.CreateScope();
+        var unitOfWorkFactory = scope.ServiceProvider.GetRequiredService<IUnitOfWorkFactory>();
+        
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var s3FileMetaDataRepository = await unitOfWork.GetRepositoryAsync<IS3FileRepository>(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);

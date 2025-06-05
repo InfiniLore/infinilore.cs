@@ -11,6 +11,7 @@ using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
 using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
@@ -19,7 +20,7 @@ namespace InfiniLore.Modules.Core.Server.Messaging.Receivers;
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
 public class SetUserRoleToAuth0Handler(
-    IReadonlyUnitOfWorkFactory unitOfWorkFactory, 
+    IServiceScopeFactory serviceScopeFactory,
     ILogger<UploadUsernameToAuth0Handler> logger,
     IAuth0ClientService auth0ClientFactory,
     IAuth0Utility auth0
@@ -29,6 +30,9 @@ public class SetUserRoleToAuth0Handler(
     protected override async Task ExecuteAsync(InfiniLoreUserCreatedEvent eventModel, CancellationToken ct) {
         Guid userId = eventModel.UserId;
         if (userId == Guid.Empty) return;
+
+        using IServiceScope scope = serviceScopeFactory.CreateScope();
+        var unitOfWorkFactory = scope.ServiceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>();
 
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
