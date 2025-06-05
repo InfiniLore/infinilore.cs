@@ -13,7 +13,7 @@ namespace DevTools.InfiniLore.Library;
 [InjectableSingleton<CliHelper>]
 public class CliHelper(ILogger<CliHelper> logger) {
     public async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null, CancellationToken ct = default) {
-        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
+        logger.Information("Running command: {cmd}", $"{fileName} {arguments}");
         
         using var process = new Process();
         process.StartInfo = new ProcessStartInfo(fileName, arguments) {

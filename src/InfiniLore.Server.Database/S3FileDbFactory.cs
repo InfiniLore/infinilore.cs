@@ -14,9 +14,9 @@ public static class S3FileDbFactory {
     // -----------------------------------------------------------------------------------------------------------------
     public static void RegisterDatabase(
         IServiceCollection services,
-        string connectionString,
-        string accessKey,
-        string secretKey
+        string? connectionString,
+        string? accessKey,
+        string? secretKey
     ) {
         services.AddMinio(client => client.WithEndpoint(connectionString)
             .WithCredentials(accessKey, secretKey)

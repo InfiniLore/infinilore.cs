@@ -21,6 +21,7 @@
         <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" />
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
         <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
+        <PackageReference Include="Docker.DotNet.Enhanced" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" />
         <PackageReference Include="InfiniLore.Credentials.Auth0.Contracts"/>
         <PackageReference Include="JetBrains.Annotations"/>

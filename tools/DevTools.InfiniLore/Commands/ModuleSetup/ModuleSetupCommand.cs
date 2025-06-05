@@ -40,7 +40,7 @@ public partial class ModuleSetupCommand(
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask ExecuteAsync(ModuleSetupParameters parameters, CancellationToken ct = new()) {
-        logger.LogInformation("Starting module setup");
+        logger.Information("Starting module setup");
 
         string moduleName = GetNewModuleName();
         await CreateModuleProjects(moduleName, parameters, ct);

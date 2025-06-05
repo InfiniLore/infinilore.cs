@@ -55,7 +55,7 @@ public class UpsertLoreScopeImageHandler(
             logger.Warning("Failed to upload file to s3 bucket");
             return Outcome.FromError("Failed to upload file to s3 bucket");       
         }
-        logger.LogInformation("Uploaded file to s3 bucket");
+        logger.Information("Uploaded file to s3 bucket");
 
         
         // ReSharper disable once InvertIf
@@ -94,7 +94,7 @@ public class UpsertLoreScopeImageHandler(
         await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await loreScopeRepo.UpdateAsync(foundModel, ct);
         
-        logger.LogInformation("Created new lorescope image metadata");
+        logger.Information("Created new lorescope image metadata");
         return metaData;
     }
 } 

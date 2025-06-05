@@ -57,7 +57,7 @@ public class LoreScopeCreateHandler(
 
 
         await messageBroker.InvokeNewLoreScopeCreatedAsync(loreScope.Id, Mode.WaitForAll, ct);
-        logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
+        logger.Information("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }
 }

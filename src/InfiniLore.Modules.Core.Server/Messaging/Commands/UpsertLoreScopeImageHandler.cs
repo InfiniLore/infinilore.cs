@@ -98,7 +98,7 @@ public class UpsertUserProfileImageHandler(
         await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await userRepo.UpdateAsync(foundModel, ct);
         
-        logger.LogInformation("Created new user profile image metadata");
+        logger.Information("Created new user profile image metadata");
         return metaData;
     }
 } 

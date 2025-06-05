@@ -41,6 +41,6 @@ public class OnNewLoreScopeSetAccessProtection(
         loreScope.AccessProtection = accessProtection;
         
         await repo.UpdateAsync(loreScope, ct);
-        logger.LogInformation("Access protection set for lorescope {LoreScopeId}", loreScope.Id);
+        logger.Information("Access protection set for lorescope {LoreScopeId}", loreScope.Id);
     }
 }

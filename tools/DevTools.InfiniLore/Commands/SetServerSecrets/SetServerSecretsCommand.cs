@@ -20,7 +20,7 @@ public partial class SetServerSecretsCommand(
     
     public async ValueTask ExecuteAsync(SetServerSecretsParameters parameters, CancellationToken ct = new()) {
         
-        logger.LogInformation("Setting server secrets");
+        logger.Information("Setting server secrets");
 
         foreach (string serverLocation in (string[])[parameters.InfiniLoreServerFolder, parameters.DevToolsInfiniLoreFolder]) {
             await cliHelper.ExecuteCommandAsync("dotnet", "user-secrets init", serverLocation, ct);
@@ -33,6 +33,6 @@ public partial class SetServerSecretsCommand(
             await cliHelper.ExecuteCommandAsync("dotnet",$"user-secrets set \"Auth0:Audience\" \"{parameters.Audience}\"", serverLocation, ct);
         }
         
-        logger.LogInformation("Server secrets set");
+        logger.Information("Server secrets set");
     }
 }

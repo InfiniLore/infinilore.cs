@@ -57,6 +57,10 @@
     "cli: sync auth0 Roles": {
       "commandName": "Project",
       "commandLineArgs": "sync-roles"
+    },
+    "cli: Remove Docker Containers": {
+      "commandName": "Project",
+      "commandLineArgs": "containers-remove"
     }
   }
 }

@@ -29,16 +29,16 @@ public class JwtTokenManager(
             // Retrieve token record from IndexedDB
             var tokenRecord = await jsRuntimeHelper.SecureStorage.GetTokenAsync<JsTokenRecord?>(StorageKey, ct);
             if (tokenRecord?.Value is null) {
-                logger.LogInformation("No token found in storage, fetching a new token.");
+                logger.Information("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
             }
 
             // Check if ExpiresAt is available in the storage
             //      If no ExpiresAt, decode the token and extract expiration
             if (!DateTime.TryParse(tokenRecord.ExpiresAt, out DateTime expiresAt)) {
-                logger.LogInformation("No token expiry found in storage, decoding token to extract expiry.");
+                logger.Information("No token expiry found in storage, decoding token to extract expiry.");
                 if (!encoder.TryGetTokenUtcExpiry(tokenRecord.Value, out expiresAt)) {
-                    logger.LogInformation("Failed to extract token expiry from token, fetching a new token.");
+                    logger.Information("Failed to extract token expiry from token, fetching a new token.");
                     return await RetrieveAndStoreTokenAsync(ct);
                 }
 
@@ -47,7 +47,7 @@ public class JwtTokenManager(
 
             // ReSharper disable once InvertIf
             if (DateTime.UtcNow >= expiresAt) {
-                logger.LogInformation("Token expired at {ExpiresAt}, fetching a new token.", expiresAt);
+                logger.Information("Token expired at {ExpiresAt}, fetching a new token.", expiresAt);
                 return await RetrieveAndStoreTokenAsync(ct);
             }
 

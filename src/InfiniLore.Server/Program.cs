@@ -47,16 +47,18 @@ public static class Program {
                 )
                 .WithTruncateSourceContextEnricher(maxLength: 24)
             );
+            WebApplication app = BuildApp(builder);
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
             await using var devEnv = InfiniLoreContainers.CreateForDevelopment();
             await devEnv.InitializeAsync();
-
-            WebApplication app = BuildApp(builder, devEnv);
+            devEnv.AddToConfiguration(builder.Configuration);
+            
             if (!args.IsEmpty()) {
                 bool shouldExit = await ExecuteCliCommands(args, app);
                 if (shouldExit) return 200;
             }
+            
             await Start(app);
             return 0;
         });
@@ -81,7 +83,7 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()
@@ -91,14 +93,14 @@ public static class Program {
         ContentDbFactory.RegisterDatabase(
             builder.Services,
             moduleBuilder.ModuleAssemblies, 
-            options => options.UseSqlServer(devEnv.GetSqlConnectionString())
+            options => options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"])
         );
 
         S3FileDbFactory.RegisterDatabase(
             builder.Services,
-            $"localhost:{devEnv.GetMinioPort()}",
-            devEnv.GetMinioAccessKey(),
-            devEnv.GetMinioSecretKey()
+            builder.Configuration["ConnectionStrings:Minio:Endpoint"],
+            builder.Configuration["ConnectionStrings:Minio:AccessKey"],
+            builder.Configuration["ConnectionStrings:Minio:SecretKey"]
         );
         #endregion
 
