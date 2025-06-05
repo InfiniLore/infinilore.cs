@@ -222,45 +222,6 @@ public static class Program {
         app.UseAuthentication();
         app.UseAuthorization();
 
-        #region Authentication Endpoints
-        app.MapGet("/account/login", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
-            AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-                .WithRedirectUri(redirectUri)
-                .Build();
-
-            await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-        });
-
-        app.MapGet("/account/logout", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
-            AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-                .WithRedirectUri(redirectUri)
-                .Build();
-
-            await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        });
-
-        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
-            if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
-                return Results.Unauthorized();
-
-            // Retrieve the token using the access_token property (Auth0 integration)
-            string? accessToken = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken.IsNullOrEmpty()) return Results.Unauthorized();
-
-            // Token expiration logic (Auth0 provides token expiration info)
-            if (!tokenEncoder.TryGetTokenUtcExpiry(accessToken, out DateTime expiresAt)) return Results.Unauthorized();
-
-            // Refresh is handled by Auth0 middleware
-            if (DateTime.UtcNow >= expiresAt) return Results.Unauthorized();
-
-            return Results.Json(new TokenResponse {
-                Token = accessToken,
-                ExpiresAt = expiresAt.ToString("o")// ISO 8601 format for JS Date parsing
-            });
-        }).RequireAuthorization();
-        #endregion
-
         app.UseFastEndpoints(config => {
             config.Endpoints.RoutePrefix = "api/v1";
             config.Errors.UseProblemDetails();
