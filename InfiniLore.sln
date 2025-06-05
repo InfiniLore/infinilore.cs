@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.Core.Was
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Server.Database", "src\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj", "{52D15B5E-1BCF-4346-B4A0-14AEA39F2E7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools.InfiniLore.Server.Database.EFC.Content", "src\DevTools.InfiniLore.Server.Database.EFC.Content\DevTools.InfiniLore.Server.Database.EFC.Content.csproj", "{CF14A158-1E2A-4ECA-8D7E-84462084CE17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools.InfiniLore.EFC", "src\DevTools.InfiniLore.EFC\DevTools.InfiniLore.EFC.csproj", "{CF14A158-1E2A-4ECA-8D7E-84462084CE17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.InfiniLore", "tests\Tests.InfiniLore\Tests.InfiniLore.csproj", "{344ED333-E42B-48C3-9103-8C0D60831399}"
 EndProject
