@@ -15,7 +15,8 @@ namespace DevTools.InfiniLore.Commands.ModuleSetup;
 public partial class ModuleSetupCommand(
     ILogger<ModuleSetupCommand> logger,
     CliHelper cliHelper,
-    TemplateHelper templateHelper
+    TemplateHelper templateHelper,
+    CsprojHelper csprojHelper
 ) : ICliCommand<ModuleSetupParameters> {
     private static readonly Dictionary<string, string[]> NuGetReferences = new() {
         ["Server"] = [
@@ -133,8 +134,9 @@ public partial class ModuleSetupCommand(
 
             // Set RootNamespace for contract projects
             if (section.EndsWith(".Contracts")) {
+                string fullCsprojPath = Path.Combine(parameters.Root, csprojPath);
                 string baseNamespace = projectName[..^9]; // Remove ".Contracts"
-                await cliHelper.ExecuteCommandAsync("dotnet", $"msbuild \"{csprojPath}\" /p:RootNamespace={baseNamespace}", parameters.Root, ct);
+                await csprojHelper.SetPropertyAsync(fullCsprojPath, "RootNamespace", baseNamespace, ct);
             }
 
             // Add it to the solution
