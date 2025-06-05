@@ -132,13 +132,6 @@ public partial class ModuleSetupCommand(
                 logger.LogError(ex, "Failed to delete Class1.cs at {FilePath}", class1Path);
             }
 
-            // Set RootNamespace for contract projects
-            if (section.EndsWith(".Contracts")) {
-                string fullCsprojPath = Path.Combine(parameters.Root, csprojPath);
-                string baseNamespace = projectName[..^9]; // Remove ".Contracts"
-                await csprojHelper.SetPropertyAsync(fullCsprojPath, "RootNamespace", baseNamespace, ct);
-            }
-
             // Add it to the solution
             await cliHelper.ExecuteCommandAsync("dotnet", $"sln add \"{csprojPath}\" --solution-folder \"src/Server/Modules/{moduleName}\"", parameters.Root, ct);
 
@@ -156,6 +149,14 @@ public partial class ModuleSetupCommand(
             }
         
             await Task.Delay(1000, ct);
+
+            // Set RootNamespace for contract projects after all other operations
+            if (section.EndsWith(".Contracts")) {
+                string fullCsprojPath = Path.Combine(parameters.Root, csprojPath);
+                string baseNamespace = projectName[..^9]; // Remove ".Contracts"
+                await csprojHelper.SetPropertyAsync(fullCsprojPath, "RootNamespace", baseNamespace, ct);
+            }
+
         }
     }
 
