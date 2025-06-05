@@ -69,7 +69,7 @@ public partial class ModuleSetupCommand(
 
         string moduleName = GetNewModuleName();
         await CreateModuleProjects(moduleName, parameters, ct);
-        await AddModuleContractsReferences(moduleName, parameters, ct);
+        await AddModuleReferences(moduleName, parameters, ct);
         
         await CreateModuleEntry(moduleName, "Server", parameters, ct);
         await CreateModuleEntry(moduleName, "Wasm", parameters, ct);
@@ -151,11 +151,21 @@ public partial class ModuleSetupCommand(
         }
     }
 
-    private async ValueTask AddModuleContractsReferences(string moduleName, ModuleSetupParameters parameters, CancellationToken ct) {
+    private async ValueTask AddModuleReferences(string moduleName, ModuleSetupParameters parameters, CancellationToken ct) {
         var references = new Dictionary<string, string[]> {
-            ["Server"] = [$"InfiniLore.Modules.{moduleName}.Server.Contracts"],
-            ["Wasm"] = [$"InfiniLore.Modules.{moduleName}.Wasm.Contracts"],
-            ["Shared"] = [$"InfiniLore.Modules.{moduleName}.Shared.Contracts"]
+            ["Server"] = [
+                $"InfiniLore.Modules.{moduleName}.Server.Contracts",
+                $"InfiniLore.Modules.{moduleName}.Shared",
+                $"InfiniLore.Modules.{moduleName}.Shared.Contracts"
+            ],
+            ["Wasm"] = [
+                $"InfiniLore.Modules.{moduleName}.Wasm.Contracts",
+                $"InfiniLore.Modules.{moduleName}.Shared",
+                $"InfiniLore.Modules.{moduleName}.Shared.Contracts"
+            ],
+            ["Shared"] = [
+                $"InfiniLore.Modules.{moduleName}.Shared.Contracts"
+            ]
         };
 
         foreach ((string section, string[] contractRefs) in references) {
@@ -169,7 +179,6 @@ public partial class ModuleSetupCommand(
             }
         }
     }
-
 
     private async ValueTask CreateModuleEntry(string moduleName, string mode, ModuleSetupParameters parameters, CancellationToken ct = default) {
         string generatedCode = await templateHelper.LoadTemplateModuleEntryFileAsync(moduleName, mode, ct);
