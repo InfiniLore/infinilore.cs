@@ -19,9 +19,7 @@ public class UsernameExistsHandler(IReadonlyUnitOfWorkFactory factory) : Command
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome result = await userRepository.IsUsernameTakenAsync(command.Username, ct: ct);
-        if (!result.TryGetAsState(out bool state)) return result.AsError;
-
-        return Outcome.FromState(state);
+        RepoOutcome outcome = await userRepository.IsUsernameTakenAsync(command.Username, ct: ct);
+        return outcome.ToOutcome();
     }
 }

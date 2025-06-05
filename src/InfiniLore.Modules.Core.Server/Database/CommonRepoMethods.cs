@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +13,14 @@ public static class CommonRepoMethods {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static async ValueTask<Outcome> IsNameTakenAsync<TModel>(
+    public static async ValueTask<RepoOutcome> IsNameTakenAsync<TModel>(
         DbSet<TModel> dbSet,
         string name,
         Guid ownerId,
         Guid notIncludedId = default,
         CancellationToken ct = default
     ) where TModel : BasicModel, IHasName, IHasOwnerId {
-        if (name.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return Outcome.FromError(RepositoryFailures.ModelFailedValidation);
+        if (name.IsNullOrWhiteSpace() || ownerId == Guid.Empty) return RepoOutcome.FromError(RepositoryFailures.ModelFailedValidation);
 
         // Query
         IQueryable<TModel> query = dbSet.Where(l =>
@@ -32,18 +31,18 @@ public static class CommonRepoMethods {
 
         // Retrieve
         bool result = await query.AnyAsync(cancellationToken: ct);
-        return Outcome.FromState(result);
+        return RepoOutcome.FromState(result);
     }
 
-    public static async ValueTask<Outcome> IsNameNotTakenAsync<TModel>(
+    public static async ValueTask<RepoOutcome> IsNameNotTakenAsync<TModel>(
         DbSet<TModel> dbSet,
         string name,
         Guid ownerId,
         Guid notIncludedId = default,
         CancellationToken ct = default
     ) where TModel : BasicModel, IHasName, IHasOwnerId {
-        Outcome outcome = await IsNameTakenAsync(dbSet, name, ownerId, notIncludedId, ct);
+        RepoOutcome outcome = await IsNameTakenAsync(dbSet, name, ownerId, notIncludedId, ct);
         if (outcome.IsError) return outcome;
-        return Outcome.FromState(!outcome.IsTrue);
+        return RepoOutcome.FromState(!outcome.IsTrue);
     }
 }

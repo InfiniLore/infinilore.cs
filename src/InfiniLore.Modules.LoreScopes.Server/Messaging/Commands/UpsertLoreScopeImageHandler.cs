@@ -31,8 +31,8 @@ public class UpsertLoreScopeImageHandler(
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> loreScopeResult = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct:ct);
-        if (!loreScopeResult.TryGetAsData(out LoreScopeModel? loreScope)) {
+        RepoOutcome<LoreScopeModel> loreScopeOutcome = await loreScopeRepo.GetByIdAsync(command.LoreScopeId, QueryConfig.WithOptional, ct: ct);
+        if (!loreScopeOutcome.TryGetAsData(out LoreScopeModel? loreScope)) {
             logger.Warning("Failed to find lorescope with id {LoreScopeId}", command.LoreScopeId);
             return Outcome.FromError("Failed to find lorescope with id");
         }
@@ -55,7 +55,7 @@ public class UpsertLoreScopeImageHandler(
             logger.Warning("Failed to upload file to s3 bucket");
             return Outcome.FromError("Failed to upload file to s3 bucket");       
         }
-        logger.LogInformation("Uploaded file to s3 bucket");
+        logger.Information("Uploaded file to s3 bucket");
 
         
         // ReSharper disable once InvertIf
@@ -94,7 +94,7 @@ public class UpsertLoreScopeImageHandler(
         await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await loreScopeRepo.UpdateAsync(foundModel, ct);
         
-        logger.LogInformation("Created new lorescope image metadata");
+        logger.Information("Created new lorescope image metadata");
         return metaData;
     }
 } 

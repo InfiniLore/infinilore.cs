@@ -11,8 +11,7 @@ using Minio.DataModel.Response;
 using Minio.DataModel.Result;
 using System.Net;
 
-namespace InfiniLore.Modules.Core.Server.S3;
-
+namespace InfiniLore.Modules.Core.Server.S3Files;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

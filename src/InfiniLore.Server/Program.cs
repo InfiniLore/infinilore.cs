@@ -15,14 +15,11 @@ using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.JwtToken;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
 using InfiniLore.Server.Cli;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
@@ -37,33 +34,39 @@ namespace InfiniLore.Server;
 public static class Program {
     public static async Task<int> Main(string[] args) {
         return await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
-            // Builder is set up here first
-            //      This is so we can override the logging configuration
-            //      And have proper application exception catching 
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-            builder.OverrideLoggingWithSerilog(config => config
-                .AsAnnaSasDevServerConsole(
-                    24,
-                    configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
-                )
-                .WithTruncateSourceContextEnricher(maxLength: 24)
-            );
+            WebApplicationBuilder builder = CreateBuilder(args);
             
             // Technically, we need to wrap this as a `IsDevelopment`, but that will be for a later stage
+            //      This is required to run right here, as it defines some configuration required for the connectionStrings 
             await using var devEnv = InfiniLoreContainers.CreateForDevelopment();
             await devEnv.InitializeAsync();
-
-            WebApplication app = BuildApp(builder, devEnv);
+            devEnv.AddToConfiguration(builder.Configuration);
+            
+            WebApplication app = BuildApp(builder);
+            
             if (!args.IsEmpty()) {
-                bool shouldExit = await ExecuteCliCommands(args, app);
+                bool shouldExit = await ExecuteCliCommands(app, args);
                 if (shouldExit) return 200;
             }
+            
             await Start(app);
             return 0;
         });
     }
+
+    private static WebApplicationBuilder CreateBuilder(string[] args) {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        builder.OverrideLoggingWithSerilog(config => config
+            .AsAnnaSasDevServerConsole(
+                24,
+                configure: asyncConsoleConfig => asyncConsoleConfig.ApplyThemeToRedirectedOutput = true// Needed for nice DotnetWatch console output    
+            )
+            .WithTruncateSourceContextEnricher(maxLength: 24)
+        );
+        return builder;
+    }
     
-    private static async Task<bool> ExecuteCliCommands(string[] args, WebApplication app) {
+    private static async Task<bool> ExecuteCliCommands(WebApplication app, string[] args) {
         ICliParser parser = CliParser.CreateBuilder()
             .WithServiceProvider(() => app.Services)
             .AddFromAssembly<IServerEntry>()
@@ -82,7 +85,7 @@ public static class Program {
     // -----------------------------------------------------------------------------------------------------------------
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
-    private static WebApplication BuildApp(WebApplicationBuilder builder, InfiniLoreContainers devEnv) {
+    private static WebApplication BuildApp(WebApplicationBuilder builder) {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()
@@ -92,14 +95,14 @@ public static class Program {
         ContentDbFactory.RegisterDatabase(
             builder.Services,
             moduleBuilder.ModuleAssemblies, 
-            options => options.UseSqlServer(devEnv.GetSqlConnectionString())
+            options => options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"])
         );
 
         S3FileDbFactory.RegisterDatabase(
             builder.Services,
-            $"localhost:{devEnv.GetMinioPort()}",
-            devEnv.GetMinioAccessKey(),
-            devEnv.GetMinioSecretKey()
+            builder.Configuration["ConnectionStrings:Minio:Endpoint"],
+            builder.Configuration["ConnectionStrings:Minio:AccessKey"],
+            builder.Configuration["ConnectionStrings:Minio:SecretKey"]
         );
         #endregion
 
@@ -142,7 +145,10 @@ public static class Program {
         });
 
         builder.Services.AddAuthorizationBuilder()
-            .AddJwtProtectedPolicy();
+            .AddPolicy(ApiPolicies.JwtProtected, configurePolicy: policy => {
+                policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                policy.RequireAuthenticatedUser();// Enforce authentication
+            });
 
         builder.Services.AddCascadingAuthenticationState();
         #endregion
@@ -182,7 +188,7 @@ public static class Program {
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
-        builder.Services.AddHttpClient("ServerAPI");
+        builder.Services.AddHttpClient(HttpClientNames.InfiniLoreApi);
 
         builder.Services.AddMemoryCache();
         builder.Services.AddRazorComponents()
@@ -214,47 +220,8 @@ public static class Program {
         app.UseAuthentication();
         app.UseAuthorization();
 
-        #region Authentication Endpoints
-        app.MapGet("/account/login", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
-            AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-                .WithRedirectUri(redirectUri)
-                .Build();
-
-            await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-        });
-
-        app.MapGet("/account/logout", handler: async Task (HttpContext httpContext, string redirectUri = "/") => {
-            AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-                .WithRedirectUri(redirectUri)
-                .Build();
-
-            await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        });
-
-        app.MapGet("/account/token", handler: async (IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) => {
-            if (httpContextAccessor.HttpContext is null || !httpContextAccessor.HttpContext.User.Identity!.IsAuthenticated)
-                return Results.Unauthorized();
-
-            // Retrieve the token using the access_token property (Auth0 integration)
-            string? accessToken = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
-            if (accessToken.IsNullOrEmpty()) return Results.Unauthorized();
-
-            // Token expiration logic (Auth0 provides token expiration info)
-            if (!tokenEncoder.TryGetTokenUtcExpiry(accessToken, out DateTime expiresAt)) return Results.Unauthorized();
-
-            // Refresh is handled by Auth0 middleware
-            if (DateTime.UtcNow >= expiresAt) return Results.Unauthorized();
-
-            return Results.Json(new TokenResponse {
-                Token = accessToken,
-                ExpiresAt = expiresAt.ToString("o")// ISO 8601 format for JS Date parsing
-            });
-        }).RequireAuthorization();
-        #endregion
-
         app.UseFastEndpoints(config => {
-            config.Endpoints.RoutePrefix = "api/v1";
+            config.Endpoints.RoutePrefix = RoutePrefixes.ApiV1;
             config.Errors.UseProblemDetails();
 
             config.Security.PermissionsClaimType = "permissions";

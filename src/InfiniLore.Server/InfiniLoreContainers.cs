@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Serilog;
+using System.Text.RegularExpressions;
 using Testcontainers.Minio;
 using Testcontainers.MsSql;
 using ILogger=Microsoft.Extensions.Logging.ILogger;
@@ -10,25 +11,29 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreContainers : IAsyncDisposable {
+public partial class InfiniLoreContainers : IAsyncDisposable {
     private MsSqlContainer SqlContainer { get; init; } = null!;
     private MinioContainer MinioContainer { get; init; } = null!;
 
     private static readonly ILogger Logger = LoggerFactory
         .Create(builder => builder.AddSerilog(Log.Logger))
         .CreateLogger("DOCKER-DEV-ENV");
-    
+
     private const int SqlPort = 40626;
     private const string SqlPassword = "AnnaIsTrans4Ever!";
 
     private const int MinioPort = 40627;
-    
+
     private const string MinioAccessKey = "minioadmin";
     private const string MinioSecretKey = "minioadmin";
 
     private const string ProjectLabel = "infinilore-dev";
     private const string SqlImage = "mcr.microsoft.com/mssql/server:2022-latest";
     private const string MinioImage = "minio/minio:latest";
+
+
+    [GeneratedRegex("http(?:s?)://(.*)/")]
+    private static partial Regex HttpUrlRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
@@ -98,29 +103,41 @@ public class InfiniLoreContainers : IAsyncDisposable {
         var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
         CancellationToken ct = cts.Token;
         try {
-            Logger.LogInformation("Starting container initialization...");
+            Logger.Information("Starting container initialization...");
 
             // Log before starting each container
-            Logger.LogInformation("Initializing SQL Server container (this may take a while if the image needs to be downloaded)...");
+            Logger.Information("Initializing SQL Server container (this may take a while if the image needs to be downloaded)...");
             Task sqlTask = SqlContainer.StartAsync(ct);
 
-            Logger.LogInformation("Initializing MinIO container (this may take a while if the image needs to be downloaded)...");
+            Logger.Information("Initializing MinIO container (this may take a while if the image needs to be downloaded)...");
             Task minioTask = MinioContainer.StartAsync(ct);
 
             // Start both containers concurrently
             await Task.WhenAll(sqlTask, minioTask);
 
-            Logger.LogInformation("All containers started successfully");
-            Logger.LogInformation("SQL Connection string: {ConnectionString}", SqlContainer.GetConnectionString());
-            Logger.LogInformation("MinIO Connection string: {ConnectionString}", MinioContainer.GetConnectionString());
+            Logger.Information("All containers started successfully");
+            Logger.Information("SQL Connection string: {ConnectionString}", SqlContainer.GetConnectionString());
+            Logger.Information("MinIO Connection string: {ConnectionString}", MinioContainer.GetConnectionString());
 
         }
         catch (Exception ex) {
-            Logger.LogError(ex, "Failed to initialize development environment");
+            Logger.Error(ex, "Failed to initialize development environment");
             await DisposeAsync();
             throw;
         }
     }
+
+    public void AddToConfiguration(IConfigurationBuilder configBuilder) {
+        var configValues = new Dictionary<string, string?> {
+            { "ConnectionStrings:SqlServer", GetSqlConnectionString() },
+            { "ConnectionStrings:Minio:Endpoint", GetMinioConnectionString() },
+            { "ConnectionStrings:Minio:AccessKey", GetMinioAccessKey()  },
+            { "ConnectionStrings:Minio:SecretKey",  GetMinioSecretKey() }
+        };
+
+        configBuilder.AddInMemoryCollection(configValues);
+    }
+
 
     public async ValueTask DisposeAsync() {
         try {
@@ -132,16 +149,15 @@ public class InfiniLoreContainers : IAsyncDisposable {
             GC.SuppressFinalize(this);
         }
         catch (Exception ex) {
-            Logger.LogError(ex, "Error during environment cleanup");
+            Logger.Error(ex, "Error during environment cleanup");
             throw;
         }
     }
 
     // ReSharper disable MemberCanBeMadeStatic.Global
     public string GetSqlConnectionString() => SqlContainer.GetConnectionString();
-    public string GetMinioConnectionString() => MinioContainer.GetConnectionString();
+    public string GetMinioConnectionString() => HttpUrlRegex.Match(MinioContainer.GetConnectionString()).Groups[1].Value ;
     public string GetMinioAccessKey() => MinioAccessKey;
     public string GetMinioSecretKey() => MinioSecretKey;
-    public string GetMinioPort() => MinioPort.ToString();
     // ReSharper enable MemberCanBeMadeStatic.Global
 }

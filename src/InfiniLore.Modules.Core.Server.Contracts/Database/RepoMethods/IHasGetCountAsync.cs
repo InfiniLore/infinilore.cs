@@ -1,12 +1,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Shared;
-
 namespace InfiniLore.Modules.Core.Server.Database.RepoMethods;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasGetCountAsync {
-    ValueTask<Outcome<int>> GetCountAsync(CancellationToken ct = default);
+    ValueTask<RepoOutcome<int>> GetCountAsync(CancellationToken ct = default);
 }

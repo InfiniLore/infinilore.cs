@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Modules.Core.Shared.JwtToken;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
@@ -30,16 +29,16 @@ public class JwtTokenManager(
             // Retrieve token record from IndexedDB
             var tokenRecord = await jsRuntimeHelper.SecureStorage.GetTokenAsync<JsTokenRecord?>(StorageKey, ct);
             if (tokenRecord?.Value is null) {
-                logger.LogInformation("No token found in storage, fetching a new token.");
+                logger.Information("No token found in storage, fetching a new token.");
                 return await RetrieveAndStoreTokenAsync(ct);
             }
 
             // Check if ExpiresAt is available in the storage
             //      If no ExpiresAt, decode the token and extract expiration
             if (!DateTime.TryParse(tokenRecord.ExpiresAt, out DateTime expiresAt)) {
-                logger.LogInformation("No token expiry found in storage, decoding token to extract expiry.");
+                logger.Information("No token expiry found in storage, decoding token to extract expiry.");
                 if (!encoder.TryGetTokenUtcExpiry(tokenRecord.Value, out expiresAt)) {
-                    logger.LogInformation("Failed to extract token expiry from token, fetching a new token.");
+                    logger.Information("Failed to extract token expiry from token, fetching a new token.");
                     return await RetrieveAndStoreTokenAsync(ct);
                 }
 
@@ -48,14 +47,14 @@ public class JwtTokenManager(
 
             // ReSharper disable once InvertIf
             if (DateTime.UtcNow >= expiresAt) {
-                logger.LogInformation("Token expired at {ExpiresAt}, fetching a new token.", expiresAt);
+                logger.Information("Token expired at {ExpiresAt}, fetching a new token.", expiresAt);
                 return await RetrieveAndStoreTokenAsync(ct);
             }
 
             return tokenRecord.Value;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to retrieve token");
+            logger.Error(ex, "Failed to retrieve token");
             return null;
         }
     }
@@ -70,20 +69,20 @@ public class JwtTokenManager(
     private async Task<string?> RetrieveAndStoreTokenAsync(CancellationToken ct = default) {
         try {
             // Fetch a new token from the server if no valid token is found
-            using HttpClient client = clientFactory.CreateClient("ServerAPI");
+            using HttpClient client = clientFactory.CreateClient(HttpClientNames.InfiniLoreApi);
             string responseJson = await client.GetStringAsync("account/token", ct);
             if (JsonSerializer.Deserialize<TokenResponse>(responseJson) is not {} response) {
-                logger.LogError("Failed to deserialize token response: {ResponseJson}", responseJson);
+                logger.Error("Failed to deserialize token response: {ResponseJson}", responseJson);
                 return null;
             }
 
             if (response.Token.IsNullOrEmpty()) {
-                logger.LogError("Failed to retrieve token from response: {ResponseJson}", responseJson);
+                logger.Error("Failed to retrieve token from response: {ResponseJson}", responseJson);
                 return null;
             }
 
             if (!DateTime.TryParse(response.ExpiresAt, out DateTime newExpiresAt)) {
-                logger.LogError("Failed to parse token expiry from response: {ResponseJson}", responseJson);
+                logger.Error("Failed to parse token expiry from response: {ResponseJson}", responseJson);
                 return null;
             }
 
@@ -91,7 +90,7 @@ public class JwtTokenManager(
             return response.Token;
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to retrieve token from secureStorage or server.");
+            logger.Error(ex, "Failed to retrieve token from secureStorage or server.");
             return null;
         }
     }

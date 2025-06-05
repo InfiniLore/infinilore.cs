@@ -32,7 +32,7 @@ public abstract class AccessProtectedCommandHandlerBase<TInput, TOutput>(
         }
 
         catch (Exception e) {
-            logger.LogError(e, "Uncaught error in command handler {Handler}", typeof(TInput).Name);
+            logger.Error(e, "Uncaught error in command handler {Handler}", typeof(TInput).Name);
             return UncaughtErrorOutcome;
         }
     }
@@ -64,8 +64,8 @@ public abstract class AccessProtectedCommandHandler<TCommand, TResult>(
 ) : AccessProtectedCommandHandlerBase<TCommand, Outcome<TResult>>(logger)
     where TCommand : ICommand<Outcome<TResult>>, ICommonRequestData 
 {
-    protected override Outcome<TResult> AccessDeniedOutcome { get; } = Outcome.FromAccessRefused("Access denied");
-    protected override Outcome<TResult> UncaughtErrorOutcome { get; } = Outcome.FromError("Uncaught error");
+    protected override Outcome<TResult> AccessDeniedOutcome { get; } = Outcome<TResult>.FromAccessRefused("Access denied");
+    protected override Outcome<TResult> UncaughtErrorOutcome { get; } = Outcome<TResult>.FromError("Uncaught error");
 }
 
 public abstract class AccessProtectedCommandHandler<TCommand>(

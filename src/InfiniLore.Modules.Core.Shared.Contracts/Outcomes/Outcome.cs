@@ -46,103 +46,115 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
 
     #region Match Overloads
     public TOutput Match<TOutput>(
-        Func<True, TOutput> trueCase,
-        Func<False, TOutput> falseCase,
-        Func<Error<string>, TOutput> errorCase
+        Func<TOutput> trueCase,
+        Func<TOutput> falseCase,
+        Func<string, TOutput> errorCase
     ) => this switch {
-        { IsTrue: true, AsTrue: var value } => trueCase(value),
-        { IsFalse: true, AsFalse: var value } => falseCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => errorCase(value),
+        { IsTrue: true } => trueCase(),
+        { IsFalse: true } => falseCase(),
+        { IsAccessRefused: true, AsAccessRefused: var value} => errorCase(value.Reason),
+        { IsError: true, AsError: var value } => errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a value")
     };
 
     public async Task<TOutput> MatchAsync<TOutput>(
-        Func<True, Task<TOutput>> trueCase,
-        Func<False, Task<TOutput>> falseCase,
-        Func<Error<string>, Task<TOutput>> errorCase
+        Func<Task<TOutput>> trueCase,
+        Func<Task<TOutput>> falseCase,
+        Func<string, Task<TOutput>> errorCase
     ) => this switch {
-        { IsTrue: true, AsTrue: var value } => await trueCase(value),
-        { IsFalse: true, AsFalse: var value } => await falseCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => await errorCase(value),
+        { IsTrue: true } => await trueCase(),
+        { IsFalse: true } => await falseCase(),
+        { IsAccessRefused: true, AsAccessRefused: var value} => await errorCase(value.Reason),
+        { IsError: true, AsError: var value } => await errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a value")
     };
     
     public TOutput Match<TOutput>(
         Func<bool, TOutput> boolCase,
-        Func<Error<string>, TOutput> errorCase
+        Func<string, TOutput> errorCase
     ) => this switch {
-        { IsTrue: true, AsTrue: var value } => boolCase(value),
-        { IsFalse: true, AsFalse: var value } => boolCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => errorCase(value),
+        { IsTrue: true } => boolCase(true),
+        { IsFalse: true } => boolCase(false),
+        { IsAccessRefused: true, AsAccessRefused: var value} => errorCase(value.Reason),
+        { IsError: true, AsError: var value } => errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a value")
     };
 
     public async Task<TOutput> MatchAsync<TOutput>(
         Func<bool, Task<TOutput>> boolCase,
-        Func<Error<string>, Task<TOutput>> errorCase
+        Func<string, Task<TOutput>> errorCase
     ) => this switch {
-        { IsTrue: true, AsTrue: var value } => await boolCase(value),
-        { IsFalse: true, AsFalse: var value } => await boolCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => await errorCase(value),
+        { IsTrue: true } => await boolCase(true),
+        { IsFalse: true } => await boolCase(false),
+        { IsAccessRefused: true, AsAccessRefused: var value} => await errorCase(value.Reason),
+        { IsError: true, AsError: var value } => await errorCase(value.Value),
+        _ => throw new ArgumentException("Union does not contain a value")
+    };
+
+    public async Task<TOutput> MatchAsync<TOutput>(
+        Func<bool, CancellationToken, Task<TOutput>> boolCase,
+        Func<string, CancellationToken, Task<TOutput>> errorCase,
+        CancellationToken ct
+    ) => this switch {
+        { IsTrue: true } => await boolCase(true, ct),
+        { IsFalse: true } => await boolCase(false, ct),
+        { IsAccessRefused: true, AsAccessRefused: var value} => await errorCase(value.Reason, ct),
+        { IsError: true, AsError: var value } => await errorCase(value.Value, ct),
         _ => throw new ArgumentException("Union does not contain a value")
     };
     #endregion
     
     #region Switch Overloads
     public void Switch(
-        Action<bool> boolCase,
-        Action<AccessRefused> accessRefusedCase,
-        Action<Error<string>> errorCase
+        Action trueCase,
+        Action falseCase,
+        Action<string> errorCase
     ){
         switch (this) {
-            case {IsTrue: true, AsTrue: var value} : boolCase(value); return;
-            case {IsFalse: true, AsFalse: var value} : boolCase(value); return;
-            case {IsAccessRefused: true, AsAccessRefused: var value} : accessRefusedCase(value); return;
-            case {IsError: true, AsError: var value} : errorCase(value); return;
-        }
-        throw new ArgumentException("Union does not contain a value");
-    }
-
-    public async Task SwitchAsync(
-        Func<bool, Task> boolCase,
-        Func<AccessRefused, Task> accessRefusedCase,
-        Func<Error<string>, Task> errorCase
-    ){
-        switch (this) {
-            case {IsTrue: true, AsTrue: var value} : await boolCase(value); return;
-            case {IsFalse: true, AsFalse: var value} : await boolCase(value); return;
-            case {IsAccessRefused: true, AsAccessRefused: var value} : await accessRefusedCase(value); return;
-            case {IsError: true, AsError: var value} : await errorCase(value); return;
+            case {IsTrue: true} : trueCase(); return;
+            case {IsFalse: true} : falseCase(); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value} : errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : errorCase(value.Value); return;
         }
         throw new ArgumentException("Union does not contain a value");
     }
     
     public void Switch(
         Action<bool> boolCase,
-        Action<Error<string>> errorCase
+        Action<string> errorCase
     ){
         switch (this) {
             case {IsTrue: true, AsTrue: var value} : boolCase(value); return;
             case {IsFalse: true, AsFalse: var value} : boolCase(value); return;
-            case {IsAccessRefused: true } : throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union.");
-            case {IsError: true, AsError: var value} : errorCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : errorCase(value.Value); return;
         }
         throw new ArgumentException("Union does not contain a value");
     }
 
     public async Task SwitchAsync(
         Func<bool, Task> boolCase,
-        Func<Error<string>, Task> errorCase
+        Func<string, Task> errorCase
     ){
         switch (this) {
             case {IsTrue: true, AsTrue: var value} : await boolCase(value); return;
             case {IsFalse: true, AsFalse: var value} : await boolCase(value); return;
-            case {IsAccessRefused: true } : throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union.");
-            case {IsError: true, AsError: var value} : await errorCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : await errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : await errorCase(value.Value); return;
+        }
+        throw new ArgumentException("Union does not contain a value");
+    }
+    
+    public async Task SwitchAsync(
+        Func<bool, CancellationToken, Task> boolCase,
+        Func<string, CancellationToken, Task> errorCase,
+        CancellationToken ct
+    ){
+        switch (this) {
+            case {IsTrue: true, AsTrue: var value} : await boolCase(value, ct); return;
+            case {IsFalse: true, AsFalse: var value} : await boolCase(value, ct); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : await errorCase(value.Reason, ct); return;
+            case {IsError: true, AsError: var value} : await errorCase(value.Value, ct); return;
         }
         throw new ArgumentException("Union does not contain a value");
     }
@@ -152,15 +164,6 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
 [UnionAliases("Data", "AccessRefused", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
 public partial record struct Outcome<T>() : IUnion<T, AccessRefused, Error<string>> {
-    
-    public static implicit operator Outcome<T>(Outcome outcomeWithError) {
-        return outcomeWithError.Match(
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
-            _ => throw new InvalidOperationException("Cannot convert a response with a boolean response to a response with data."),
-            FromAccessRefused,
-            FromError
-        );
-    }
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -176,21 +179,32 @@ public partial record struct Outcome<T>() : IUnion<T, AccessRefused, Error<strin
     #region Match Overloads
     public TOutput Match<TOutput>(
         Func<T, TOutput> dataCase,
-        Func<Error<string>, TOutput> errorCase
+        Func<string, TOutput> errorCase
     ) => this switch {
         { IsData: true, AsData: var value } => dataCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => errorCase(value),
+        { IsAccessRefused: true, AsAccessRefused: var value } => errorCase(value.Reason),
+        { IsError: true, AsError: var value } => errorCase(value.Value),
         _ => throw new ArgumentException("Union does not contain a valid value")
     };
 
     public async Task<TOutput> MatchAsync<TOutput>(
         Func<T, Task<TOutput>> dataCase,
-        Func<Error<string>, Task<TOutput>> errorCase
+        Func<string, Task<TOutput>> errorCase
     ) => this switch {
         { IsData: true, AsData: var value } => await dataCase(value),
-        { IsAccessRefused: true } => throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union."),
-        { IsError: true, AsError: var value } => await errorCase(value),
+        { IsAccessRefused: true, AsAccessRefused: var value } => await errorCase(value.Reason),
+        { IsError: true, AsError: var value } => await errorCase(value.Value),
+        _ => throw new ArgumentException("Union does not contain a valid value")
+    };
+
+    public async Task<TOutput> MatchAsync<TOutput>(
+        Func<T, CancellationToken, Task<TOutput>> dataCase,
+        Func<string, CancellationToken, Task<TOutput>> errorCase,
+        CancellationToken ct
+    ) => this switch {
+        { IsData: true, AsData: var value } => await dataCase(value, ct),
+        { IsAccessRefused: true, AsAccessRefused: var value } => await errorCase(value.Reason, ct),
+        { IsError: true, AsError: var value } => await errorCase(value.Value, ct),
         _ => throw new ArgumentException("Union does not contain a valid value")
     };
     #endregion
@@ -198,24 +212,37 @@ public partial record struct Outcome<T>() : IUnion<T, AccessRefused, Error<strin
     #region Switch Overloads
     public void Switch(
         Action<T> dataCase,
-        Action<Error<string>> errorCase
+        Action<string> errorCase
     ){
         switch (this) {
             case {IsData: true, AsData: var value} : dataCase(value); return;
-            case {IsAccessRefused: true } : throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union.");
-            case {IsError: true, AsError: var value} : errorCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : errorCase(value.Value); return;
         }
         throw new ArgumentException("Union does not contain a value");
     }
 
     public async Task SwitchAsync(
         Func<T, Task> dataCase,
-        Func<Error<string>, Task> errorCase
+        Func<string, Task> errorCase
     ){
         switch (this) {
             case {IsData: true, AsData: var value} : await dataCase(value); return;
-            case {IsAccessRefused: true } : throw new InvalidOperationException("AccessRefused is not design to be a valid response for this union.");
-            case {IsError: true, AsError: var value} : await errorCase(value); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : await  errorCase(value.Reason); return;
+            case {IsError: true, AsError: var value} : await errorCase(value.Value); return;
+        }
+        throw new ArgumentException("Union does not contain a value");
+    }
+
+    public async Task SwitchAsync(
+        Func<T, CancellationToken, Task> dataCase,
+        Func<string, CancellationToken, Task> errorCase,
+        CancellationToken ct
+    ){
+        switch (this) {
+            case {IsData: true, AsData: var value} : await dataCase(value, ct); return;
+            case {IsAccessRefused: true, AsAccessRefused: var value } : await  errorCase(value.Reason, ct); return;
+            case {IsError: true, AsError: var value} : await errorCase(value.Value, ct); return;
         }
         throw new ArgumentException("Union does not contain a value");
     }

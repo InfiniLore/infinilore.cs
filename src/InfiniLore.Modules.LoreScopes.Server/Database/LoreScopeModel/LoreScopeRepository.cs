@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,14 +25,14 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public ValueTask<Outcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) 
+    public ValueTask<RepoOutcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) 
         => CommonRepoMethods.IsNameTakenAsync(GetCachedDbSet<LoreScopeModel>(), name, ownerId, notIncludedId, ct);
     
-    public ValueTask<Outcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default)
+    public ValueTask<RepoOutcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default)
         => CommonRepoMethods.IsNameNotTakenAsync(GetCachedDbSet<LoreScopeModel>(),name, ownerId, notIncludedId, ct);
     
-    public async ValueTask<Outcome> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default) {
-        if (resourceId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return Outcome.FromError(RepositoryFailures.ModelFailedValidation);
+    public async ValueTask<RepoOutcome> HasAccessPermissionAsync(Guid resourceId, Guid userId, string permission, CancellationToken ct = default) {
+        if (resourceId == Guid.Empty || userId == Guid.Empty || permission.IsNullOrEmpty()) return RepoOutcome.FromError(RepositoryFailures.ModelFailedValidation);
         
         DbSet<LoreScopeModel> dbSet = GetCachedDbSet<LoreScopeModel>();
         IQueryable<LoreScopeModel> query = dbSet
@@ -47,7 +46,6 @@ public class LoreScopeRepository : OwnedModelRepository<InfiniLoreUserModel, Lor
             );
         
         bool exists = await query.AnyAsync(ct);
-
-        return Outcome.FromState(exists);
+        return RepoOutcome.FromState(exists);
     }
 }

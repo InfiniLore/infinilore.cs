@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -6,10 +6,10 @@
         <Nullable>enable</Nullable>
         <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
         <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
-    </PropertyGroup>
+  </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging"  />
+        <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
         <PackageReference Include="InfiniLore.InfiniBlazor" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Core" />
@@ -22,7 +22,7 @@
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.Extensions.Logging" />
         <PackageReference Include="Serilog.Sinks.BrowserConsole" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators" >
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

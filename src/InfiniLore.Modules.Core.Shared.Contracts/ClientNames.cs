@@ -1,10 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace DevTools.InfiniLore.Commands.DownloadRepo;
+namespace InfiniLore.Modules.Core.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record struct ProjectData(string Name, string Version, string? GithubLink = null) {
-    public static ProjectData operator +(ProjectData a, string? github) => a with { GithubLink = github };
+public static class HttpClientNames {
+    public const string InfiniLoreApi = "InfiniLoreApi";
 }

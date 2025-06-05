@@ -6,7 +6,6 @@ using InfiniLore.Credentials.Auth0.Utility;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Server.Messaging.Notifications;
-using InfiniLore.Modules.Core.Shared;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
@@ -27,8 +26,8 @@ public class UploadUsernameToAuth0Handler(
         await using IReadonlyUnitOfWork unitOfWork = unitOfWorkFactory.Create();
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome<InfiniLoreUserModel> userResult = await userRepo.GetByIdAsync(userId, ct: ct);
-        if (!userResult.TryGetAsData(out InfiniLoreUserModel? user)) {
+        RepoOutcome<InfiniLoreUserModel> userOutcome = await userRepo.GetByIdAsync(userId, ct: ct);
+        if (!userOutcome.TryGetAsData(out InfiniLoreUserModel? user)) {
             logger.Warning("Could not find user with id {UserId} in database.", userId);
             return;
         }

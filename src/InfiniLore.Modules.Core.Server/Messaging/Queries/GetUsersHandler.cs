@@ -27,7 +27,7 @@ public class GetUsersHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        PaginatedOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
+        PaginatedRepoOutcome<InfiniLoreUserModel> result = await userRepository.GetAllAsync(command.Pagination,command.QueryConfig, ct: ct);
         return result.Match(
             dataCase: Outcome.FromData,
             errorCase: error => {

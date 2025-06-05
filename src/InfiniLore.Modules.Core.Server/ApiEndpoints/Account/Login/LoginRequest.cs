@@ -1,15 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.Database;
+using FastEndpoints;
+using JetBrains.Annotations;
 
-namespace InfiniLore.Server.Modules.LsMarkdownFiles.Database;
-
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IHasGetByNameAndOwnerAsync<T> where T : BasicModel, IHasName, IHasOwnerId {
-    ValueTask<Outcome<T>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = default, CancellationToken ct = default);
+[UsedImplicitly]
+public record LoginRequest {
+    [BindFrom("redirectUri")] public string RedirectUri { get; [UsedImplicitly] init; } = "/";
 }

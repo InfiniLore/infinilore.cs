@@ -35,15 +35,15 @@ public class InteractiveApiWasmUsers(
             WithUserItemRequestBuilder requestBuilder = client.Api.V1.Account.Profile[userId];       
             KiotaUserUserProfileResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome<IInfiniLoreUserModel>.FromError(interactiveApi.DefaultApiError);
 
             IInfiniLoreUserModel model =  WasmInfiniLoreUserModel.FromKiotaModel(result);
             return Outcome.FromData(model);
         }
 
         catch (Exception e) {
-            logger.LogError(e, "Error getting user");
-            return Outcome.FromError(interactiveApi.DefaultApiError);
+            logger.Error(e, "Error getting user");
+            return Outcome<IInfiniLoreUserModel>.FromError(interactiveApi.DefaultApiError);
         }
     }
 
@@ -66,7 +66,7 @@ public class InteractiveApiWasmUsers(
             return Outcome.FromState(true);
         }
         catch (Exception e) {
-            logger.LogError(e, "Error updating profile image");
+            logger.Error(e, "Error updating profile image");
             return Outcome.FromError(interactiveApi.DefaultApiError);       
         }
     }

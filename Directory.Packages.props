@@ -4,8 +4,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AterraEngine.Unions" Version="5.0.0" />
-    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.0.0">
+    <PackageVersion Include="AterraEngine.Unions" Version="5.3.0" />
+    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
@@ -32,26 +32,27 @@
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.68.0" />
     <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.11.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
-    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.25.1" />
-    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.25.1" />
+    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.26.0" />
+    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.26.0" />
+    <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.126.1" />
     <PackageVersion Include="FastEndpoints" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="6.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
-    <PackageVersion Include="InfiniLore.Credentials" Version="4.3.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.3.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.3.0" />
-    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.3.0">
+    <PackageVersion Include="InfiniLore.Credentials" Version="4.4.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.4.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Auth0.Contracts" Version="4.4.0" />
+    <PackageVersion Include="InfiniLore.Credentials.Generators" Version="4.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Core" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.43" />
-    <PackageVersion Include="InfiniLore.Lucide" Version="0.26.511" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Contracts" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Core" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Theming" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Toasting" Version="0.1.0-preview.44" />
+    <PackageVersion Include="InfiniLore.Lucide" Version="0.26.513" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
@@ -86,8 +87,8 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.5" />
     <PackageVersion Include="Microsoft.JSInterop" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.17.3" />
-    <PackageVersion Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.17.3" />
+    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.17.4" />
+    <PackageVersion Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.17.4" />
     <PackageVersion Include="Minio" Version="6.0.4" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="NuGet.Protocol" Version="6.14.0" />
@@ -98,8 +99,8 @@
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Testcontainers.Minio" Version="4.4.0" />
-    <PackageVersion Include="TUnit" Version="0.24.0" />
-    <PackageVersion Include="TUnit.Core" Version="0.24.0" />
+    <PackageVersion Include="TUnit" Version="0.25.0" />
+    <PackageVersion Include="TUnit.Core" Version="0.25.0" />
     <PackageVersion Include="Testcontainers" Version="4.4.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.4.0" />
     <PackageVersion Include="TextCopy" Version="6.2.1" />

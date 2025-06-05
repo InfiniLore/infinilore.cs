@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using Microsoft.EntityFrameworkCore;
@@ -22,13 +21,13 @@ public class LsMarkdownFileRepository : OwnedModelRepository<LoreScopeModel, LsM
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public ValueTask<Outcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) 
+    public ValueTask<RepoOutcome> IsNameTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default) 
         => CommonRepoMethods.IsNameTakenAsync(GetCachedDbSet<LsMarkdownFileModel>(), name, ownerId, notIncludedId, ct);
     
-    public ValueTask<Outcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default)
+    public ValueTask<RepoOutcome> IsNameNotTakenAsync(string name, Guid ownerId, Guid notIncludedId = default, CancellationToken ct = default)
         => CommonRepoMethods.IsNameNotTakenAsync(GetCachedDbSet<LsMarkdownFileModel>(),name, ownerId, notIncludedId, ct);
 
-    public async ValueTask<Outcome<LsMarkdownFileModel>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<LsMarkdownFileModel>> GetByNameAndOwnerAsync(string name, Guid ownerId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<LsMarkdownFileModel> dbSet = GetCachedDbSet<LsMarkdownFileModel>();
 
@@ -39,7 +38,7 @@ public class LsMarkdownFileRepository : OwnedModelRepository<LoreScopeModel, LsM
 
         // Retrieve
         return result is not null 
-            ? Outcome.FromData(result) 
-            : Outcome.FromError(RepositoryFailures.ModelNotFound);
+            ? RepoOutcome.FromData(result) 
+            : RepoOutcome.FromError(RepositoryFailures.ModelNotFound);
     }
 }

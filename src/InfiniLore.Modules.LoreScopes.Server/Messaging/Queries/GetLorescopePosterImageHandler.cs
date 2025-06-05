@@ -25,13 +25,13 @@ public class GetLorescopePosterImageHandler(
         await using IUnitOfWork unitOfWork = readonlyUnitOfWorkFactory.Create();
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        Outcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
+        RepoOutcome<LoreScopeModel> foundModelResult = await loreScopeRepo.GetByIdAsync(command.LorescopeId, ct: ct);
         if (!foundModelResult.TryGetAsData(out LoreScopeModel? foundModel)) {
-            return Outcome.FromError($"Failed to find lorescope with id {command.LorescopeId}");
+            return Outcome<string>.FromError($"Failed to find lorescope with id {command.LorescopeId}");
         }
 
         if (foundModel.PosterImageMetaData == null || foundModel.PosterImageMetaDataId == null) {
-            return Outcome.FromError("No poster image found for this lorescope");
+            return Outcome<string>.FromError("No poster image found for this lorescope");
         }
 
         Outcome<string> result = await s3FileStorage.GetFileUrlAsync(
@@ -41,7 +41,7 @@ public class GetLorescopePosterImageHandler(
         );
         return result.Match(
             Outcome.FromData,
-            _ => Outcome.FromError("Failed to get poster image url")
+            _ => Outcome<string>.FromError("Failed to get poster image url")
         );
     }
 }

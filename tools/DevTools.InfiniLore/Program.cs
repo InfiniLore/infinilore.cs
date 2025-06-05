@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 using CodeOfChaos.CliArgsParser.Library;
+using DevTools.InfiniLore.Commands.SetServerSecrets;
 using DevTools.InfiniLore.Library;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ public static class Program {
             .AddFromAssembly(typeof(Program).Assembly)
             .WithServiceProvider(provider)
             .Build();
+        
 
         // We are doing this here because else the launchSettings.json file becomes a humongous issue to deal with.
         //      Sometimes CLI params are not the answer.    
@@ -34,6 +36,16 @@ public static class Program {
             "Old.InfiniLore.Contracts"
         );
 
+        if (args.FirstOrDefault() == SetServerSecretsCommand.CommandName) {
+            Console.WriteLine($"The Command `{SetServerSecretsCommand.CommandName}` requires manual input:");
+            Console.WriteLine("Please provide the received command:");
+            string? input = Console.ReadLine();
+            Console.Clear();
+            
+            await parser.ExecuteAsync($"{SetServerSecretsCommand.CommandName} {input}");
+            return;
+        }
+        
         string oneLineArgs = ArgsInputHelper.ToOneLine(args).Replace("%PROJECTS%", projects);
         await parser.ExecuteAsync(oneLineArgs);
     }

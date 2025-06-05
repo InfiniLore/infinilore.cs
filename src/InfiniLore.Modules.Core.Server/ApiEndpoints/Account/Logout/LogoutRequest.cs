@@ -1,15 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FastEndpoints;
 using JetBrains.Annotations;
 
-namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
+namespace InfiniLore.Modules.Core.Server.ApiEndpoints.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record PaginatedResponse<T> {
-    public T[] Items { [UsedImplicitly] get; set; } = Array.Empty<T>();
-    public int TotalCount { [UsedImplicitly] get; init; }
-    public int CurrentPage { [UsedImplicitly] get; init; }
-    public int TotalPages { [UsedImplicitly] get; init; }
+[UsedImplicitly]
+public record LogoutRequest {
+    [BindFrom("redirectUri")] public string RedirectUri { get; [UsedImplicitly] init; } = "/";
 }

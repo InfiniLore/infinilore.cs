@@ -5,7 +5,6 @@ using CodeOfChaos.Extensions;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.ClaimsHelper;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.DependencyInjection;
@@ -92,7 +91,7 @@ public class OnTokenValidatedHandler(
     }
 
     private void RedirectToLogout(TokenValidatedContext context, ICollection<string> failure) {
-        _logger.LogError("Error checking if user exists : {@failure}", failure);
+        _logger.Error("Error checking if user exists : {@failure}", failure);
         context.Response.Redirect("/account/logout?returnUrl=/");
         context.HandleResponse();
     }

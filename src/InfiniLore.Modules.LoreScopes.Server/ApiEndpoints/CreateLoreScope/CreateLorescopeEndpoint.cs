@@ -1,36 +1,21 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
-using ProblemDetails=FastEndpoints.ProblemDetails;
 
 namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok<Guid>,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class CreateLorescopeEndpoint(
     ILogger<CreateLorescopeEndpoint> logger, 
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<CreateLorescopeEndpointRequest, Response, LoreScopeMapper> {
+) : InfiniLoreEndpoint<CreateLorescopeEndpointRequest, Guid, LoreScopeMapper> {
 
     public override void Configure() {
         Post("/data-user/{UserId:guid}/lorescope");
@@ -39,18 +24,16 @@ public class CreateLorescopeEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(CreateLorescopeEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(CreateLorescopeEndpointRequest req, CancellationToken ct) {
         Outcome<Guid> outcome = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
-        return outcome.Match<Response>(
-            id => TypedResults.Ok(id),
+        outcome.Switch(
+            id => Response = TypedResults.Ok(id),
             error => {
                 logger.Error("Failed to create lorescope for user with id {id} because '{reason}'", req.UserId, error);
-                return TypedResults.BadRequest();
+                Response = TypedResults.BadRequest();
             }
-        );
+        ); 
     }
 }

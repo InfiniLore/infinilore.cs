@@ -42,7 +42,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
             await ExecuteDotNetUserSecretsCommandAsync($"set \"{AccessTokenKey}\" \"{tokenValue}\"");
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Failed to set the access token in user-secrets.");
+            logger.Error(ex, "Failed to set the access token in user-secrets.");
         }
     }
 
@@ -62,7 +62,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
 
         using Process? process = Process.Start(processStartInfo);
         if (process is null) {
-            logger.LogError("Failed to start process to run dotnet user-secrets.");
+            logger.Error("Failed to start process to run dotnet user-secrets.");
             return;
         }
 
@@ -70,7 +70,7 @@ public class NetUserSecretAuth0AccessTokenStore(IOptions<Auth0Options> options, 
 
         if (process.ExitCode != 0) {
             string error = await process.StandardError.ReadToEndAsync();
-            logger.LogError(error);
+            logger.Error(error);
         }
     }
 }

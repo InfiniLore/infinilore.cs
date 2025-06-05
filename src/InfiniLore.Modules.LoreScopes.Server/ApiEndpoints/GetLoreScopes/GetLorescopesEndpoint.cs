@@ -1,14 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -17,21 +15,10 @@ namespace InfiniLore.Modules.LoreScopes.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok<LoreScopesResponse>,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class GetLoreScopesEndpoint(
     ILogger<GetLoreScopesEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<GetLoreScopesEndpointRequest, Response, LoreScopesMapper> {
+) : InfiniLoreEndpoint<GetLoreScopesEndpointRequest, LoreScopesResponse, LoreScopesMapper> {
     public override void Configure() {
         Get("/data-user/{UserId:guid}/lorescope");
         Permissions(PermissionsStoreConstants.LorescopeRead);
@@ -39,11 +26,9 @@ public class GetLoreScopesEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(GetLoreScopesEndpointRequest req, CancellationToken ct) {
         PaginatedOutcome<LoreScopeModel> outcome = await messageBroker.GetLoreScopesByOwnerAsync(
             req.UserId,
             QueryConfig.From(req),
@@ -51,17 +36,18 @@ public class GetLoreScopesEndpoint(
             ct:ct
         );
 
-        // Verify Response
-        if (!outcome.TryGetAsData(out PaginatedData<LoreScopeModel>? paginatedOutcome)) {
-            logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, outcome.AsError.Value);
-            return TypedResults.NotFound();
-        }
+        await outcome.SwitchAsync(
+            OnFoundDataAsync,
+            (error, token) => OnErrorAsync(error, req, token),
+            ct
+        );
+    }
+    
+    private async Task OnFoundDataAsync(PaginatedData<LoreScopeModel> data, CancellationToken ct) {
+        logger.Information("Successfully retrieved LoreScopes for userId {id}", data.Items.FirstOrDefault()?.OwnerId);
 
-        logger.Information("Successfully retrieved LoreScopes for userId {id}", req.UserId);
-
-        // Return
         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-        LoreScopesResponse response = Map.FromEntity(paginatedOutcome);
+        LoreScopesResponse response = Map.FromEntity(data);
 
         List<Task<LoreScopeResponse>> updateTasks = response.Items.Select(async item => {
             Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(item.Id, ct: ct);
@@ -73,7 +59,12 @@ public class GetLoreScopesEndpoint(
 
         // Wait for all tasks to complete
         response.Items = await Task.WhenAll(updateTasks);
-        
-        return TypedResults.Ok(response);
+        Response = TypedResults.Ok(response);
+    }
+
+    private Task OnErrorAsync(string error, GetLoreScopesEndpointRequest req, CancellationToken _) {
+        logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, error);
+        Response = TypedResults.NotFound();
+        return Task.CompletedTask;
     }
 }

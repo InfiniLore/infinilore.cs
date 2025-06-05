@@ -5,7 +5,6 @@ using CodeOfChaos.Types.UnitOfWork;
 using DataSources.InfiniLore.Server;
 using Fakers.InfiniLore.Server;
 using InfiniLore.Modules.Core.Server.Database;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +44,7 @@ public class KeyValueEntryRepositoryTest(ServiceProviderDataSource serviceProvid
         string? value = model.Value;
 
         // Act
-        Outcome result = await repo.TryAddOrUpdateAsync(model);
+        RepoOutcome result = await repo.TryAddOrUpdateAsync(model);
         dbContext.ChangeTracker.Clear();
         
         DbSet<KeyValueEntryModel> keyValueEntries = dbContext.Set<KeyValueEntryModel>();

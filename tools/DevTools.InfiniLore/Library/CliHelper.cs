@@ -13,7 +13,7 @@ namespace DevTools.InfiniLore.Library;
 [InjectableSingleton<CliHelper>]
 public class CliHelper(ILogger<CliHelper> logger) {
     public async Task ExecuteCommandAsync(string fileName, string arguments, string? workingDirectory = null, CancellationToken ct = default) {
-        logger.LogInformation("Running command: {cmd}", $"{fileName} {arguments}");
+        logger.Information("Running command: {cmd}", $"{fileName} {arguments}");
         
         using var process = new Process();
         process.StartInfo = new ProcessStartInfo(fileName, arguments) {
@@ -34,15 +34,15 @@ public class CliHelper(ILogger<CliHelper> logger) {
                 outputTcs.TrySetResult(true);
             } 
             else if (e.Data.StartsWith("warn: ")) {
-                logger.LogWarning(e.Data[6..].Trim());
+                logger.Warning(e.Data[6..].Trim());
             }
             else if (e.Data.StartsWith("hint: ")) {
-                logger.LogDebug(e.Data[6..].Trim());
+                logger.Debug(e.Data[6..].Trim());
             }
             else if (e.Data.StartsWith("Example: ")) {
-                logger.LogDebug(e.Data[9..].Trim());
+                logger.Debug(e.Data[9..].Trim());
             }else {
-                logger.LogDebug(e.Data);
+                logger.Debug(e.Data);
             }
         };
 
@@ -50,13 +50,13 @@ public class CliHelper(ILogger<CliHelper> logger) {
             if (e.Data == null) {
                 errorTcs.TrySetResult(true);
             } else {
-                logger.LogError(e.Data);
+                logger.Error(e.Data);
             }
         };
         #pragma warning restore CA2254
 
         if (!process.Start()) {
-            logger.LogError("Failed to start process to run {cmd}", $"{fileName} {arguments}");
+            logger.Error("Failed to start process to run {cmd}", $"{fileName} {arguments}");
             throw new Exception($"Failed to start process to run {fileName} {arguments}");
         }
 

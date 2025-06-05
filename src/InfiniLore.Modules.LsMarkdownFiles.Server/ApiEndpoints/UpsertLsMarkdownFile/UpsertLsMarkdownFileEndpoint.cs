@@ -1,35 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using PermissionsStore=InfiniLore.Modules.Core.Shared.PermissionsStore;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-using Response=Results<
-    Ok,
-    // Default Included Results
-    NotFound,
-    UnauthorizedHttpResult,
-    BadRequest,
-    ForbidHttpResult,
-    ProblemDetails
->;
-
 public class UpsertLsMarkdownFileEndpoint(
-    ILogger<UpsertLsMarkdownFileEndpoint> logger,
-    IJwtTokenHelper jwtTokenHelper,
     [FromKeyedServices(IMessageBroker.FromJwtToken)] IMessageBroker messageBroker
-) : Endpoint<UpsertLsMarkdownFileEndpointRequest, Response> {
+) : InfiniLoreEndpointWithEmptyResponse<UpsertLsMarkdownFileEndpointRequest> {
 
     public override void Configure() {
         Post("/data-lorescope/{LoreScopeId:guid}/markdown-file");
@@ -39,18 +23,16 @@ public class UpsertLsMarkdownFileEndpoint(
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Execute Methods
+    // Handler
     // -----------------------------------------------------------------------------------------------------------------
-    public override async Task<Response> ExecuteAsync(UpsertLsMarkdownFileEndpointRequest req, CancellationToken ct) {
-        if (jwtTokenHelper.IsNotAuthenticated) return TypedResults.Unauthorized();
-
+    public override async Task HandleAsync(UpsertLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         if (req.File.ContentType != "text/markdown") {
-            AddError("Invalid file type.");
-            return new ProblemDetails(ValidationFailures);       
+            ThrowError("Invalid file type.");
         }
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
+        
         Outcome outcome = await messageBroker.UpsertLsMarkdownFileAsync(
             req.LoreScopeId, 
             file.FileName,
@@ -59,15 +41,13 @@ public class UpsertLsMarkdownFileEndpoint(
             ct:ct
         );
 
-        // Verify Response
-        if (!outcome.TryGetAsState(out bool successful)) {
-            logger.Warning("FAILED, {@state}", outcome.AsError);
-            AddError("Failed to upsert markdown file.");
-            return new ProblemDetails(ValidationFailures);
-        }
-
-        // Return
-        if (successful is false) return TypedResults.BadRequest();
-        return TypedResults.Ok();
+        outcome.Switch(
+            () => Response = TypedResults.Ok(),
+            () => Response = TypedResults.NotFound(),
+            error => {
+                AddError(error);
+                ThrowError("Failed to upsert markdown file");
+            }
+        );
     }
 }

@@ -11,7 +11,7 @@ public interface IHasGetByOwnerAsync<TOwner, TInterface>
     where TInterface : OwnedModel<TOwner>
     where TOwner : BasicModel 
 {
-    ValueTask<Outcome<TInterface[]>> GetByOwnerAsync(Guid owner, QueryConfig config = default, CancellationToken ct = default);
+    ValueTask<RepoOutcome<TInterface[]>> GetByOwnerAsync(Guid owner, QueryConfig config = default, CancellationToken ct = default);
     
-    ValueTask<PaginatedOutcome<TInterface>> GetByOwnerAsync(Guid owner, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default);
+    ValueTask<PaginatedRepoOutcome<TInterface>> GetByOwnerAsync(Guid owner, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default);
 }

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Auth0.AspNetCore.Authentication" />
         <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" />
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
         <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />

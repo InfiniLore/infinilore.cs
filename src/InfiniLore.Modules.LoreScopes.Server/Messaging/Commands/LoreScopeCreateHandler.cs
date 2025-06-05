@@ -30,10 +30,10 @@ public class LoreScopeCreateHandler(
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome loreScopeNameTakenResult = await loreScopeRepo.IsNameTakenAsync(command.LoreScopeName, command.OwnerId, ct:ct);
-        Outcome userIdExistsResult = await userRepo.IsIdTakenAsync(command.OwnerId, ct);
-        if (loreScopeNameTakenResult.TryGetAsState(out bool isTaken) && isTaken) return Outcome<Guid>.FromError("LoreScope name already taken for this user");
-        if (userIdExistsResult.IsError) return Outcome<Guid>.FromError("Owner id does not exist");
+        RepoOutcome loreScopeNameTakenOutcome = await loreScopeRepo.IsNameTakenAsync(command.LoreScopeName, command.OwnerId, ct: ct);
+        RepoOutcome userIdExistsOutcome = await userRepo.IsIdTakenAsync(command.OwnerId, ct);
+        if (loreScopeNameTakenOutcome.TryGetAsState(out bool isTaken) && isTaken) return Outcome<Guid>.FromError("LoreScope name already taken for this user");
+        if (userIdExistsOutcome.IsError) return Outcome<Guid>.FromError("Owner id does not exist");
 
         // Create a new lorescope based on the request
         var id = Guid.CreateVersion7();
@@ -52,12 +52,12 @@ public class LoreScopeCreateHandler(
         }
 
         // Save to Db
-        Outcome result = await loreScopeRepo.AddAsync(loreScope, ct);
+        RepoOutcome result = await loreScopeRepo.AddAsync(loreScope, ct);
         if (result.IsError) return Outcome<Guid>.FromError("Failed to save user to database");
 
 
         await messageBroker.InvokeNewLoreScopeCreatedAsync(loreScope.Id, Mode.WaitForAll, ct);
-        logger.LogInformation("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
+        logger.Information("LoreScope created: {LoreScopeId}, notification sent", loreScope.Id);
         return loreScope.Id;
     }
 }

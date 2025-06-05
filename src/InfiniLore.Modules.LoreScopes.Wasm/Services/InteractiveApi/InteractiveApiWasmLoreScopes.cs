@@ -49,12 +49,12 @@ public class InteractiveApiWasmLoreScopes(
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            if (result is null) return Outcome<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
             return Outcome.FromData(WasmLoreScopeModel.FromKiotaModel(result));
         }
         catch (Exception e) {
             logger.Error(e, "Failed to get LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
-            return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
         }
     }
 

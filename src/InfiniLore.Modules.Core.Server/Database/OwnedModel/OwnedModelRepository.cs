@@ -19,7 +19,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Outcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 
@@ -29,10 +29,10 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
 
         // Retrieve
         TModel[] result = await query.ToArrayAsync(cancellationToken: ct);
-        return Outcome<TModel[]>.FromData(result);
+        return RepoOutcome<TModel[]>.FromData(result);
     }
 
-    public async ValueTask<PaginatedOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
+    public async ValueTask<PaginatedRepoOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         // Access
         DbSet<TModel> dbSet = GetDbSet<TModel>();
 

@@ -5,11 +5,10 @@ using FastEndpoints;
 using InfiniLore.Modules.Core.Shared;
 
 namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class AutoResponsesMapper<TResponse, TResponseMapper, TResponses, TModel> : ResponseMapper<TResponses, PaginatedData<TModel>>
+public abstract class AutoResponsesMapper<TResponse, TResponseMapper, TResponses, TModel> : ResponseMapper<TResponses, PaginatedData<TModel>>
     where TModel : class 
     where TResponseMapper : ResponseMapper<TResponse, TModel>
     where TResponse : BasicResponse

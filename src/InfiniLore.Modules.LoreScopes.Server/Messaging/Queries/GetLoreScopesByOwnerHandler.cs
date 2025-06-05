@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.Core.Server.Database;
 using InfiniLore.Modules.Core.Server.Messaging.Handlers;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
@@ -25,10 +26,7 @@ public class GetLoreScopesByOwnerHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        PaginatedOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
-
-        // Todo lorescopes can be hidden so only the owner can access view it.
-        //      Do we do that in the config level, or here?
+        PaginatedRepoOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
 
         return response.Match(
             Outcome.FromData,

@@ -31,7 +31,7 @@ public class LoreScopeRemovedReceiver(
         var loreScopeRepo = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
         string bucketName = S3BucketNames.GetLoreScopeBucket(eventModel.LoreScopeId);
 
-        Outcome<LoreScopeModel> modelOutcome = await loreScopeRepo.GetByIdAsync(
+        RepoOutcome<LoreScopeModel> modelOutcome = await loreScopeRepo.GetByIdAsync(
             eventModel.LoreScopeId,
             new QueryConfig {
                 OptionalInclude = true,
@@ -52,8 +52,8 @@ public class LoreScopeRemovedReceiver(
         
         string fileName = posterModel.FileName;
         
-        Outcome result = await s3FileMetaDataRepository.RemoveAsync(posterModel, ct);
-        if (!result.TryGetAsState(out bool removed) || !removed) {
+        RepoOutcome outcome = await s3FileMetaDataRepository.RemoveAsync(posterModel, ct);
+        if (!outcome.TryGetAsState(out bool removed) || !removed) {
             logger.Warning("Failed to remove poster image for lorescope {LoreScopeId}", eventModel.LoreScopeId);
             return;
         }

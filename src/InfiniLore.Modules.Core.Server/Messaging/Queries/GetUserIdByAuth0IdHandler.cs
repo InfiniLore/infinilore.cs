@@ -19,8 +19,8 @@ public class GetUserIdByAuth0IdHandler(IReadonlyUnitOfWorkFactory factory) : Com
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var userRepository = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome<Guid> result = await userRepository.TryGetIdByAuth0IdAsync(command.Auth0Id, ct);
-        if (result.IsError) return Outcome<Guid>.FromError("Cannot get user id by auth0 id. Auth0 id not found.");
-        return result;
+        RepoOutcome<Guid> outcome = await userRepository.TryGetIdByAuth0IdAsync(command.Auth0Id, ct);
+        if (outcome.IsError) return Outcome<Guid>.FromError("Cannot get user id by auth0 id. Auth0 id not found.");
+        return outcome.ToOutcome();
     }
 }

@@ -334,7 +334,7 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.HasOne("InfiniLore.Modules.Core.Server.Database.InfiniLoreUserModel", "ModelOwner")
                         .WithMany()
                         .HasForeignKey("ModelOwnerId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ModelOwner");

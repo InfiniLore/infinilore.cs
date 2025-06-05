@@ -34,8 +34,8 @@ public class UpsertUserProfileImageHandler(
         await using IUnitOfWork unitOfWork = await unitOfWorkFactory.CreateWithTransactionAsync(ct);
         var userRepo = await unitOfWork.GetRepositoryAsync<IInfiniLoreUserRepository>(ct);
 
-        Outcome<InfiniLoreUserModel> userModelResult = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct:ct);
-        Outcome outcome =  await userModelResult.MatchAsync(
+        RepoOutcome<InfiniLoreUserModel> userModelOutcome = await userRepo.GetByIdAsync(command.UserId, QueryConfig.WithOptional, ct: ct);
+        Outcome outcome =  await userModelOutcome.MatchAsync(
             async model => await ProcessUserModelAsync(command, model, unitOfWork, ct),
             _ => {
                 logger.Warning("Failed to find user with id {UserId}", command.UserId);
@@ -52,8 +52,8 @@ public class UpsertUserProfileImageHandler(
             return Outcome.FromError("Failed to create new lorescope image metadata");
         }
 
-        Outcome result = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
-        Outcome outcome =  await result.MatchAsync(async state => {
+        Outcome outcome = await fileStorage.TryUploadFileAsync(S3BucketNames.UserProfileImages, metaData.FileName, command.FileStream, command.ContentType, ct);
+        return await outcome.MatchAsync(async state => {
             if (state is false) {
                 logger.Warning("Failed to upload file to s3 bucket");
                 return Outcome.FromError("Failed to upload file to s3 bucket");
@@ -70,8 +70,6 @@ public class UpsertUserProfileImageHandler(
             logger.Warning("Failed to upload file to s3 bucket");
             return Task.FromResult(Outcome.FromError("Failed to upload file to s3 bucket"));
         });
-        
-        return outcome;
     }
     
     private async Task<S3FileMetaDataModel?> TryCreateNewMetaDataAsync(UpsertUserProfileImageRequest command, InfiniLoreUserModel foundModel, IUnitOfWork unitOfWork, CancellationToken ct) {
@@ -100,7 +98,7 @@ public class UpsertUserProfileImageHandler(
         await s3FileMetaDataRepo.AddAsync(metaData, ct);
         await userRepo.UpdateAsync(foundModel, ct);
         
-        logger.LogInformation("Created new user profile image metadata");
+        logger.Information("Created new user profile image metadata");
         return metaData;
     }
 } 

@@ -11,11 +11,11 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record PaginatedEndpointRequest : IHasReverse, IHasPageNumber, IHasPageSize {
+public abstract record PaginatedEndpointRequest : IHasReverse, IHasPageNumber, IHasPageSize {
     private int _pageNumber = Pagination.Default.PageNumber;
     [BindFrom("pageNumber")] public int PageNumber {
         get => _pageNumber;
-        [UsedImplicitly] set => _pageNumber = Math.Max(value, 0); // Page number cannot be negative.
+        [UsedImplicitly] set => _pageNumber = Math.Max(value, 0);
     } 
     
     private int _pageSize = Pagination.Default.PageSize;

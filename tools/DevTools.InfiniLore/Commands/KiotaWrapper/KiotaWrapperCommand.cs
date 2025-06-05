@@ -49,6 +49,7 @@ public partial class KiotaWrapperCommand(
     private async ValueTask RunPostProcessingAsync(KiotaWrapperParameters parameters, string csprojPath) {
         logger.Information("Renaming classes to Kiota");
         await ReplaceLongKiotaClassNamesAsync(csprojPath, [
+            "InfiniLoreModulesCoreShared",
             "InfiniLoreModulesCoreServerApiEndpoints",
             "InfiniLoreModulesLoreScopesServerApiEndpoints",
             "InfiniLoreModulesLsMarkdownFilesServerApiEndpoints"
