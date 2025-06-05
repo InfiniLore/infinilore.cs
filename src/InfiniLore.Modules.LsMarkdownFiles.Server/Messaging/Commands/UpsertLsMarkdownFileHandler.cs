@@ -60,7 +60,7 @@ public class UpsertLsMarkdownFileHandler(
         }
 
         RepoOutcome s3RepoResult = await s3FileMetaDataRepo.AddOrUpdateAsync(s3FileMetaData, ct);
-        if (!s3RepoResult.TryGetAsState(out success) || success is false) {
+        if (!s3RepoResult.TryGetAsState(out success) || !success) {
             logger.Warning("Failed to add or update S3FileMetaDataModel");
             return Outcome.FromError("Failed to add or update S3FileMetaDataModel");
         }
@@ -85,7 +85,7 @@ public class UpsertLsMarkdownFileHandler(
             });
         
         RepoOutcome fileRepoResult = await markdownFileRepo.AddOrUpdateAsync(markdownFileModel, ct);
-        if (!fileRepoResult.TryGetAsState(out success) || success is false) {
+        if (!fileRepoResult.TryGetAsState(out success) || !success) {
             logger.Warning("Failed to add or update LsMarkdownFileModel");
             return Outcome.FromError("Failed to add or update LsMarkdownFileModel");
         }
