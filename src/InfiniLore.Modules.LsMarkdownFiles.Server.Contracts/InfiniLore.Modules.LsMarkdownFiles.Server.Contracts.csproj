@@ -10,6 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Server.Contracts\InfiniLore.Modules.LoreScopes.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared\InfiniLore.Modules.LsMarkdownFiles.Shared.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>

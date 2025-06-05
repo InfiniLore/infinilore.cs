@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Contracts\InfiniLore.Modules.LoreScopes.Shared.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared\InfiniLore.Modules.LoreScopes.Shared.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.SourceGenerators\InfiniLore.Server.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
