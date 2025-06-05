@@ -40,6 +40,8 @@ public class SetUserRoleToAuth0Handler(
         }
         
         IManagementApiClient client = await auth0ClientFactory.GetClientAsync(ct);
+        
+        
         List<Role> roles = await auth0.Roles.GetAllRolesAsync();
         Role? devRole = roles.FirstOrDefault(r => r.Name == DevRole);
         if (devRole is null) {
