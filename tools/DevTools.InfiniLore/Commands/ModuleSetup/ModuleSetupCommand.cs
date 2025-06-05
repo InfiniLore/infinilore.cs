@@ -84,8 +84,19 @@ public partial class ModuleSetupCommand(
 
             // Create the project using dotnet CLI
             await cliHelper.ExecuteCommandAsync("dotnet", $"new classlib -n {projectName} -o \"{outputDir}\"", parameters.Root, ct);
-            string class1Path = Path.Combine(outputDir, "Class1.cs");
-            if (File.Exists(class1Path)) File.Delete(class1Path);
+            string class1Path = Path.Combine(parameters.Root, outputDir, "Class1.cs");
+            try {
+                if (File.Exists(class1Path)) {
+                    logger.LogInformation("Attempting to delete {FilePath}", class1Path);
+                    File.Delete(class1Path);
+                    logger.LogInformation("Successfully deleted Class1.cs");
+                } else {
+                    logger.LogWarning("Class1.cs not found at expected path: {FilePath}", class1Path);
+                }
+            } catch (Exception ex) {
+                logger.LogError(ex, "Failed to delete Class1.cs at {FilePath}", class1Path);
+            }
+
 
             // Add it to the solution
             string csprojPath = Path.Combine("src", projectName, $"{projectName}.csproj");
