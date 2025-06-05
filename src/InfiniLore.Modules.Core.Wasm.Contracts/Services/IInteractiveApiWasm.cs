@@ -4,8 +4,7 @@
 using InfiniLore.Kiota;
 using InfiniLore.Modules.Core.Shared;
 
-namespace InfiniLore.Modules.Core.Wasm.Contracts.Services;
-
+namespace InfiniLore.Modules.Core.Wasm.Services;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

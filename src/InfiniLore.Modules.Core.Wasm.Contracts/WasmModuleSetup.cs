@@ -4,8 +4,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Modules.Core.Wasm.Contracts;
-
+namespace InfiniLore.Modules.Core.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

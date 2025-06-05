@@ -7,7 +7,7 @@ using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile;
 using InfiniLore.Kiota.Api.V1.DataLorescope.Item.MarkdownFile.Item;
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Wasm.Contracts.Services;
+using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
 using Microsoft.Extensions.Logging;
