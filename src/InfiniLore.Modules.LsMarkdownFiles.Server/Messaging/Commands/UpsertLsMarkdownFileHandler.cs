@@ -12,6 +12,7 @@ using InfiniLore.Server.Modules.LoreScopes.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Messaging.Commands;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.LsMarkdownFiles.Server.Messaging.Commands;
@@ -25,7 +26,7 @@ public class UpsertLsMarkdownFileHandler(
     IS3FileStorage fileStorage,
     IValidator<S3FileMetaDataModel> s3FileValidator,
     ILogger<UpsertLsMarkdownFileHandler> logger,
-    IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
 ) : CommandHandler<UpsertLsMarkdownFileRequest, Outcome> {
 
     public override async Task<Outcome> ExecuteAsync(UpsertLsMarkdownFileRequest command, CancellationToken ct = new()) {
