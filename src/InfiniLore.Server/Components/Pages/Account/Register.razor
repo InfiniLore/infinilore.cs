@@ -11,26 +11,23 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage>
-    <InfiniSection class="w-full tails-selected-element">
+    <InfiniSection class="w-full">
         <InfiniHeading4>Finishing Signup</InfiniHeading4>
         <p class="text-sm text-(--color-base-30)">
             We just need a little bit more information about you before you can start exploring
         </p>
 
-        <InfiniSpacer/>
+        <InfiniSpacerVertical Spacing="Spacing.M"/>
 
-        <label class="font-medium">
-            Username
-        </label>
         <InfiniTextInput
             @bind-Value="@userModel.Username"
             ValidationMessage="@_usernameValidationMessage"
-            OnValidSubmit="@OnUsernameInputAsync"
+            OnChange="@OnUsernameInputAsync"
             Label="Username"
             Placeholder="Enter Your New UserName"
         />
 
-        <InfiniSpacer/>
+        <InfiniSpacerVertical Spacing="Spacing.M"/>
         <div class="flex justify-center w-full">
             <InfiniButton
                 OnClick="@HandleValidSubmitAsync"
