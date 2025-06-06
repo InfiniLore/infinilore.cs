@@ -26,7 +26,7 @@ public class UpsertLsMarkdownFileHandler(
     IS3FileStorage fileStorage,
     IValidator<S3FileMetaDataModel> s3FileValidator,
     ILogger<UpsertLsMarkdownFileHandler> logger,
-    [FromKeyedServices(IMessageBroker.FromClaims)] IMessageBroker messageBroker
+    [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) : CommandHandler<UpsertLsMarkdownFileRequest, Outcome> {
 
     public override async Task<Outcome> ExecuteAsync(UpsertLsMarkdownFileRequest command, CancellationToken ct = new()) {
