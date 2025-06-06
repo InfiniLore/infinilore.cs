@@ -42,6 +42,5 @@ public class GetUserProfilesEndpoint(
                 Response = TypedResults.NotFound();
             }
         );
-        
     }
 }
