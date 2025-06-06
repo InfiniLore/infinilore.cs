@@ -18,7 +18,7 @@ public class LogoutEndpoint(IHttpContextAccessor accessor) : Endpoint<LogoutRequ
         Get("/account/logout");
         RoutePrefixOverride(RoutePrefixes.Empty);
         AllowAnonymous();
-        DontAutoSendResponse();
+        DontAutoSendResponse(); // Handled by Auth0
     }
 
     // -----------------------------------------------------------------------------------------------------------------
