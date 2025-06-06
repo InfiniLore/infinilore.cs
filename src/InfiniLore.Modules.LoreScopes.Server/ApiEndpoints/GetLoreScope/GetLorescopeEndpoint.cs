@@ -44,12 +44,11 @@ public class GetLorescopeEndpoint(
         }
 
         logger.Information("Successfully retrieved lorescope with id {id}", loreScope.Id);
-        Response = TypedResults.Ok(Map.FromEntity(loreScope));
+        await SendResultAsync(TypedResults.Ok(Map.FromEntity(loreScope)));
     }
 
-    private Task OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
+    private async Task OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
         logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, error);
-        Response = TypedResults.NotFound();
-        return Task.CompletedTask;
+        await SendResultAsync(TypedResults.NotFound());
     }
 }

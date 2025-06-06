@@ -37,12 +37,12 @@ public class UpsertLoreScopeImageEndpoint(
             fileStream,
             ct: ct);
         
-        outcome.Switch(
-            () =>  Response = TypedResults.Ok(),
-            () =>  Response = TypedResults.BadRequest(),
-            error => {
+        await outcome.SwitchAsync(
+            async () => await SendResultAsync(TypedResults.Ok()),
+            async () => await SendResultAsync(TypedResults.BadRequest()),
+            async error => {
                 logger.Error("Failed to update lorescope poster image because '{reason}'", error);
-                Response = TypedResults.BadRequest();
+                await SendResultAsync(TypedResults.BadRequest());
             }
         );
     }

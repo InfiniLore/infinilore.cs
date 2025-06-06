@@ -41,13 +41,10 @@ public class UpsertLsMarkdownFileEndpoint(
             ct:ct
         );
 
-        outcome.Switch(
-            () => Response = TypedResults.Ok(),
-            () => Response = TypedResults.NotFound(),
-            error => {
-                AddError(error);
-                ThrowError("Failed to upsert markdown file");
-            }
-        );
+        await SendResultAsync(outcome.Match<IResult>(
+            TypedResults.Ok,
+            TypedResults.NotFound,
+            _ => TypedResults.BadRequest()
+        ));
     }
 }

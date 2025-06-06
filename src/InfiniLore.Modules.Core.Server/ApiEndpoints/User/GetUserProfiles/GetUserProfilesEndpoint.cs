@@ -32,14 +32,14 @@ public class GetUserProfilesEndpoint(
             ct: ct
         );
         
-        outcome.Switch(
-            data => {
+        await outcome.SwitchAsync(
+            async data => {
                 logger.Information("Successfully retrieved users");
-                Response = TypedResults.Ok(Map.FromEntity(data));
+                await SendResultAsync(TypedResults.Ok(Map.FromEntity(data)));
             },
-            reason => {
+            async reason => {
                 logger.Warning("Failed to get users because '{reason}'", reason);
-                Response = TypedResults.NotFound();
+                await SendResultAsync(TypedResults.NotFound());
             }
         );
     }

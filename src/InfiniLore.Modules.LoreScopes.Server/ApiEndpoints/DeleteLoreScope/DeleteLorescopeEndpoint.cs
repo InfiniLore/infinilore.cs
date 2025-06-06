@@ -28,11 +28,12 @@ public class DeleteLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(DeleteLorescopeEndpointRequest req, CancellationToken ct) {
         Outcome outcome = await messageBroker.DeleteLoreScopeAsync(req.LoreScopeId, ct: ct);
-        outcome.Switch(
-            state => Response = state ? TypedResults.Ok() : TypedResults.BadRequest(),
-            error => {
+        await outcome.SwitchAsync(
+            async () => await SendResultAsync(TypedResults.Ok()),
+            async () => await SendResultAsync(TypedResults.BadRequest()),
+            async error => {
                 logger.Error("Failed to delete lorescope with id {id} because '{reason}'", req.LoreScopeId, error);
-                Response = TypedResults.BadRequest();
+                await SendResultAsync(TypedResults.BadRequest());
             }
         );
     }

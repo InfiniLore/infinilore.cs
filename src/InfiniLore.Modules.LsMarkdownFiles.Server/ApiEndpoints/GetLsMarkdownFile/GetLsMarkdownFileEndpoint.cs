@@ -27,9 +27,10 @@ public class GetLsMarkdownFileEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(GetLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         Outcome<LsMarkdownFileModel> outcome = await messageBroker.GetLsMarkdownFileByIdAsync(req.MarkdownFileId, ct: ct);
-        outcome.Switch(
-            model => Response = TypedResults.Ok(Map.FromEntity(model)),
-            _ => Response = TypedResults.NotFound()      
-        );   
+
+        await SendResultAsync(outcome.Match<IResult>(
+            model => TypedResults.Ok(Map.FromEntity(model)),
+            _ => TypedResults.NotFound()
+        ));
     }
 }

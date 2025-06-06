@@ -134,32 +134,45 @@ public partial record struct Outcome() : IUnion<True, False, AccessRefused, Erro
         }
         throw new ArgumentException("Union does not contain a value");
     }
+    public Task SwitchAsync(
+        Func<Task> trueCase,
+        Func<Task> falseCase,
+        Func<string, Task> errorCase
+    ) {
+        return this switch {
+            { IsTrue: true } => trueCase(),
+            { IsFalse: true } => falseCase(),
+            { IsAccessRefused: true, AsAccessRefused: var value } => errorCase(value.Reason),
+            { IsError: true, AsError: var value } => errorCase(value.Value),
+            _ => throw new ArgumentException("Union does not contain a value")
+        };
+    }
 
-    public async Task SwitchAsync(
+    public Task SwitchAsync(
         Func<bool, Task> boolCase,
         Func<string, Task> errorCase
-    ){
-        switch (this) {
-            case {IsTrue: true, AsTrue: var value} : await boolCase(value); return;
-            case {IsFalse: true, AsFalse: var value} : await boolCase(value); return;
-            case {IsAccessRefused: true, AsAccessRefused: var value } : await errorCase(value.Reason); return;
-            case {IsError: true, AsError: var value} : await errorCase(value.Value); return;
-        }
-        throw new ArgumentException("Union does not contain a value");
+    ) {
+        return this switch {
+            { IsTrue: true, AsTrue: var value } => boolCase(value),
+            { IsFalse: true, AsFalse: var value } => boolCase(value),
+            { IsAccessRefused: true, AsAccessRefused: var value } => errorCase(value.Reason),
+            { IsError: true, AsError: var value } => errorCase(value.Value),
+            _ => throw new ArgumentException("Union does not contain a value")
+        };
     }
     
-    public async Task SwitchAsync(
+    public Task SwitchAsync(
         Func<bool, CancellationToken, Task> boolCase,
         Func<string, CancellationToken, Task> errorCase,
         CancellationToken ct
-    ){
-        switch (this) {
-            case {IsTrue: true, AsTrue: var value} : await boolCase(value, ct); return;
-            case {IsFalse: true, AsFalse: var value} : await boolCase(value, ct); return;
-            case {IsAccessRefused: true, AsAccessRefused: var value } : await errorCase(value.Reason, ct); return;
-            case {IsError: true, AsError: var value} : await errorCase(value.Value, ct); return;
-        }
-        throw new ArgumentException("Union does not contain a value");
+    ) {
+        return this switch {
+            { IsTrue: true, AsTrue: var value } => boolCase(value, ct),
+            { IsFalse: true, AsFalse: var value } => boolCase(value, ct),
+            { IsAccessRefused: true, AsAccessRefused: var value } => errorCase(value.Reason, ct),
+            { IsError: true, AsError: var value } => errorCase(value.Value, ct),
+            _ => throw new ArgumentException("Union does not contain a value")
+        };
     }
     #endregion
 }
