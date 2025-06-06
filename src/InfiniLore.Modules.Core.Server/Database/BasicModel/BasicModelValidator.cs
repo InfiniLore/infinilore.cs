@@ -18,4 +18,4 @@ public abstract class BasicModelValidator<TModel> : AbstractValidator<TModel> wh
 }
 
 [InjectableSingleton<IValidator<BasicModel>>] 
-internal sealed class BasicModelValidator : BasicModelValidator<BasicModel>;
+public sealed class BasicModelValidator : BasicModelValidator<BasicModel>;
