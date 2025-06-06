@@ -10,6 +10,7 @@ namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SkipOnEnv(SkipEnv.WithContainers)]
 [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
 public class ContentDbConnection(ServiceProviderDataSource serviceProvider) {
     private IReadonlyUnitOfWorkFactory Factory => serviceProvider.GetRequiredService<IReadonlyUnitOfWorkFactory>();

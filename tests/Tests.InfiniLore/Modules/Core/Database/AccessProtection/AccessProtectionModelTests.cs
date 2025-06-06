@@ -9,6 +9,7 @@ namespace Tests.InfiniLore.Modules.Core.Database.AccessProtection;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SkipOnEnv(SkipEnv.WithContainers)]
 [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
 public class AccessProtectionModelTests(ServiceProviderDataSource serviceProvider) {
     private GuidStore GuidStore => serviceProvider.GetRequiredService<GuidStore>();

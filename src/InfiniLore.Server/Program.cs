@@ -31,7 +31,7 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class Program {
+public class Program {
     public static async Task<int> Main(string[] args) {
         return await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
             WebApplicationBuilder builder = CreateBuilder(args);

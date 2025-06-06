@@ -13,6 +13,7 @@
         <PackageReference Include="CodeOfChaos.Extensions" />
         <PackageReference Include="CodeOfChaos.Extensions.AspNetCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="NSubstitute" />
         <PackageReference Include="Testcontainers"/>
         <PackageReference Include="Testcontainers.MsSql"/>
         <PackageReference Include="Bogus"/>

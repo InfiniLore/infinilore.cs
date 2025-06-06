@@ -11,6 +11,7 @@ namespace Tests.InfiniLore.Modules.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SkipOnEnv(SkipEnv.WithContainers)]
 [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
 public class BasicModelValidatorTests(ServiceProviderDataSource serviceProvider) {
     private IValidator<BasicModel> Validator => serviceProvider.GetRequiredService<IValidator<BasicModel>>();
