@@ -71,23 +71,23 @@
         <InfiniSection>
             <InfiniHeading3>Access Token Viewer</InfiniHeading3>
             
-            <div class="flex flex-col gap-2">
-                <div class="flex flex-row gap-4 justify-between w-full items-start h-213 max-h-213 ">
+            <div class="flex grow flex-col gap-2">
+                <div class="flex grow flex-row gap-4 justify-between w-full items-start ">
                     <!-- Access Token Section -->
-                    <div class="flex flex-col w-[calc(50%-0.5rem)] h-full gap-2">
+                    <div class="flex grow shrink-0 flex-col w-[calc(50%-0.5rem)] gap-2">
                         <InfiniHeading5>Original JWT</InfiniHeading5>
                         @* ReSharper disable once Asp.Entity *@
                         <InfiniCodeBlock 
                             Language="base64"
-                            Class="mt-8 h-full bg-(--color-base-70) break-words [&_pre]:whitespace-pre-wrap" 
+                            Class="flex grow shrink-0  mt-8 bg-(--color-base-70) break-words [&_pre]:whitespace-pre-wrap" 
                             Content="@_accessToken"/>
                     </div>
 
                     <!-- JWT Viewer Section -->
-                    <div class="flex flex-col w-[calc(50%-0.5rem)] h-full">
+                    <div class="flex grow flex-col w-[calc(50%-0.5rem)]">
                         <InfiniHeading5>Decoded JWT Details</InfiniHeading5>
 
-                        <div class="flex flex-col h-full gap-2">
+                        <div class="flex flex-col gap-2">
                             <!-- Header Section -->
                             <div class="w-full flex flex-col gap-2">
                                 <InfiniHeading6 Class="text-(--color-base-30)">Header</InfiniHeading6>
