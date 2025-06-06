@@ -72,68 +72,60 @@
             <InfiniHeading3>Access Token Viewer</InfiniHeading3>
             
             <div class="flex flex-col gap-2">
-                <div class="flex flex-row gap-4 justify-between w-full items-start h-192 max-h-192 ">
+                <div class="flex flex-row gap-4 justify-between w-full items-start h-213 max-h-213 ">
                     <!-- Access Token Section -->
                     <div class="flex flex-col w-[calc(50%-0.5rem)] h-full gap-2">
-                        <h5 class="text-lg font-medium text-(--text-color))">Original JWT</h5>
-                        <p class="h-full bg-(--color-base-70) text-(--color-base-20) border border-(--border-color) rounded px-4 py-2 break-words whitespace-pre-wrap overflow-y-auto">@_accessToken</p>
+                        <InfiniHeading5>Original JWT</InfiniHeading5>
+                        @* ReSharper disable once Asp.Entity *@
+                        <InfiniCodeBlock 
+                            Language="base64"
+                            Class="mt-8 h-full bg-(--color-base-70) break-words [&_pre]:whitespace-pre-wrap" 
+                            Content="@_accessToken"/>
                     </div>
 
                     <!-- JWT Viewer Section -->
                     <div class="flex flex-col w-[calc(50%-0.5rem)] h-full">
-                        <h5 class="text-lg font-medium text-(--text-color))">Decoded JWT Details</h5>
+                        <InfiniHeading5>Decoded JWT Details</InfiniHeading5>
 
-                        <div class="flex flex-col h-full">
+                        <div class="flex flex-col h-full gap-2">
                             <!-- Header Section -->
-                            <div class="h-2/8 w-full flex flex-col gap-2">
-                                <h6 class="font-semibold text-(--color-base-30) mb-1">Header</h6>
+                            <div class="w-full flex flex-col gap-2">
+                                <InfiniHeading6 Class="text-(--color-base-30)">Header</InfiniHeading6>
                                 @if (!string.IsNullOrWhiteSpace(_header)) {
-                                    <pre
-                                        class="bg-(--color-base-70) text-(--color-base-20) border text-sm border-(--border-color) rounded p-4 overflow-auto">@_header</pre>
-                                } else {
+                                    <InfiniCodeBlock Language="json" Content="@_header"/>
+                                }
+                                else {
                                     <p class="text-(--color-base-30) italic">Header not available</p>
                                 }
                             </div>
-
+                            
                             <!-- Payload Section -->
-                            <div class="h-4/7 w-full flex flex-col gap-2">
-                                <h6 class="font-semibold text-(--color-base-30)">Payload</h6>
+                            <div class="w-full flex flex-col gap-2">
+                                <InfiniHeading6 Class="text-(--color-base-30)">Payload</InfiniHeading6>
+
                                 @if (!string.IsNullOrWhiteSpace(_decodedPayload)) {
-                                    <pre
-                                        class="infini-scrollbar bg-(--color-base-70) text-(--color-base-20) font-mono border text-sm border-(--border-color) rounded p-4 overflow-auto whitespace-pre-wrap break-words">
-                                    @_decodedPayload
-                                </pre>
-                                } else {
+                                    <InfiniCodeBlock Language="json" Content="@_decodedPayload"/>
+                                }
+                                else {
                                     <p class="text-(--color-base-30) italic">Payload not available</p>
                                 }
                             </div>
 
                             <!-- Signature Section -->
-                            <div class="h-1/7 w-full flex flex-col gap-2 mt-2">
-                                <h6 class="font-semibold text-(--color-base-30) ">Signature</h6>
+                            <div class="w-full flex flex-col gap-2 mt-2">
+                                <InfiniHeading6 Class="text-(--color-base-30)">Signature</InfiniHeading6>
                                 @if (!string.IsNullOrWhiteSpace(_signature)) {
-                                    <pre
-                                        class="infini-scrollbar bg-(--color-base-70) text-(--color-base-20) text-sm border border-(--border-color) rounded p-4 overflow-auto">@_signature</pre>
-                                } else {
+                                    <InfiniCodeBlock Language="base64" Content="@_signature"/>
+                                }
+                                else {
                                     <p class="text-(--color-base-30) italic">Signature not available</p>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-row gap-2">
-                    <div class="w-1/2">
-                        <div class="flex justify-center">
-                            <InfiniButton IconName="copy"
-                                          OnClick="async () => await CopyToClipboardAsync(_accessToken)">
-                                Copy Access Token
-                            </InfiniButton>
-                        </div>
-                    </div>
-                    <div class="w-1/2">
-                    </div>
-                </div>
             </div>
+            <InfiniSpacer Spacing="Spacing.M"/>
         </InfiniSection>
     }
 </InfiniPage>

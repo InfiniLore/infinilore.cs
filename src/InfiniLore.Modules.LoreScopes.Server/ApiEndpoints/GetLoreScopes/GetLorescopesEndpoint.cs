@@ -59,12 +59,11 @@ public class GetLoreScopesEndpoint(
 
         // Wait for all tasks to complete
         response.Items = await Task.WhenAll(updateTasks);
-        Response = TypedResults.Ok(response);
+        await SendResultAsync(TypedResults.Ok(response));
     }
 
-    private Task OnErrorAsync(string error, GetLoreScopesEndpointRequest req, CancellationToken _) {
+    private async Task OnErrorAsync(string error, GetLoreScopesEndpointRequest req, CancellationToken _) {
         logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, error);
-        Response = TypedResults.NotFound();
-        return Task.CompletedTask;
+        await SendResultAsync(TypedResults.NotFound());
     }
 }

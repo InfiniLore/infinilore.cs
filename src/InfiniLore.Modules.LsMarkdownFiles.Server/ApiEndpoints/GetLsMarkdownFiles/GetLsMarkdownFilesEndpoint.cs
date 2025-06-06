@@ -34,9 +34,10 @@ public class GetLsMarkdownFilesEndpoint(
             ct: ct
         );
         
-        outcome.Switch(
-            data => Response = TypedResults.Ok(Map.FromEntity(data)),
-            _ => Response = TypedResults.NotFound()       
-        );
+        
+        await SendResultAsync(outcome.Match<IResult>(
+            model => TypedResults.Ok(Map.FromEntity(model)),
+            _ => TypedResults.NotFound()
+        ));
     }
 }

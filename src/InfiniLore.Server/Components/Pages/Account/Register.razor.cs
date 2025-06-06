@@ -5,7 +5,6 @@ using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 
 namespace InfiniLore.Server.Components.Pages.Account;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,9 +21,8 @@ public partial class Register(
 
     private string _usernameValidationMessage = string.Empty;
     private bool _isFormDisabled;
-    private readonly Stopwatch _debounceStopwatch = new();
     private const int DebounceMilliseconds = 500;
-    private UsernameStatus _usernameStatus = UsernameStatus.None;
+    private CancellationTokenSource? _debounceTokenSource;
 
     private class UserModel {
         [Required]
@@ -38,32 +36,33 @@ public partial class Register(
     private async Task OnUsernameInputAsync(ChangeEventArgs e) {
         userModel.Username = e.Value?.ToString() ?? string.Empty;
 
-        if (!_debounceStopwatch.IsRunning) {
-            _debounceStopwatch.Start();
-        }
-        else {
-            _debounceStopwatch.Restart();
-        }
+        // Cancel any pending validation
+        await (_debounceTokenSource?.CancelAsync() ?? Task.CompletedTask);
+        _debounceTokenSource = new CancellationTokenSource();
+        CancellationToken token = _debounceTokenSource.Token;
 
-        // Correctly Set Status to "Checking"
-        _usernameValidationMessage = string.Empty;
-        _usernameStatus = UsernameStatus.Checking;
+        // Show immediate feedback that validation is in progress
         _isFormDisabled = true;
-        await InvokeAsync(StateHasChanged);// Trigger UI Refresh
+        _usernameValidationMessage = "Checking...";
+        StateHasChanged();
 
-        // Debounced validation logic
-        await Task.Delay(DebounceMilliseconds);
-        if (_debounceStopwatch.ElapsedMilliseconds >= DebounceMilliseconds) {
-            _debounceStopwatch.Stop();
-            await ValidateUsernameAsync(userModel.Username);
+        try {
+            await Task.Delay(DebounceMilliseconds, token);
+            if (!token.IsCancellationRequested) await ValidateUsernameAsync(userModel.Username);
+        }
+        catch (OperationCanceledException) {
+            // Ignore cancellation
+        }
+        finally {
+            if (!token.IsCancellationRequested) StateHasChanged();
         }
     }
+
     private async Task ValidateUsernameAsync(string username) {
         if (username.IsNullOrWhiteSpace()) {
             _usernameValidationMessage = "Username cannot be empty.";
             _isFormDisabled = true;
-            _usernameStatus = UsernameStatus.None;// Set to None for an empty username
-            await InvokeAsync(StateHasChanged);// Refresh UI
+            StateHasChanged();
             return;
         }
 
@@ -71,22 +70,18 @@ public partial class Register(
         Outcome mediatorOutcome = await messageBroker.UsernameExistsAsync(username);
 
         if (!mediatorOutcome.TryGetAsState(out bool isTaken)) {
-            _usernameStatus = UsernameStatus.None;// Default/Fallback if the response doesn't return properly
+            _usernameValidationMessage = "Error checking username availability";
             _isFormDisabled = true;
-            await InvokeAsync(StateHasChanged);// Refresh UI
+            StateHasChanged();
             return;
         }
 
-        // Update the UI based on validation response
-        _usernameStatus = isTaken
-            ? UsernameStatus.Taken
-            : UsernameStatus.Available;
-
-        _usernameValidationMessage = string.Empty;// Clear message
-        _isFormDisabled = isTaken;// Disable form if a username is taken
-        await InvokeAsync(StateHasChanged);// Refresh UI
+        _usernameValidationMessage = isTaken ? "Username is already taken" : string.Empty;
+        _isFormDisabled = isTaken;
+        StateHasChanged();
     }
-    
+
+
     private async Task HandleValidSubmitAsync() {
         // Ensure username has passed asynchronous validation
         if (_isFormDisabled || !string.IsNullOrEmpty(_usernameValidationMessage)) return;
@@ -94,8 +89,8 @@ public partial class Register(
         Outcome<Guid> outcome = await messageBroker.CreateInfiniLoreUserAsync(Auth0UserId, userModel.Username);
         if (outcome.TryGetAsErrorValue(out string? errorMessage)) {
             _usernameValidationMessage = string.Join(", ", errorMessage);
-            _isFormDisabled = false; // Allow retry
-            await InvokeAsync(StateHasChanged);
+            _isFormDisabled = false;// Allow retry
+            StateHasChanged();
             return;
         }
 
@@ -104,13 +99,6 @@ public partial class Register(
             : "/";
 
         string encodedReturnUl = Uri.EscapeDataString(returnUl);
-        navigation.NavigateTo($"Account/Login?redirectUri={encodedReturnUl}");
-    }
-
-    private enum UsernameStatus {
-        None,
-        Checking,
-        Taken,
-        Available
+        navigation.NavigateTo($"account/login?redirectUri={encodedReturnUl}");
     }
 }

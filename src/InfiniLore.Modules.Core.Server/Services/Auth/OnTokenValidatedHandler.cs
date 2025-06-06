@@ -23,7 +23,7 @@ public class OnTokenValidatedHandler(
     [FromKeyedServices(IMessageBroker.FromServer)] IMessageBroker messageBroker
 ) : IOpenIdConnectEventHelper<TokenValidatedContext> {
     private readonly ILogger _logger = loggerFactory.CreateLogger("AUTH0OPENID OnTokenValidated");
-
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------

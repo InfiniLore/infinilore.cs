@@ -31,9 +31,9 @@ public class TokenEndpoint(IHttpContextAccessor httpContextAccessor, IJwtTokenEn
 
         if (DateTime.UtcNow >= expiresAt) ThrowError("Unauthorized");
 
-        Response = new TokenResponse {
+        await SendAsync(new TokenResponse {
             Token = accessToken,
             ExpiresAt = expiresAt.ToString("o")// ISO 8601 format for JS Date parsing
-        };
+        }, cancellation: ct);
     }
 }

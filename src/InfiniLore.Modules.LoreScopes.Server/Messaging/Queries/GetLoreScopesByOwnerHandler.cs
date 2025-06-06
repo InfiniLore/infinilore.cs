@@ -26,7 +26,12 @@ public class GetLoreScopesByOwnerHandler(
         await using IReadonlyUnitOfWork unitOfWork = factory.Create();
         var loreScopeRepository = await unitOfWork.GetRepositoryAsync<ILoreScopeRepository>(ct);
 
-        PaginatedRepoOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(command.UserId, command.Pagination, command.QueryConfig, ct);
+        PaginatedRepoOutcome<LoreScopeModel> response = await loreScopeRepository.GetByOwnerAsync(
+            command.UserId, 
+            command.Pagination,
+            command.QueryConfig,
+            ct
+        );
 
         return response.Match(
             Outcome.FromData,
