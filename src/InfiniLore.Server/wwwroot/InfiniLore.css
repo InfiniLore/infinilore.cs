@@ -252,8 +252,14 @@
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
+  .mt-8 {
+    margin-top: calc(var(--spacing) * 8);
+  }
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
+  }
+  .mt-16 {
+    margin-top: calc(var(--spacing) * 16);
   }
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
@@ -288,17 +294,29 @@
   .h-1\/7 {
     height: calc(1/7 * 100%);
   }
+  .h-1\/10 {
+    height: calc(1/10 * 100%);
+  }
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
   .h-2\/8 {
     height: calc(2/8 * 100%);
   }
+  .h-2\/10 {
+    height: calc(2/10 * 100%);
+  }
+  .h-3\/10 {
+    height: calc(3/10 * 100%);
+  }
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
   .h-4\/7 {
     height: calc(4/7 * 100%);
+  }
+  .h-7\/10 {
+    height: calc(7/10 * 100%);
   }
   .h-32 {
     height: calc(var(--spacing) * 32);
@@ -318,6 +336,27 @@
   .h-192 {
     height: calc(var(--spacing) * 192);
   }
+  .h-200 {
+    height: calc(var(--spacing) * 200);
+  }
+  .h-205 {
+    height: calc(var(--spacing) * 205);
+  }
+  .h-207 {
+    height: calc(var(--spacing) * 207);
+  }
+  .h-208 {
+    height: calc(var(--spacing) * 208);
+  }
+  .h-210 {
+    height: calc(var(--spacing) * 210);
+  }
+  .h-213 {
+    height: calc(var(--spacing) * 213);
+  }
+  .h-215 {
+    height: calc(var(--spacing) * 215);
+  }
   .h-fit {
     height: fit-content;
   }
@@ -329,6 +368,27 @@
   }
   .max-h-192 {
     max-height: calc(var(--spacing) * 192);
+  }
+  .max-h-200 {
+    max-height: calc(var(--spacing) * 200);
+  }
+  .max-h-205 {
+    max-height: calc(var(--spacing) * 205);
+  }
+  .max-h-207 {
+    max-height: calc(var(--spacing) * 207);
+  }
+  .max-h-208 {
+    max-height: calc(var(--spacing) * 208);
+  }
+  .max-h-210 {
+    max-height: calc(var(--spacing) * 210);
+  }
+  .max-h-213 {
+    max-height: calc(var(--spacing) * 213);
+  }
+  .max-h-215 {
+    max-height: calc(var(--spacing) * 215);
   }
   .min-h-full {
     min-height: 100%;
@@ -564,6 +624,9 @@
   }
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
+  }
+  .pt-4 {
+    padding-top: calc(var(--spacing) * 4);
   }
   .pl-5 {
     padding-left: calc(var(--spacing) * 5);
@@ -893,6 +956,21 @@
   .xl\:p-24 {
     @media (width >= 80rem) {
       padding: calc(var(--spacing) * 24);
+    }
+  }
+  .\[\&_pre\]\:overflow-y-auto {
+    & pre {
+      overflow-y: auto;
+    }
+  }
+  .\[\&_pre\]\:whitespace-pre-wrap {
+    & pre {
+      white-space: pre-wrap;
+    }
+  }
+  .\[\&pre\]\:whitespace-pre-wrap {
+    &pre {
+      white-space: pre-wrap;
     }
   }
 }
