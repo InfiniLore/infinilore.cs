@@ -64,6 +64,6 @@ public class GetLoreScopesEndpoint(
 
     private async Task OnErrorAsync(string error, GetLoreScopesEndpointRequest req, CancellationToken _) {
         logger.Warning("Failed to get LoreScopes for user {userId} because '{reason}'", req.UserId, error);
-        await SendResultAsync(TypedResults.NotFound());
+        await SendResultAsync(TypedResults.BadRequest());
     }
 }

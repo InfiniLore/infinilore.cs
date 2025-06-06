@@ -28,13 +28,14 @@ public class UpsertLoreScopeMetadataEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(UpsertLoreScopeMetadataEndpointRequest req, CancellationToken ct) {
         Outcome outcome = await messageBroker.UpsertLoreScopeMetadataAsync(req.LoreScopeId, req.Name, req.Description, ct:ct);
-        await outcome.SwitchAsync(
-            async () => await SendResultAsync(TypedResults.Ok()),
-            async () => await SendResultAsync(TypedResults.BadRequest()),
-            async error => {
+        var result = outcome.Match<IResult>(
+            TypedResults.Ok,
+            TypedResults.BadRequest,
+            error => {
                 logger.Error("Failed to lorescope metadata because '{reason}'", error);
-                await SendResultAsync(TypedResults.BadRequest());
+                return TypedResults.BadRequest();
             }
         );
+        await SendResultAsync(result);
     }
 }

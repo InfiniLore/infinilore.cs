@@ -26,10 +26,11 @@ public class DeleteLsMarkdownFileEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(DeleteLsMarkdownFileEndpointRequest req, CancellationToken ct) {
         Outcome outcome = await messageBroker.DeleteLsMarkdownFileAsync(req.MarkdownFileId, ct: ct);
-        await SendResultAsync(outcome.Match<IResult>(
+        var result = outcome.Match<IResult>(
             TypedResults.Ok,
             TypedResults.NotFound,
             _ => TypedResults.NotFound()
-        ));
+        );
+        await SendResultAsync(result);
     }
 }

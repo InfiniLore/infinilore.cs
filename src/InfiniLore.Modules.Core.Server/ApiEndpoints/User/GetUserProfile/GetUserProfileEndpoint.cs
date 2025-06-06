@@ -27,21 +27,23 @@ public class GetUserProfileEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(GetUserProfileEndpointRequest req, CancellationToken ct) { 
         Outcome<InfiniLoreUserModel> outcome = await messageBroker.GetUserByIdAsync(req.UserId, ct: ct);
-        await outcome.SwitchAsync(
-            async model => {
+        
+        var result = outcome.Match<IResult>(
+            model => {
                 logger.Information("Successfully retrieved user with id {id}", req.UserId);
                 UserProfileResponse mappedModel = Map.FromEntity(model);
-                await SendResultAsync(TypedResults.Ok(mappedModel));
+                return TypedResults.Ok(mappedModel);
                 
             },
-            async refused => {
+            refused => {
                 logger.Warning("Access was refused because : {reason}", refused.Reason);
-                await SendResultAsync(TypedResults.Forbid());
+                return TypedResults.Forbid();
             },
-            async error => {
+            error => {
                 logger.Warning("Failed to get user with id {id} because '{reason}'", req.UserId, error.Value);
-                await SendResultAsync(TypedResults.NotFound());
+                return TypedResults.BadRequest();
             }
         );
+        await SendResultAsync(result);
     }
 }

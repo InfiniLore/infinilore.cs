@@ -49,6 +49,6 @@ public class GetLorescopeEndpoint(
 
     private async Task OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
         logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, error);
-        await SendResultAsync(TypedResults.NotFound());
+        await SendResultAsync(TypedResults.BadRequest());
     }
 }

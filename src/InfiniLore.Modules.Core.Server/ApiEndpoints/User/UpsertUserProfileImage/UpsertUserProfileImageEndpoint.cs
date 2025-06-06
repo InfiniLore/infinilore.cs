@@ -36,13 +36,14 @@ public class UpsertUserProfileImageEndpoint(
             ct: ct
         );
 
-        await outcome.SwitchAsync(
-            async () => await SendResultAsync(TypedResults.Ok()),
-            async () => await SendResultAsync(TypedResults.BadRequest()),
-            async error => {
+        var result = outcome.Match<IResult>(
+            TypedResults.Ok,
+            TypedResults.BadRequest,
+            error => {
                 logger.Warning("Failed to update user poster image. {@error}", error);
-                await SendResultAsync(TypedResults.NotFound());
+                return TypedResults.BadRequest();
             }
         );
+        await SendResultAsync(result);
     }
 }
