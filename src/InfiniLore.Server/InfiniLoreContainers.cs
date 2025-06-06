@@ -32,7 +32,7 @@ public partial class InfiniLoreContainers : IAsyncDisposable {
     private const string MinioImage = "minio/minio:latest";
 
 
-    [GeneratedRegex("http(?:s?)://(.*)/")]
+    [GeneratedRegex("http(?:s?)://(.*)/?")]
     private static partial Regex HttpUrlRegex { get; }
 
     // -----------------------------------------------------------------------------------------------------------------
