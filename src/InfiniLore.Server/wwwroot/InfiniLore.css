@@ -451,8 +451,20 @@
   .bg-\(--color-base-40\) {
     background-color: var(--color-base-40);
   }
+  .bg-\(--color-base-50\) {
+    background-color: var(--color-base-50);
+  }
+  .bg-\(--color-base-60\) {
+    background-color: var(--color-base-60);
+  }
   .bg-\(--color-base-70\) {
     background-color: var(--color-base-70);
+  }
+  .bg-\(--color-base-90\) {
+    background-color: var(--color-base-90);
+  }
+  .bg-\(--color-base-95\) {
+    background-color: var(--color-base-95);
   }
   .bg-transparent {
     background-color: transparent;
