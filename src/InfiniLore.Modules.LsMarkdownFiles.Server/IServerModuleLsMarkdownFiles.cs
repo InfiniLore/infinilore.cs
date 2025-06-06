@@ -6,4 +6,4 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IModulelsLsMarkdownFilesServer;
+public interface IServerModuleLsMarkdownFiles;

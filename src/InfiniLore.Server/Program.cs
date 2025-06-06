@@ -89,7 +89,7 @@ public static class Program {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()
-            .AddModule<IModulelsLsMarkdownFilesServer>();
+            .AddModule<IServerModuleLsMarkdownFiles>();
         
         #region Database
         ContentDbFactory.RegisterDatabase(

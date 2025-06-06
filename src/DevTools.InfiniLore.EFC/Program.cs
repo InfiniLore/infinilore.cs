@@ -19,7 +19,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
     .AddModule<IServerModuleEntryCore>()
     .AddModule<IServerModuleEntryLoreScopes>()
-    .AddModule<IModulelsLsMarkdownFilesServer>();
+    .AddModule<IServerModuleLsMarkdownFiles>();
 
 builder.Services.RegisterServicesFromInfiniLoreServer();
 builder.Services.RegisterServicesFromInfiniLoreModulesLoreScopesShared();

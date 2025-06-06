@@ -39,7 +39,7 @@ public class ServiceProviderDataSource {
         ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
             .AddModule<IServerModuleEntryCore>()
             .AddModule<IServerModuleEntryLoreScopes>()
-            .AddModule<IModulelsLsMarkdownFilesServer>();
+            .AddModule<IServerModuleLsMarkdownFiles>();
 
         services.RegisterServicesFromFakersInfiniLoreServer();
         services.RegisterServicesFromDataSourcesInfiniLoreServer();

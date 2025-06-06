@@ -6,4 +6,4 @@ namespace InfiniLore.Modules.LsMarkdownFiles.Wasm;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IModuleLsMarkdownFilesWasm;
+public interface IWasmModuleLsMarkdownFiles;
