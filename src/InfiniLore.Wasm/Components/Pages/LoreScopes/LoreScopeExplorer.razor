@@ -6,6 +6,7 @@
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Collections.Concurrent
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -14,6 +15,7 @@
 @inject IInteractiveApiLoreScopes LoreScopeApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
+@inject IMarkdownParser<string, string> MarkdownParser
 @attribute [Authorize]
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -65,7 +67,7 @@
                                             @loreScope.Name
                                         </InfiniHeading3>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                            @loreScope.Description
+                                            @((MarkupString)(LoreScopeDescriptions[loreScope.Id] ?? string.Empty))
                                         </p>
                                         <InfiniSpacer/>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
@@ -149,6 +151,7 @@
     private string UserId { get; set; } = string.Empty;
 
     private PaginatedData<ILoreScopeModel> PaginatedLoreScopes { get; set; } = PaginatedData<ILoreScopeModel>.Empty;
+    private ConcurrentDictionary<Guid, string?> LoreScopeDescriptions { get; set; } = new();
     private const int FilesPerPage = 12;
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -174,6 +177,13 @@
         if (!outcome.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
         PaginatedLoreScopes = data;
+
+        var tasks = data.Items.Select(async loreScope => {
+                string? result = await MarkdownParser.TryParseAsync(loreScope.Description);
+                LoreScopeDescriptions.AddOrUpdate(loreScope.Id, _ => result, (_, _) => result);
+            }
+        );
+        await Task.WhenAll(tasks);
     }
 
     private async Task CreateNewLoreScopeAsync() {
