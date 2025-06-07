@@ -11,6 +11,7 @@
 @page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -35,6 +36,7 @@
             @bind-Value="@LoreScopeName">
             <InfiniButton OnClick="OnNameSubmitAsync">Submit</InfiniButton>
         </InfiniTextInput>
+        
         <InfiniSpacerVertical Spacing="Size.M"/>
         
         <InfiniHeading5>
@@ -58,6 +60,20 @@
                 <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
             </div>
         </div>
+        
+        <InfiniSpacerVertical Spacing="Size.M"/>
+
+        <InfiniHeading5>
+            Danger zone
+        </InfiniHeading5>
+        
+        <InfiniButton 
+            IconName="trash"
+            OnClick="@OnDeleteAsync"
+            >
+            Delete LoreScope
+        </InfiniButton>
+        
     </InfiniSection>
 
 </InfiniPage>
@@ -152,5 +168,11 @@
         finally {
             StateHasChanged();
         }
+    }
+    
+    private async Task OnDeleteAsync() {
+        Outcome outcome = await LoreScopeInteractiveApi.DeleteLoreScopesAsync(UserId.ToString(), LoreScopeId.ToString());
+        if (!outcome.IsTrue) return;
+        NavigationManager.NavigateTo("/lorescopes");
     }
 }

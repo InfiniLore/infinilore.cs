@@ -492,6 +492,9 @@
   .bg-\(--color-base-70\) {
     background-color: var(--color-base-70);
   }
+  .bg-\(--color-red\) {
+    background-color: var(--color-red);
+  }
   .bg-transparent {
     background-color: transparent;
   }
