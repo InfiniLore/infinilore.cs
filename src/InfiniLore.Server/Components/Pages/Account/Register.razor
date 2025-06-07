@@ -1,7 +1,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@using Infinilore.InfiniBlazor
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -17,7 +17,7 @@
             We just need a little bit more information about you before you can start exploring
         </p>
 
-        <InfiniSpacerVertical Spacing="Spacing.M"/>
+        <InfiniSpacerVertical Spacing="Size.M"/>
 
         <InfiniTextInput
             @bind-Value="@userModel.Username"
@@ -27,7 +27,7 @@
             Placeholder="Enter Your New UserName"
         />
 
-        <InfiniSpacerVertical Spacing="Spacing.M"/>
+        <InfiniSpacerVertical Spacing="Size.M"/>
         <div class="flex justify-center w-full">
             <InfiniButton
                 OnClick="@HandleValidSubmitAsync"

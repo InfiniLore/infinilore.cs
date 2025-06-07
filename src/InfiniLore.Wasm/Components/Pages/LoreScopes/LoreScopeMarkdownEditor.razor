@@ -17,21 +17,29 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage>
-    <InfiniSection class="flex flex-col h-screen">
+    <InfiniSection class="flex flex-col overflow-auto infini-scrollbar">
         <InfiniHeading3>LoreScope Markdown File Editor</InfiniHeading3>
 
         @if (FileModel is null) {
             <span>Loading...</span>
-        } else {
+        }
+        else {
             @* File changes *@
             <div class="flex flex-col gap-4">
                 <div class="flex flex-row items-center space-x-3">
                     <InfiniTextInput @bind-Value="@FileModel.Name" Placeholder="Enter a file name...">
-                        <InfiniButton IconName="check" OnClick="SetFileNameAsync" Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
+                        <InfiniButton IconName="check" OnClick="SetFileNameAsync"
+                                      Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
                     </InfiniTextInput>
                 </div>
                 <div class="flex flex-row justify-center items-center space-x-3">
-                    <InfiniButton IconName="save" OnClick="SaveFileAsync" Disabled="@(FileModel is null)">Save File</InfiniButton>
+                    <InfiniButton
+                        Variant="ButtonVariant.Primary"
+                        IconName="save"
+                        OnClick="SaveFileAsync"
+                        Disabled="@(FileModel is null)">
+                        Save File
+                    </InfiniButton>
                 </div>
             </div>
 
@@ -45,6 +53,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [Parameter] public Guid LoreScopeId { get; set; }
     [Parameter] public Guid MarkdownId { get; set; }
@@ -78,7 +87,7 @@
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;
-        
+
         Outcome _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
             FileModel.OwnerId.ToString(),
             FileModel.Name,
