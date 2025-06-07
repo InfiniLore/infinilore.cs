@@ -36,6 +36,16 @@
             @bind-Value="@LoreScopeName">
             <InfiniButton OnClick="OnNameSubmitAsync">Submit</InfiniButton>
         </InfiniTextInput>
+
+
+        <InfiniSpacerVertical Spacing="Size.S"/>
+        
+        <InfiniLabel>Description</InfiniLabel>
+        <div class="h-64">
+            <InfiniMarkdownEditor
+                @bind-Source="@LoreScopeDescriptionSource"
+                ShowSidePreview="false"/>
+        </div>
         
         <InfiniSpacerVertical Spacing="Size.M"/>
         
@@ -92,6 +102,9 @@
         set {
             _loreScopeModel = value;
             LoreScopeName = _loreScopeModel?.Name;
+            LoreScopeDescriptionSource = new TextSource {
+                Text = _loreScopeModel?.Description ?? string.Empty
+            };
         }
     }
 
@@ -100,6 +113,8 @@
 
     private string? LoreScopeName { get; set; }
     private string? LoreScopeNameValidationMessage { get; set; }
+    
+    private ITextSource LoreScopeDescriptionSource { get; set; } = new TextSource();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
