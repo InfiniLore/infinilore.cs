@@ -15,7 +15,7 @@
 @inject IToastAppearanceProvider ToastAppearanceProvider
 @inject IToastStorage ToastStorage
 @attribute [Authorize]
-@implements IDisposable
+@implements IAsyncDisposable
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
@@ -73,7 +73,7 @@
 
 
     private CancellationTokenSource? _saveCancellationTokenSource;
-    private const int DebounceDelay = 1000;// 1-second delay
+    private const int DebounceDelay = 500;// 0.5-second delay
 
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -113,8 +113,6 @@
             // Ignore cancellation
         }
     }
-
-
 
     public void Dispose() {
         _saveCancellationTokenSource?.Dispose();
@@ -163,5 +161,20 @@
                 await ToastStorage.AddToastAsync(toastFail);
             }
         );
+    }
+
+    public async ValueTask DisposeAsync() {
+        if (_saveCancellationTokenSource is null) return;
+
+        try {
+            await _saveCancellationTokenSource.CancelAsync();
+            _saveCancellationTokenSource.Dispose();
+
+            // Perform one final save if one was still going on.
+            await SaveFileAsync();
+        }
+        catch (Exception ex) {
+            Logger.Warning(ex, "Failed to save changes during component disposal");
+        }
     }
 }
