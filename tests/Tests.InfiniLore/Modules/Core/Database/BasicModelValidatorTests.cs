@@ -1,19 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using DataSources.InfiniLore.Server;
 using FluentValidation;
 using FluentValidation.Results;
 using InfiniLore.Modules.Core.Server.Database;
 
 namespace Tests.InfiniLore.Modules.Core.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
-public class BasicModelValidatorTests(ServiceProviderDataSource serviceProvider) {
-    private IValidator<BasicModel> Validator => serviceProvider.GetRequiredService<IValidator<BasicModel>>();
+public class BasicModelValidatorTests {
+    private static IValidator<BasicModel> Validator => new BasicModelValidator();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Tests

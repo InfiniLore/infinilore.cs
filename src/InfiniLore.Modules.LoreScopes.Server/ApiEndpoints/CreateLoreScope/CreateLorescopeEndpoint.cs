@@ -28,12 +28,14 @@ public class CreateLorescopeEndpoint(
     // -----------------------------------------------------------------------------------------------------------------
     public override async Task HandleAsync(CreateLorescopeEndpointRequest req, CancellationToken ct) {
         Outcome<Guid> outcome = await messageBroker.CreateLoreScopeAsync(req.UserId, req.Name, ct: ct);
-        await outcome.SwitchAsync(
-            async id => await SendResultAsync(TypedResults.Ok(id)),
-            async error => {
+        
+        var result = outcome.Match<IResult>(
+            TypedResults.Ok,
+            error => {
                 logger.Error("Failed to create lorescope for user with id {id} because '{reason}'", req.UserId, error);
-                await SendResultAsync(TypedResults.BadRequest());
+                return TypedResults.BadRequest();
             }
         ); 
+        await SendResultAsync(result);
     }
 }

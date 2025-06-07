@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Test": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "SKIP_WithContainers": "true"
+      }
+    }
+  }
+}

@@ -33,11 +33,11 @@ public class GetLsMarkdownFilesEndpoint(
             Pagination.From(req),
             ct: ct
         );
-        
-        
-        await SendResultAsync(outcome.Match<IResult>(
+
+        var result = outcome.Match<IResult>(
             model => TypedResults.Ok(Map.FromEntity(model)),
             _ => TypedResults.NotFound()
-        ));
+        );
+        await SendResultAsync(result);
     }
 }

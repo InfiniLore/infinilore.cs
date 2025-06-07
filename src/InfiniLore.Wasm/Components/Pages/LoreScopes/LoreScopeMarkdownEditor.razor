@@ -16,28 +16,43 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage>
-    <InfiniSection class="flex flex-col h-screen">
-        <InfiniHeading3>LoreScope Markdown File Editor</InfiniHeading3>
+<InfiniPage Title="Markdown Editor">
+    <InfiniSection class="grow flex flex-col overflow-auto infini-scrollbar h-screen">
+        <InfiniHeading3 Class="flex flex-row"> 
+            <InfiniButton
+                Href="@($"/lorescope/{LoreScopeId}/markdown")"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+            
+            LoreScope Markdown File Editor
+        </InfiniHeading3>
 
         @if (FileModel is null) {
             <span>Loading...</span>
-        } else {
+        }
+        else {
             @* File changes *@
             <div class="flex flex-col gap-4">
                 <div class="flex flex-row items-center space-x-3">
-                    <InfiniTextInput @bind-Value="@FileModel.Name" Placeholder="Enter a file name...">
-                        <InfiniButton IconName="check" OnClick="SetFileNameAsync" Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
+                    <InfiniTextInput 
+                        Label="FileName"
+                        LabelLocation="LabelLocation.Left"
+                        @bind-Value="@FileModel.Name"
+                        Placeholder="Enter a file name...">
+                        <InfiniButton
+                            Variant="ButtonVariant.Primary"
+                            IconName="save"
+                            OnClick="SaveFileAsync"
+                            Disabled="@(FileModel is null)">
+                            Save File
+                        </InfiniButton>
                     </InfiniTextInput>
-                </div>
-                <div class="flex flex-row justify-center items-center space-x-3">
-                    <InfiniButton IconName="save" OnClick="SaveFileAsync" Disabled="@(FileModel is null)">Save File</InfiniButton>
                 </div>
             </div>
 
             @* Editor *@
             <div class="grow mt-4">
-                <InfiniMarkdownEditor @bind-Source="@TextSource" Class="h-186"/>
+                <InfiniMarkdownEditor @bind-Source="@TextSource" Class=""/>
             </div>
         }
     </InfiniSection>
@@ -45,6 +60,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
+
 @code {
     [Parameter] public Guid LoreScopeId { get; set; }
     [Parameter] public Guid MarkdownId { get; set; }
@@ -73,12 +89,11 @@
 
     }
 
-    private async Task SetFileNameAsync() => await SaveFileAsync();
-
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;
-        
+        if (!FileModel.Name.EndsWith(".md")) FileModel.Name = $"{FileModel.Name}.md";
+
         Outcome _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
             FileModel.OwnerId.ToString(),
             FileModel.Name,

@@ -18,9 +18,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<PageTitle>Profile</PageTitle>
-
-<InfiniPage>
+<InfiniPage Title="Profile">
     <InfiniSection>
         <InfiniHeading3>
             Profile Settings
@@ -36,8 +34,9 @@
 
                 <div class="flex flex-col grow justify-center">
                     <div class="grow"></div>
-                    <div class="flex flex-row justify-between">
+                    <div class="flex flex-col">
                         <span>Profile Image: </span>
+                        <span class="text-xs text-(--color-base-30)">(Takes a page refresh to take effect after upload)</span>
                     </div>
                     <div class="flex flex-row justify-between">
                         <div class="relative">
@@ -74,6 +73,7 @@
             <InfiniSection>
                 <InfiniHeading3>Admin Dashboard</InfiniHeading3>
                 Under Development ... 
+                You only see this because you are an admin...
             </InfiniSection>
         </Authorized>
     </AuthorizeView>

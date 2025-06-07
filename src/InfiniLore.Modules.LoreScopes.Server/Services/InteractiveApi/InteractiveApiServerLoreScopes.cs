@@ -33,6 +33,19 @@ public class InteractiveApiServerLoreScopes(
         if (!outcome.TryGetAsState(out bool success)) Outcome.FromError("Failed to delete lorescope");
         return Outcome.FromState(success);
     }
+    
+    public async ValueTask<Outcome> UpdateLoreScopeMetaDataAsync(string userId, string loreScopeId, string? newLoreScopeName = null, string? newDescription = null, CancellationToken ct = default) {
+        if (!Guid.TryParse(loreScopeId, out Guid parsedLoreScopeId)) return Outcome.FromError("Invalid lorescopeId");
+        if (newLoreScopeName.IsNullOrWhiteSpace()) return Outcome.FromError("Invalid lorescope name");
+        
+        Outcome outcome = await interactiveApi.MessageBroker.UpsertLoreScopeMetadataAsync(
+            parsedLoreScopeId,
+            name: newLoreScopeName,
+            description: newDescription,
+            ct: ct
+        );
+        return outcome;
+    }
 
     public async ValueTask<Outcome<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {
         if (!Guid.TryParse(userId, out Guid parsedUserId)) return Outcome<ILoreScopeModel>.FromError("Invalid userId");

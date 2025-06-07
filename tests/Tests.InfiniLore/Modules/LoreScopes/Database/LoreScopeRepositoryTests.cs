@@ -11,6 +11,7 @@ namespace Tests.InfiniLore.Modules.LoreScopes.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SkipOnEnv(SkipEnv.WithContainers)]
 [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
 public class LoreScopeRepositoryTests(ServiceProviderDataSource serviceProvider) {
     private IUnitOfWorkFactory Factory => serviceProvider.GetRequiredService<IUnitOfWorkFactory>();

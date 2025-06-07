@@ -10,6 +10,7 @@ namespace Tests.InfiniLore.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SkipOnEnv(SkipEnv.WithContainers)]
 [ClassDataSource<ServiceProviderDataSource>(Shared = SharedType.PerTestSession)]
 public class S3FileStorageConnection(ServiceProviderDataSource serviceProvider) {
     private IS3FileStorage S3FileStorageService => serviceProvider.GetRequiredService<IS3FileStorage>();

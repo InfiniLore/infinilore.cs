@@ -1,7 +1,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@using Infinilore.InfiniBlazor
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -10,14 +10,14 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage>
+<InfiniPage Title="Register">
     <InfiniSection class="w-full">
         <InfiniHeading4>Finishing Signup</InfiniHeading4>
         <p class="text-sm text-(--color-base-30)">
             We just need a little bit more information about you before you can start exploring
         </p>
 
-        <InfiniSpacerVertical Spacing="Spacing.M"/>
+        <InfiniSpacerVertical Spacing="Size.M"/>
 
         <InfiniTextInput
             @bind-Value="@userModel.Username"
@@ -27,7 +27,7 @@
             Placeholder="Enter Your New UserName"
         />
 
-        <InfiniSpacerVertical Spacing="Spacing.M"/>
+        <InfiniSpacerVertical Spacing="Size.M"/>
         <div class="flex justify-center w-full">
             <InfiniButton
                 OnClick="@HandleValidSubmitAsync"

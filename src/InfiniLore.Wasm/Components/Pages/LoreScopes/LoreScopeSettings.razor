@@ -1,56 +1,94 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using Infinilore.InfiniBlazor
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
-@using System.Diagnostics.CodeAnalysis
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
+@page "/lorescope/{LoreScopeId:guid}/settings"
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage>
+<InfiniPage Title="LoreScope Settings">
     <InfiniSection>
-        <InfiniHeading3>
+        <InfiniHeading3 Class="flex flex-row">
+            <InfiniButton
+                Href="/lorescopes/"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+
             LoreScope Settings
-            <span class="text-sm text-(--color-base-50)">
-                Id: @LoreScopeId
-            </span>
         </InfiniHeading3>
     </InfiniSection>
+    
+    <InfiniSection>
+        <InfiniHeading5>
+            LoreScope Details
+        </InfiniHeading5>
+        
+        <InfiniTextInput
+            Label="Name"
+            Placeholder="Enter a name"
+            ValidationMessage="@LoreScopeNameValidationMessage"
+            @bind-Value="@LoreScopeName">
+        </InfiniTextInput>
 
-    @if (LoreScopeModelFound) {
-        <InfiniSection>
-            <h2 class="text-lg font-semibold text-(--color-base-90) mb-4">
-                LoreScope Image
-            </h2>
-            <LoreScopePoster ImageUrl="@LoreScopeModel.S3PosterImageUrl" Name="@LoreScopeModel.Name"/>
 
-            <div class="mt-4">
-                <div class="flex flex-row justify-between">
-                    <div class="relative">
-                        <InputFile OnChange="@OnPosterImageSelected" 
-                                   class="w-full text-sm text-(--color-base-30) transition-all duration-150 transform cursor-pointer
+        <InfiniSpacerVertical Spacing="Size.S"/>
+        
+        <InfiniLabel>Description</InfiniLabel>
+        <div class="h-64">
+            <InfiniMarkdownEditor
+                @bind-Source="@LoreScopeDescriptionSource"
+                ShowSidePreview="false"/>
+        </div>
+        
+        <InfiniSpacerVertical Spacing="Size.M"/>
+        
+        <InfiniHeading5>
+            LoreScope Image
+        </InfiniHeading5>
+        
+        
+        <div class="mt-4 w- full">
+            <div class="flex flex-row justify-between gap-4">
+                <div class="flex flex-row w-2/3">
+                    <InputFile OnChange="@OnPosterImageSelected"
+                               class="w-full text-sm text-(--color-base-30) transition-all duration-150 transform cursor-pointer
                          file:cursor-pointer active:file:scale-95 file:mr-4 file:px-2 file:py-1 
                          file:text-base file:rounded-md file:bg-(--color-base-70) file:text-(--color-base-00) 
                          hover:file:text-(--color-accent) hover:file:ring-2 hover:ring-(--color-accent) 
                          hover:file:scale-105 p-1"
-                                   accept="image/*" />
-                    </div>
-
-                    <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
+                               accept="image/*" />
                 </div>
-            </div>
+                <div class="w-1/3 flex flex-col justify-center items-center" >
+                    <LoreScopePoster ImageUrl="@LoreScopeModel?.S3PosterImageUrl" Name="@LoreScopeModel?.Name"/>
+                </div>
 
-        </InfiniSection>
-    }
+            </div>
+        </div>
+        
+        <InfiniSpacerVertical Spacing="Size.Xxl"/>
+        
+        <div class="flex flex-row justify-between">
+            <InfiniButton
+                Variant="ButtonVariant.Success"
+                OnClick="OnSubmitAsync">Submit</InfiniButton>
+            <InfiniButton
+                Variant="ButtonVariant.Error"
+                IconName="trash"
+                OnClick="@OnDeleteAsync">Delete LoreScope</InfiniButton>
+        </div>
+        
+    </InfiniSection>
 
 </InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -60,11 +98,26 @@
     [Parameter] public Guid LoreScopeId { get; set; }
     [Parameter] public Guid UserId { get; set; }
 
-    private ILoreScopeModel? LoreScopeModel { get; set; }
-    [MemberNotNullWhen(true, nameof(LoreScopeModel))] private bool LoreScopeModelFound { get; set; }
+    
+    private ILoreScopeModel? _loreScopeModel;
+    private ILoreScopeModel? LoreScopeModel {
+        get => _loreScopeModel;
+        set {
+            _loreScopeModel = value;
+            LoreScopeName = _loreScopeModel?.Name;
+            LoreScopeDescriptionSource = new TextSource {
+                Text = _loreScopeModel?.Description ?? string.Empty
+            };
+        }
+    }
 
     private IBrowserFile? SelectedFile { get; set; }
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
+    private string? LoreScopeName { get; set; }
+    private string? LoreScopeNameValidationMessage { get; set; }
+    
+    private ITextSource LoreScopeDescriptionSource { get; set; } = new TextSource();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -79,12 +132,10 @@
             Logger.Warning("Could not retrieve model");
 
             LoreScopeModel = null;
-            LoreScopeModelFound = false;
             return;
         }
 
         LoreScopeModel = model;
-        LoreScopeModelFound = true;
     }
 
     private void OnPosterImageSelected(InputFileChangeEventArgs e) {
@@ -92,8 +143,36 @@
         SelectedFile = file;
         StateHasChanged();
     }
+
+    private async Task OnSubmitAsync() {
+        await Task.WhenAll(
+            UploadMetaDataAsync(),
+            UploadPosterImageAsync()
+        );
+        StateHasChanged();
+    }
     
-    private async Task OnPosterImageUpload() {
+    private async Task UploadMetaDataAsync() {
+        if (LoreScopeName.IsNullOrWhiteSpace()) {
+            LoreScopeNameValidationMessage = "Name cannot be empty";
+            return;
+        }
+
+        Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeMetaDataAsync(
+            UserId.ToString(),
+            LoreScopeId.ToString(),
+            LoreScopeName,
+            LoreScopeDescriptionSource.Text
+        );
+        
+        outcome.Switch(
+            () => LoreScopeNameValidationMessage = null,
+            () => LoreScopeNameValidationMessage = "Could not update LoreScope Name",
+            error => LoreScopeNameValidationMessage = error
+        );
+    }
+    
+    private async Task UploadPosterImageAsync() {
         if (SelectedFile is null) return;
 
         try {
@@ -121,5 +200,11 @@
         finally {
             StateHasChanged();
         }
+    }
+    
+    private async Task OnDeleteAsync() {
+        Outcome outcome = await LoreScopeInteractiveApi.DeleteLoreScopesAsync(UserId.ToString(), LoreScopeId.ToString());
+        if (!outcome.IsTrue) return;
+        NavigationManager.NavigateTo("/lorescopes");
     }
 }

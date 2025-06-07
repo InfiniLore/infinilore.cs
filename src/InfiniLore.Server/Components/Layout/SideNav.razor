@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.InfiniBlazor.Debugger
 @using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
@@ -13,6 +14,7 @@
 @inject IJwtTokenManager JsTokenProvider
 @inject IThemeSelector ThemeSelector
 @inject IInteractiveApiUsers UserInteractiveApi
+@inject IVisualDebuggerProvider DebuggerProvider
 @inject NavigationManager NavigationManager
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
@@ -58,6 +60,32 @@
             </InfiniSideNavLink>
         </Authorized>
     </AuthorizeView>
+    
+    <InfiniSpacer/>
+
+    <InfiniSideNavLink Href="/swagger">
+        <Icon>
+            <LiBraces/>
+        </Icon>
+        <Text>Swagger</Text>
+    </InfiniSideNavLink>
+    <InfiniSideNavToggleButton
+        Value="@DebuggerProvider.IsEnabled()"
+        ValueChanged="@DebuggerProvider.ToggleStateAsync"
+        OnIcon="@(MenuCollapsed ? "bug" : null)"
+        OffIcon="@(MenuCollapsed ? "bug" : null)">
+        <Icon><LiBug/></Icon>
+        <Text>Toggle Debug</Text>
+    </InfiniSideNavToggleButton>
+
+    <InfiniSideNavToggleButton
+        Value="@(ThemeSelector.CurrentThemeMode.Name != ThemeMode.DarkMode.Name)"
+        ValueChanged="@OnThemeSwitchAsync"
+        OnIcon="sun"
+        OffIcon="moon">
+        <Icon><LiSun/></Icon>
+        <Text>Toggle Mode</Text>
+    </InfiniSideNavToggleButton>
     </Body>
 
     <Footer>
@@ -80,13 +108,6 @@
             </NotAuthorized>
 
             <Authorized>
-                <InfiniSideNavLink Href="/swagger">
-                    <Icon>
-                        <LiBraces/>
-                    </Icon>
-                    <Text>Swagger</Text>
-                </InfiniSideNavLink>
-
                 <!-- Profile Icon -->
                 <InfiniSideNavUser
                     HrefUserProfile="/account/profile"
@@ -97,13 +118,9 @@
                             ImageUrl="@UserModel.ProfileImageUrl"/>
                     </Icon>
                     <AdditionalLinks>
-                        <button class="@(InfiniSideNavUser.AdditionalLinkClasses)" @onclick="OnThemeSwitchAsync">
-                            theme
-                        </button>
-
                         <NavLink @onclick="LogoutCallbackAsync"
                                  href="/account/logout"
-                                 class="@(InfiniSideNavUser.AdditionalLinkClasses)">
+                                 class="text-sm text-(--color-red) whitespace-nowrap hover:text-(--color-accent)">
                             logout
                         </NavLink>
                     </AdditionalLinks>

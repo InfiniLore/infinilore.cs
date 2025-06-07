@@ -6,6 +6,7 @@
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Collections.Concurrent
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -14,13 +15,13 @@
 @inject IInteractiveApiLoreScopes LoreScopeApi
 @inject IToastStorage ToastStorage
 @inject IToastAppearanceProvider ToastAppearanceProvider
-@inject NavigationManager Navigation
+@inject IMarkdownParser<string, string> MarkdownParser
 @attribute [Authorize]
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage>
+<InfiniPage Title="LoreScopes">
     <InfiniSection class="h-32 flex flex-col grow-0">
         <InfiniHeading3>Create New LoreScope</InfiniHeading3>
 
@@ -47,26 +48,28 @@
         else {
             <div class="infini-scrollbar flex flex-col overflow-auto gap-2">
                 @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
-                    <div class="px-2 py-1">
-                        <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all "
-                             onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
+                    <div class="px-2 py-1 overflow-x-hidden">
+                        <div class="group/item scale-100 transition-all ">
                             <div
-                                class="flex items-start bg-(--color-base-50) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-64 transition">
+                                class="grow flex items-start bg-(--color-base-80) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-64 transition">
 
                                 <!-- Poster Image -->
-                                <LoreScopePoster Class="w-1/5" ImageUrl="@loreScope.S3PosterImageUrl"
-                                                 Name="@loreScope.Name"/>
+                                <LoreScopePoster
+                                    Class="w-1/5"
+                                    ImageUrl="@loreScope.S3PosterImageUrl"
+                                    Name="@loreScope.Name"/>
 
                                 <!-- Main Info Content -->
-                                <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full w-3/5">
+                                <div class="grow flex flex-col gap-2 min-w-0 h-full w-3/5">
                                     @* Content *@
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-(--color-accent) truncate w-full">
+                                    <div class="grow flex flex-col justify-start">
+                                        <InfiniHeading3>
                                             @loreScope.Name
-                                        </h3>
+                                        </InfiniHeading3>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                            @loreScope.Description
+                                            @((MarkupString)(LoreScopeDescriptions[loreScope.Id] ?? string.Empty))
                                         </p>
+                                        <InfiniSpacer/>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
                                             Owner: @loreScope.OwnerId
                                         </p>
@@ -74,9 +77,17 @@
 
                                     @* Links *@
                                     <div class="flex flex-row gap-2 justify-start">
-                                        <InfiniButton IconName="file"
-                                                      OnClick="@(() => Navigation.NavigateTo($"/{UserId}/lorescope/{loreScope.Id}/markdown"))">
+                                        <InfiniButton
+                                            Variant="ButtonVariant.Dark"
+                                            IconName="file"
+                                            Href="@($"/lorescope/{loreScope.Id}/markdown")">
                                             Markdown files
+                                        </InfiniButton>
+                                        <InfiniButton
+                                            Variant="ButtonVariant.Dark"
+                                            IconName="book-marked"
+                                            Disabled="true">
+                                            Future Content
                                         </InfiniButton>
 
                                     </div>
@@ -85,8 +96,11 @@
                                 <!-- Stats Section -->
                                 <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
                                     @* <div class="text-sm text-(--color-base-50)">@MarkdownFileMap[loreScope.Id].Length file(s)</div> *@
-                                    <InfiniButton IconName="trash" OnClick="async () => await OnDeleteAsync(loreScope)">
-                                        Delete
+                                    <InfiniButton
+                                        Variant="ButtonVariant.Outline"
+                                        IconName="settings"
+                                        Href="@($"/lorescope/{loreScope.Id}/settings")">
+                                        Settings
                                     </InfiniButton>
                                 </div>
 
@@ -137,6 +151,7 @@
     private string UserId { get; set; } = string.Empty;
 
     private PaginatedData<ILoreScopeModel> PaginatedLoreScopes { get; set; } = PaginatedData<ILoreScopeModel>.Empty;
+    private ConcurrentDictionary<Guid, string?> LoreScopeDescriptions { get; set; } = new();
     private const int FilesPerPage = 12;
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -162,6 +177,13 @@
         if (!outcome.TryGetAsData(out PaginatedData<ILoreScopeModel>? data)) return;
 
         PaginatedLoreScopes = data;
+
+        var tasks = data.Items.Select(async loreScope => {
+                string? result = await MarkdownParser.TryParseAsync(loreScope.Description);
+                LoreScopeDescriptions.AddOrUpdate(loreScope.Id, _ => result, (_, _) => result);
+            }
+        );
+        await Task.WhenAll(tasks);
     }
 
     private async Task CreateNewLoreScopeAsync() {
@@ -191,22 +213,6 @@
         );
 
         await ToastStorage.AddToastAsync(toastFail);
-        StateHasChanged();
-    }
-
-    private async Task OnDeleteAsync(ILoreScopeModel loreScope) {
-        Outcome outcome = await LoreScopeApi.DeleteLoreScopesAsync(UserId, loreScope.Id.ToString());
-        if (outcome.IsTrue) {
-            var toast = new ToastData(
-                "LoreScope Deleted",
-                10,
-                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
-                Body: NewLoreScopeName
-            );
-            await ToastStorage.AddToastAsync(toast);
-        }
-
-        await FetchFilesAsync(0);
         StateHasChanged();
     }
 

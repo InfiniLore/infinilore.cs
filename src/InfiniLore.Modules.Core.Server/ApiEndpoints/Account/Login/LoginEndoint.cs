@@ -16,7 +16,7 @@ public class LoginEndpoint(IHttpContextAccessor accessor) : Endpoint<LoginReques
         Get("/account/login");
         RoutePrefixOverride(RoutePrefixes.Empty);
         AllowAnonymous();
-        DontAutoSendResponse();
+        DontAutoSendResponse(); // Handled by Auth0
     }
 
     // -----------------------------------------------------------------------------------------------------------------

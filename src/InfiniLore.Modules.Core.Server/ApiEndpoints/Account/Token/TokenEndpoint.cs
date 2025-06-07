@@ -10,7 +10,10 @@ namespace InfiniLore.Modules.Core.Server.ApiEndpoints.Account;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class TokenEndpoint(IHttpContextAccessor httpContextAccessor, IJwtTokenEncoder tokenEncoder) : EndpointWithoutRequest<TokenResponse> {
+public class TokenEndpoint(
+    IHttpContextAccessor httpContextAccessor, 
+    IJwtTokenEncoder tokenEncoder
+) : EndpointWithoutRequest<TokenResponse> {
 
     public override void Configure() {
         Get("/account/token");
