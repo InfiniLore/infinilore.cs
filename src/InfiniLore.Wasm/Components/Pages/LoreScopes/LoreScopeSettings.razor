@@ -8,7 +8,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/settings"
+@page "/lorescope/{LoreScopeId:guid}/settings"
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger
 @inject NavigationManager NavigationManager
@@ -19,7 +19,12 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="LoreScope Settings">
     <InfiniSection>
-        <InfiniHeading3>
+        <InfiniHeading3 Class="flex flex-row">
+            <InfiniButton
+                Href="/lorescopes/"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+
             LoreScope Settings
         </InfiniHeading3>
     </InfiniSection>

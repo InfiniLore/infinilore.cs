@@ -8,7 +8,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@page "/{UserId:guid}/lorescope/{LoreScopeId:guid}/markdown"
+@page "/lorescope/{LoreScopeId:guid}/markdown"
 @inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject NavigationManager NavigationManager
 @inject ILogger<LoreScopeMarkdownExplorer> Logger
@@ -19,7 +19,14 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="Markdown Files">
     <InfiniSection class="flex flex-col h-screen gap-2">
-        <InfiniHeading3>LoreScope Markdown Files</InfiniHeading3>
+        <InfiniHeading3 Class="flex flex-row">
+            <InfiniButton
+                Href="/lorescopes/"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+
+            LoreScope Markdown Files
+        </InfiniHeading3>
 
         <div class="flex items-center space-x-3">
             <InfiniTextInput @bind-Value="@NewMarkdownFileName" Placeholder="Enter a new markdown file name...">
@@ -44,9 +51,14 @@
                     <Content Context="file">
                         <InfiniTableCell>@file.Name</InfiniTableCell>
                         <InfiniTableCell>
-                            <div class="flex justify-center gap-2">
-                                <InfiniButton OnClick="() => GotoEditMarkdownFile(file)">Edit</InfiniButton>
-                                <InfiniButton OnClick="async () => await DeleteMarkdownFileAsync(file)">Delete
+                            <div class="flex justify-center items-center gap-8">
+                                <InfiniButton 
+                                    Variant="ButtonVariant.Outline"
+                                    OnClick="() => GotoEditMarkdownFile(file)">Edit</InfiniButton>
+                                <InfiniButton 
+                                    Variant="ButtonVariant.Error"
+                                    IconName="trash"
+                                    OnClick="async () => await DeleteMarkdownFileAsync(file)">
                                 </InfiniButton>
                             </div>
                         </InfiniTableCell>
@@ -88,7 +100,6 @@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
-    [Parameter] public Guid UserId { get; set; }
     [Parameter] public Guid LoreScopeId { get; set; }
 
     private PaginatedData<ILsMarkdownFileModel> PaginatedFiles { get; set; } = PaginatedData<ILsMarkdownFileModel>.Empty;

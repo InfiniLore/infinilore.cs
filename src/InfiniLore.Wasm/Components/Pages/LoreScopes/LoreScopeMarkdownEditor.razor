@@ -18,7 +18,14 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="Markdown Editor">
     <InfiniSection class="grow flex flex-col overflow-auto infini-scrollbar h-screen">
-        <InfiniHeading3>LoreScope Markdown File Editor</InfiniHeading3>
+        <InfiniHeading3 Class="flex flex-row"> 
+            <InfiniButton
+                Href="@($"/lorescope/{LoreScopeId}/markdown")"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+            
+            LoreScope Markdown File Editor
+        </InfiniHeading3>
 
         @if (FileModel is null) {
             <span>Loading...</span>
@@ -27,7 +34,11 @@
             @* File changes *@
             <div class="flex flex-col gap-4">
                 <div class="flex flex-row items-center space-x-3">
-                    <InfiniTextInput @bind-Value="@FileModel.Name" Placeholder="Enter a file name...">
+                    <InfiniTextInput 
+                        Label="FileName"
+                        LabelLocation="LabelLocation.Left"
+                        @bind-Value="@FileModel.Name"
+                        Placeholder="Enter a file name...">
                         <InfiniButton
                             Variant="ButtonVariant.Primary"
                             IconName="save"
@@ -81,6 +92,7 @@
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;
+        if (!FileModel.Name.EndsWith(".md")) FileModel.Name = $"{FileModel.Name}.md";
 
         Outcome _ = await InteractiveApi.UpsertLsMarkdownFileAsync(
             FileModel.OwnerId.ToString(),
