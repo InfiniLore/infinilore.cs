@@ -38,9 +38,7 @@ public class InteractiveApiServerLoreScopes(
         if (newLoreScopeName.IsNullOrWhiteSpace()) return Outcome.FromError("Invalid lorescope name");
         
         Outcome outcome = await interactiveApi.MessageBroker.UpsertLoreScopeMetadataAsync(parsedLoreScopeId, name:newLoreScopeName, ct: ct);
-        
-        if (!outcome.TryGetAsState(out bool success)) Outcome.FromError("Failed to update lorescope");
-        return Outcome.FromState(success);
+        return outcome;
     }
 
     public async ValueTask<Outcome<ILoreScopeModel>> GetLoreScopeAsync(string userId, string loreScopeId, CancellationToken ct = default) {

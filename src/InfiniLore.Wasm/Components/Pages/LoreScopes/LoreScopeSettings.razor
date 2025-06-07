@@ -30,7 +30,6 @@
         
         <InfiniTextInput
             Label="Name"
-            LabelLocation="LabelLocation.Left"
             Placeholder="Enter a name"
             ValidationMessage="@LoreScopeNameValidationMessage"
             @bind-Value="@LoreScopeName">
@@ -118,7 +117,7 @@
 
         Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeNameAsync(UserId.ToString(), LoreScopeId.ToString(), LoreScopeName);
         outcome.Switch(
-            static () => {},
+            () => LoreScopeNameValidationMessage = null,
             () => LoreScopeNameValidationMessage = "Could not update LoreScope Name",
             error => LoreScopeNameValidationMessage = error
         );
