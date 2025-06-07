@@ -492,6 +492,15 @@
   .bg-\(--color-base-70\) {
     background-color: var(--color-base-70);
   }
+  .bg-\(--color-base-80\) {
+    background-color: var(--color-base-80);
+  }
+  .bg-\(--color-base-90\) {
+    background-color: var(--color-base-90);
+  }
+  .bg-\(--color-base-95\) {
+    background-color: var(--color-base-95);
+  }
   .bg-\(--color-red\) {
     background-color: var(--color-red);
   }
