@@ -31,10 +31,11 @@
         <InfiniTextInput
             Label="Name"
             LabelLocation="LabelLocation.Left"
-            @bind-Value="@LoreScopeName"
-            
-        />
-
+            Placeholder="Enter a name"
+            ValidationMessage="@LoreScopeNameValidationMessage"
+            @bind-Value="@LoreScopeName">
+            <InfiniButton OnClick="OnNameSubmitAsync">Submit</InfiniButton>
+        </InfiniTextInput>
         <InfiniSpacerVertical Spacing="Size.M"/>
         
         <InfiniHeading5>
@@ -82,6 +83,7 @@
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
     private string? LoreScopeName { get; set; }
+    private string? LoreScopeNameValidationMessage { get; set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -105,6 +107,21 @@
     private void OnPosterImageSelected(InputFileChangeEventArgs e) {
         if (e.File is not {} file) return;
         SelectedFile = file;
+        StateHasChanged();
+    }
+
+    private async Task OnNameSubmitAsync() {
+        if (LoreScopeName.IsNullOrWhiteSpace()) {
+            LoreScopeNameValidationMessage = "Name cannot be empty";
+            return;
+        }
+
+        Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeNameAsync(UserId.ToString(), LoreScopeId.ToString(), LoreScopeName);
+        outcome.Switch(
+            static () => {},
+            () => LoreScopeNameValidationMessage = "Could not update LoreScope Name",
+            error => LoreScopeNameValidationMessage = error
+        );
         StateHasChanged();
     }
     

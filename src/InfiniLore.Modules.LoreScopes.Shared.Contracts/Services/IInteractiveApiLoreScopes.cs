@@ -16,4 +16,5 @@ public interface IInteractiveApiLoreScopes  {
     ValueTask<Outcome> CreateLoreScopeAsync(string userId, string newLoreScopeName, CancellationToken ct = default);
     ValueTask<Outcome> UpsertLoreScopeImageAsync(string userId, string loreScopeId, IBrowserFile file, CancellationToken ct = default);
     ValueTask<Outcome> DeleteLoreScopesAsync(string userId, string loreScopeId, CancellationToken ct = default);
+    ValueTask<Outcome> UpdateLoreScopeNameAsync(string userId, string loreScopeId, string newLoreScopeName, CancellationToken ct = default);
 }

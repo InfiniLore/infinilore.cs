@@ -5,6 +5,7 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Kiota;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item;
+using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.Metadata;
 using InfiniLore.Kiota.Api.V1.DataUser.Item.Lorescope.Item.PosterImage;
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.Core.Shared;
@@ -32,6 +33,25 @@ public class InteractiveApiWasmLoreScopes(
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             await using Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
+            
+            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            return Outcome.FromState(true);
+        }
+
+        catch (Exception e) {
+            logger.Warning(e, "Failed to delete LoreScope {loreScopeId} because '{reason}'", loreScopeId, e.Message);
+            return Outcome.FromError(interactiveApi.DefaultApiError);
+        }
+    }
+    
+    public async ValueTask<Outcome> UpdateLoreScopeNameAsync(string userId, string loreScopeId, string newLoreScopeName, CancellationToken ct = default) {
+        try {
+            InfiniLoreApiClient client = interactiveApi.ApiClient;
+            MetadataRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].Metadata;
+            var body = new KiotaUpsertLoreScopeMetadataEndpointRequest() {
+                Name = newLoreScopeName
+            };
+            await using Stream? result = await requestBuilder.PostAsync(body, cancellationToken: ct);
             
             if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
             return Outcome.FromState(true);
