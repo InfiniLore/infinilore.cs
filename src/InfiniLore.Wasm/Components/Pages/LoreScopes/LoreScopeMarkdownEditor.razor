@@ -28,18 +28,14 @@
             <div class="flex flex-col gap-4">
                 <div class="flex flex-row items-center space-x-3">
                     <InfiniTextInput @bind-Value="@FileModel.Name" Placeholder="Enter a file name...">
-                        <InfiniButton IconName="check" OnClick="SetFileNameAsync"
-                                      Disabled="FileModel.Name.IsNullOrWhiteSpace()"/>
+                        <InfiniButton
+                            Variant="ButtonVariant.Primary"
+                            IconName="save"
+                            OnClick="SaveFileAsync"
+                            Disabled="@(FileModel is null)">
+                            Save File
+                        </InfiniButton>
                     </InfiniTextInput>
-                </div>
-                <div class="flex flex-row justify-center items-center space-x-3">
-                    <InfiniButton
-                        Variant="ButtonVariant.Primary"
-                        IconName="save"
-                        OnClick="SaveFileAsync"
-                        Disabled="@(FileModel is null)">
-                        Save File
-                    </InfiniButton>
                 </div>
             </div>
 
@@ -81,8 +77,6 @@
         }
 
     }
-
-    private async Task SetFileNameAsync() => await SaveFileAsync();
 
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
