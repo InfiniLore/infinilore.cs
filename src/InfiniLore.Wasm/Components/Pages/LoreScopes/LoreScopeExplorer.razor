@@ -47,7 +47,7 @@
         else {
             <div class="infini-scrollbar flex flex-col overflow-auto gap-2">
                 @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
-                    <div class="px-2 py-1">
+                    <div class="px-2 py-1 overflow-x-hidden">
                         <div class="group/item cursor-pointer hover:scale-101 scale-100 transition-all "
                              onclick="@(() => Navigation.NavigateTo($"/{loreScope.OwnerId}/lorescope/{loreScope.Id}/settings"))">
                             <div
@@ -61,9 +61,9 @@
                                 <div class="flex flex-col justify-between gap-2 grow min-w-0 min-h-full w-3/5">
                                     @* Content *@
                                     <div>
-                                        <h3 class="text-lg font-semibold text-(--color-accent) truncate w-full">
+                                        <InfiniHeading3>
                                             @loreScope.Name
-                                        </h3>
+                                        </InfiniHeading3>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
                                             @loreScope.Description
                                         </p>

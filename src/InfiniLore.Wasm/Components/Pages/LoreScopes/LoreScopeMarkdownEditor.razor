@@ -17,7 +17,7 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage>
-    <InfiniSection class="flex flex-col overflow-auto infini-scrollbar">
+    <InfiniSection class="grow flex flex-col overflow-auto infini-scrollbar h-screen">
         <InfiniHeading3>LoreScope Markdown File Editor</InfiniHeading3>
 
         @if (FileModel is null) {
@@ -45,7 +45,7 @@
 
             @* Editor *@
             <div class="grow mt-4">
-                <InfiniMarkdownEditor @bind-Source="@TextSource" Class="h-186"/>
+                <InfiniMarkdownEditor @bind-Source="@TextSource" Class=""/>
             </div>
         }
     </InfiniSection>
