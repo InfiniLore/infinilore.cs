@@ -15,29 +15,29 @@
 @inject IToastAppearanceProvider ToastAppearanceProvider
 @inject IToastStorage ToastStorage
 @attribute [Authorize]
+@implements IDisposable
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="Markdown Editor">
     <InfiniSection class="grow flex flex-col overflow-auto infini-scrollbar h-screen">
-        <InfiniHeading3 Class="flex flex-row"> 
+        <InfiniHeading3 Class="flex flex-row">
             <InfiniButton
                 Href="@($"/lorescope/{LoreScopeId}/markdown")"
                 Variant="ButtonVariant.Transparent"
                 IconName="chevron-left"/>
-            
+
             LoreScope Markdown File Editor
         </InfiniHeading3>
 
         @if (FileModel is null) {
             <span>Loading...</span>
-        }
-        else {
+        } else {
             @* File changes *@
             <div class="flex flex-col gap-4">
                 <div class="flex flex-row items-center space-x-3">
-                    <InfiniTextInput 
+                    <InfiniTextInput
                         Label="FileName"
                         LabelLocation="LabelLocation.Left"
                         @bind-Value="@FileModel.Name"
@@ -45,7 +45,7 @@
                         <InfiniButton
                             Variant="ButtonVariant.Primary"
                             IconName="save"
-                            OnClick="SaveFileAsync"
+                            OnClick="DebouncedSaveFileAsync"
                             Disabled="@(FileModel is null)">
                             Save File
                         </InfiniButton>
@@ -71,6 +71,11 @@
     private ITextSource TextSource { get; set; } = new TextSource();
     private ILsMarkdownFileModel? FileModel { get; set; }
 
+
+    private CancellationTokenSource? _saveCancellationTokenSource;
+    private const int DebounceDelay = 1000;// 1-second delay
+
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -89,12 +94,36 @@
         catch (Exception ex) {
             Logger.Warning(ex, "Failed to download markdown content");
         }
+    }
 
+    private async Task DebouncedSaveFileAsync() {
+        try {
+            if (_saveCancellationTokenSource is not null) {
+                await _saveCancellationTokenSource.CancelAsync();
+                _saveCancellationTokenSource.Dispose();
+            }
+
+            _saveCancellationTokenSource = new CancellationTokenSource();
+
+            await Task.Delay(DebounceDelay, _saveCancellationTokenSource.Token);
+
+            await SaveFileAsync();
+        }
+        catch (OperationCanceledException) {
+            // Ignore cancellation
+        }
+    }
+
+
+
+    public void Dispose() {
+        _saveCancellationTokenSource?.Dispose();
     }
 
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;
+
         if (!FileModel.Name.EndsWith(".md")) FileModel.Name = $"{FileModel.Name}.md";
 
         Outcome outcome = await InteractiveApi.UpsertLsMarkdownFileAsync(
@@ -103,8 +132,9 @@
             TextSource.Text,
             MarkdownId
         );
+
         await outcome.SwitchAsync(
-            async () => {
+            trueCase: async () => {
                 var toastSuccess = new ToastData(
                     "Markdown file has been saved",
                     10,
@@ -113,7 +143,7 @@
 
                 await ToastStorage.AddToastAsync(toastSuccess);
             },
-            async () => {
+            falseCase: async () => {
                 var toastFail = new ToastData(
                     "Could not save Markdown file",
                     10,
@@ -122,12 +152,12 @@
 
                 await ToastStorage.AddToastAsync(toastFail);
             },
-            async error => {
+            errorCase: async error => {
                 var toastFail = new ToastData(
                     "Could not save Markdown file due to an error",
                     10,
                     ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
-                    Body: error
+                    error
                 );
 
                 await ToastStorage.AddToastAsync(toastFail);
