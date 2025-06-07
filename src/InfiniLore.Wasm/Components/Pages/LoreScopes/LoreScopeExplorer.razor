@@ -64,14 +64,13 @@
                                         <InfiniHeading3>
                                             @loreScope.Name
                                         </InfiniHeading3>
-                                        <div class="grow flex flex-col justify-between">
-                                            <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                                @loreScope.Description
-                                            </p>
-                                            <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                                Owner: @loreScope.OwnerId
-                                            </p>
-                                        </div>
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4">
+                                            @loreScope.Description
+                                        </p>
+                                        <InfiniSpacer/>
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4">
+                                            Owner: @loreScope.OwnerId
+                                        </p>
                                     </div>
 
                                     @* Links *@
@@ -82,7 +81,6 @@
                                             Href="@($"/{UserId}/lorescope/{loreScope.Id}/markdown")">
                                             Markdown files
                                         </InfiniButton>
-
                                         <InfiniButton
                                             Variant="ButtonVariant.Dark"
                                             IconName="book-marked"
