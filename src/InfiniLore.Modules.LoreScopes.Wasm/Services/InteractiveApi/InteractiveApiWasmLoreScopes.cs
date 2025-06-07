@@ -43,13 +43,13 @@ public class InteractiveApiWasmLoreScopes(
             return Outcome.FromError(interactiveApi.DefaultApiError);
         }
     }
-    
-    public async ValueTask<Outcome> UpdateLoreScopeNameAsync(string userId, string loreScopeId, string newLoreScopeName, CancellationToken ct = default) {
+    public async ValueTask<Outcome> UpdateLoreScopeMetaDataAsync(string userId, string loreScopeId, string? newLoreScopeName = null, string? newDescription = null, CancellationToken ct = default) {
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MetadataRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].Metadata;
             var body = new KiotaUpsertLoreScopeMetadataEndpointRequest() {
-                Name = newLoreScopeName
+                Name = newLoreScopeName,
+                Description = newDescription
             };
             await using Stream? result = await requestBuilder.PostAsync(body, cancellationToken: ct);
             

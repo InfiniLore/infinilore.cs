@@ -34,7 +34,6 @@
             Placeholder="Enter a name"
             ValidationMessage="@LoreScopeNameValidationMessage"
             @bind-Value="@LoreScopeName">
-            <InfiniButton OnClick="OnNameSubmitAsync">Submit</InfiniButton>
         </InfiniTextInput>
 
 
@@ -53,11 +52,10 @@
             LoreScope Image
         </InfiniHeading5>
         
-        <LoreScopePoster ImageUrl="@LoreScopeModel?.S3PosterImageUrl" Name="@LoreScopeModel?.Name"/>
         
-        <div class="mt-4">
-            <div class="flex flex-row justify-between">
-                <div class="relative">
+        <div class="mt-4 w- full">
+            <div class="flex flex-row justify-between gap-4">
+                <div class="flex flex-row w-2/3">
                     <InputFile OnChange="@OnPosterImageSelected"
                                class="w-full text-sm text-(--color-base-30) transition-all duration-150 transform cursor-pointer
                          file:cursor-pointer active:file:scale-95 file:mr-4 file:px-2 file:py-1 
@@ -66,24 +64,29 @@
                          hover:file:scale-105 p-1"
                                accept="image/*" />
                 </div>
+                <div class="w-1/3 flex flex-col justify-center items-center" >
+                    <LoreScopePoster ImageUrl="@LoreScopeModel?.S3PosterImageUrl" Name="@LoreScopeModel?.Name"/>
+                </div>
 
-                <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
             </div>
         </div>
         
-        <InfiniSpacerVertical Spacing="Size.M"/>
-
-        <InfiniHeading5>
-            Danger zone
-        </InfiniHeading5>
+        <InfiniSpacerVertical Spacing="Size.Xxl"/>
         
-        <InfiniButton
-            Variant="ButtonVariant.Error"
-            IconName="trash"
-            OnClick="@OnDeleteAsync"
+        <div class="flex flex-row justify-between">
+            <InfiniButton
+                Variant="ButtonVariant.Success"
+                OnClick="OnSubmitAsync">Submit</InfiniButton>
+            <InfiniButton
+                Variant="ButtonVariant.Error"
+                IconName="trash"
+                OnClick="@OnDeleteAsync"
             >
-            Delete LoreScope
-        </InfiniButton>
+                Delete LoreScope
+            </InfiniButton>
+        </div>
+        
+        
         
     </InfiniSection>
 
@@ -141,22 +144,35 @@
         StateHasChanged();
     }
 
-    private async Task OnNameSubmitAsync() {
+    private async Task OnSubmitAsync() {
+        await Task.WhenAll(
+            UploadMetaDataAsync(),
+            UploadPosterImageAsync()
+        );
+        StateHasChanged();
+    }
+    
+    private async Task UploadMetaDataAsync() {
         if (LoreScopeName.IsNullOrWhiteSpace()) {
             LoreScopeNameValidationMessage = "Name cannot be empty";
             return;
         }
 
-        Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeNameAsync(UserId.ToString(), LoreScopeId.ToString(), LoreScopeName);
+        Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeMetaDataAsync(
+            UserId.ToString(),
+            LoreScopeId.ToString(),
+            LoreScopeName,
+            LoreScopeDescriptionSource.Text
+        );
+        
         outcome.Switch(
             () => LoreScopeNameValidationMessage = null,
             () => LoreScopeNameValidationMessage = "Could not update LoreScope Name",
             error => LoreScopeNameValidationMessage = error
         );
-        StateHasChanged();
     }
     
-    private async Task OnPosterImageUpload() {
+    private async Task UploadPosterImageAsync() {
         if (SelectedFile is null) return;
 
         try {
