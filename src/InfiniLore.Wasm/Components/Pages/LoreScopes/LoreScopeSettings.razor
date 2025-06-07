@@ -209,21 +209,20 @@
         Outcome outcome = await LoreScopeInteractiveApi.DeleteLoreScopesAsync(UserId.ToString(), LoreScopeId.ToString());
         await outcome.SwitchAsync(
             async () => {
-                var toastFail = new ToastData(
+                var toastInfo = new ToastData(
                     "LoreScope has been deleted",
                     10,
                     ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Info)
                 );
 
-                await ToastStorage.AddToastAsync(toastFail);
+                await ToastStorage.AddToastAsync(toastInfo);
                 NavigationManager.NavigateTo("/lorescopes");
             },
             async () => {
                 var toastFail = new ToastData(
                     "Could not delete LoreScope",
                     10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
-                    Body: outcome.IsError ? outcome.AsError.Value : "UNKNOWN"
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Warning)
                 );
 
                 await ToastStorage.AddToastAsync(toastFail);
