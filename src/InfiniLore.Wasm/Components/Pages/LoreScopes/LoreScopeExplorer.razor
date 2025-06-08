@@ -67,7 +67,7 @@
                                             @loreScope.Name
                                         </InfiniHeading3>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                            @((MarkupString)(LoreScopeDescriptions[loreScope.Id] ?? string.Empty))
+                                            @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
                                         </p>
                                         <InfiniSpacer/>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4">
@@ -178,11 +178,23 @@
 
         PaginatedLoreScopes = data;
 
-        var tasks = data.Items.Select(async loreScope => {
-                string? result = await MarkdownParser.TryParseAsync(loreScope.Description);
-                LoreScopeDescriptions.AddOrUpdate(loreScope.Id, _ => result, (_, _) => result);
+        // Clear old descriptions that are no longer needed
+        HashSet<Guid> currentIds = data.Items.Select(ls => ls.Id).ToHashSet();
+        List<Guid> keysToRemove = LoreScopeDescriptions.Keys.Where(k => !currentIds.Contains(k)).ToList();
+        foreach (Guid key in keysToRemove) {
+            LoreScopeDescriptions.TryRemove(key, out _);
+        }
+
+        // Process descriptions for current items
+        IEnumerable<Task> tasks = data.Items.Select(async loreScope => {
+            string? result = null;
+            if (loreScope.Description is not null) {
+                result = await MarkdownParser.TryParseAsync(loreScope.Description);
             }
-        );
+
+            LoreScopeDescriptions.AddOrUpdate(loreScope.Id, addValueFactory: _ => result, updateValueFactory: (_, _) => result);
+        });
+
         await Task.WhenAll(tasks);
     }
 
