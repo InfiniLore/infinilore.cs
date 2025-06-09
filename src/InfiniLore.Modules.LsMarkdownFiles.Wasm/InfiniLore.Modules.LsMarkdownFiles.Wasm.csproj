@@ -14,6 +14,7 @@
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Components\InfiniLore.Modules.LsMarkdownFiles.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared\InfiniLore.Modules.LsMarkdownFiles.Shared.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm.Contracts\InfiniLore.Modules.LsMarkdownFiles.Wasm.Contracts.csproj" />
     </ItemGroup>
     
     <ItemGroup>

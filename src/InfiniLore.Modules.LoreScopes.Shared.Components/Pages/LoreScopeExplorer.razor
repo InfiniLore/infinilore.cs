@@ -26,27 +26,27 @@
 
         <div class="flex items-center space-x-3">
             <InfiniTextInput @bind-Value="@NewLoreScopeName" Placeholder="Enter a new Lorescope name...">
-                <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync" Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
+                <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync"
+                              Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
             </InfiniTextInput>
         </div>
     </InfiniSection>
 
     <div class="h-4 grow-0"></div>
 
-    <InfiniSection class="flex flex-col grow gap-2 overflow-auto">
-        @if (PaginatedLoreScopes.IsEmpty) {
-            <div class="flex flex-col items-center">
-                <h3 class="text-lg font-semibold text-(--color-base-90)">
-                    No LoreScopes Found
-                </h3>
-                <p class="text-sm text-(--color-base-50)">
-                    Create a new one by clicking the button above
-                </p>
-            </div>
-        }
-        else {
-            <div class="infini-scrollbar flex flex-col overflow-auto gap-2">
-                @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
+    <InfiniSection class="flex flex-col grow gap-2 overflow-auto h-min-full">
+        <div class="infini-scrollbar flex flex-col overflow-auto gap-2">
+            @if (PaginatedLoreScopes.IsEmpty && !IsLoading) {
+                <div class="flex flex-col items-center">
+                    <h3 class="text-lg font-semibold text-(--color-base-90)">
+                        No LoreScopes Found
+                    </h3>
+                    <p class="text-sm text-(--color-base-50)">
+                        Create a new one by clicking the button above
+                    </p>
+                </div>
+            } else {
+                foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
                     <div class="px-2 py-1 overflow-x-hidden">
                         <div class="group/item scale-100 transition-all ">
                             <div
@@ -93,7 +93,8 @@
                                 </div>
 
                                 <!-- Stats Section -->
-                                <div class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
+                                <div
+                                    class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
                                     <InfiniButton
                                         Variant="ButtonVariant.Outline"
                                         IconName="settings"
@@ -106,35 +107,35 @@
                         </div>
                     </div>
                 }
-            </div>
 
-            @* Navigation *@
-            <div class="flex justify-center items-end grow">
-                <div class="flex gap-2">
-                    @if (PaginatedLoreScopes.TotalPages > 1) {
-                        <InfiniButton
-                            OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage - 1)"
-                            Disabled="@(!PaginatedLoreScopes.HasPreviousPage)">
-                            Previous
-                        </InfiniButton>
-                    }
+                @* Navigation *@
+                <div class="flex justify-center items-end grow">
+                    <div class="flex gap-2">
+                        @if (PaginatedLoreScopes.TotalPages > 1) {
+                            <InfiniButton
+                                OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage - 1)"
+                                Disabled="@(!PaginatedLoreScopes.HasPreviousPage)">
+                                Previous
+                            </InfiniButton>
+                        }
 
-                    <div class="text-(--color-base-50) flex flex-col justify-center items-center">
+                        <div class="text-(--color-base-50) flex flex-col justify-center items-center">
                     <span
                         class="text-sm">Page @(PaginatedLoreScopes.CurrentPage + 1) of @PaginatedLoreScopes.TotalPages</span>
-                        <span class="text-xs">@PaginatedLoreScopes.TotalCount total items</span>
-                    </div>
+                            <span class="text-xs">@PaginatedLoreScopes.TotalCount total items</span>
+                        </div>
 
-                    @if (PaginatedLoreScopes.TotalPages > 1) {
-                        <InfiniButton
-                            OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage + 1)"
-                            Disabled="@(!PaginatedLoreScopes.HasNextPage)">
-                            Next
-                        </InfiniButton>
-                    }
+                        @if (PaginatedLoreScopes.TotalPages > 1) {
+                            <InfiniButton
+                                OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage + 1)"
+                                Disabled="@(!PaginatedLoreScopes.HasNextPage)">
+                                Next
+                            </InfiniButton>
+                        }
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </InfiniSection>
 </InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -149,8 +150,11 @@
     private string UserId { get; set; } = string.Empty;
 
     private PaginatedData<ILoreScopeModel> PaginatedLoreScopes { get; set; } = PaginatedData<ILoreScopeModel>.Empty;
-    private ConcurrentDictionary<Guid, string?> LoreScopeDescriptions { get; set; } = new();
+    private ConcurrentDictionary<Guid, string?> LoreScopeDescriptions { get; } = new();
     private const int FilesPerPage = 12;
+
+    private bool IsLoading { get; set; } = true;
+
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -164,6 +168,7 @@
         UserId = userId;
 
         await FetchFilesAsync(0);
+        IsLoading = false;
     }
 
     private async Task FetchFilesAsync(int pageNumber) {
@@ -205,8 +210,9 @@
                 "LoreScope Created",
                 10,
                 ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
-                Body: NewLoreScopeName
+                NewLoreScopeName
             );
+
             await ToastStorage.AddToastAsync(toast);
             NewLoreScopeName = string.Empty;
 
@@ -219,7 +225,7 @@
             "Could not create LoreScope",
             10,
             ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
-            Body: outcome.IsError ? outcome.AsError.Value : "UNKNOWN"
+            outcome.IsError ? outcome.AsError.Value : "UNKNOWN"
         );
 
         await ToastStorage.AddToastAsync(toastFail);

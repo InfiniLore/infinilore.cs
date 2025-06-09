@@ -2,31 +2,39 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Kiota.Models;
-using InfiniLore.Modules.LoreScopes.Shared.Database;
+using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 
-namespace InfiniLore.Modules.LoreScopes.Wasm;
+namespace InfiniLore.Modules.LsMarkdownFiles.Wasm;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record WasmLoreScopeModel(
+public record WasmLsMarkdownFileModel(
     Guid Id,
     DateTime CreatedDate,
     DateTime LastModifiedDate,
     Guid OwnerId,
     string Name,
-    string? Description,
-    string? S3PosterImageUrl
-) : ILoreScopeModel {
+    string? ResourceUrl
+) : ILsMarkdownFileModel {
+    public string Name { get; set; } = Name;
 
-    public static ILoreScopeModel FromKiotaModel(KiotaLoreScopeResponse response)
-        => new WasmLoreScopeModel(
+    public static WasmLsMarkdownFileModel Empty { get; } = new(
+        Guid.Empty,
+        DateTime.MinValue,
+        DateTime.MinValue,
+        Guid.Empty,
+        string.Empty,
+        null
+    );
+    
+    public static ILsMarkdownFileModel FromKiotaModel(KiotaLsMarkdownFileResponse response)
+        => new WasmLsMarkdownFileModel(
             Guid.Parse(response.Id!),
             response.CreatedDate?.DateTime ?? DateTime.MinValue,
             response.LastModifiedDate?.DateTime ?? DateTime.MinValue,
             Guid.Parse(response.OwnerId!),
             response.Name!,
-            response.Description,
-            response.ImageUrl
+            response.ResourceUrl
         );
 }

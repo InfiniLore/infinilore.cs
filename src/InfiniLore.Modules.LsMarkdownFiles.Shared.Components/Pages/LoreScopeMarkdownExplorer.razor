@@ -37,9 +37,7 @@
 
         <hr class="my-4"/>
 
-        @if (!RendererInfo.IsInteractive) {
-            <span>Loading...</span>
-        } else if (PaginatedFiles.IsEmpty) {
+        @if (PaginatedFiles.IsEmpty) {
             <span>No files found</span>
         } else {
             @* Table *@

@@ -7,6 +7,7 @@
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
 @using InfiniLore.Modules.LoreScopes.Shared.Services
+@using InfiniLore.Modules.LoreScopes.Wasm
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -42,9 +43,8 @@
             Label="Name"
             Placeholder="Enter a name"
             ValidationMessage="@LoreScopeNameValidationMessage"
-            @bind-Value="@LoreScopeName">
+            @bind-Value="@LoreScopeModel.Name">
         </InfiniTextInput>
-
 
         <InfiniSpacerVertical Spacing="Size.S"/>
         
@@ -74,7 +74,7 @@
                                accept="image/*" />
                 </div>
                 <div class="w-1/3 flex flex-col justify-center items-center" >
-                    <LoreScopePoster ImageUrl="@LoreScopeModel?.S3PosterImageUrl" Name="@LoreScopeModel?.Name"/>
+                    <LoreScopePoster ImageUrl="@LoreScopeModel.S3PosterImageUrl" Name="@LoreScopeModel.Name"/>
                 </div>
 
             </div>
@@ -86,11 +86,13 @@
             <InfiniButton
                 Variant="ButtonVariant.Default"
                 Color="Color.Green"
+                Disabled="IsLoading"
                 OnClick="OnSubmitAsync">Submit</InfiniButton>
             <InfiniButton
                 Variant="ButtonVariant.Default"
                 Color="Color.Red"
                 IconName="trash"
+                Disabled="IsLoading"
                 OnClick="@OnDeleteAsync">Delete LoreScope</InfiniButton>
         </div>
         
@@ -104,14 +106,13 @@
     [Parameter] public Guid LoreScopeId { get; set; }
     [SupplyParameterFromQuery(Name = "userId")] public Guid UserId { get; set; }
     
-    private ILoreScopeModel? _loreScopeModel;
-    private ILoreScopeModel? LoreScopeModel {
+    private ILoreScopeModel _loreScopeModel  = WasmLoreScopeModel.Empty;
+    private ILoreScopeModel LoreScopeModel {
         get => _loreScopeModel;
         set {
             _loreScopeModel = value;
-            LoreScopeName = _loreScopeModel?.Name;
             LoreScopeDescriptionSource = new TextSource {
-                Text = _loreScopeModel?.Description ?? string.Empty
+                Text = _loreScopeModel.Description ?? string.Empty
             };
         }
     }
@@ -119,10 +120,10 @@
     private IBrowserFile? SelectedFile { get; set; }
     private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
-    private string? LoreScopeName { get; set; }
     private string? LoreScopeNameValidationMessage { get; set; }
     
     private ITextSource LoreScopeDescriptionSource { get; set; } = new TextSource();
+    private bool IsLoading { get; set; } = true;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -137,11 +138,12 @@
         if (!outcome.TryGetAsData(out ILoreScopeModel? model)) {
             Logger.Warning("Could not retrieve model");
 
-            LoreScopeModel = null;
+            LoreScopeModel = WasmLoreScopeModel.Empty;
             return;
         }
 
         LoreScopeModel = model;
+        IsLoading = false;
         StateHasChanged();
     }
 
@@ -160,7 +162,7 @@
     }
     
     private async Task UploadMetaDataAsync() {
-        if (LoreScopeName.IsNullOrWhiteSpace()) {
+        if (LoreScopeModel.Name.IsNullOrWhiteSpace()) {
             LoreScopeNameValidationMessage = "Name cannot be empty";
             return;
         }
@@ -168,7 +170,7 @@
         Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeMetaDataAsync(
             UserId.ToString(),
             LoreScopeId.ToString(),
-            LoreScopeName,
+            LoreScopeModel.Name,
             LoreScopeDescriptionSource.Text
         );
         

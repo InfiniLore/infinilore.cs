@@ -21,6 +21,7 @@
         <ProjectReference Include="..\InfiniLore.Modules.Core.Shared.Contracts\InfiniLore.Modules.Core.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Contracts\InfiniLore.Modules.LoreScopes.Shared.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Wasm.Contracts\InfiniLore.Modules.LoreScopes.Wasm.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

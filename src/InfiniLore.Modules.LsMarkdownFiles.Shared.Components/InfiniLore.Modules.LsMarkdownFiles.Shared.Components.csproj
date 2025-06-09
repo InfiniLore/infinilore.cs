@@ -18,6 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Modules.Core.Shared.Contracts\InfiniLore.Modules.Core.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm.Contracts\InfiniLore.Modules.LsMarkdownFiles.Wasm.Contracts.csproj" />
     </ItemGroup>
 
 </Project>
