@@ -12,5 +12,6 @@ namespace InfiniLore.Modules.Core.Server.Database;
 [InjectableScoped<IAccessProtectionRepository>]
 public class AccessProtectionRepository : BasicModelRepository<AccessProtectionModel>, IAccessProtectionRepository {
     protected override IQueryable<AccessProtectionModel> AlwaysInclude(IQueryable<AccessProtectionModel> query)
-        => query.Include(access => access.Rules);
+        => base.AlwaysInclude(query)
+            .Include(access => access.Rules);
 }

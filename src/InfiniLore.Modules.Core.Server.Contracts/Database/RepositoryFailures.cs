@@ -10,4 +10,6 @@ public static class RepositoryFailures {
     public const string ModelFailedUniqueConstraint = nameof(ModelFailedUniqueConstraint);
     public const string ModelNotFound = nameof(ModelNotFound);
     public const string ModelsNotFound = nameof(ModelsNotFound);
+    public const string ConcurrencyConflict = nameof(ConcurrencyConflict);
+    public const string InvalidInput = nameof(InvalidInput);
 }

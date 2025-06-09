@@ -13,4 +13,5 @@ public interface IKeyValueEntryRepository :
     IHasGetCountAsync {
     ValueTask<RepoOutcome> TryAddOrUpdateAsync(KeyValueEntryModel model, CancellationToken ct = default);
     ValueTask<RepoOutcome<KeyValueEntryModel>> TryGetByKeyAsync(string key, CancellationToken ct = default);
+    ValueTask<RepoOutcome> RemoveAsync(string key, CancellationToken ct = default);
 }
