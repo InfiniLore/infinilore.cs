@@ -8,9 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj" />
-        <ProjectReference Include="..\InfiniLore.Modules.Core.Shared.Components\InfiniLore.Modules.Core.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Server\InfiniLore.Modules.LoreScopes.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server\InfiniLore.Modules.LsMarkdownFiles.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />

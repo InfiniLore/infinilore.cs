@@ -1,18 +1,23 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.LoreScopes.Shared;
+using InfiniLore.Modules.LoreScopes.Shared.Components;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
-namespace InfiniLore.Modules.Core.Wasm;
+namespace InfiniLore.Modules.LoreScopes.Server;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class CoreModuleSetup : WasmModuleSetup {
-    public override void SetupServices(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModulesCoreShared();
-        services.RegisterServicesFromInfiniLoreModulesCoreWasm();
+public class ModuleSetupLoreScopesServer : IModuleSetup {
+    public Assembly ComponentAssembly => IComponentsEntryLoreScopes.Assembly;
+    
+    public void SetupServices(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreModulesLoreScopesShared();
+        services.RegisterServicesFromInfiniLoreModulesLoreScopesServer();
     }
 }

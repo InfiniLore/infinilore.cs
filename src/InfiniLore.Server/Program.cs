@@ -10,19 +10,17 @@ using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.InfiniBlazor.Toasting.Config;
+using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
 using InfiniLore.Modules.Core.Shared;
-using InfiniLore.Modules.Core.Shared.Components;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
-using InfiniLore.Modules.LoreScopes.Shared.Components;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
-using InfiniLore.Modules.LsMarkdownFiles.Shared.Components;
 using InfiniLore.Server.Cli;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -90,15 +88,16 @@ public class Program {
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
     private static WebApplication BuildApp(WebApplicationBuilder builder) {
-        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
-            .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>()
-            .AddModule<IServerModuleLsMarkdownFiles>();
+        ModuleProvider moduleProvider = ModuleProviderBuilder.Create(builder.Services)
+            .AddModule<ModuleSetupCoreServer>()
+            .AddModule<ModuleSetupLoreScopesServer>()
+            .AddModule<ModuleSetupLsMarkdownFilesServer>()
+            .Build();
         
         #region Database
         ContentDbFactory.RegisterDatabase(
             builder.Services,
-            moduleBuilder.ModuleAssemblies, 
+            moduleProvider.GetAssemblies(), 
             options => options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"])
         );
 
@@ -178,7 +177,7 @@ public class Program {
         builder.Services.AddFastEndpoints(options => {
             options.DisableAutoDiscovery = true;
 
-            options.Assemblies = moduleBuilder.ModuleAssemblies;
+            options.Assemblies = moduleProvider.GetAssemblies();
         });
 
         builder.Services.SwaggerDocument();
@@ -237,15 +236,14 @@ public class Program {
 
         app.MapStaticAssets();
 
+        var moduleProvider = app.Services.GetRequiredService<ModuleProvider>();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(
+            .AddAdditionalAssemblies([
                 IWasmEntry.Assembly,
-                IComponentsEntryCore.Assembly,
-                IComponentsEntryLoreScopes.Assembly,
-                IComponentsEntryLsMarkdownFiles.Assembly
-            );
+                ..moduleProvider.GetComponentAssemblies()
+            ]);
 
         await app.RunAsync();
     }

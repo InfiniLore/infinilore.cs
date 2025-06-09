@@ -1,20 +1,23 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Modules.LoreScopes.Shared;
-using InfiniLore.Modules.Core.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Shared;
+using InfiniLore.Modules.LsMarkdownFiles.Shared.Components;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
-namespace InfiniLore.Modules.LoreScopes.Server;
+namespace InfiniLore.Modules.LsMarkdownFiles.Server;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [UsedImplicitly]
-public class LoreScopesModuleSetup : ServerModuleSetup {
-    public override void SetupServices(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModulesLoreScopesShared();
-        services.RegisterServicesFromInfiniLoreModulesLoreScopesServer();
+public class ModuleSetupLsMarkdownFilesServer : IModuleSetup {
+    public Assembly ComponentAssembly => IComponentsEntryLsMarkdownFiles.Assembly;
+    
+    public void SetupServices(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreModulesLsMarkdownFilesShared();
+        services.RegisterServicesFromInfiniLoreModulesLsMarkdownFilesServer();
     }
 }

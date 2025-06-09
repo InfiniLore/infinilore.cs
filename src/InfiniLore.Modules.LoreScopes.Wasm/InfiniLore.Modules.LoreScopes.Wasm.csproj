@@ -11,6 +11,7 @@
       <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Components\InfiniLore.Modules.LoreScopes.Shared.Components.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Contracts\InfiniLore.Modules.LoreScopes.Shared.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared\InfiniLore.Modules.LoreScopes.Shared.csproj" />
     </ItemGroup>

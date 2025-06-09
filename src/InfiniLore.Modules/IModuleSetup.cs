@@ -1,9 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Core.Wasm;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
+namespace InfiniLore.Modules;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public interface IWasmModuleEntryCore;
+public interface IModuleSetup {
+    Assembly ComponentAssembly { get; }
+    
+    void SetupServices(IServiceCollection services) {}
+}

@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LoreScop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules.LsMarkdownFiles.Shared.Components", "src\InfiniLore.Modules.LsMarkdownFiles.Shared.Components\InfiniLore.Modules.LsMarkdownFiles.Shared.Components.csproj", "{BF33C0E7-31D0-4309-AF74-617D1F31C6EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfiniLore.Modules", "src\InfiniLore.Modules\InfiniLore.Modules.csproj", "{D5BA860C-BB92-4CED-BFCF-F0427BE58169}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -508,6 +510,18 @@ Global
 		{BF33C0E7-31D0-4309-AF74-617D1F31C6EE}.Release|x64.Build.0 = Release|Any CPU
 		{BF33C0E7-31D0-4309-AF74-617D1F31C6EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{BF33C0E7-31D0-4309-AF74-617D1F31C6EE}.Release|x86.Build.0 = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|x64.Build.0 = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Debug|x86.Build.0 = Debug|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|x64.ActiveCfg = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|x64.Build.0 = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|x86.ActiveCfg = Release|Any CPU
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -555,5 +569,6 @@ Global
 		{A9DA680F-8924-48E0-ACF7-FA31827BA821} = {42683F79-9091-4617-B46F-53069E1C6F8B}
 		{CDA20044-2C8C-4530-B0D3-07B6886FD121} = {0EF8306D-41E1-46D7-B890-278D2C4E10DC}
 		{BF33C0E7-31D0-4309-AF74-617D1F31C6EE} = {2EFB4FD3-3795-46E4-B450-B4D3293B69EA}
+		{D5BA860C-BB92-4CED-BFCF-F0427BE58169} = {EB00BE10-6020-4E39-A00F-C202A0165920}
 	EndGlobalSection
 EndGlobal

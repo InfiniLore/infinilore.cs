@@ -4,6 +4,7 @@
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.InfiniBlazor.Toasting.Config;
 using InfiniLore.Kiota;
+using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Wasm;
@@ -30,10 +31,11 @@ public static class Program {
 
         builder.Logging.AddSerilog();
 
-        WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
-            .AddModule<IWasmModuleEntryCore>()
-            .AddModule<IModuleLoreScopesWasm>()
-            .AddModule<IWasmModuleLsMarkdownFiles>();
+        ModuleProvider _ = ModuleProviderBuilder.Create(builder.Services)
+            .AddModule<ModuleSetupCoreWasm>()
+            .AddModule<ModuleSetupLoreScopesWasm>()
+            .AddModule<ModuleSetupLsMarkdownFilesWasm>()
+            .Build();
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();

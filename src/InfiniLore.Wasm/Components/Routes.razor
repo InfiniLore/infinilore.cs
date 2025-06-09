@@ -1,20 +1,18 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Modules.Core.Shared.Components
+@using InfiniLore.Modules
 @using InfiniLore.Modules.Core.Shared.Components.Layout
-@using InfiniLore.Modules.LoreScopes.Shared.Components
-@using InfiniLore.Modules.LsMarkdownFiles.Shared.Components
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@inject ModuleProvider ModuleProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <Router
     AppAssembly="@IWasmEntry.Assembly" 
-    AdditionalAssemblies="@([IComponentsEntryCore.Assembly, IComponentsEntryLoreScopes.Assembly, IComponentsEntryLsMarkdownFiles.Assembly])">
+    AdditionalAssemblies="ModuleProvider.GetComponentAssemblies()">
 
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
