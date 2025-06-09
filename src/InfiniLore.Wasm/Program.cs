@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.InfiniBlazor.Toasting.Config;
 using InfiniLore.Kiota;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm;
@@ -48,6 +49,7 @@ public static class Program {
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
             config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
+            config.AddToastingLogic();
         });
         #endregion
         // -------------------------------------------------------------------------------------------------------------
