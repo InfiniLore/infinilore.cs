@@ -7,9 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
       <PackageReference Include="InfiniLore.InfiniBlazor" />
       <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
       <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />
+      <PackageReference Include="Microsoft.AspNetCore.Components" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
     </ItemGroup>
     

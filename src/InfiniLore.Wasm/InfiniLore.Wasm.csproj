@@ -19,10 +19,6 @@
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.Extensions.Logging" />
         <PackageReference Include="Serilog.Sinks.BrowserConsole" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -30,7 +26,9 @@
         <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Shared.Components\InfiniLore.Modules.Core.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Components\InfiniLore.Modules.LoreScopes.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Wasm\InfiniLore.Modules.LoreScopes.Wasm.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Components\InfiniLore.Modules.LsMarkdownFiles.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm\InfiniLore.Modules.LsMarkdownFiles.Wasm.csproj" />
     </ItemGroup>
 

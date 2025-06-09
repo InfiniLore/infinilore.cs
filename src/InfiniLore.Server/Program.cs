@@ -16,10 +16,13 @@ using InfiniLore.Modules.Core.Server.Auth;
 using InfiniLore.Modules.Core.Server.Encryption;
 using InfiniLore.Modules.Core.Server.TokenStore;
 using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.Core.Shared.Components;
 using InfiniLore.Server.Components;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
+using InfiniLore.Modules.LoreScopes.Shared.Components;
 using InfiniLore.Modules.LsMarkdownFiles.Server;
+using InfiniLore.Modules.LsMarkdownFiles.Shared.Components;
 using InfiniLore.Server.Cli;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -237,7 +240,12 @@ public class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(IWasmEntry.Assembly);
+            .AddAdditionalAssemblies(
+                IWasmEntry.Assembly,
+                IComponentsEntryCore.Assembly,
+                IComponentsEntryLoreScopes.Assembly,
+                IComponentsEntryLsMarkdownFiles.Assembly
+            );
 
         await app.RunAsync();
     }

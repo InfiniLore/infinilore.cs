@@ -114,10 +114,6 @@
         }
     }
 
-    public void Dispose() {
-        _saveCancellationTokenSource?.Dispose();
-    }
-
     private async Task SaveFileAsync() {
         if (FileModel is null) return;
         if (FileModel.Name.IsNullOrWhiteSpace()) return;

@@ -4,7 +4,6 @@
 using InfiniLore.InfiniBlazor.Markdown.Config;
 using InfiniLore.InfiniBlazor.Toasting.Config;
 using InfiniLore.Kiota;
-using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Wasm;
@@ -41,8 +40,6 @@ public static class Program {
         builder.Services.AddSingleton<AuthenticationStateProvider, AuthenticationStateProviderWasm>();
 
         builder.Services.AddHttpClient();
-        builder.Services.RegisterServicesFromInfiniLoreWasm();
-        builder.Services.RegisterServicesFromInfiniLoreModulesCoreShared();
 
         builder.Services.AddInfiniLoreKiotaClient(builder.HostEnvironment.BaseAddress);
             
