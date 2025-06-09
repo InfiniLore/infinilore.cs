@@ -2,6 +2,7 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using Infinilore.InfiniBlazor
+@using InfiniLore.InfiniBlazor
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
@@ -83,10 +84,12 @@
         
         <div class="flex flex-row justify-between">
             <InfiniButton
-                Variant="ButtonVariant.Success"
+                Variant="ButtonVariant.Default"
+                Color="Color.Green"
                 OnClick="OnSubmitAsync">Submit</InfiniButton>
             <InfiniButton
-                Variant="ButtonVariant.Error"
+                Variant="ButtonVariant.Default"
+                Color="Color.Red"
                 IconName="trash"
                 OnClick="@OnDeleteAsync">Delete LoreScope</InfiniButton>
         </div>

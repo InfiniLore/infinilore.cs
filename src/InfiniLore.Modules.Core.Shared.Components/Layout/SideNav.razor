@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.InfiniBlazor
 @using InfiniLore.InfiniBlazor.Debugger
 @using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
@@ -62,17 +63,19 @@
     
     <InfiniSpacer/>
 
-    <InfiniSideNavLink Href="/swagger">
+    <InfiniSideNavLink Href="/swagger" OpenInNewTab>
         <Icon>
             <LiBraces/>
         </Icon>
         <Text>Swagger</Text>
     </InfiniSideNavLink>
+    
     <InfiniSideNavToggleButton
         Value="@DebuggerProvider.IsEnabled()"
         ValueChanged="@DebuggerProvider.ToggleStateAsync"
         OnIcon="@(MenuCollapsed ? "bug" : null)"
-        OffIcon="@(MenuCollapsed ? "bug" : null)">
+        OffIcon="@(MenuCollapsed ? "bug" : null)"
+        Color="Color.Red">
         <Icon><LiBug/></Icon>
         <Text>Toggle Debug</Text>
     </InfiniSideNavToggleButton>
