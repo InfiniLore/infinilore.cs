@@ -68,7 +68,9 @@ public class InteractiveApiWasmLoreScopes(
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
+            
             if (result is null) return Outcome<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
+            logger.Warning("Result: {@result}", result);
             return Outcome.FromData(WasmLoreScopeModel.FromKiotaModel(result));
         }
         catch (Exception e) {

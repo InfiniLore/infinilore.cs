@@ -99,8 +99,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @code {
     [Parameter] public Guid LoreScopeId { get; set; }
-    [Parameter] public Guid UserId { get; set; }
-
+    [SupplyParameterFromQuery(Name = "userId")] public Guid UserId { get; set; }
     
     private ILoreScopeModel? _loreScopeModel;
     private ILoreScopeModel? LoreScopeModel {
@@ -130,6 +129,7 @@
             UserId.ToString(),
             LoreScopeId.ToString()
         );
+        Logger.Warning("{@a}", outcome);
         
         if (!outcome.TryGetAsData(out ILoreScopeModel? model)) {
             Logger.Warning("Could not retrieve model");
@@ -139,6 +139,7 @@
         }
 
         LoreScopeModel = model;
+        StateHasChanged();
     }
 
     private void OnPosterImageSelected(InputFileChangeEventArgs e) {
