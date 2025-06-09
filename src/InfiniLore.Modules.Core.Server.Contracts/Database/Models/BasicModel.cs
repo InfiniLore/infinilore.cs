@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Modules.Core.Shared.Database;
 using Microsoft.EntityFrameworkCore.Query;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfiniLore.Modules.Core.Server.Database;
@@ -13,6 +14,8 @@ public class BasicModel : IBasicModel {
     public Guid Id { get; init; } = Guid.CreateVersion7();
     public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
     public DateTime LastModifiedDate { get; private set; } = DateTime.UtcNow;
+
+    [Timestamp] public byte[] RowVersion { get; set; } = [];
 
     #region UpdateLastModifiedDate
     public void UpdateLastModifiedDate() => LastModifiedDate = DateTime.UtcNow;

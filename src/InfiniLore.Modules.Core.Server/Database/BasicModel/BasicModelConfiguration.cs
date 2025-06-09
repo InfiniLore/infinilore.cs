@@ -18,5 +18,8 @@ public abstract class BasicModelConfiguration<TModel> : IEntityTypeConfiguration
         builder.Ignore(x => x.IsSoftDeleted);
         
         builder.UseTptMappingStrategy();
+        
+        builder.Property(f => f.RowVersion)
+            .IsRowVersion();
     }
 }
