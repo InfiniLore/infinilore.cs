@@ -7,5 +7,5 @@ namespace InfiniLore.Modules.Core.Shared.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IHasName {
-    string Name { get; }
+    string Name { get; set; }
 }

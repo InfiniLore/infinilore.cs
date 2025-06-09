@@ -92,15 +92,19 @@ public class InteractiveApiWasmLsMarkdownFile(
                 memoryStream,
                 fileName
             );
+            
+            multipartBody.AddOrReplacePart(
+                "KnownMarkdownFileId",
+                "text/plain",
+                new MemoryStream(Encoding.UTF8.GetBytes(knownFileId.ToString()))
+            );
 
-            Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
-
+            await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             return Outcome.FromState(true);
         }
         catch (Exception e) {
             logger.Error(e, "Could not upsert ls markdown file");
-            return Outcome.FromError("Could not upsert ls markdown file");
+            return Outcome.FromError($"Could not upsert ls markdown file: {e}");
         }
     }
     
@@ -117,9 +121,7 @@ public class InteractiveApiWasmLsMarkdownFile(
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithMarkdownFileItemRequestBuilder requestBuilder = client.Api.V1.DataLorescope[loreScopeId].MarkdownFile[lsMarkdownFileId];
 
-            Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
-
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            await requestBuilder.DeleteAsync(cancellationToken: ct);
             return Outcome.FromState(true);
         }
         catch (Exception e) {

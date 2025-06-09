@@ -51,9 +51,8 @@ public class InteractiveApiWasmLoreScopes(
                 Name = newLoreScopeName,
                 Description = newDescription
             };
-            await using Stream? result = await requestBuilder.PostAsync(body, cancellationToken: ct);
             
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            await requestBuilder.PostAsync(body, cancellationToken: ct);
             return Outcome.FromState(true);
         }
 
@@ -69,7 +68,9 @@ public class InteractiveApiWasmLoreScopes(
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
             
+            
             if (result is null) return Outcome<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
+            logger.Warning("Result: {@result}", result);
             return Outcome.FromData(WasmLoreScopeModel.FromKiotaModel(result));
         }
         catch (Exception e) {
@@ -147,7 +148,7 @@ public class InteractiveApiWasmLoreScopes(
                 file.Name
             );
             
-            await using Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
+            await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             return Outcome.FromState(true);
         }
         catch (Exception e) {

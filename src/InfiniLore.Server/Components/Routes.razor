@@ -1,18 +1,18 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Server.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
+@using InfiniLore.Modules
+@using InfiniLore.Modules.Core.Shared.Components.Layout
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@inject ModuleProvider ModuleProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <Router
-    AppAssembly="@typeof(IServerEntry).Assembly"
-    AdditionalAssemblies="new[] { typeof(IEntrypointInfiniLoreClientsWasm).Assembly }">
+    AppAssembly="@IServerEntry.Assembly"
+    AdditionalAssemblies="ModuleProvider.GetComponentAssemblies()">
 
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
@@ -23,6 +23,5 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
 }

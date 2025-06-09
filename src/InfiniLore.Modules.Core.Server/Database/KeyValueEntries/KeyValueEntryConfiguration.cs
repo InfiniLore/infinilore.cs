@@ -19,5 +19,8 @@ public class KeyValueEntryConfiguration : IEntityTypeConfiguration<KeyValueEntry
 
         builder.Property(x => x.Value)
             .HasMaxLength(KeyValueEntryModel.Defaults.ValueMaxLength);
+        
+        builder.Property(f => f.RowVersion)
+            .IsRowVersion();
     }
 }

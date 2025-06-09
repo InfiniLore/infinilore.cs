@@ -2,8 +2,9 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.InfiniBlazor.Toasting.Config;
 using InfiniLore.Kiota;
-using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Wasm;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Wasm;
@@ -30,24 +31,24 @@ public static class Program {
 
         builder.Logging.AddSerilog();
 
-        WasmModuleBuilder _ = WasmModuleBuilder.Create(builder)
-            .AddModule<IWasmModuleEntryCore>()
-            .AddModule<IModuleLoreScopesWasm>()
-            .AddModule<IWasmModuleLsMarkdownFiles>();
+        ModuleProvider _ = ModuleProviderBuilder.Create(builder.Services)
+            .AddModule<ModuleSetupCoreWasm>()
+            .AddModule<ModuleSetupLoreScopesWasm>()
+            .AddModule<ModuleSetupLsMarkdownFilesWasm>()
+            .Build();
         
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddSingleton<AuthenticationStateProvider, AuthenticationStateProviderWasm>();
 
         builder.Services.AddHttpClient();
-        builder.Services.RegisterServicesFromInfiniLoreWasm();
-        builder.Services.RegisterServicesFromInfiniLoreModulesCoreShared();
 
         builder.Services.AddInfiniLoreKiotaClient(builder.HostEnvironment.BaseAddress);
             
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
             config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
+            config.AddToastingLogic();
         });
         #endregion
         // -------------------------------------------------------------------------------------------------------------

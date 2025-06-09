@@ -20,25 +20,19 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoOutcome<TModel[]>> GetByOwnerAsync(Guid userId, QueryConfig config = default, CancellationToken ct = default) {
-        // Access
-        DbSet<TModel> dbSet = GetDbSet<TModel>();
+        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        // Query
         IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .Where(ls => ls.OwnerId == userId);
 
-        // Retrieve
         TModel[] result = await query.ToArrayAsync(cancellationToken: ct);
         return RepoOutcome<TModel[]>.FromData(result);
     }
 
     public async ValueTask<PaginatedRepoOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
-        // Access
-        DbSet<TModel> dbSet = GetDbSet<TModel>();
+        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        // Query
         IQueryable<TModel> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
-
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
@@ -47,7 +41,6 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
             .Skip(pageInfo.SkipAmount)
             .Take(pageInfo.PageSize);
 
-        // Retrieve
         TModel[] data = await query.ToArrayAsync(cancellationToken: ct);
         return new PaginatedData<TModel>(
             data,

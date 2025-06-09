@@ -12,5 +12,5 @@ public record LoreScopeResponse : OwnedResponse {
     public required string Name { [UsedImplicitly] get; init; }
     public required string? Description { [UsedImplicitly] get; init; }
     
-    public string? ImageUrl { [UsedImplicitly] get; set; }
+    public required string? ImageUrl { [UsedImplicitly] get; set; }
 }

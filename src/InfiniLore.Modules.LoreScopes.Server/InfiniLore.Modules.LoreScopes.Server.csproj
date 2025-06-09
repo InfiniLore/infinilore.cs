@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Components\InfiniLore.Modules.LoreScopes.Shared.Components.csproj" />
       <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Server.Contracts\InfiniLore.Modules.LoreScopes.Server.Contracts.csproj" />

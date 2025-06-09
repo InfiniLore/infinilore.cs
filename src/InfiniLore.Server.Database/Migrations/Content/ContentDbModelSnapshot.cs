@@ -40,6 +40,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Property<Guid>("ProtectedModelId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
 
@@ -80,6 +86,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
@@ -132,6 +144,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
                     b.Property<Guid?>("ProfileImageMetaDataId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
 
@@ -175,6 +193,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<string>("Value")
                         .HasMaxLength(2147483646)
                         .HasColumnType("nvarchar(max)");
@@ -208,6 +232,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.Property<DateTime>("LastModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
@@ -251,6 +281,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.Property<Guid?>("PosterImageMetaDataId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<DateTime?>("SoftDeleteDate")
                         .HasColumnType("datetime2");
@@ -302,6 +338,12 @@ namespace InfiniLore.Server.Database.Migrations.Content
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<Guid>("S3FileMetaDataId")
                         .HasColumnType("uniqueidentifier");

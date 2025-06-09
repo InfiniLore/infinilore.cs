@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Components\InfiniLore.Modules.LsMarkdownFiles.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Server.Database\InfiniLore.Server.Database.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts\InfiniLore.Modules.LsMarkdownFiles.Server.Contracts.csproj" />

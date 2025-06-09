@@ -9,6 +9,8 @@ using FastEndpoints.Swagger;
 using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
 using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.InfiniBlazor.Toasting.Config;
+using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
 using InfiniLore.Modules.Core.Server.Auth;
@@ -86,15 +88,16 @@ public class Program {
     // Builder
     // -----------------------------------------------------------------------------------------------------------------
     private static WebApplication BuildApp(WebApplicationBuilder builder) {
-        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
-            .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>()
-            .AddModule<IServerModuleLsMarkdownFiles>();
+        ModuleProvider moduleProvider = ModuleProviderBuilder.Create(builder.Services)
+            .AddModule<ModuleSetupCoreServer>()
+            .AddModule<ModuleSetupLoreScopesServer>()
+            .AddModule<ModuleSetupLsMarkdownFilesServer>()
+            .Build();
         
         #region Database
         ContentDbFactory.RegisterDatabase(
             builder.Services,
-            moduleBuilder.ModuleAssemblies, 
+            moduleProvider.GetAssemblies(), 
             options => options.UseSqlServer(builder.Configuration["ConnectionStrings:SqlServer"])
         );
 
@@ -174,7 +177,7 @@ public class Program {
         builder.Services.AddFastEndpoints(options => {
             options.DisableAutoDiscovery = true;
 
-            options.Assemblies = moduleBuilder.ModuleAssemblies;
+            options.Assemblies = moduleProvider.GetAssemblies();
         });
 
         builder.Services.SwaggerDocument();
@@ -183,6 +186,7 @@ public class Program {
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
             config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
+            config.AddToastingLogic();
         });
         #endregion
 
@@ -232,10 +236,14 @@ public class Program {
 
         app.MapStaticAssets();
 
+        var moduleProvider = app.Services.GetRequiredService<ModuleProvider>();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(IEntrypointInfiniLoreClientsWasm).Assembly);
+            .AddAdditionalAssemblies([
+                IWasmEntry.Assembly,
+                ..moduleProvider.GetComponentAssemblies()
+            ]);
 
         await app.RunAsync();
     }

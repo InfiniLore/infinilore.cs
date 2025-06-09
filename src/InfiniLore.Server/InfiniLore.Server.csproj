@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InfiniLore.Modules.Core.Server.Contracts\InfiniLore.Modules.Core.Server.Contracts.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Server\InfiniLore.Modules.Core.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Server\InfiniLore.Modules.LoreScopes.Server.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Server\InfiniLore.Modules.LsMarkdownFiles.Server.csproj" />
@@ -29,10 +28,7 @@
         <PackageReference Include="FastEndpoints.Swagger" />
         <PackageReference Include="InfiniLore.Credentials" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Core" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />
         <PackageReference Include="InfiniLore.Lucide" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
@@ -57,6 +53,16 @@
 
     <ItemGroup>
       <None Include="Cli\Commands\DataSeeding\Data\InfiniLoreUsers.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Layout\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Components\Layout\SideNav.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Components\Layout\MainLayout.razor" />
+      <UpToDateCheckInput Remove="Components\Layout\SideNav.razor" />
     </ItemGroup>
 
 </Project>

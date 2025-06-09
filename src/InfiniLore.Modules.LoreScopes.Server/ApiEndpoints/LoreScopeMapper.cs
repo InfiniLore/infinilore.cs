@@ -18,5 +18,6 @@ public class LoreScopeMapper : ResponseMapper<LoreScopeResponse, LoreScopeModel>
         LastModifiedDate = loreScope.LastModifiedDate,
         OwnerId = loreScope.OwnerId,
         Description = loreScope.Description,
+        ImageUrl = loreScope.S3PosterImageUrl
     };
 }

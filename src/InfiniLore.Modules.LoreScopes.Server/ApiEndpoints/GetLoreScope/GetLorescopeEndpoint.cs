@@ -30,25 +30,32 @@ public class GetLorescopeEndpoint(
     public override async Task HandleAsync(GetLorescopeEndpointRequest req, CancellationToken ct) {
         Outcome<LoreScopeModel> outcome = await messageBroker.GetLorescopeByIdAsync(req.LoreScopeId, req.UserId, autoInclude:true, ct: ct);
         
-        await outcome.SwitchAsync(
+        IResult result = await outcome.MatchAsync(
             OnFoundDataAsync,
             (error, token) => OnErrorAsync(error, req, token),
             ct
         );
+        await SendResultAsync(result);
     }   
     
-    private async Task OnFoundDataAsync(LoreScopeModel loreScope, CancellationToken ct = default) {
+    private async Task<IResult> OnFoundDataAsync(LoreScopeModel loreScope, CancellationToken ct = default) {
         Outcome<string> imageUrlResponse = await messageBroker.GetLorescopePosterImageAsync(loreScope.Id, ct: ct);
-        if (imageUrlResponse.TryGetAsData(out string? imageUrl)) {
-            loreScope.S3PosterImageUrl = imageUrl;
-        }
+        imageUrlResponse.Switch(
+            url => {
+                logger.Information("Successfully retrieved lorescope poster image for lorescope with id {id}", loreScope.Id);
+                loreScope.S3PosterImageUrl = url;
+            },
+            error => {
+                logger.Warning("Failed to get lorescope poster image for lorescope with id {id} because '{reason}'", loreScope.Id, error);
+            }
+            );
 
         logger.Information("Successfully retrieved lorescope with id {id}", loreScope.Id);
-        await SendResultAsync(TypedResults.Ok(Map.FromEntity(loreScope)));
+        return TypedResults.Ok(Map.FromEntity(loreScope));
     }
 
-    private async Task OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
+    private Task<IResult> OnErrorAsync(string error, GetLorescopeEndpointRequest req, CancellationToken _ = default) {
         logger.Warning("Failed to get lorescope with id {id} because '{reason}'", req.LoreScopeId, error);
-        await SendResultAsync(TypedResults.BadRequest());
+        return Task.FromResult<IResult>(TypedResults.BadRequest());
     }
 }

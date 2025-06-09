@@ -11,126 +11,105 @@ namespace InfiniLore.Modules.Core.Server.Database.InfiniLoreUser;
 [InjectableScoped<IInfiniLoreUserRepository>]
 public class InfiniLoreUserRepository : BasicModelRepository<InfiniLoreUserModel>, IInfiniLoreUserRepository {
 
-    protected override IQueryable<InfiniLoreUserModel> AlwaysInclude(IQueryable<InfiniLoreUserModel> query) 
-        => base.AlwaysInclude(query)
+    protected override IQueryable<InfiniLoreUserModel> AlwaysInclude(IQueryable<InfiniLoreUserModel> query) =>
+        base.AlwaysInclude(query)
             .Include(user => user.ProfileImageMetaData);
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // Methods
-    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoOutcome<Guid>> TryGetIdByAuth0IdAsync(string auth0Id, CancellationToken ct = default) {
-        if (auth0Id.IsNullOrWhiteSpace()) return RepoOutcome.FromError(RepositoryFailures.ModelFailedValidation);
+        if (auth0Id.IsNullOrWhiteSpace()) return RepoOutcome<Guid>.FromError(RepositoryFailures.ModelFailedValidation);
 
-        // Access
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<Guid> query = dbSet.AsNoTracking()
+        Guid result = await dbSet.AsNoTracking()
             .With(ByAuth0IdQuery, auth0Id)
-            .Select(ls => ls.Id);
+            .Select(user => user.Id)
+            .FirstOrDefaultAsync(ct)
+            .ConfigureAwait(false);
 
-        // Retrieve
-        Guid result = await query.FirstOrDefaultAsync(cancellationToken: ct);
-        if (result == Guid.Empty) return RepoOutcome<Guid>.FromError(RepositoryFailures.ModelNotFound);
-
-        return RepoOutcome<Guid>.FromData(result);
+        return result == Guid.Empty
+            ? RepoOutcome<Guid>.FromError(RepositoryFailures.ModelNotFound)
+            : RepoOutcome<Guid>.FromData(result);
     }
 
     public async ValueTask<RepoOutcome> IsUsernameTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoOutcome.FromError(RepositoryFailures.ModelFailedValidation);
 
-        // Access
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet
-            .Where(ls => ls.Username == username)
-            .ConditionalWhere(
-                skipUserId != Guid.Empty,
-                predicate: ls => ls.Id != skipUserId
-            );
+        bool exists = await dbSet
+            .Where(user => user.Username == username)
+            .ConditionalWhere(skipUserId != Guid.Empty, predicate: user => user.Id != skipUserId)
+            .AnyAsync(ct)
+            .ConfigureAwait(false);
 
-        // Retrieve
-        bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoOutcome.FromState(result);
+        return RepoOutcome.FromState(exists);
     }
 
     public async ValueTask<RepoOutcome> IsUsernameNotTakenAsync(string username, Guid skipUserId = default, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoOutcome.FromError(RepositoryFailures.ModelFailedValidation);
 
-        // Access
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet
-            .Where(ls => ls.Username == username)
-            .ConditionalWhere(
-                skipUserId != Guid.Empty,
-                predicate: ls => ls.Id != skipUserId
-            );
+        bool exists = await dbSet
+            .Where(user => user.Username == username)
+            .ConditionalWhere(skipUserId != Guid.Empty, predicate: user => user.Id != skipUserId)
+            .AnyAsync(ct)
+            .ConfigureAwait(false);
 
-        // Retrieve
-        bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoOutcome.FromState(!result);
+        return RepoOutcome.FromState(!exists);
     }
 
     public async ValueTask<RepoOutcome> IsExistingAuth0Id(string auth0UserId, CancellationToken ct = default) {
-        // Access
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<InfiniLoreUserModel> query = dbSet.AsNoTracking()
-            .With(ByAuth0IdQuery, auth0UserId);
+        bool exists = await dbSet.AsNoTracking()
+            .With(ByAuth0IdQuery, auth0UserId)
+            .AnyAsync(ct)
+            .ConfigureAwait(false);
 
-        // Retrieve    
-        bool result = await query.AnyAsync(cancellationToken: ct);
-        return RepoOutcome.FromState(result);
+        return RepoOutcome.FromState(exists);
     }
-
 
     public async ValueTask<RepoOutcome<InfiniLoreUserModel[]>> TryGetAllByAuth0IdsAsync(QueryConfig config = default, CancellationToken ct = default, params HashSet<string> authIds) {
-        // Access
+        if (authIds.Count == 0) return RepoOutcome<InfiniLoreUserModel[]>.FromError(RepositoryFailures.InvalidInput);
+
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<InfiniLoreUserModel> query = GetConfiguredQueryable(dbSet, config)
+        InfiniLoreUserModel[] result = await GetConfiguredQueryable(dbSet, config)
             .AsNoTracking()
-            .Where(model =>
-                model.Auth0MailPassword != null && authIds.Contains(model.Auth0MailPassword)
-                || model.Auth0IdGoogle != null && authIds.Contains(model.Auth0IdGoogle)
-                || model.Auth0Github != null && authIds.Contains(model.Auth0Github)
-            );
+            .Where(user =>
+                user.Auth0MailPassword != null && authIds.Contains(user.Auth0MailPassword) ||
+                user.Auth0IdGoogle != null && authIds.Contains(user.Auth0IdGoogle) ||
+                user.Auth0Github != null && authIds.Contains(user.Auth0Github)
+            )
+            .ToArrayAsync(ct)
+            .ConfigureAwait(false);
 
-        // Retrieve
-        InfiniLoreUserModel[] result = await query.ToArrayAsync(cancellationToken: ct);
-        if (result.IsEmpty()) return RepoOutcome<InfiniLoreUserModel[]>.FromError(RepositoryFailures.ModelsNotFound);
-
-        return RepoOutcome<InfiniLoreUserModel[]>.FromData(result);
+        return result.IsEmpty()
+            ? RepoOutcome<InfiniLoreUserModel[]>.FromError(RepositoryFailures.ModelsNotFound)
+            : RepoOutcome<InfiniLoreUserModel[]>.FromData(result);
     }
-
-    #region ByAuth0Id
-    private static IQueryable<InfiniLoreUserModel> ByAuth0IdQuery(IQueryable<InfiniLoreUserModel> query, string auth0Id)
-        => query.Where(ls =>
-            ls.Auth0IdGoogle != null && ls.Auth0IdGoogle == auth0Id
-            || ls.Auth0Github != null && ls.Auth0Github == auth0Id
-            || ls.Auth0MailPassword != null && ls.Auth0MailPassword == auth0Id
-        );
 
     public async ValueTask<RepoOutcome<InfiniLoreUserModel>> TryGetByAuth0IdAsync(string auth0Id, QueryConfig config = default, CancellationToken ct = default) {
-        // Access
+        if (auth0Id.IsNullOrWhiteSpace())
+            return RepoOutcome<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelFailedValidation);
+
         DbSet<InfiniLoreUserModel> dbSet = GetCachedDbSet<InfiniLoreUserModel>();
 
-        // Query
-        IQueryable<InfiniLoreUserModel> query = GetConfiguredQueryable(dbSet, config)
-            .With(ByAuth0IdQuery, auth0Id);
+        InfiniLoreUserModel? result = await GetConfiguredQueryable(dbSet, config)
+            .With(ByAuth0IdQuery, auth0Id)
+            .SingleOrDefaultAsync(ct)
+            .ConfigureAwait(false);
 
-        InfiniLoreUserModel? result = await query
-            .SingleOrDefaultAsync(cancellationToken: ct);
-
-        // Retrieve
-        if (result is null) return RepoOutcome<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelNotFound);
-
-        return RepoOutcome<InfiniLoreUserModel>.FromData(result);
+        return result is null
+            ? RepoOutcome<InfiniLoreUserModel>.FromError(RepositoryFailures.ModelNotFound)
+            : RepoOutcome<InfiniLoreUserModel>.FromData(result);
     }
-    #endregion
+
+    private static IQueryable<InfiniLoreUserModel> ByAuth0IdQuery(IQueryable<InfiniLoreUserModel> query, string auth0Id) =>
+        query.Where(user =>
+            user.Auth0IdGoogle != null && user.Auth0IdGoogle == auth0Id ||
+            user.Auth0Github != null && user.Auth0Github == auth0Id ||
+            user.Auth0MailPassword != null && user.Auth0MailPassword == auth0Id
+        );
 }

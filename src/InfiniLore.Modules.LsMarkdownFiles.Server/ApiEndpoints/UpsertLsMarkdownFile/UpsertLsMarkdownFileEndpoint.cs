@@ -29,6 +29,10 @@ public class UpsertLsMarkdownFileEndpoint(
         if (req.File.ContentType != "text/markdown") {
             ThrowError("Invalid file type.");
         }
+
+        if (!Guid.TryParse(req.KnownMarkdownFileId, out Guid knownMarkdownFileId)) {
+            ThrowError("Invalid known markdown file id.");       
+        }
         
         IFormFile file = req.File;
         await using Stream fileStream = file.OpenReadStream();
@@ -37,7 +41,7 @@ public class UpsertLsMarkdownFileEndpoint(
             req.LoreScopeId, 
             file.FileName,
             fileStream,
-            req.KnownMarkdownFileId,
+            knownMarkdownFileId,
             ct:ct
         );
 

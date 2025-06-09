@@ -13,7 +13,12 @@ namespace InfiniLore.Modules.Core.Server.Database;
 public class KeyValueEntryModel : IKeyValueEntryModel {
     [MaxLength(Defaults.KeyMaxLength)] public required string Key { get; init; } = string.Empty;
     [MaxLength(Defaults.ValueMaxLength)] public string? Value { get; set; }
+    
+    [Timestamp] public byte[] RowVersion { get; set; } = [];
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public bool TryGetConvertJsonValueToObject<TJsonObject>([NotNullWhen(true)] out TJsonObject? decodedObject) where TJsonObject : class {
         decodedObject = null;
         if (Value.IsNullOrWhiteSpace()) return false;

@@ -1,0 +1,174 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.InfiniBlazor.Toasting
+@using InfiniLore.Modules.Core.Shared
+@using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
+@using InfiniLore.Modules.LsMarkdownFiles.Shared.Services
+@using InfiniLore.Modules.LsMarkdownFiles.Wasm
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/lorescope/{LoreScopeId:guid}/markdown/{MarkdownId:guid}/editor"
+@inject IInteractiveApiLsMarkdownFiles InteractiveApi
+@inject HttpClient Http
+@inject ILogger<LoreScopeMarkdownEditor> Logger
+@inject IToastAppearanceProvider ToastAppearanceProvider
+@inject IToastStorage ToastStorage
+@attribute [Authorize]
+@implements IAsyncDisposable
+@rendermode InteractiveAuto
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniPage Title="Markdown Editor">
+    <InfiniSection class="grow flex flex-col overflow-auto infini-scrollbar h-screen">
+        <InfiniHeading3 Class="flex flex-row">
+            <InfiniButton
+                Href="@($"/lorescope/{LoreScopeId}/markdown")"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+
+            LoreScope Markdown File Editor
+        </InfiniHeading3>
+
+        @* File changes *@
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-row items-center space-x-3">
+                <InfiniTextInput
+                    Label="FileName"
+                    LabelLocation="LabelLocation.Left"
+                    @bind-Value="@FileModel.Name"
+                    Placeholder="Enter a file name...">
+                    <InfiniButton
+                        Variant="ButtonVariant.Primary"
+                        IconName="save"
+                        OnClick="DebouncedSaveFileAsync"
+                        Disabled="IsLoading">
+                        Save File
+                    </InfiniButton>
+                </InfiniTextInput>
+            </div>
+        </div>
+
+        @* Editor *@
+        <div class="grow mt-4">
+            <InfiniMarkdownEditor @bind-Source="@TextSource" Class=""/>
+        </div>
+    </InfiniSection>
+</InfiniPage>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    [Parameter] public Guid LoreScopeId { get; set; }
+    [Parameter] public Guid MarkdownId { get; set; }
+
+    private ITextSource TextSource { get; set; } = new TextSource();
+    private ILsMarkdownFileModel FileModel { get; set; } = WasmLsMarkdownFileModel.Empty;
+
+
+    private CancellationTokenSource? _saveCancellationTokenSource;
+    private const int DebounceDelay = 500;// 0.5-second delay
+    
+    private bool IsLoading { get; set; } = true;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        Outcome<ILsMarkdownFileModel> outcome = await InteractiveApi.GetLsMarkdownFileAsync(LoreScopeId.ToString(), MarkdownId.ToString());
+        if (!outcome.TryGetAsData(out ILsMarkdownFileModel? model)) return;
+
+        FileModel = model;
+
+        if (model.ResourceUrl is null) return;
+
+        try {
+            string content = await Http.GetStringAsync(model.ResourceUrl);
+            TextSource.Text = content;
+            IsLoading = false;
+        }
+        catch (Exception ex) {
+            Logger.Warning(ex, "Failed to download markdown content");
+        }
+    }
+
+    private async Task DebouncedSaveFileAsync() {
+        try {
+            if (_saveCancellationTokenSource is not null) {
+                await _saveCancellationTokenSource.CancelAsync();
+                _saveCancellationTokenSource.Dispose();
+            }
+
+            _saveCancellationTokenSource = new CancellationTokenSource();
+
+            await Task.Delay(DebounceDelay, _saveCancellationTokenSource.Token);
+
+            await SaveFileAsync();
+        }
+        catch (OperationCanceledException) {
+            // Ignore cancellation
+        }
+    }
+
+    private async Task SaveFileAsync() {
+        if (FileModel.Name.IsNullOrWhiteSpace()) return;
+
+        if (!FileModel.Name.EndsWith(".md")) FileModel.Name = $"{FileModel.Name}.md";
+
+        Outcome outcome = await InteractiveApi.UpsertLsMarkdownFileAsync(
+            FileModel.OwnerId.ToString(),
+            FileModel.Name,
+            TextSource.Text,
+            MarkdownId
+        );
+
+        await outcome.SwitchAsync(
+            trueCase: async () => {
+                var toastSuccess = new ToastData(
+                    "Markdown file has been saved",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success)
+                );
+
+                await ToastStorage.AddToastAsync(toastSuccess);
+            },
+            falseCase: async () => {
+                var toastFail = new ToastData(
+                    "Could not save Markdown file",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Warning)
+                );
+
+                await ToastStorage.AddToastAsync(toastFail);
+            },
+            errorCase: async error => {
+                var toastFail = new ToastData(
+                    "Could not save Markdown file due to an error",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
+                    error
+                );
+
+                await ToastStorage.AddToastAsync(toastFail);
+            }
+        );
+    }
+
+    public async ValueTask DisposeAsync() {
+        if (_saveCancellationTokenSource is null) return;
+
+        try {
+            await _saveCancellationTokenSource.CancelAsync();
+            _saveCancellationTokenSource.Dispose();
+
+            // Perform one final save if one was still going on.
+            await SaveFileAsync();
+        }
+        catch (Exception ex) {
+            Logger.Warning(ex, "Failed to save changes during component disposal");
+        }
+    }
+}

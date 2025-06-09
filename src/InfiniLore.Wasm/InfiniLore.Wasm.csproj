@@ -11,10 +11,7 @@
     <ItemGroup>
         <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
         <PackageReference Include="InfiniLore.InfiniBlazor" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Contracts" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Core" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Theming" />
         <PackageReference Include="InfiniLore.InfiniBlazor.Toasting" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
@@ -22,19 +19,17 @@
         <PackageReference Include="Serilog" />
         <PackageReference Include="Serilog.Extensions.Logging" />
         <PackageReference Include="Serilog.Sinks.BrowserConsole" />
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\InfiniLore.Kiota.Extensions\InfiniLore.Kiota.Extensions.csproj" />
         <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
-        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm\InfiniLore.Modules.LsMarkdownFiles.Wasm.csproj" />
-        <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm.Contracts\InfiniLore.Modules.Core.Wasm.Contracts.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.Core.Shared.Components\InfiniLore.Modules.Core.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.Core.Wasm\InfiniLore.Modules.Core.Wasm.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Shared.Components\InfiniLore.Modules.LoreScopes.Shared.Components.csproj" />
         <ProjectReference Include="..\InfiniLore.Modules.LoreScopes.Wasm\InfiniLore.Modules.LoreScopes.Wasm.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Components\InfiniLore.Modules.LsMarkdownFiles.Shared.Components.csproj" />
+        <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Wasm\InfiniLore.Modules.LsMarkdownFiles.Wasm.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Modules;
 using InfiniLore.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.Core.Server;
@@ -16,10 +17,11 @@ using Microsoft.Extensions.DependencyInjection;
 // ---------------------------------------------------------------------------------------------------------------------
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(builder)
-    .AddModule<IServerModuleEntryCore>()
-    .AddModule<IServerModuleEntryLoreScopes>()
-    .AddModule<IServerModuleLsMarkdownFiles>();
+ModuleProvider moduleProvider = ModuleProviderBuilder.Create(builder.Services)
+    .AddModule<ModuleSetupCoreServer>()
+    .AddModule<ModuleSetupLoreScopesServer>()
+    .AddModule<ModuleSetupLsMarkdownFilesServer>()
+    .Build();
 
 builder.Services.RegisterServicesFromInfiniLoreServer();
 builder.Services.RegisterServicesFromInfiniLoreModulesLoreScopesShared();
@@ -34,7 +36,7 @@ builder.Services.AddRazorComponents()
 // This is all that is required for EFC to generate the appropriate migrations
 ContentDbFactory.RegisterDatabase(
     builder.Services,
-    moduleBuilder.ModuleAssemblies,
+    moduleProvider.GetAssemblies(),
     static options => options.UseSqlServer()
 );
 

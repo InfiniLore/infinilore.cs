@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using Fakers.InfiniLore.Server;
+using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Server.Database;
 using InfiniLore.Modules.LoreScopes.Server;
@@ -36,17 +37,18 @@ public class ServiceProviderDataSource {
         var services = new ServiceCollection();
         services.AddLogging();
 
-        ServerModuleBuilder moduleBuilder = ServerModuleBuilder.Create(services)
-            .AddModule<IServerModuleEntryCore>()
-            .AddModule<IServerModuleEntryLoreScopes>()
-            .AddModule<IServerModuleLsMarkdownFiles>();
+        ModuleProvider moduleProvider = ModuleProviderBuilder.Create(services)
+            .AddModule<ModuleSetupCoreServer>()
+            .AddModule<ModuleSetupLoreScopesServer>()
+            .AddModule<ModuleSetupLsMarkdownFilesServer>()
+            .Build();
 
         services.RegisterServicesFromFakersInfiniLoreServer();
         services.RegisterServicesFromDataSourcesInfiniLoreServer();
 
         ContentDbFactory.RegisterDatabase(
             services,
-            moduleBuilder.ModuleAssemblies, 
+            moduleProvider.GetAssemblies(), 
             optionsAction: builder => builder.UseSqlServer(devEnv.GetSqlConnectionString())
         );
         

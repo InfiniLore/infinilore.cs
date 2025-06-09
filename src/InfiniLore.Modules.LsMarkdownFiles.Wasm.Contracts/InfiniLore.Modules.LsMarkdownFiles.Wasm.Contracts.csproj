@@ -4,6 +4,12 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>InfiniLore.Modules.LsMarkdownFiles.Wasm</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Kiota\InfiniLore.Kiota.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts\InfiniLore.Modules.LsMarkdownFiles.Shared.Contracts.csproj" />
+    </ItemGroup>
 
 </Project>

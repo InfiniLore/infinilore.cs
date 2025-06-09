@@ -1,0 +1,248 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using Infinilore.InfiniBlazor
+@using InfiniLore.InfiniBlazor
+@using InfiniLore.InfiniBlazor.Toasting
+@using InfiniLore.Modules.Core.Shared
+@using InfiniLore.Modules.LoreScopes.Shared.Database
+@using InfiniLore.Modules.LoreScopes.Shared.Services
+@using InfiniLore.Modules.LoreScopes.Wasm
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/lorescope/{LoreScopeId:guid}/settings"
+@inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
+@inject ILogger<LoreScopeSettings> Logger
+@inject NavigationManager NavigationManager
+@inject IToastStorage ToastStorage
+@inject IToastAppearanceProvider ToastAppearanceProvider
+@attribute [Authorize]
+@rendermode InteractiveAuto
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniPage Title="LoreScope Settings">
+    <InfiniSection>
+        <InfiniHeading3 Class="flex flex-row">
+            <InfiniButton
+                Href="/lorescopes/"
+                Variant="ButtonVariant.Transparent"
+                IconName="chevron-left"/>
+
+            LoreScope Settings
+        </InfiniHeading3>
+    </InfiniSection>
+    
+    <InfiniSection>
+        <InfiniHeading5>
+            LoreScope Details
+        </InfiniHeading5>
+        
+        <InfiniTextInput
+            Label="Name"
+            Placeholder="Enter a name"
+            ValidationMessage="@LoreScopeNameValidationMessage"
+            @bind-Value="@LoreScopeModel.Name">
+        </InfiniTextInput>
+
+        <InfiniSpacerVertical Spacing="Size.S"/>
+        
+        <InfiniLabel>Description</InfiniLabel>
+        <div class="h-64">
+            <InfiniMarkdownEditor
+                @bind-Source="@LoreScopeDescriptionSource"
+                ShowSidePreview="false"/>
+        </div>
+        
+        <InfiniSpacerVertical Spacing="Size.M"/>
+        
+        <InfiniHeading5>
+            LoreScope Image
+        </InfiniHeading5>
+        
+        
+        <div class="mt-4 w- full">
+            <div class="flex flex-row justify-between gap-4">
+                <div class="flex flex-row w-2/3">
+                    <InputFile OnChange="@OnPosterImageSelected"
+                               class="w-full text-sm text-(--color-base-30) transition-all duration-150 transform cursor-pointer
+                         file:cursor-pointer active:file:scale-95 file:mr-4 file:px-2 file:py-1 
+                         file:text-base file:rounded-md file:bg-(--color-base-70) file:text-(--color-base-00) 
+                         hover:file:text-(--color-accent) hover:file:ring-2 hover:ring-(--color-accent) 
+                         hover:file:scale-105 p-1"
+                               accept="image/*" />
+                </div>
+                <div class="w-1/3 flex flex-col justify-center items-center" >
+                    <LoreScopePoster ImageUrl="@LoreScopeModel.S3PosterImageUrl" Name="@LoreScopeModel.Name"/>
+                </div>
+
+            </div>
+        </div>
+        
+        <InfiniSpacerVertical Spacing="Size.Xxl"/>
+        
+        <div class="flex flex-row justify-between">
+            <InfiniButton
+                Variant="ButtonVariant.Default"
+                Color="Color.Green"
+                Disabled="IsLoading"
+                OnClick="OnSubmitAsync">Submit</InfiniButton>
+            <InfiniButton
+                Variant="ButtonVariant.Default"
+                Color="Color.Red"
+                IconName="trash"
+                Disabled="IsLoading"
+                OnClick="@OnDeleteAsync">Delete LoreScope</InfiniButton>
+        </div>
+        
+    </InfiniSection>
+
+</InfiniPage>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@code {
+    [Parameter] public Guid LoreScopeId { get; set; }
+    [SupplyParameterFromQuery(Name = "userId")] public Guid UserId { get; set; }
+    
+    private ILoreScopeModel _loreScopeModel  = WasmLoreScopeModel.Empty;
+    private ILoreScopeModel LoreScopeModel {
+        get => _loreScopeModel;
+        set {
+            _loreScopeModel = value;
+            LoreScopeDescriptionSource = new TextSource {
+                Text = _loreScopeModel.Description ?? string.Empty
+            };
+        }
+    }
+
+    private IBrowserFile? SelectedFile { get; set; }
+    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
+    private string? LoreScopeNameValidationMessage { get; set; }
+    
+    private ITextSource LoreScopeDescriptionSource { get; set; } = new TextSource();
+    private bool IsLoading { get; set; } = true;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    protected override async Task OnInitializedAsync() {
+        Outcome<ILoreScopeModel> outcome = await LoreScopeInteractiveApi.GetLoreScopeAsync(
+            UserId.ToString(),
+            LoreScopeId.ToString()
+        );
+        Logger.Warning("{@a}", outcome);
+        
+        if (!outcome.TryGetAsData(out ILoreScopeModel? model)) {
+            Logger.Warning("Could not retrieve model");
+
+            LoreScopeModel = WasmLoreScopeModel.Empty;
+            return;
+        }
+
+        LoreScopeModel = model;
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void OnPosterImageSelected(InputFileChangeEventArgs e) {
+        if (e.File is not {} file) return;
+        SelectedFile = file;
+        StateHasChanged();
+    }
+
+    private async Task OnSubmitAsync() {
+        await Task.WhenAll(
+            UploadMetaDataAsync(),
+            UploadPosterImageAsync()
+        );
+        StateHasChanged();
+    }
+    
+    private async Task UploadMetaDataAsync() {
+        if (LoreScopeModel.Name.IsNullOrWhiteSpace()) {
+            LoreScopeNameValidationMessage = "Name cannot be empty";
+            return;
+        }
+
+        Outcome outcome = await LoreScopeInteractiveApi.UpdateLoreScopeMetaDataAsync(
+            UserId.ToString(),
+            LoreScopeId.ToString(),
+            LoreScopeModel.Name,
+            LoreScopeDescriptionSource.Text
+        );
+        
+        outcome.Switch(
+            () => LoreScopeNameValidationMessage = null,
+            () => LoreScopeNameValidationMessage = "Could not update LoreScope Name",
+            error => LoreScopeNameValidationMessage = error
+        );
+    }
+    
+    private async Task UploadPosterImageAsync() {
+        if (SelectedFile is null) return;
+
+        try {
+            // 5MB limit
+            if (SelectedFile.Size > MaxFileSize) {
+                Logger.Warning("File size exceeds 5MB limit");
+                return;
+            }
+            
+            Outcome outcome = await LoreScopeInteractiveApi.UpsertLoreScopeImageAsync(
+                UserId.ToString(),
+                LoreScopeId.ToString(),
+                SelectedFile
+            );
+
+            if (!outcome.TryGetAsState(out bool success) || !success ) {
+                Logger.Error("Failed to upload image, {@e}", outcome);
+                return;
+            }
+
+            // Refresh the LoreScope model to get the updated image URL
+            await OnInitializedAsync();
+            SelectedFile = null;
+        }
+        finally {
+            StateHasChanged();
+        }
+    }
+    
+    private async Task OnDeleteAsync() {
+        Outcome outcome = await LoreScopeInteractiveApi.DeleteLoreScopesAsync(UserId.ToString(), LoreScopeId.ToString());
+        await outcome.SwitchAsync(
+            async () => {
+                var toastInfo = new ToastData(
+                    "LoreScope has been deleted",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Info)
+                );
+
+                await ToastStorage.AddToastAsync(toastInfo);
+                NavigationManager.NavigateTo("/lorescopes");
+            },
+            async () => {
+                var toastFail = new ToastData(
+                    "Could not delete LoreScope",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Warning)
+                );
+
+                await ToastStorage.AddToastAsync(toastFail);
+            },
+            async error => {
+                var toastFail = new ToastData(
+                    "Could not delete LoreScope",
+                    10,
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
+                    Body: error
+                );
+
+                await ToastStorage.AddToastAsync(toastFail);
+            }
+        );
+    }
+}
