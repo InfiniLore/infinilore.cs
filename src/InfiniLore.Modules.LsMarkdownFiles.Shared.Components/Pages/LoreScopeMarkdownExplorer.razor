@@ -11,7 +11,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/lorescope/{LoreScopeId:guid}/markdown"
 @inject IInteractiveApiLsMarkdownFiles InteractiveApi
-@inject NavigationManager NavigationManager
 @inject ILogger<LoreScopeMarkdownExplorer> Logger
 @attribute [Authorize]
 @rendermode InteractiveAuto
@@ -51,9 +50,11 @@
                         <InfiniTableCell>@file.Name</InfiniTableCell>
                         <InfiniTableCell>
                             <div class="flex justify-center items-center gap-8">
-                                <InfiniButton 
+                                <InfiniButton
                                     Variant="ButtonVariant.Dark"
-                                    OnClick="() => GotoEditMarkdownFile(file)">Edit</InfiniButton>
+                                    Href="@($"/lorescope/{LoreScopeId}/markdown/{file.Id}/editor")">
+                                    Edit
+                                </InfiniButton>
                                 <InfiniButton 
                                     Variant="ButtonVariant.Default"
                                     Color="Color.Red"
@@ -126,10 +127,6 @@
         Logger.Information("{@page}", PaginatedFiles with {
             Items = []
         });
-    }
-
-    private void GotoEditMarkdownFile(ILsMarkdownFileModel file) {
-        NavigationManager.NavigateTo($"/lorescope/{LoreScopeId}/markdown/{file.Id}/editor");
     }
 
     private async Task DeleteMarkdownFileAsync(ILsMarkdownFileModel file) {
