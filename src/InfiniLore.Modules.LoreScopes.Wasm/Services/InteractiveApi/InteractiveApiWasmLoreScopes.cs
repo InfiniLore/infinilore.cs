@@ -51,9 +51,8 @@ public class InteractiveApiWasmLoreScopes(
                 Name = newLoreScopeName,
                 Description = newDescription
             };
-            await using Stream? result = await requestBuilder.PostAsync(body, cancellationToken: ct);
             
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            await requestBuilder.PostAsync(body, cancellationToken: ct);
             return Outcome.FromState(true);
         }
 
@@ -147,7 +146,7 @@ public class InteractiveApiWasmLoreScopes(
                 file.Name
             );
             
-            await using Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
+            await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             return Outcome.FromState(true);
         }
         catch (Exception e) {
