@@ -5,7 +5,6 @@
 @using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
-@using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
@@ -156,7 +155,7 @@
         ClaimsPrincipal user = authState.User;
 
         if (user.Identity is { IsAuthenticated: true }) {
-            string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
+            string? userId = user.FindFirst(InfiniLoreClaimsStoreConstants.UserId)?.Value;
             if (userId is null) {
                 _userIdToLogout = userId;// Set flag instead of calling JS
                 return;

@@ -237,7 +237,7 @@ public class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(IEntrypointInfiniLoreClientsWasm).Assembly);
+            .AddAdditionalAssemblies(IWasmEntry.Assembly);
 
         await app.RunAsync();
     }

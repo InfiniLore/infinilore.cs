@@ -2,7 +2,6 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using InfiniLore.Modules.Core.Shared.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -11,8 +10,7 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <Router
-    AppAssembly="@IServerEntry.Assembly"
-    AdditionalAssemblies="new[] { IWasmEntry.Assembly }">
+    AppAssembly="@IWasmEntry.Assembly" >
 
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
