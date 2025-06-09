@@ -92,6 +92,12 @@ public class InteractiveApiWasmLsMarkdownFile(
                 memoryStream,
                 fileName
             );
+            
+            multipartBody.AddOrReplacePart(
+                "KnownMarkdownFileId",
+                "text/plain",
+                new MemoryStream(Encoding.UTF8.GetBytes(knownFileId.ToString()))
+            );
 
             Stream? result = await requestBuilder.PostAsync(multipartBody, cancellationToken: ct);
             if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
