@@ -1,12 +1,12 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using Infinilore.InfiniBlazor
 @using InfiniLore.InfiniBlazor
 @using InfiniLore.InfiniBlazor.Debugger
 @using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
-@using System.Security.Claims
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -15,7 +15,8 @@
 @inject IThemeSelector ThemeSelector
 @inject IInteractiveApiUsers UserInteractiveApi
 @inject IVisualDebuggerProvider DebuggerProvider
-@inject NavigationManager NavigationManager
+@inject IUserStateContainer UserStateContainer
+@implements IDisposable
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -60,7 +61,7 @@
             </InfiniSideNavLink>
         </Authorized>
     </AuthorizeView>
-    
+
     <InfiniSpacer/>
 
     <InfiniSideNavLink Href="/swagger" OpenInNewTab>
@@ -69,14 +70,16 @@
         </Icon>
         <Text>Swagger</Text>
     </InfiniSideNavLink>
-    
+
     <InfiniSideNavToggleButton
         Value="@DebuggerProvider.IsEnabled()"
         ValueChanged="@DebuggerProvider.ToggleStateAsync"
         OnIcon="@(MenuCollapsed ? "bug" : null)"
         OffIcon="@(MenuCollapsed ? "bug" : null)"
         Color="Color.Red">
-        <Icon><LiBug/></Icon>
+        <Icon>
+            <LiBug/>
+        </Icon>
         <Text>Toggle Debug</Text>
     </InfiniSideNavToggleButton>
 
@@ -85,48 +88,65 @@
         ValueChanged="@OnThemeSwitchAsync"
         OnIcon="sun"
         OffIcon="moon">
-        <Icon><LiSun/></Icon>
+        <Icon>
+            <LiSun/>
+        </Icon>
         <Text>Toggle Mode</Text>
     </InfiniSideNavToggleButton>
     </Body>
 
     <Footer>
         <AuthorizeView>
+            <Authorizing>
+                <div class="transition-opacity opacity-0">
+                    <InfiniSpacerVertical Spacing="Size.L"/>
+                </div>
+            </Authorizing>
             <NotAuthorized>
-                <InfiniSideNavLink Href="account/login?redirectUri=/">
-                    <Icon>
-                        <LiKeyRound
-                            class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
-                    </Icon>
-                    <Text>Login</Text>
-                </InfiniSideNavLink>
-                <InfiniSideNavLink Href="account/login?redirectUri=/">
-                    <Icon>
-                        <LiSignpost
-                            class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
-                    </Icon>
-                    <Text>SignUp</Text>
-                </InfiniSideNavLink>
+                <div class="transition-opacity duration-300 @(_isLoading ? "opacity-0" : "opacity-100")">
+
+                    <InfiniSideNavLink Href="account/login?redirectUri=/">
+                        <Icon>
+                            <LiKeyRound
+                                class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                        </Icon>
+                        <Text>Login</Text>
+                    </InfiniSideNavLink>
+                    <InfiniSideNavLink Href="account/login?redirectUri=/">
+                        <Icon>
+                            <LiSignpost
+                                class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                        </Icon>
+                        <Text>SignUp</Text>
+                    </InfiniSideNavLink>
+                </div>
             </NotAuthorized>
 
             <Authorized>
-                <!-- Profile Icon -->
-                <InfiniSideNavUser
-                    HrefUserProfile="/account/profile"
-                    UserName="@UserModel.Username">
-                    <Icon>
-                        <InfiniUserIcon
+                <div class="transition-opacity duration-300 @(_isLoading ? "opacity-0" : "opacity-100")">
+                    @if (UserModel is not null) {
+                        <!-- Profile Icon -->
+                        <InfiniSideNavUser
                             HrefUserProfile="/account/profile"
-                            ImageUrl="@UserModel.ProfileImageUrl"/>
-                    </Icon>
-                    <AdditionalLinks>
-                        <NavLink @onclick="LogoutCallbackAsync"
-                                 href="/account/logout"
-                                 class="text-sm text-(--color-red) whitespace-nowrap hover:text-(--color-accent)">
-                            logout
-                        </NavLink>
-                    </AdditionalLinks>
-                </InfiniSideNavUser>
+                            UserName="@UserModel.Username">
+                            <Icon>
+                                <InfiniUserIcon
+                                    HrefUserProfile="/account/profile"
+                                    ImageUrl="@UserModel.ProfileImageUrl"/>
+                            </Icon>
+                            <AdditionalLinks>
+                                <NavLink @onclick="LogoutCallbackAsync"
+                                         href="/account/logout"
+                                         class="text-sm text-(--color-red) whitespace-nowrap hover:text-(--color-accent)">
+                                    logout
+                                </NavLink>
+                            </AdditionalLinks>
+                        </InfiniSideNavUser>
+                    }
+                    else {
+                        <InfiniSpacerVertical Spacing="Size.L"/>
+                    }
+                </div>
             </Authorized>
         </AuthorizeView>
     </Footer>
@@ -143,52 +163,65 @@
 
     // State for user details
     private bool MenuCollapsed { get; set; }// Tracks whether the menu is collapsed
-    private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
-    
+    private IInfiniLoreUserModel? UserModel { get; set; }
+
+    private bool _isLoading = true;
     private bool _isFirstRender = true;
-    private string? _userIdToLogout;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected override async Task OnInitializedAsync() {
-        if (AuthenticationStateTask is null) return;
-
-        AuthenticationState authState = await AuthenticationStateTask;
-        ClaimsPrincipal user = authState.User;
-
-        if (user.Identity is { IsAuthenticated: true }) {
-            string? userId = user.FindFirst(InfiniLoreClaimsStoreConstants.UserId)?.Value;
-            if (userId is null) {
-                _userIdToLogout = userId;// Set flag instead of calling JS
-                return;
-            }
-
-            Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
-            if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) {
-                _userIdToLogout = userId;// Set flag instead of calling JS
-                return;
-            }
-
-            UserModel = userModel;
-        }
-
-        await InvokeAsync(StateHasChanged);
+    protected override void OnInitialized() {
+        UserStateContainer.OnChange += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (!firstRender) return;
+        if (firstRender) {
+            _isFirstRender = false;
+            await InitializeUserModelAsync();
+            StateHasChanged();
+        }
+    }
 
-        _isFirstRender = false; 
-        if (_userIdToLogout == null) return;
+    private async Task InitializeUserModelAsync() {
+        try {
+            // Try state container first
+            if (await UserStateContainer.GetIsAuthenticatedAsync()) {
+                UserModel = await UserStateContainer.GetUserAsync();
+                _isLoading = false;
+                return;
+            }
 
-        await JsTokenProvider.RemoveTokenAsync();
-        NavigationManager.NavigateTo("/account/logout");
+            // Fall back to auth state
+            if (AuthenticationStateTask == null) return;
+
+            AuthenticationState authState = await AuthenticationStateTask;
+            if (authState.User.Identity?.IsAuthenticated != true) return;
+
+            string? userId = authState.User.FindFirst(InfiniLoreClaimsStoreConstants.UserId)?.Value;
+            if (userId == null) return;
+
+            Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
+            if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) return;
+
+            UserModel = userModel;
+            await UserStateContainer.SetUserAsync(userModel);
+            await UserStateContainer.SetIsAuthenticatedAsync(true);
+        }
+        finally {
+            _isLoading = false;
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender) {
+        if (firstRender) _isFirstRender = false;
     }
 
     private async Task LogoutCallbackAsync() {
         if (_isFirstRender) return;
 
+        await UserStateContainer.SetIsAuthenticatedAsync(false);
+        await UserStateContainer.RemoveUserAsync();
         await JsTokenProvider.RemoveTokenAsync();
     }
 
@@ -196,5 +229,9 @@
         if (_isFirstRender) return;
 
         await ThemeSelector.TrySelectNextThemeModeAsync();
+    }
+
+    public void Dispose() {
+        UserStateContainer.OnChange -= StateHasChanged;
     }
 }

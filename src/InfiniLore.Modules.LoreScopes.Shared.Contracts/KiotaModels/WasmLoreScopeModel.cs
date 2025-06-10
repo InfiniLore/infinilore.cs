@@ -4,7 +4,7 @@
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 
-namespace InfiniLore.Modules.LoreScopes.Wasm;
+namespace InfiniLore.Modules.LoreScopes.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace InfiniLore.Modules.LoreScopes.Shared.Services;
+namespace InfiniLore.Modules.LoreScopes.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

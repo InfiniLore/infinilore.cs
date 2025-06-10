@@ -19,5 +19,7 @@ public class ModuleSetupCoreServer : IModuleSetup {
     public void SetupServices(IServiceCollection services) {
         services.RegisterServicesFromInfiniLoreModulesCoreShared();
         services.RegisterServicesFromInfiniLoreModulesCoreServer();
+
+        services.AddScoped<IUserStateContainer, UserStateContainer>();
     }
 }

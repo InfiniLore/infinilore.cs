@@ -4,8 +4,8 @@
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
+using InfiniLore.Modules.LsMarkdownFiles.Shared;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
-using InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
 using InfiniLore.Server.Modules.LsMarkdownFiles.Database;
 using System.Text;
 

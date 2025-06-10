@@ -513,6 +513,9 @@
   .text-\(--color-red\) {
     color: var(--color-red);
   }
+  .lowercase {
+    text-transform: lowercase;
+  }
   .italic {
     font-style: italic;
   }

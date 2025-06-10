@@ -18,5 +18,7 @@ public class ModuleSetupCoreWasm : IModuleSetup {
     public void SetupServices(IServiceCollection services) {
         services.RegisterServicesFromInfiniLoreModulesCoreShared();
         services.RegisterServicesFromInfiniLoreModulesCoreWasm();
+        
+        services.AddScoped<IUserStateContainer, UserStateContainer>();
     }
 }

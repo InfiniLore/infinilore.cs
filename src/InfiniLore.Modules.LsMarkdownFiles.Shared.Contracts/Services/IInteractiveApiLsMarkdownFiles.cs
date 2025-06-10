@@ -4,8 +4,7 @@
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Shared.Services;
-
+namespace InfiniLore.Modules.LsMarkdownFiles.Shared;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

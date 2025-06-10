@@ -3,10 +3,10 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
-using InfiniLore.Modules.LoreScopes.Shared.Services;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Shared.Extensions;
+using InfiniLore.Modules.LoreScopes.Shared;
 using InfiniLore.Server.Modules.LoreScopes.Database;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
