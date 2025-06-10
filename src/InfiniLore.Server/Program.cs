@@ -33,7 +33,7 @@ namespace InfiniLore.Server;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class Program {
+public static class Program {
     public static async Task<int> Main(string[] args) {
         return await GlobalExceptionHandler.ExecuteWithGlobalExceptionHandlingAsync(async () => {
             WebApplicationBuilder builder = CreateBuilder(args);
@@ -68,7 +68,9 @@ public class Program {
         return builder;
     }
     
-    private static async Task<bool> ExecuteCliCommands(WebApplication app, string[] args) {
+    private static async ValueTask<bool> ExecuteCliCommands(WebApplication app, string[] args) {
+        if (args.FirstOrDefault()?.StartsWith("--launch-profile") is true) return false;
+        
         ICliParser parser = CliParser.CreateBuilder()
             .WithServiceProvider(() => app.Services)
             .AddFromAssembly<IServerEntry>()
