@@ -246,6 +246,9 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
   }
+  .block {
+    display: block;
+  }
   .contents {
     display: contents;
   }

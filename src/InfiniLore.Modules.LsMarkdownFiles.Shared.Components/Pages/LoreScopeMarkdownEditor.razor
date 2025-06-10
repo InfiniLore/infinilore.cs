@@ -69,8 +69,9 @@
 
     private CancellationTokenSource? _saveCancellationTokenSource;
     private const int DebounceDelay = 500;// 0.5-second delay
-    
+
     private bool IsLoading { get; set; } = true;
+    private bool _hasPendingSave;
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -101,10 +102,13 @@
             }
 
             _saveCancellationTokenSource = new CancellationTokenSource();
+            _hasPendingSave = true;
+
 
             await Task.Delay(DebounceDelay, _saveCancellationTokenSource.Token);
 
             await SaveFileAsync();
+            _hasPendingSave = false;
         }
         catch (OperationCanceledException) {
             // Ignore cancellation
@@ -142,12 +146,11 @@
 
                 await ToastStorage.AddToastAsync(toastFail);
             },
-            errorCase: async error => {
+            errorCase: async _ => {
                 var toastFail = new ToastData(
                     "Could not save Markdown file due to an error",
                     10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
-                    error
+                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error)
                 );
 
                 await ToastStorage.AddToastAsync(toastFail);
@@ -163,7 +166,8 @@
             _saveCancellationTokenSource.Dispose();
 
             // Perform one final save if one was still going on.
-            await SaveFileAsync();
+            if (_hasPendingSave) await SaveFileAsync();
+
         }
         catch (Exception ex) {
             Logger.Warning(ex, "Failed to save changes during component disposal");
