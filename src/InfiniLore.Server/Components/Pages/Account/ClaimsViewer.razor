@@ -34,8 +34,6 @@
 
             <InfiniTable TItem="Claim" Items="@_user.Claims">
                 <Header>
-                    <InfiniTableHeader>Claim Type</InfiniTableHeader>
-                    <InfiniTableHeader>Claim Value</InfiniTableHeader>
                     <InfiniTableHeader Class="w-min-128 flex flex-col items-center">
                         <span>Actions</span>
                         <div class="flex flex-row gap-3.5 text-(--color-base-40)">
@@ -43,10 +41,10 @@
                             <span>Copy Value</span>
                         </div>
                     </InfiniTableHeader>
+                    <InfiniTableHeader>Claim Type</InfiniTableHeader>
+                    <InfiniTableHeader>Claim Value</InfiniTableHeader>
                 </Header>
                 <Content Context="claim">
-                    <InfiniTableCell>@claim.Type</InfiniTableCell>
-                    <InfiniTableCell>@claim.Value</InfiniTableCell>
 
                     <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128">
                         <InfiniButton
@@ -60,6 +58,8 @@
                             TooltipAnchor="Anchor.Bottom | Anchor.Left"
                             Tooltip="Copy Value"/>
                     </InfiniTableCell>
+                    <InfiniTableCell>@claim.Type</InfiniTableCell>
+                    <InfiniTableCell>@claim.Value</InfiniTableCell>
                 </Content>
             </InfiniTable>
 
@@ -78,7 +78,7 @@
                         @* ReSharper disable once Asp.Entity *@
                         <InfiniCodeBlock 
                             Language="base64"
-                            Class="flex grow shrink-0  mt-8 bg-(--color-base-70) break-words [&_pre]:whitespace-pre-wrap" 
+                            Class="mt-8 bg-(--color-base-70) break-words [&_pre]:whitespace-pre-wrap" 
                             Content="@_accessToken"/>
                     </div>
 
