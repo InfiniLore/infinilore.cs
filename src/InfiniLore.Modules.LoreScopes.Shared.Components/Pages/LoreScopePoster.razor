@@ -9,7 +9,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<div class="@Class w-40 h-60 rounded-md overflow-hidden relative group/poster">
+<div class="@Class w-40 h-60 rounded-md overflow-hidden relative">
     @if (ImageUrl is not null) {
         <img src="@ImageUrl"
              alt="LoreScope: @Name"
@@ -17,7 +17,9 @@
     }
     else {
         <div class="w-full h-full bg-(--color-base-95) flex items-center justify-center">
-            <span class="text-xs text-(--color-base-00) group-hover/poster:text-(--color-accent)">?</span>
+            <span class="text-xs text-(--color-base-80)">
+                <LiFileImage class="w-24 h-24"/>
+            </span>
         </div>
     }
 </div>
