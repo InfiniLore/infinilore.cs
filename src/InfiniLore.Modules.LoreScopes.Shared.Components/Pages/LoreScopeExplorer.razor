@@ -33,9 +33,7 @@
 
     <InfiniSection class="flex flex-col grow gap-2 overflow-auto h-min-full">
         <div class="infini-scrollbar grow flex flex-col overflow-auto gap-2">
-            @if (IsLoading) {
-                
-            }
+            @if (IsLoading) {}
             else if (PaginatedLoreScopes.IsEmpty) {
                 <div class="flex flex-col justify-center items-center">
                     <p class="text-sm text-(--color-base-50) text-center">
@@ -46,67 +44,62 @@
                 </div>
             }
             else {
-                <div class="infini-scrollbar grow overflow-auto gap-2">
+                <div class="infini-scrollbar flex flex-col grow overflow-auto gap-4">
                     @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
-                    <div class="px-2 py-1 overflow-y-clip overflow-x-hidden group/item">
-                        <div class="grow flex flex-row items-start bg-(--color-base-80) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-full transition">
+                        <div class="p-0.5 overflow-y-clip overflow-x-hidden group/item min-h-66">
+                            <div class="grow flex flex-row items-stretch bg-(--color-base-80) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-full">
+                                <!-- Poster Image -->
+                                <LoreScopePoster
+                                    Class="w-1/5 shrink-0"
+                                    ImageUrl="@loreScope.S3PosterImageUrl"
+                                    Name="@loreScope.Name"/>
 
-                            <!-- Poster Image -->
-                            <LoreScopePoster
-                                Class="w-1/5"
-                                ImageUrl="@loreScope.S3PosterImageUrl"
-                                Name="@loreScope.Name"/>
 
-                            <!-- Main Info Content -->
-                            <div class="flex flex-col flex-1 shrink-0 gap-2 h-full justify-between">
-                                @* Content *@
-                                <div class="grow flex flex-col justify-between">
-                                    <InfiniHeading3>
-                                        @loreScope.Name
-                                    </InfiniHeading3>
-                                    <p class="text-sm text-(--color-base-30) line-clamp-4 overflow-hidden max-h-32">
-                                        @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
-                                    </p>
-                                    <InfiniSpacer/>
-                                    <p class="text-sm text-(--color-base-30) line-clamp-4">
-                                        Owner: @loreScope.OwnerId
-                                    </p>
+                                <!-- Main Info Content -->
+                                <div class="flex flex-col flex-1 min-w-0">
+                                    <div class="flex-1">
+                                        <InfiniHeading3 Class="max-w-9/12 truncate">
+                                            @loreScope.Name
+                                        </InfiniHeading3>
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4 overflow-hidden max-h-32">
+                                            @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
+                                        </p>
+                                        <p class="text-sm text-(--color-base-30) line-clamp-4 mt-auto">
+                                            Owner: @loreScope.OwnerId
+                                        </p>
+                                    </div>
+
+                                    <!-- Links -->
+                                    <div class="flex flex-row gap-2 justify-start mt-2">
+                                        <InfiniButton
+                                            Variant="ButtonVariant.Dark"
+                                            IconName="file"
+                                            Href="@($"/lorescope/{loreScope.Id}/markdown")">
+                                            Markdown files
+                                        </InfiniButton>
+                                        <InfiniButton
+                                            Variant="ButtonVariant.Dark"
+                                            IconName="book-marked"
+                                            Disabled="true">
+                                            Future Content
+                                        </InfiniButton>
+                                    </div>
                                 </div>
 
-                                @* Links *@
-                                <div class="flex flex-row gap-2 justify-start">
+                                <!-- Stats Section -->
+                                <div class="flex flex-col items-end justify-end w-1/5 shrink-0 px-1">
                                     <InfiniButton
-                                        Variant="ButtonVariant.Dark"
-                                        IconName="file"
-                                        Href="@($"/lorescope/{loreScope.Id}/markdown")">
-                                        Markdown files
+                                        Variant="ButtonVariant.Outline"
+                                        IconName="settings"
+                                        Href="@($"/lorescope/{loreScope.Id}/settings?userId={loreScope.OwnerId}")">
+                                        Settings
                                     </InfiniButton>
-                                    <InfiniButton
-                                        Variant="ButtonVariant.Dark"
-                                        IconName="book-marked"
-                                        Disabled="true">
-                                        Future Content
-                                    </InfiniButton>
-
                                 </div>
                             </div>
-
-                            <!-- Stats Section -->
-                            <div
-                                class="flex flex-col items-end justify-end min-w-[100px] shrink-0 px-1 h-full w-1/5">
-                                <InfiniButton
-                                    Variant="ButtonVariant.Outline"
-                                    IconName="settings"
-                                    Href="@($"/lorescope/{loreScope.Id}/settings?userId={loreScope.OwnerId}")">
-                                    Settings
-                                </InfiniButton>
-                            </div>
-
                         </div>
-                    </div>
                     }
                 </div>
-                
+
                 @* Navigation *@
                 <div class="flex justify-center items-end grow">
                     <div class="flex gap-2">
