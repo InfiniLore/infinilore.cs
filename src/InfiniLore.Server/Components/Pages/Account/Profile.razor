@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using Infinilore.InfiniBlazor
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
 @using Microsoft.AspNetCore.Authorization
@@ -17,8 +18,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="Profile">
-    <InfiniSection>
+<InfiniPage Title="Profile" Class="justify-between">
+    <InfiniSection Class="mt-4">
         <InfiniHeading3>
             Profile Settings
             <span class="text-sm text-(--color-base-50)">
@@ -64,11 +65,12 @@
 
     <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
         <Authorized>
-            <div class="my-8"></div>
-            <InfiniSection>
+            <InfiniSection EdgeStyle="SectionEdgeStyle.Bottom">
                 <InfiniHeading3>Admin Dashboard</InfiniHeading3>
-                Under Development ... 
+                Under Development ... <br/>
                 You only see this because you are an admin...
+                
+                <InfiniSpacerVertical Spacing="Size.Xxl"></InfiniSpacerVertical>
             </InfiniSection>
         </Authorized>
     </AuthorizeView>

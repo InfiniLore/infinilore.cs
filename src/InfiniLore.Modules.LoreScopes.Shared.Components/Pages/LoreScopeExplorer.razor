@@ -20,18 +20,18 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="LoreScopes">
-    <InfiniSection class="h-32 flex flex-col grow-0">
+    <InfiniSectionTop Class="flex flex-col gap-2">
         <InfiniHeading3>Create New LoreScope</InfiniHeading3>
-
+        
         <div class="flex items-center space-x-3">
             <InfiniTextInput @bind-Value="@NewLoreScopeName" Placeholder="Enter a new Lorescope name...">
                 <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync"
                               Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
             </InfiniTextInput>
         </div>
-    </InfiniSection>
+    </InfiniSectionTop>
 
-    <InfiniSection class="flex flex-col grow gap-2 overflow-auto h-min-full">
+    <InfiniSection class="flex flex-col grow gap-2 overflow-auto h-min-full mb-4">
         <div class="infini-scrollbar grow flex flex-col overflow-auto gap-2">
             @if (IsLoading) {}
             else if (PaginatedLoreScopes.IsEmpty) {

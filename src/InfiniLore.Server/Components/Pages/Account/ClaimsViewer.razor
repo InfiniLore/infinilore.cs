@@ -20,12 +20,8 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="Claims Viewer">
-    @if (_user is null) {
-        <InfiniSection>
-            <p class="text-(--color-base-30)">Loading user information...</p>
-        </InfiniSection>
-    } else {
-        <InfiniSection>
+    @if (_user is not null) {
+        <InfiniSection Class="mt-4 gap-2">
             <InfiniHeading3>Claims Viewer</InfiniHeading3>
             
             <p class="text-lg">
@@ -65,9 +61,7 @@
 
         </InfiniSection>
 
-        <div class="w-full h-4 bg-transparent"></div>
-
-        <InfiniSection>
+        <InfiniSection Class="mb-4">
             <InfiniHeading3>Access Token Viewer</InfiniHeading3>
             
             <div class="flex grow flex-col gap-2">
@@ -132,7 +126,6 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
     private ClaimsPrincipal? _user;
     private string? _accessToken;
