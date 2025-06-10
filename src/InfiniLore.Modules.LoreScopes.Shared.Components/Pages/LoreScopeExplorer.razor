@@ -57,17 +57,20 @@
 
                                 <!-- Main Info Content -->
                                 <div class="flex flex-col flex-1 min-w-0">
-                                    <div class="flex-1">
-                                        <InfiniHeading3 Class="max-w-9/12 truncate">
-                                            @loreScope.Name
-                                        </InfiniHeading3>
-                                        <p class="text-sm text-(--color-base-30) line-clamp-4 overflow-hidden max-h-32">
-                                            @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
-                                        </p>
+                                    <div class="flex-1 flex flex-col">
+                                        <div class="flex flex-col gap-1">
+                                            <InfiniHeading3 Class="max-w-9/12 truncate">
+                                                @loreScope.Name
+                                            </InfiniHeading3>
+                                            <p class="text-sm text-(--color-base-30) line-clamp-4 overflow-hidden max-h-32">
+                                                @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
+                                            </p>
+                                        </div>
                                         <p class="text-sm text-(--color-base-30) line-clamp-4 mt-auto">
                                             Owner: @loreScope.OwnerId
                                         </p>
                                     </div>
+
 
                                     <!-- Links -->
                                     <div class="flex flex-row gap-2 justify-start mt-2">
