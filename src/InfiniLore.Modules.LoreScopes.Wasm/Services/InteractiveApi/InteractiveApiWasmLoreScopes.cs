@@ -32,9 +32,8 @@ public class InteractiveApiWasmLoreScopes(
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
-            await using Stream? result = await requestBuilder.DeleteAsync(cancellationToken: ct);
             
-            if (result is null) return Outcome.FromError(interactiveApi.DefaultApiError);
+            await requestBuilder.DeleteAsync(cancellationToken: ct);
             return Outcome.FromState(true);
         }
 
@@ -47,7 +46,7 @@ public class InteractiveApiWasmLoreScopes(
         try {
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             MetadataRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId].Metadata;
-            var body = new KiotaUpsertLoreScopeMetadataEndpointRequest() {
+            var body = new KiotaUpsertLoreScopeMetadataEndpointRequest {
                 Name = newLoreScopeName,
                 Description = newDescription
             };
@@ -67,7 +66,6 @@ public class InteractiveApiWasmLoreScopes(
             InfiniLoreApiClient client = interactiveApi.ApiClient;
             WithLoreScopeItemRequestBuilder requestBuilder = client.Api.V1.DataUser[userId].Lorescope[loreScopeId];
             KiotaLoreScopeResponse? result = await requestBuilder.GetAsync(cancellationToken: ct);
-            
             
             if (result is null) return Outcome<ILoreScopeModel>.FromError(interactiveApi.DefaultApiError);
             logger.Warning("Result: {@result}", result);

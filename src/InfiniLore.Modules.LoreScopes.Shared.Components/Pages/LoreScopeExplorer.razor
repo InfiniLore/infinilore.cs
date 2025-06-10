@@ -34,16 +34,19 @@
 
     <InfiniSection class="flex flex-col grow gap-2 overflow-auto h-min-full">
         <div class="infini-scrollbar grow flex flex-col overflow-auto gap-2">
-            @if (PaginatedLoreScopes.IsEmpty && !IsLoading) {
-                <div class="flex flex-col items-center">
-                    <h3 class="text-lg font-semibold text-(--color-base-90)">
-                        No LoreScopes Found
-                    </h3>
-                    <p class="text-sm text-(--color-base-50)">
+            @if (IsLoading) {
+                
+            }
+            else if (PaginatedLoreScopes.IsEmpty) {
+                <div class="flex flex-col justify-center items-center">
+                    <p class="text-sm text-(--color-base-50) text-center">
+                        No LoreScopes found
+                        <br/>
                         Create a new one by clicking the button above
                     </p>
                 </div>
-            } else {
+            }
+            else {
                 foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
                     <div class="px-2 py-1 overflow-y-clip overflow-x-hidden group/item">
                         <div class="grow flex flex-row items-start bg-(--color-base-80) border border-(--border-color) rounded-xl p-2 shadow-sm gap-2 w-full h-full transition">
@@ -101,34 +104,34 @@
 
                         </div>
                     </div>
-                }
 
-                @* Navigation *@
-                <div class="flex justify-center items-end grow">
-                    <div class="flex gap-2">
-                        @if (PaginatedLoreScopes.TotalPages > 1) {
-                            <InfiniButton
-                                OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage - 1)"
-                                Disabled="@(!PaginatedLoreScopes.HasPreviousPage)">
-                                Previous
-                            </InfiniButton>
-                        }
+                    @* Navigation *@
+                    <div class="flex justify-center items-end grow">
+                        <div class="flex gap-2">
+                            @if (PaginatedLoreScopes.TotalPages > 1) {
+                                <InfiniButton
+                                    OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage - 1)"
+                                    Disabled="@(!PaginatedLoreScopes.HasPreviousPage)">
+                                    Previous
+                                </InfiniButton>
+                            }
 
-                        <div class="text-(--color-base-50) flex flex-col justify-center items-center">
-                    <span
-                        class="text-sm">Page @(PaginatedLoreScopes.CurrentPage + 1) of @PaginatedLoreScopes.TotalPages</span>
-                            <span class="text-xs">@PaginatedLoreScopes.TotalCount total items</span>
+                            <div class="text-(--color-base-50) flex flex-col justify-center items-center">
+                                <span
+                                    class="text-sm">Page @(PaginatedLoreScopes.CurrentPage + 1) of @PaginatedLoreScopes.TotalPages</span>
+                                <span class="text-xs">@PaginatedLoreScopes.TotalCount total items</span>
+                            </div>
+
+                            @if (PaginatedLoreScopes.TotalPages > 1) {
+                                <InfiniButton
+                                    OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage + 1)"
+                                    Disabled="@(!PaginatedLoreScopes.HasNextPage)">
+                                    Next
+                                </InfiniButton>
+                            }
                         </div>
-
-                        @if (PaginatedLoreScopes.TotalPages > 1) {
-                            <InfiniButton
-                                OnClick="() => NavigationButton(PaginatedLoreScopes.CurrentPage + 1)"
-                                Disabled="@(!PaginatedLoreScopes.HasNextPage)">
-                                Next
-                            </InfiniButton>
-                        }
                     </div>
-                </div>
+                }
             }
         </div>
     </InfiniSection>

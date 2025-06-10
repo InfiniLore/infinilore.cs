@@ -34,7 +34,7 @@
         </InfiniHeading3>
     </InfiniSection>
     
-    <InfiniSection>
+    <InfiniSection Class="grow">
         <InfiniHeading5>
             LoreScope Details
         </InfiniHeading5>
@@ -62,7 +62,7 @@
         </InfiniHeading5>
         
         
-        <div class="mt-4 w- full">
+        <div class="mt-4 w-full">
             <div class="flex flex-row justify-between gap-4">
                 <div class="flex flex-row w-2/3">
                     <InputFile OnChange="@OnPosterImageSelected"
@@ -80,7 +80,7 @@
             </div>
         </div>
         
-        <InfiniSpacerVertical Spacing="Size.Xxl"/>
+        <InfiniSpacer></InfiniSpacer>
         
         <div class="flex flex-row justify-between">
             <InfiniButton
@@ -129,16 +129,18 @@
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     protected override async Task OnInitializedAsync() {
+        if (UserId == Guid.Empty) {
+            NavigationManager.NavigateTo("/lorescopes");
+            return;
+        }
+        
         Outcome<ILoreScopeModel> outcome = await LoreScopeInteractiveApi.GetLoreScopeAsync(
             UserId.ToString(),
             LoreScopeId.ToString()
         );
-        Logger.Warning("{@a}", outcome);
         
         if (!outcome.TryGetAsData(out ILoreScopeModel? model)) {
-            Logger.Warning("Could not retrieve model");
-
-            LoreScopeModel = WasmLoreScopeModel.Empty;
+            NavigationManager.NavigateTo("/lorescopes");
             return;
         }
 
