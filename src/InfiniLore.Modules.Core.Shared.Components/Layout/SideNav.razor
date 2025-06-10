@@ -1,7 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Infinilore.InfiniBlazor
 @using InfiniLore.InfiniBlazor
 @using InfiniLore.InfiniBlazor.Debugger
 @using InfiniLore.InfiniBlazor.Theming
@@ -98,24 +97,21 @@
     <Footer>
         <AuthorizeView>
             <Authorizing>
-                <div class="transition-opacity opacity-0">
-                    <InfiniSpacerVertical Spacing="Size.L"/>
-                </div>
             </Authorizing>
             <NotAuthorized>
-                <div class="transition-opacity duration-300 @(_isLoading ? "opacity-0" : "opacity-100")">
+                <div class="transition-opacity duration-150">
 
                     <InfiniSideNavLink Href="account/login?redirectUri=/">
                         <Icon>
                             <LiKeyRound
-                                class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                                class="@($"transition-all duration-150 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                         </Icon>
                         <Text>Login</Text>
                     </InfiniSideNavLink>
                     <InfiniSideNavLink Href="account/login?redirectUri=/">
                         <Icon>
                             <LiSignpost
-                                class="@($"transition-all duration-300 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
+                                class="@($"transition-all duration-150 {(MenuCollapsed ? "opacity-100" : "opacity-0")}")"/>
                         </Icon>
                         <Text>SignUp</Text>
                     </InfiniSideNavLink>
@@ -123,7 +119,7 @@
             </NotAuthorized>
 
             <Authorized>
-                <div class="transition-opacity duration-300 @(_isLoading ? "opacity-0" : "opacity-100")">
+                <div class="transition-opacity duration-150 opacity-100">
                     @if (UserModel is not null) {
                         <!-- Profile Icon -->
                         <InfiniSideNavUser
@@ -144,7 +140,22 @@
                         </InfiniSideNavUser>
                     }
                     else {
-                        <InfiniSpacerVertical Spacing="Size.L"/>
+                        <InfiniSideNavUser
+                            HrefUserProfile="/account/profile"
+                            UserName="@("\u00A0")">
+                            <Icon>
+                                <div class="w-8 h-8 flex justify-center items-center">
+                                    <LiLoaderCircle class="text-(--color-base-30) animate-spin"/>
+                                </div>
+                            </Icon>
+                            <AdditionalLinks>
+                                <NavLink @onclick="LogoutCallbackAsync"
+                                         href="/account/logout"
+                                         class="text-sm text-(--color-red) whitespace-nowrap hover:text-(--color-accent)">
+                                    logout
+                                </NavLink>
+                            </AdditionalLinks>
+                        </InfiniSideNavUser>
                     }
                 </div>
             </Authorized>
@@ -165,7 +176,6 @@
     private bool MenuCollapsed { get; set; }// Tracks whether the menu is collapsed
     private IInfiniLoreUserModel? UserModel { get; set; }
 
-    private bool _isLoading = true;
     private bool _isFirstRender = true;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -188,7 +198,6 @@
             // Try state container first
             if (await UserStateContainer.GetIsAuthenticatedAsync()) {
                 UserModel = await UserStateContainer.GetUserAsync();
-                _isLoading = false;
                 return;
             }
 
@@ -208,8 +217,8 @@
             await UserStateContainer.SetUserAsync(userModel);
             await UserStateContainer.SetIsAuthenticatedAsync(true);
         }
-        finally {
-            _isLoading = false;
+        catch {
+            // ignored
         }
     }
 
