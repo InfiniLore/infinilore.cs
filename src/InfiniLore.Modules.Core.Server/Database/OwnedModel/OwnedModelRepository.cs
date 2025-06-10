@@ -32,7 +32,7 @@ public abstract class OwnedModelRepository<TOwner, TModel> : BasicModelRepositor
     public async ValueTask<PaginatedRepoOutcome<TModel>> GetByOwnerAsync(Guid userId, Pagination pageInfo, QueryConfig config = default, CancellationToken ct = default) {
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        IQueryable<TModel> baseQuery = dbSet.Where(ls => ls.OwnerId == userId);
+        IQueryable<TModel> baseQuery = dbSet.AsNoTracking().Where(ls => ls.OwnerId == userId);
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
 
