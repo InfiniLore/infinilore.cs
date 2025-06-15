@@ -50,12 +50,15 @@
                 <Text>LoreScopes</Text>
             </InfiniSideNavLink>
 
-            <InfiniSideNavLink Href="/claims-viewer">
-                <Icon>
-                    <LiView/>
-                </Icon>
-                <Text>Claims viewer</Text>
-            </InfiniSideNavLink>
+            @if (DebuggerProvider.IsEnabled()) {
+                <InfiniSideNavLink Href="/claims-viewer" Class="[&_svg]:text-(--color-red-light) [&_svg]:group-hover:text-(--sidebar-nav-text-hover) [&_span]:text-(--color-red-light)">
+                    <Icon>
+                        <LiView/>
+                    </Icon>
+                    <Text>Claims viewer</Text>
+                </InfiniSideNavLink>
+                
+            }
         </Authorized>
     </AuthorizeView>
 
