@@ -1,17 +1,15 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.InfiniBlazor
-@using InfiniLore.InfiniBlazor.Debugger
-@using InfiniLore.InfiniBlazor.Theming
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
+
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @rendermode InteractiveAuto
 @inject IJwtTokenManager JsTokenProvider
-@inject IThemeSelector ThemeSelector
+@inject IThemeStateProvider ThemeStateProvider
 @inject IInteractiveApiUsers UserInteractiveApi
 @inject IVisualDebuggerProvider DebuggerProvider
 @inject IUserStateContainer UserStateContainer
@@ -19,7 +17,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html *@
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniSideNav @bind-MenuCollapsed="@MenuCollapsed" Size="SideNavSize.Large">
+<InfiniSideNav @bind-MenuCollapsed="@MenuCollapsed" Size="Size.M">
     <Header>
         <a href="/"
            class="@(!MenuCollapsed ? "text-1xl font-bold text-(--color-base-00) hover:text-(--color-accent) no-underline" : "hidden")">
@@ -82,16 +80,23 @@
         <Text>Toggle Debug</Text>
     </InfiniSideNavToggleButton>
 
-    <InfiniSideNavToggleButton
-        Value="@(ThemeSelector.CurrentThemeMode.Name != ThemeMode.DarkMode.Name)"
-        ValueChanged="@OnThemeSwitchAsync"
-        OnIcon="sun"
-        OffIcon="moon">
-        <Icon>
-            <LiSun/>
-        </Icon>
-        <Text>Toggle Mode</Text>
-    </InfiniSideNavToggleButton>
+    @if (ThemeStateProvider.GetState().IsBinaryCollection) {
+        <InfiniSideNavToggleButton
+            Value="@(ToggleState)"
+            ValueChanged="@OnThemeModeChanged"
+            OnIcon="sun"
+            OffIcon="moon">
+            <Icon>
+                <LiSun/>
+            </Icon>
+            <Text>Toggle Mode</Text>
+        </InfiniSideNavToggleButton>
+    } else {
+        <InfiniSideNavButton OnClick="OnThemeModeChanged">
+            <Icon><LiSun/></Icon>
+            <Text>Toggle Mode</Text>
+        </InfiniSideNavButton>
+    }
     </Body>
 
     <Footer>
@@ -177,6 +182,8 @@
     private IInfiniLoreUserModel? UserModel { get; set; }
 
     private bool _isFirstRender = true;
+    private bool ToggleState { get; set; }
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -233,13 +240,16 @@
         await UserStateContainer.RemoveUserAsync();
         await JsTokenProvider.RemoveTokenAsync();
     }
+    
+    private async Task OnThemeModeChanged() {
+        await ThemeStateProvider.TrySelectNextModeAsync(); 
 
-    private async Task OnThemeSwitchAsync() {
-        if (_isFirstRender) return;
-
-        await ThemeSelector.TrySelectNextThemeModeAsync();
+        IThemeState state = ThemeStateProvider.GetState();
+        ToggleState = state.ModeName != state.FirstModeInCollectionName;
+        
+        StateHasChanged();
     }
-
+    
     public void Dispose() {
         UserStateContainer.OnChange -= StateHasChanged;
     }

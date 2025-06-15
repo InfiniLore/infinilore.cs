@@ -4,7 +4,7 @@
 using InfiniLore.Kiota.Models;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
 
-namespace InfiniLore.Modules.LsMarkdownFiles.Shared;
+namespace InfiniLore.Modules.LsMarkdownFiles.Shared.KiotaModels;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

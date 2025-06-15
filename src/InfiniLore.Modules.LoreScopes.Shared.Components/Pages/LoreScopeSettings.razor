@@ -6,6 +6,7 @@
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
+@using InfiniLore.Modules.LoreScopes.Shared.KiotaModels
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -13,8 +14,7 @@
 @inject IInteractiveApiLoreScopes LoreScopeInteractiveApi
 @inject ILogger<LoreScopeSettings> Logger
 @inject NavigationManager NavigationManager
-@inject IToastStorage ToastStorage
-@inject IToastAppearanceProvider ToastAppearanceProvider
+@inject IToastingProvider ToastingProvider
 @attribute [Authorize]
 @rendermode InteractiveAuto
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -215,33 +215,25 @@
         Outcome outcome = await LoreScopeInteractiveApi.DeleteLoreScopesAsync(UserId.ToString(), LoreScopeId.ToString());
         await outcome.SwitchAsync(
             async () => {
-                var toastInfo = new ToastData(
-                    "LoreScope has been deleted",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Info)
-                );
+                var toastInfo = new ToastingData("LoreScope has been deleted");
 
-                await ToastStorage.AddToastAsync(toastInfo);
+                await ToastingProvider.PublishToastAsync(toastInfo, ToastAppearance.Success);
                 NavigationManager.NavigateTo("/lorescopes");
             },
             async () => {
-                var toastFail = new ToastData(
-                    "Could not delete LoreScope",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Warning)
+                var toastFail = new ToastingData(
+                    "Could not delete LoreScope"
                 );
 
-                await ToastStorage.AddToastAsync(toastFail);
+                await ToastingProvider.PublishToastAsync(toastFail, ToastAppearance.Error);
             },
             async error => {
-                var toastFail = new ToastData(
+                var toastFail = new ToastingData(
                     "Could not delete LoreScope",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
                     Body: error
                 );
-
-                await ToastStorage.AddToastAsync(toastFail);
+                
+                await ToastingProvider.PublishToastAsync(toastFail, ToastAppearance.Error);
             }
         );
     }

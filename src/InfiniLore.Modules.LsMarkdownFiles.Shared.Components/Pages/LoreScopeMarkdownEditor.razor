@@ -4,6 +4,7 @@
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
+@using InfiniLore.Modules.LsMarkdownFiles.Shared.KiotaModels
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -11,8 +12,7 @@
 @inject IInteractiveApiLsMarkdownFiles InteractiveApi
 @inject HttpClient Http
 @inject ILogger<LoreScopeMarkdownEditor> Logger
-@inject IToastAppearanceProvider ToastAppearanceProvider
-@inject IToastStorage ToastStorage
+@inject IToastingProvider ToastingProvider
 @attribute [Authorize]
 @implements IAsyncDisposable
 @rendermode InteractiveAuto
@@ -129,31 +129,19 @@
 
         await outcome.SwitchAsync(
             trueCase: async () => {
-                var toastSuccess = new ToastData(
-                    "Markdown file has been saved",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success)
-                );
+                var toastSuccess = new ToastingData("Markdown file has been saved");
 
-                await ToastStorage.AddToastAsync(toastSuccess);
+                await ToastingProvider.PublishToastAsync(toastSuccess, ToastAppearance.Success);
             },
             falseCase: async () => {
-                var toastFail = new ToastData(
-                    "Could not save Markdown file",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Warning)
-                );
+                var toastFail = new ToastingData("Could not save Markdown file");
 
-                await ToastStorage.AddToastAsync(toastFail);
+                await ToastingProvider.PublishToastAsync(toastFail, ToastAppearance.Error);
             },
             errorCase: async _ => {
-                var toastFail = new ToastData(
-                    "Could not save Markdown file due to an error",
-                    10,
-                    ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error)
-                );
+                var toastFail = new ToastingData("Could not save Markdown file due to an error");
 
-                await ToastStorage.AddToastAsync(toastFail);
+                await ToastingProvider.PublishToastAsync(toastFail,ToastAppearance.Error);
             }
         );
     }

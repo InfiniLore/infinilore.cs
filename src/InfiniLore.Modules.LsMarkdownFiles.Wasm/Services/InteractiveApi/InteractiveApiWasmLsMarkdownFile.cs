@@ -10,6 +10,7 @@ using InfiniLore.Modules.Core.Shared;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LsMarkdownFiles.Shared;
 using InfiniLore.Modules.LsMarkdownFiles.Shared.Database;
+using InfiniLore.Modules.LsMarkdownFiles.Shared.KiotaModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
 using System.Text;

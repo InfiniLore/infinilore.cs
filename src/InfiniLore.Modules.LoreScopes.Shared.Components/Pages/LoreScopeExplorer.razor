@@ -11,8 +11,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/lorescopes"
 @inject IInteractiveApiLoreScopes LoreScopeApi
-@inject IToastStorage ToastStorage
-@inject IToastAppearanceProvider ToastAppearanceProvider
+@inject IToastingProvider ToastingProvider
 @inject IMarkdownParser<string, string> MarkdownParser
 @attribute [Authorize]
 @rendermode InteractiveAuto
@@ -201,14 +200,12 @@
 
         Outcome outcome = await LoreScopeApi.CreateLoreScopeAsync(UserId, NewLoreScopeName);
         if (outcome.IsTrue) {
-            var toast = new ToastData(
+            var toast = new ToastingData(
                 "LoreScope Created",
-                10,
-                ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Success),
                 NewLoreScopeName
             );
 
-            await ToastStorage.AddToastAsync(toast);
+            await ToastingProvider.PublishToastAsync(toast, ToastAppearance.Success);
             NewLoreScopeName = string.Empty;
 
             await FetchFilesAsync(0);
@@ -216,14 +213,12 @@
             return;
         }
 
-        var toastFail = new ToastData(
+        var toastFail = new ToastingData(
             "Could not create LoreScope",
-            10,
-            ToastAppearanceProvider.GetAppearanceOrDefault(StandardToastAppearance.Error),
             outcome.IsError ? outcome.AsError.Value : "UNKNOWN"
         );
 
-        await ToastStorage.AddToastAsync(toastFail);
+        await ToastingProvider.PublishToastAsync(toastFail, ToastAppearance.Error);
         StateHasChanged();
     }
 

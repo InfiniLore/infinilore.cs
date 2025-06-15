@@ -13,6 +13,7 @@ using InfiniLore.Modules.Core.Shared.Extensions;
 using InfiniLore.Modules.Core.Wasm.Services;
 using InfiniLore.Modules.LoreScopes.Shared;
 using InfiniLore.Modules.LoreScopes.Shared.Database;
+using InfiniLore.Modules.LoreScopes.Shared.KiotaModels;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;
