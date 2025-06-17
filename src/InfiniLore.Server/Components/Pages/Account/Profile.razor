@@ -25,41 +25,51 @@
     <InfiniSection Class="mt-4">
         <InfiniHeading3>
             Profile Settings
-            <span class="text-sm text-(--color-base-50)">
-                Id: @UserModel.Id
-            </span>
         </InfiniHeading3>
 
         <div class="flex flex-row gap-2">
             @* User Data *@
             <div class="flex w-2/3 grow flex-col gap-2">
                 <InfiniTextInput
+                    Label="UserId"
+                    LabelLocation="LabelLocation.OnTop"
+                    Value="@UserModel.Id.ToString()"
+                    Disabled="true"
+                />
+                <InfiniTextInput
                     Label="Username"
                     LabelLocation="LabelLocation.OnTop"
                     Value="@UserModel.Username"
                     Disabled="true"
                 />
-                
+
                 <InfiniFileInput
                     Label="Profile Image"
                     LabelLocation="LabelLocation.OnTop"
                     OnFilesChanged="OnPosterImageSelected"
                 />
-                
+
                 <InfiniSpacerVertical Spacing="Size.S"/>
             </div>
 
             @* Profile Image *@
             <div class="min-w-[120px]">
-                <div class="aspect-square max-h-32 max-w-32">
-                    <img
-                        class="w-full h-full rounded-full object-cover"
-                        src="@UserModel.ProfileImageUrl"
-                        alt="profile image"/>
+                <div class="aspect-square h-32 w-32">
+                    @if (!RendererInfo.IsInteractive) {
+                        <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
+                            <LiLoaderCircle Class="animate-spin" Size="100"/>
+                        </div>
+                    }
+                    else {
+                        <img
+                            class="w-full h-full rounded-full object-cover"
+                            src="@UserModel.ProfileImageUrl"
+                            alt="profile image"/>
+                    }
                 </div>
             </div>
         </div>
-                
+
         <div class="flex w-full justify-center items-center">
             <InfiniButton
                 OnClick="OnSaveChangesAsync"
@@ -75,7 +85,7 @@
                 <InfiniHeading3>Admin Dashboard</InfiniHeading3>
                 Under Development ... <br/>
                 You only see this because you are an admin...
-                
+
                 <InfiniSpacerVertical Spacing="Size.Xxl"></InfiniSpacerVertical>
             </InfiniSection>
         </Authorized>
@@ -91,7 +101,7 @@
     public Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
     private IInfiniLoreUserModel UserModel { get; set; } = new DefaultInfiniLoreUserModel();
     private IBrowserFile? SelectedFile { get; set; }
-    private const int MaxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+    private const int MaxFileSize = 5 * 1024 * 1024;// 5MB in bytes
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -99,12 +109,12 @@
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
         ClaimsPrincipal user = state.User;
-        
+
         if (user.Identity is { IsAuthenticated: true }) {
             // try find userId
             string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
             if (userId.IsNullOrEmpty()) return;
-            
+
             Outcome<IInfiniLoreUserModel> outcome = await UserInteractiveApi.GetUserAsync(userId);
             if (!outcome.TryGetAsData(out IInfiniLoreUserModel? userModel)) return;
 
@@ -113,25 +123,26 @@
 
         await base.OnInitializedAsync();
     }
-    
+
     private void OnPosterImageSelected(IReadOnlyList<IBrowserFile>? selectedFiles) {
         if (selectedFiles?.FirstOrDefault() is not {} file) {
             SelectedFile = null;
             return;
         }
+
         SelectedFile = file;
         StateHasChanged();
     }
-    
+
     private async Task OnSaveChangesAsync() {
         await OnPosterImageUpload();
-        
+
         StateHasChanged();
-        
+
         // Refresh the model
         await OnInitializedAsync();
     }
-    
+
     private async Task OnPosterImageUpload() {
         if (SelectedFile is null) return;
 
@@ -141,14 +152,14 @@
                 Logger.Warning("File size exceeds 5MB limit");
                 return;
             }
-            
+
             // Copy to MemoryStream first
             Outcome outcome = await UserInteractiveApi.UpsertProfileImageAsync(
                 UserModel.Id.ToString(),
                 SelectedFile
             );
 
-            if (!outcome.TryGetAsState(out bool success) || !success ) {
+            if (!outcome.TryGetAsState(out bool success) || !success) {
                 Logger.Error("Failed to upload image");
                 return;
             }
