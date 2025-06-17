@@ -1,7 +1,6 @@
 {
   "name": "infinilore",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.1.0",
   "scripts": {
     "watch:tailwind-server": "npx @tailwindcss/cli -i ./src/InfiniLore.Server/wwwroot/tailwind.css -o ./src/InfiniLore.Server/wwwroot/InfiniLore.css --watch",
     "watch:typescript": "npx webpack --watch"

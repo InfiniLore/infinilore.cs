@@ -46,9 +46,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.73" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.73" />
-    <PackageVersion Include="InfiniLore.Lucide" Version="0.30.515" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.76" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.76" />
+    <PackageVersion Include="InfiniLore.Lucide" Version="0.30.516" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />

@@ -523,9 +523,6 @@
   .text-\(--color-red\) {
     color: var(--color-red);
   }
-  .text-\(--color-red-light\) {
-    color: var(--color-red-light);
-  }
   .lowercase {
     text-transform: lowercase;
   }
@@ -565,13 +562,6 @@
   .duration-150 {
     --tw-duration: 150ms;
     transition-duration: 150ms;
-  }
-  .group-hover\:text-\(--color-accent\) {
-    &:is(:where(.group):hover *) {
-      @media (hover: hover) {
-        color: var(--color-accent);
-      }
-    }
   }
   .file\:mr-4 {
     &::file-selector-button {
@@ -679,11 +669,6 @@
       color: var(--color-red-light);
     }
   }
-  .\[\&_svg\]\:text-\(--color-red\) {
-    & svg {
-      color: var(--color-red);
-    }
-  }
   .\[\&_svg\]\:text-\(--color-red-light\) {
     & svg {
       color: var(--color-red-light);
@@ -696,36 +681,6 @@
           color: var(--sidebar-nav-text-hover);
         }
       }
-    }
-  }
-  .\[\&_svg\:group-hover\]\:text-\(--color-accent\) {
-    & svg:group-hover {
-      color: var(--color-accent);
-    }
-  }
-  .\[\&_svg\:hover\]\:text-\(--color-accent\) {
-    & svg:hover {
-      color: var(--color-accent);
-    }
-  }
-  .\[\&\:group-hover\]\:text-\(--color-accent\) {
-    &:group-hover {
-      color: var(--color-accent);
-    }
-  }
-  .\[svg\]\:text-\(--color-red-light\) {
-    &:is(svg) {
-      color: var(--color-red-light);
-    }
-  }
-  .\[\&svg\]\:text-\(--color-red\) {
-    &svg {
-      color: var(--color-red);
-    }
-  }
-  .\[\&svg\]\:text-\(--color-red-light\) {
-    &svg {
-      color: var(--color-red-light);
     }
   }
 }
