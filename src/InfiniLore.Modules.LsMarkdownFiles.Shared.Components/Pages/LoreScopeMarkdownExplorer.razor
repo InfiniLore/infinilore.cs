@@ -29,7 +29,11 @@
         </InfiniHeading3>
 
         <div class="flex items-center space-x-3">
-            <InfiniTextInput @bind-Value="@NewMarkdownFileName" Placeholder="Enter a new markdown file name...">
+            <InfiniTextInput 
+                Label="New Markdown File"
+                LabelLocation="LabelLocation.OnTop"
+                @bind-Value="@NewMarkdownFileName" 
+                Placeholder="Enter a new markdown file name...">
                 <InfiniButton IconName="check" OnClick="CreateNewMarkdownFileAsync"
                               Disabled="@(NewMarkdownFileName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
             </InfiniTextInput>
@@ -62,12 +66,12 @@
                             <InfiniTableCell>
                                 <div class="flex justify-center items-center gap-8">
                                     <InfiniButton
-                                        Variant="ButtonVariant.Dark"
+                                        Variant="ButtonVariant.Default"
                                         Href="@($"/lorescope/{LoreScopeId}/markdown/{file.Id}/editor")">
                                         Edit
                                     </InfiniButton>
                                     <InfiniButton
-                                        Variant="ButtonVariant.Default"
+                                        Variant="ButtonVariant.Outline"
                                         Color="Color.Red"
                                         IconName="trash"
                                         OnClick="async () => await DeleteMarkdownFileAsync(file)">

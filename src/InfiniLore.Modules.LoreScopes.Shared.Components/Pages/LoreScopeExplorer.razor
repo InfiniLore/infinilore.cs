@@ -23,7 +23,11 @@
         <InfiniHeading3>Create New LoreScope</InfiniHeading3>
         
         <div class="flex items-center space-x-3">
-            <InfiniTextInput @bind-Value="@NewLoreScopeName" Placeholder="Enter a new Lorescope name...">
+            <InfiniTextInput 
+                Label="New LoreScope Name"
+                LabelLocation="LabelLocation.OnTop"
+                @bind-Value="@NewLoreScopeName"
+                Placeholder="Enter a new Lorescope name...">
                 <InfiniButton IconName="check" OnClick="CreateNewLoreScopeAsync"
                               Disabled="@(NewLoreScopeName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
             </InfiniTextInput>
@@ -46,7 +50,7 @@
                 <div class="infini-scrollbar flex flex-col grow overflow-auto gap-4">
                     @foreach (ILoreScopeModel loreScope in PaginatedLoreScopes.Items) {
                         <div class="p-0.5 overflow-y-clip overflow-x-hidden group/item min-h-66">
-                            <div class="grow flex flex-row items-stretch bg-(--color-base-80) border border-(--border) rounded-xl p-2 shadow-sm gap-2 w-full h-full">
+                            <div class="grow flex flex-row items-stretch bg-(--color-base-50) border border-(--border) rounded-xl p-2 shadow-sm gap-2 w-full h-full">
                                 <!-- Poster Image -->
                                 <LoreScopePoster
                                     Class="w-1/5 shrink-0"
@@ -61,7 +65,7 @@
                                             <InfiniHeading3 Class="max-w-9/12 truncate">
                                                 @loreScope.Name
                                             </InfiniHeading3>
-                                            <p class="text-sm text-(--color-base-30) line-clamp-4 overflow-hidden max-h-32">
+                                            <p class="text-sm text-(--color-base-10) line-clamp-4 overflow-hidden max-h-32">
                                                 @((MarkupString)(LoreScopeDescriptions.GetValueOrDefault(loreScope.Id) ?? string.Empty))
                                             </p>
                                         </div>
@@ -74,7 +78,6 @@
                                     <!-- Links -->
                                     <div class="flex flex-row gap-2 justify-start mt-2">
                                         <InfiniButton
-                                            Variant="ButtonVariant.Dark"
                                             IconName="file"
                                             Href="@($"/lorescope/{loreScope.Id}/markdown")">
                                             Markdown files

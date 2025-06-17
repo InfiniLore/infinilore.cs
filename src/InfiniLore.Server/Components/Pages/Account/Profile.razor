@@ -2,6 +2,8 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using Infinilore.InfiniBlazor
+@using InfiniLore.InfiniBlazor
+@using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.Core.Shared.Database
 @using Microsoft.AspNetCore.Authorization
@@ -15,6 +17,7 @@
 @attribute [Authorize]
 @inject IInteractiveApiUsers UserInteractiveApi
 @inject ILogger<Profile> Logger
+@inject IToastingProvider ToastingProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -30,25 +33,20 @@
         <div class="flex flex-row gap-2">
             @* User Data *@
             <div class="flex w-2/3 grow flex-col gap-2">
-                <span>UserName: <span class="text-xs">@UserModel.Username</span></span>
-
-                <div class="flex flex-col grow justify-center">
-                    <div class="grow"></div>
-                    <div class="flex flex-col">
-                        <span>Profile Image: </span>
-                        <span class="text-xs text-(--color-base-30)">(Takes a page refresh to take effect after upload)</span>
-                    </div>
-                    <div class="flex flex-row justify-between">
-                        <div class="relative">
-                            <InputFile OnChange="@OnPosterImageSelected"
-                                       class="w-full text-sm text-(--color-base-30) transition-all duration-150 transform cursor-pointer file:cursor-pointer active:file:scale-95 file:mr-4 file:px-2 file:py-1  file:text-base file:rounded-md file:bg-(--color-base-70) file:text-(--color-base-00)  hover:file:text-(--color-accent) hover:file:ring-2 hover:ring-(--color-accent)  hover:file:scale-105 p-1"
-                                       accept="image/*"/>
-                        </div>
-
-                        <InfiniButton OnClick="OnPosterImageUpload" Disabled="@(SelectedFile is null)" IconName="check"/>
-                    </div>
-                </div>
-
+                <InfiniTextInput
+                    Label="Username"
+                    LabelLocation="LabelLocation.OnTop"
+                    Value="@UserModel.Username"
+                    Disabled="true"
+                />
+                
+                <InfiniFileInput
+                    Label="Profile Image"
+                    LabelLocation="LabelLocation.OnTop"
+                    OnFilesChanged="OnPosterImageSelected"
+                />
+                
+                <InfiniSpacerVertical Spacing="Size.S"/>
             </div>
 
             @* Profile Image *@
@@ -60,6 +58,14 @@
                         alt="profile image"/>
                 </div>
             </div>
+        </div>
+                
+        <div class="flex w-full justify-center items-center">
+            <InfiniButton
+                OnClick="OnSaveChangesAsync"
+                Color="Color.Green">
+                Save Changes
+            </InfiniButton>
         </div>
     </InfiniSection>
 
@@ -93,6 +99,7 @@
     protected override async Task OnInitializedAsync() {
         AuthenticationState state = await AuthenticationStateTask;
         ClaimsPrincipal user = state.User;
+        
         if (user.Identity is { IsAuthenticated: true }) {
             // try find userId
             string? userId = user.FindFirstValue(InfiniLoreClaimsStoreConstants.UserId);
@@ -107,10 +114,22 @@
         await base.OnInitializedAsync();
     }
     
-    private void OnPosterImageSelected(InputFileChangeEventArgs e) {
-        if (e.File is not {} file) return;
+    private void OnPosterImageSelected(IReadOnlyList<IBrowserFile>? selectedFiles) {
+        if (selectedFiles?.FirstOrDefault() is not {} file) {
+            SelectedFile = null;
+            return;
+        }
         SelectedFile = file;
         StateHasChanged();
+    }
+    
+    private async Task OnSaveChangesAsync() {
+        await OnPosterImageUpload();
+        
+        StateHasChanged();
+        
+        // Refresh the model
+        await OnInitializedAsync();
     }
     
     private async Task OnPosterImageUpload() {
@@ -134,12 +153,14 @@
                 return;
             }
 
-            // Refresh the LoreScope model to get the updated image URL
-            await OnInitializedAsync();
+            var toast = new ToastingData("Profile image updated");
+            await ToastingProvider.PublishToastAsync(toast, ToastAppearance.Success);
             SelectedFile = null;
         }
-        finally {
-            StateHasChanged();
+        catch (Exception e) {
+            Logger.Warning(e, "Could not update profile image");
+            var toast = new ToastingData("Profile image could not be updated");
+            await ToastingProvider.PublishToastAsync(toast, ToastAppearance.Error);
         }
     }
 }
