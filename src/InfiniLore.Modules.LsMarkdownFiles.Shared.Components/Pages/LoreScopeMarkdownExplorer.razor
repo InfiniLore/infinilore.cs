@@ -42,11 +42,9 @@
     </InfiniSectionTop>
 
     <InfiniSection Class="grow mb-4 overflow-auto">
-        @if (IsLoading) {
-            <div class="w-full h-full flex justify-center items-center">
-                <div class="w-8 h-8 flex justify-center items-center">
-                    <LiLoaderCircle class="text-(--color-base-30) animate-spin"/>
-                </div>
+        @if (IsLoading || !RendererInfo.IsInteractive) {
+            <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
+                <LiLoaderCircle Class="animate-spin" Size="100"/>
             </div>
         }
         else {

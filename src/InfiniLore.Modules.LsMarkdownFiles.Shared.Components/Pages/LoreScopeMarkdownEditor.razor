@@ -34,6 +34,7 @@
         <div class="flex flex-col gap-4">
             <div class="flex flex-row items-center space-x-3">
                 <InfiniTextInput
+                    Disabled="@(IsLoading || !RendererInfo.IsInteractive)"
                     Label="FileName"
                     LabelLocation="LabelLocation.Left"
                     @bind-Value="@FileModel.Name"
@@ -41,8 +42,7 @@
                     <InfiniButton
                         Variant="ButtonVariant.Primary"
                         IconName="save"
-                        OnClick="DebouncedSaveFileAsync"
-                        Disabled="IsLoading">
+                        OnClick="DebouncedSaveFileAsync">
                         Save File
                     </InfiniButton>
                 </InfiniTextInput>
@@ -52,8 +52,17 @@
 
     @* Editor *@
     <InfiniSection Class="mb-4 grow">
-        <InfiniMarkdownEditor @bind-Source="@TextSource" />
+        @if (IsLoading || !RendererInfo.IsInteractive) {
+            <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
+                <LiLoaderCircle Class="animate-spin" Size="100"/>
+            </div>
+        }
+        else {
+            <InfiniMarkdownEditor
+                @bind-Source="@TextSource"/>
+        }
     </InfiniSection>
+
 </InfiniPage>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
@@ -141,7 +150,7 @@
             errorCase: async _ => {
                 var toastFail = new ToastingData("Could not save Markdown file due to an error");
 
-                await ToastingProvider.PublishToastAsync(toastFail,ToastAppearance.Error);
+                await ToastingProvider.PublishToastAsync(toastFail, ToastAppearance.Error);
             }
         );
     }

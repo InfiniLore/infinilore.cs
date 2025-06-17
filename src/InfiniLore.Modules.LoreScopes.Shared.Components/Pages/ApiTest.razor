@@ -34,6 +34,11 @@
                 @if (RendererInfo.IsInteractive) {
                     <InfiniCodeBlock Content="@GetUrl()" EnableCopy="false"></InfiniCodeBlock>
                 }
+                else {
+                    <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
+                        <LiLoaderCircle Class="animate-spin" Size="100"/>
+                    </div>
+                }
             </div>
 
             <InfiniButton OnClick="CallInternalApi" Disabled="@(!RendererInfo.IsInteractive)">
