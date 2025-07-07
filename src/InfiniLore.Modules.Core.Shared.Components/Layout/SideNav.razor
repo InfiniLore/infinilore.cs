@@ -74,8 +74,8 @@
     <InfiniSideNavToggleButton
         Value="@DebuggerProvider.IsEnabled()"
         ValueChanged="@DebuggerProvider.ToggleStateAsync"
-        OnIcon="@(MenuCollapsed ? "bug" : null)"
-        OffIcon="@(MenuCollapsed ? "bug" : null)"
+        OnIcon="@LucideNames.Bug"
+        OffIcon="@LucideNames.Bug"
         Color="Color.Red">
         <Icon>
             <LiBug/>
@@ -95,7 +95,7 @@
             <Text>Toggle Mode</Text>
         </InfiniSideNavToggleButton>
     } else {
-        <InfiniSideNavButton OnClick="OnThemeModeChanged">
+        <InfiniSideNavButton OnClick="@OnThemeModeChanged">
             <Icon><LiSun/></Icon>
             <Text>Toggle Mode</Text>
         </InfiniSideNavButton>
