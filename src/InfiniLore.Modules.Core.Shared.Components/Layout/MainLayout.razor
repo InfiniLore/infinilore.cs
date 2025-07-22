@@ -9,14 +9,27 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniThemeManager/>
-<InfiniToastManager/>
-
-<div class="flex h-screen w-screen">
-    <SideNav/>
-
+<InfiniLayout Layout="NavLayout.LeftPrimary">
+    <Left>
+        <NavBarLeft/>
+    </Left>
+    
+    @* <Top> *@
+    @*     <NavBarTop/> *@
+    @* </Top> *@
+    @* *@
+    @* <Bottom> *@
+    @*     <NavBarBottom/> *@
+    @* </Bottom> *@
+    @* *@
+    @* <Right> *@
+    @*     <NavBarRight/> *@
+    @* </Right> *@
+    
+    <Body>
     @Body
-</div>
+    </Body>
+</InfiniLayout>
 
 <div id="blazor-error-ui" class="hidden fixed bottom-0 left-0 w-full bg-yellow-100 shadow-md z-1000 p-3 pl-5">
     An unhandled error has occurred.

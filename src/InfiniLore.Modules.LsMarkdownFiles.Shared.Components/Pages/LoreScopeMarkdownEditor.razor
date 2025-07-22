@@ -1,6 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.InfiniBlazor.TextEditor
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
@@ -19,8 +20,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="Markdown Editor">
-    <InfiniSectionTop class="">
+<InfiniPage Title="Markdown Editor" Class="px-4 pb-4">
+    <InfiniSection Location="SectionLocation.Top" Class="w-full ">
         <InfiniHeading3 Class="flex flex-row">
             <InfiniButton
                 Href="@($"/lorescope/{LoreScopeId}/markdown")"
@@ -48,10 +49,10 @@
                 </InfiniTextInput>
             </div>
         </div>
-    </InfiniSectionTop>
+    </InfiniSection>
 
     @* Editor *@
-    <InfiniSection Class="mb-4 grow">
+    <InfiniSection Class="grow w-full h-full">
         @if (IsLoading || !RendererInfo.IsInteractive) {
             <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
                 <LiLoaderCircle Class="animate-spin" Size="100"/>

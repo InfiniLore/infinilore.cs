@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.InfiniBlazor.Config;
 using InfiniLore.Kiota;
 using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Wasm;
@@ -46,7 +46,7 @@ public static class Program {
             
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
-            config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
+            config.AddMarkdownLogic();
         });
         #endregion
         // -------------------------------------------------------------------------------------------------------------

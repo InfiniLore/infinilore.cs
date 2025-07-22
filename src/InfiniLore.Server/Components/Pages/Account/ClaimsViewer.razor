@@ -1,7 +1,7 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Infinilore.InfiniBlazor
+@using InfiniLore.InfiniBlazor
 @using InfiniLore.Modules.Core.Shared
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
@@ -19,9 +19,9 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="Claims Viewer">
+<InfiniPage Title="Claims Viewer" Class="p-4">
     @if (_user is not null) {
-        <InfiniSection Class="mt-4 gap-2">
+        <InfiniSection Class="gap-2 w-full grow shrink-0">
             <InfiniHeading3>Claims Viewer</InfiniHeading3>
             
             <p class="text-lg">
@@ -42,15 +42,15 @@
                 </Header>
                 <Content Context="claim">
 
-                    <InfiniTableCell Alignment="right" Class="flex justify-center gap-6 w-min-128">
+                    <InfiniTableCell Alignment="Alignment.Right" Class="flex justify-center gap-6 w-min-128">
                         <InfiniButton
                             IconName="copy"
-                            OnClick="async () => await CopyToClipboardAsync(claim.Type)"
+                            OnClick="@(async () => await CopyToClipboardAsync(claim.Type))"
                             TooltipAnchor="Anchor.Bottom | Anchor.Left"
                             Tooltip="Copy Type"/>
                         <InfiniButton
                             IconName="copy"
-                            OnClick="async () => await CopyToClipboardAsync(claim.Value)"
+                            OnClick="@(async () => await CopyToClipboardAsync(claim.Value))"
                             TooltipAnchor="Anchor.Bottom | Anchor.Left"
                             Tooltip="Copy Value"/>
                     </InfiniTableCell>
@@ -61,7 +61,7 @@
 
         </InfiniSection>
 
-        <InfiniSection Class="mb-4">
+        <InfiniSection Class="w-full shrink-0 ">
             <InfiniHeading3>Access Token Viewer</InfiniHeading3>
             
             <div class="flex grow flex-col gap-2">

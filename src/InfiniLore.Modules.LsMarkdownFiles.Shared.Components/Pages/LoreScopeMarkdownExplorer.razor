@@ -1,7 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Infinilore.InfiniBlazor
 @using InfiniLore.InfiniBlazor
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LsMarkdownFiles.Shared.Database
@@ -17,8 +16,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="Markdown Files">
-    <InfiniSectionTop Class="flex flex-col gap-2">
+<InfiniPage Title="Markdown Files"  Class="px-4 pb-4">
+    <InfiniSection Location="SectionLocation.Top" Class="w-full h-49 flex flex-col gap-2">
         <InfiniHeading3 Class="flex flex-row">
             <InfiniButton
                 Href="/lorescopes/"
@@ -34,14 +33,14 @@
                 LabelLocation="LabelLocation.OnTop"
                 @bind-Value="@NewMarkdownFileName" 
                 Placeholder="Enter a new markdown file name...">
-                <InfiniButton IconName="check" OnClick="CreateNewMarkdownFileAsync"
+                <InfiniButton IconName="check" OnClick="@CreateNewMarkdownFileAsync"
                               Disabled="@(NewMarkdownFileName.IsNullOrWhiteSpace() || !RendererInfo.IsInteractive)"/>
             </InfiniTextInput>
         </div>
 
-    </InfiniSectionTop>
+    </InfiniSection>
 
-    <InfiniSection Class="grow mb-4 overflow-auto">
+    <InfiniSection Class="w-full grow overflow-auto">
         @if (IsLoading || !RendererInfo.IsInteractive) {
             <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
                 <LiLoaderCircle Class="animate-spin" Size="100"/>
@@ -72,7 +71,7 @@
                                         Variant="ButtonVariant.Outline"
                                         Color="Color.Red"
                                         IconName="trash"
-                                        OnClick="async () => await DeleteMarkdownFileAsync(file)">
+                                        OnClick="@(async () => await DeleteMarkdownFileAsync(file))">
                                     </InfiniButton>
                                 </div>
                             </InfiniTableCell>
