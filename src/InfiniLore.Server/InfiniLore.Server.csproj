@@ -28,7 +28,6 @@
         <PackageReference Include="FastEndpoints.Swagger" />
         <PackageReference Include="InfiniLore.Credentials" />
         <PackageReference Include="InfiniLore.Credentials.Auth0" />
-        <PackageReference Include="InfiniLore.InfiniBlazor.Markdown" />
         <PackageReference Include="InfiniLore.Lucide" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
