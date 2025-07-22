@@ -21,7 +21,7 @@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <InfiniPage Title="Markdown Editor" Class="px-4 pb-4">
-    <InfiniSection Location="SectionLocation.Top" Class="w-full ">
+    <InfiniSection Location="SectionLocation.Top" Class="w-full sticky">
         <InfiniHeading3 Class="flex flex-row">
             <InfiniButton
                 Href="@($"/lorescope/{LoreScopeId}/markdown")"
@@ -52,7 +52,7 @@
     </InfiniSection>
 
     @* Editor *@
-    <InfiniSection Class="grow w-full h-full">
+    <InfiniSection Class="grow w-full">
         @if (IsLoading || !RendererInfo.IsInteractive) {
             <div class="flex flex-col h-full justify-center items-center text-(--color-base-40)">
                 <LiLoaderCircle Class="animate-spin" Size="100"/>
