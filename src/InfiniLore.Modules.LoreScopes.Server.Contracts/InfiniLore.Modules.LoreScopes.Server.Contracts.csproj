@@ -15,12 +15,6 @@
     </ItemGroup>
     
     <ItemGroup>
-        <!-- Ugly, but this is because of some weirdness with how analyzers are imported through a project reference -->
-        <PackageReference Include="CodeOfChaos.GeneratorTools" GeneratePathProperty="true" PrivateAssets="all" />
-        <Analyzer Include="$(PkgCodeOfChaos_GeneratorTools)\lib\netstandard2.0\*.dll" />
-    </ItemGroup>
-    
-    <ItemGroup>
       <Folder Include="Database\RepoMethods\" />
     </ItemGroup>
 

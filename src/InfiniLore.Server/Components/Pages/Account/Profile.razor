@@ -1,7 +1,6 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Infinilore.InfiniBlazor
 @using InfiniLore.InfiniBlazor
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
@@ -21,8 +20,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="Profile" Class="justify-between">
-    <InfiniSection Class="mt-4">
+<InfiniPage Title="Profile" Class="justify-between p-4">
+    <InfiniSection Class="w-full h-full">
         <InfiniHeading3>
             Profile Settings
         </InfiniHeading3>
@@ -72,7 +71,7 @@
 
         <div class="flex w-full justify-center items-center">
             <InfiniButton
-                OnClick="OnSaveChangesAsync"
+                OnClick="@OnSaveChangesAsync"
                 Color="Color.Green">
                 Save Changes
             </InfiniButton>
@@ -81,7 +80,7 @@
 
     <AuthorizeView Roles="@RolesStoreConstants.InfiniloreAdmin">
         <Authorized>
-            <InfiniSection EdgeStyle="SectionEdgeStyle.Bottom">
+            <InfiniSection Class="w-full">
                 <InfiniHeading3>Admin Dashboard</InfiniHeading3>
                 Under Development ... <br/>
                 You only see this because you are an admin...

@@ -45,10 +45,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-
-        <!-- Ugly, but this is because of some weirdness with how analyzers are imported through a project reference -->
-        <PackageReference Include="CodeOfChaos.GeneratorTools" GeneratePathProperty="true" PrivateAssets="all" />
-        <Analyzer Include="$(PkgCodeOfChaos_GeneratorTools)\lib\netstandard2.0\*.dll" />        
+        
         <PackageReference Include="Microsoft.EntityFrameworkCore" />        
     </ItemGroup>
 

@@ -35,7 +35,7 @@ public class GetLorescopeEndpoint(
             (error, token) => OnErrorAsync(error, req, token),
             ct
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }   
     
     private async Task<IResult> OnFoundDataAsync(LoreScopeModel loreScope, CancellationToken ct = default) {

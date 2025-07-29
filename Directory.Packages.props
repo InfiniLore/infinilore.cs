@@ -4,8 +4,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AterraEngine.Unions" Version="5.3.1" />
-    <PackageVersion Include="AterraEngine.Unions.Generators" Version="5.3.1">
+    <PackageVersion Include="AterraEngine.Unions" Version="6.0.1" />
+    <PackageVersion Include="AterraEngine.Unions.Generators" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
@@ -13,13 +13,13 @@
     <PackageVersion Include="Auth0.AuthenticationApi" Version="7.37.0" />
     <PackageVersion Include="Auth0.ManagementApi" Version="7.39.0" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0-preview.7" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0-preview.7" />
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.0.0-preview.7">
+    <PackageVersion Include="CodeOfChaos.CliArgsParser" Version="5.0.0" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Contracts" Version="5.0.0" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0-preview.7" />
+    <PackageVersion Include="CodeOfChaos.CliArgsParser.Library" Version="5.0.0" />
     <PackageVersion Include="CodeOfChaos.Extensions" Version="0.70.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.AspNetCore" Version="0.70.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.70.1" />
@@ -30,14 +30,14 @@
     <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.70.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.70.1" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.70.1" />
-    <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="1.11.0" />
+    <PackageVersion Include="CodeOfChaos.GeneratorTools" Version="2.0.0" />
     <PackageVersion Include="CodeOfChaos.Types.DataSeeder" Version="0.25.1" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.27.0" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.27.0" />
     <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.128.3" />
-    <PackageVersion Include="FastEndpoints" Version="6.2.0" />
+    <PackageVersion Include="FastEndpoints" Version="7.0.1" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="6.1.0" />
-    <PackageVersion Include="FastEndpoints.Swagger" Version="6.2.0" />
+    <PackageVersion Include="FastEndpoints.Swagger" Version="7.0.1" />
     <PackageVersion Include="FluentValidation" Version="12.0.0" />
     <PackageVersion Include="InfiniLore.Credentials" Version="4.4.0" />
     <PackageVersion Include="InfiniLore.Credentials.Auth0" Version="4.4.0" />
@@ -46,11 +46,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.76" />
-    <PackageVersion Include="InfiniLore.InfiniBlazor.Markdown" Version="0.1.0-preview.76" />
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.84" />
     <PackageVersion Include="InfiniLore.Lucide" Version="0.30.525" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
-    <PackageVersion Include="JetBrains.Annotations" Version="2024.3.0" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.7" />

@@ -34,7 +34,7 @@ public class TokenEndpoint(
 
         if (DateTime.UtcNow >= expiresAt) ThrowError("Unauthorized");
 
-        await SendAsync(new TokenResponse {
+        await Send.OkAsync(new TokenResponse {
             Token = accessToken,
             ExpiresAt = expiresAt.ToString("o")// ISO 8601 format for JS Date parsing
         }, cancellation: ct);

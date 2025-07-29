@@ -31,6 +31,6 @@ public class GetLsMarkdownFileEndpoint(
             model => TypedResults.Ok(Map.FromEntity(model)),
             _ => TypedResults.NotFound()
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

@@ -31,6 +31,6 @@ public class DeleteLsMarkdownFileEndpoint(
             TypedResults.NotFound,
             _ => TypedResults.NotFound()
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

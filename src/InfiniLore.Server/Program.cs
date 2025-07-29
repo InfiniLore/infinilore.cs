@@ -8,7 +8,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Wasm;
 using InfiniLore.Credentials.Auth0.DependencyInjection;
-using InfiniLore.InfiniBlazor.Markdown.Config;
+using InfiniLore.InfiniBlazor.Config;
 using InfiniLore.Modules;
 using InfiniLore.Modules.Core.Server;
 using InfiniLore.Modules.Core.Server.ApiEndpoints;
@@ -186,7 +186,7 @@ public static class Program {
 
         #region InfiniBlazor
         builder.Services.AddInfiniBlazor(config => {
-            config.AddMarkdownLogic(markdownConfig => markdownConfig.AddMarkdownParser<string, string>());
+            config.AddMarkdownLogic();
         });
         #endregion
 

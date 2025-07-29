@@ -1,8 +1,8 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using Infinilore.InfiniBlazor
 @using InfiniLore.InfiniBlazor
+@using InfiniLore.InfiniBlazor.TextEditor
 @using InfiniLore.InfiniBlazor.Toasting
 @using InfiniLore.Modules.Core.Shared
 @using InfiniLore.Modules.LoreScopes.Shared.Database
@@ -20,8 +20,8 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<InfiniPage Title="LoreScope Settings">
-    <InfiniSectionTop>
+<InfiniPage Title="LoreScopes Settings" Class="px-4 pb-4">
+    <InfiniSection Location="SectionLocation.Top" Class="w-full flex flex-col gap-2">
         <InfiniHeading3 Class="flex flex-row">
             <InfiniButton
                 Href="/lorescopes/"
@@ -30,9 +30,9 @@
 
             LoreScope Settings
         </InfiniHeading3>
-    </InfiniSectionTop>
+    </InfiniSection>
     
-    <InfiniSection Class="grow mb-4">
+    <InfiniSection Class="w-full grow">
         <InfiniHeading5>
             LoreScope Details
         </InfiniHeading5>
@@ -78,7 +78,7 @@
                 Variant="ButtonVariant.Default"
                 Color="Color.Green"
                 Disabled="IsLoading"
-                OnClick="OnSubmitAsync">Submit</InfiniButton>
+                OnClick="@OnSubmitAsync">Submit</InfiniButton>
             <InfiniButton
                 Variant="ButtonVariant.Outline"
                 Color="Color.Red"
