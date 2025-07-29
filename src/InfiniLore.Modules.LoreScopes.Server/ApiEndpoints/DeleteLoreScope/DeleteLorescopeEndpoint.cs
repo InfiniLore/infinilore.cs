@@ -36,6 +36,6 @@ public class DeleteLorescopeEndpoint(
                 return TypedResults.BadRequest();
             }
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

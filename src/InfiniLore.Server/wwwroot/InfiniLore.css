@@ -186,6 +186,9 @@
   .static {
     position: static;
   }
+  .sticky {
+    position: sticky;
+  }
   .top-2 {
     top: calc(var(--spacing) * 2);
   }
@@ -219,12 +222,6 @@
       max-width: 96rem;
     }
   }
-  .m-4 {
-    margin: calc(var(--spacing) * 4);
-  }
-  .my-4 {
-    margin-block: calc(var(--spacing) * 4);
-  }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
@@ -236,9 +233,6 @@
   }
   .mt-auto {
     margin-top: auto;
-  }
-  .mb-4 {
-    margin-bottom: calc(var(--spacing) * 4);
   }
   .line-clamp-4 {
     overflow: hidden;
@@ -273,29 +267,11 @@
   .h-32 {
     height: calc(var(--spacing) * 32);
   }
-  .h-42 {
-    height: calc(var(--spacing) * 42);
-  }
-  .h-44 {
-    height: calc(var(--spacing) * 44);
-  }
-  .h-45 {
-    height: calc(var(--spacing) * 45);
-  }
-  .h-46 {
-    height: calc(var(--spacing) * 46);
-  }
   .h-48 {
     height: calc(var(--spacing) * 48);
   }
   .h-49 {
     height: calc(var(--spacing) * 49);
-  }
-  .h-50 {
-    height: calc(var(--spacing) * 50);
-  }
-  .h-52 {
-    height: calc(var(--spacing) * 52);
   }
   .h-60 {
     height: calc(var(--spacing) * 60);
@@ -308,9 +284,6 @@
   }
   .h-full {
     height: 100%;
-  }
-  .h-screen {
-    height: 100vh;
   }
   .max-h-32 {
     max-height: calc(var(--spacing) * 32);

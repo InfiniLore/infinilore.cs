@@ -36,6 +36,6 @@ public class UpsertLoreScopeMetadataEndpoint(
                 return TypedResults.BadRequest();
             }
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

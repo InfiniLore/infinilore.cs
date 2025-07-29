@@ -45,6 +45,6 @@ public class UpsertLoreScopeImageEndpoint(
                 return TypedResults.BadRequest();
             }
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

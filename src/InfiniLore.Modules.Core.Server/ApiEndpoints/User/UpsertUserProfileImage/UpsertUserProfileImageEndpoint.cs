@@ -44,6 +44,6 @@ public class UpsertUserProfileImageEndpoint(
                 return TypedResults.BadRequest();
             }
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }

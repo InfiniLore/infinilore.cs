@@ -50,6 +50,6 @@ public class UpsertLsMarkdownFileEndpoint(
             TypedResults.NotFound,
             _ => TypedResults.BadRequest()
         );
-        await SendResultAsync(result);
+        await Send.ResultAsync(result);
     }
 }
