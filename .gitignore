@@ -772,10 +772,4 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,dotnetcore,rider,jetbrains,jetbrains+all,obsidian,node
 
-
-assets/app.db
-src/server/InfiniLore.Server/app.db
-src/server/InfiniLore.Server/app.db-shm
-src/server/InfiniLore.Server/app.db-wal
-
 .temp/
