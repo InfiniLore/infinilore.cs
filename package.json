@@ -10,13 +10,14 @@
   "license": "GNUv3",
   "description": "",
   "devDependencies": {
-    "tailwindcss": "^4.1.11",
-    "ts-loader": "^9.5.2",
-    "typescript": "^5.8.3",
-    "webpack": "^5.101.0",
+    "@toolwind/anchors": "^1.0.10",
+    "tailwindcss": "^4.1.13",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.11"
+    "@tailwindcss/cli": "^4.1.13"
   }
 }
