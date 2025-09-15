@@ -7,10 +7,6 @@
   <Folder Name="/.dev-tools/">
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/.dev-tools/github/">
-    <File Path=".github\workflows\release.yml" />
-    <File Path=".github\workflows\onPullRequest-TestDotnet.yml" />
-  </Folder>
   <Folder Name="/.dev-tools/web/">
     <File Path="package.json" />
     <File Path="tsconfig.json" />
