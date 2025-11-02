@@ -1,0 +1,23 @@
+{
+  "name": "infinilore",
+  "version": "0.1.0",
+  "scripts": {
+    "watch:tailwind-server": "npx @tailwindcss/cli -i ./src/InfiniLore.Server/wwwroot/tailwind.css -o ./src/InfiniLore.Server/wwwroot/InfiniLore.css --watch",
+    "watch:typescript": "npx webpack --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GNUv3",
+  "description": "",
+  "devDependencies": {
+    "@toolwind/anchors": "^1.0.10",
+    "tailwindcss": "^4.1.13",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13"
+  }
+}
