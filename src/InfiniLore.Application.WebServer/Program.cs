@@ -15,7 +15,9 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddInfiniBlazor(config => config.Components.SetRenderMode(RenderMode.InteractiveServer));
+        builder.Services.AddInfiniBlazor(config => {
+            config.Components.SetRenderMode(RenderMode.InteractiveServer);
+        });
         
         // Add services to the container.
         builder.Services.AddRazorComponents()

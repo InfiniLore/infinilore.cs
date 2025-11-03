@@ -1,13 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Application.Destkop;
-using global::InfiniLore.Core;
-using global::InfiniLore.InfiniFrame.Blazor;
+using InfiniLore.Core;
+using InfiniLore.InfiniFrame.Blazor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
+namespace InfiniLore.Application.Desktop;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
