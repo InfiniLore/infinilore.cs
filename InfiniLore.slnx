@@ -15,13 +15,13 @@
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/applications/">
-    <Project Path="src\InfiniLore.InfiniLore.Application.Desktop\InfiniLore.InfiniLore.Application.Desktop.csproj" Type="Classic C#">
+    <Project Path="src\InfiniLore.Application.Desktop\InfiniLore.Application.Desktop.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
       <Configuration Solution="Release|x86" Project="Release|Any CPU" />
     </Project>
-    <Project Path="src\InfiniLore.InfiniLore.Application.WebServer\InfiniLore.InfiniLore.Application.WebServer.csproj" Type="Classic C#">
+    <Project Path="src\InfiniLore.Application.WebServer\InfiniLore.Application.WebServer.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
@@ -29,7 +29,7 @@
     </Project>
   </Folder>
   <Folder Name="/src/core/">
-    <Project Path="src\InfiniLore.InfiniLore.Core\InfiniLore.InfiniLore.Core.csproj" Type="Classic C#">
+    <Project Path="src\InfiniLore.Core\InfiniLore.Core.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
