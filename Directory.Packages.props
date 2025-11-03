@@ -4,5 +4,12 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.107" />
+    <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.5" />
+    <PackageVersion Include="InfiniLore.InfiniFrame.Blazor" Version="0.1.0-preview.5" />
+    <PackageVersion Include="Serilog" Version="4.3.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
   </ItemGroup>
 </Project>
