@@ -6,10 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-
-namespace InfiniLore.Core.Models.Assets;
 using InfiniLore.Core.Models.BaseModels;
 
+namespace InfiniLore.Core.Models.Assets;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,16 +26,18 @@ public class AssetModel<T> : AssetModelBase where T : new() {
         get {
             if (field is not null) return field;
 
-            if (DataJson is not null)
+            if (DataJson is not null) {
                 try {
                     field = JsonSerializer.Deserialize<T>(DataJson)!;
                 }
                 catch (Exception) {
                     field = new T();
-                }
-            else
+                }    
+            }
+            else {
                 field = new T();
-
+            }
+            
             return field;
 
         }
@@ -50,10 +51,9 @@ public class AssetModel<T> : AssetModelBase where T : new() {
 public class AssetModelConfiguration<T> : IEntityTypeConfiguration<AssetModel<T>> where T : new() {
     public void Configure(EntityTypeBuilder<AssetModel<T>> builder) {
         builder.HasKey(a => a.Id);
-        
+
         builder.Ignore(a => a.Data);
-        
-        
+
         builder.HasOne<AssetType>()
             .WithMany()
             .HasForeignKey(a => a.AssetTypeId);
