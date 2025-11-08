@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>InfiniLore.Core</RootNamespace>
     </PropertyGroup>
 
@@ -12,8 +9,21 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.CliArgsParser" />
+      <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="InfiniLore.InfiniBlazor" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\Cli\" />
+    </ItemGroup>
 
 </Project>

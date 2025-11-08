@@ -13,8 +13,16 @@
     <File Path="tsconfig.json" />
     <File Path="webpack.config.js" />
   </Folder>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <File Path="src\Directory.Build.props" />
+  </Folder>
   <Folder Name="/src/applications/">
+    <Project Path="src\InfiniLore.Application.CLI\InfiniLore.Application.CLI.csproj" Type="Classic C#">
+      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
+      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
+      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
+      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
+    </Project>
     <Project Path="src\InfiniLore.Application.Desktop\InfiniLore.Application.Desktop.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
@@ -29,6 +37,12 @@
     </Project>
   </Folder>
   <Folder Name="/src/core/">
+    <Project Path="src\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" Type="Classic C#">
+      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
+      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
+      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
+      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
+    </Project>
     <Project Path="src\InfiniLore.Core\InfiniLore.Core.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
@@ -36,4 +50,5 @@
       <Configuration Solution="Release|x86" Project="Release|Any CPU" />
     </Project>
   </Folder>
+  <Folder Name="/tests/" />
 </Solution>

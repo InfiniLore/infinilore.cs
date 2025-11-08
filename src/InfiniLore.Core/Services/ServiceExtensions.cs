@@ -1,12 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Reflection;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.Extensions.DependencyInjection;
+using InfiniLore.Core;
 
-namespace InfiniLore.Core;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreCoreAssemblyEntry {
-    public static Assembly Assembly { get; } = typeof(InfiniLoreCoreAssemblyEntry).Assembly;
+public static class ServiceExtensions {
+    public static IServiceCollection AddInfiniLoreCore(this IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreCore();
+        return services;
+    }
 }
