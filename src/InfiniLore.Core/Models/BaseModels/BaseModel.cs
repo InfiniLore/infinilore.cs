@@ -8,7 +8,7 @@ namespace InfiniLore.Core.Models.BaseModels;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class ModelBase {
+public abstract class BaseModel {
     public Guid Id { get; } = Guid.CreateVersion7();
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -20,8 +20,8 @@ public abstract class ModelBase {
     public DateTime ArchivedAt { get; set; } = DateTime.MinValue;
 }
 
-public class ModelBaseConfiguration : IEntityTypeConfiguration<ModelBase> {
-    public void Configure(EntityTypeBuilder<ModelBase> builder) {
+public class BaseModelConfiguration : IEntityTypeConfiguration<BaseModel> {
+    public void Configure(EntityTypeBuilder<BaseModel> builder) {
         builder.HasKey(a => a.Id);
         
         builder.Ignore(a => a.IsDeleted);

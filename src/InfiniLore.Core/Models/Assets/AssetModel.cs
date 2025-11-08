@@ -13,7 +13,7 @@ using InfiniLore.Core.Models.BaseModels;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class AssetModelBase : ModelBase {
+public abstract class AssetModelBase : BaseModel {
     public Guid AssetTypeId { get; set; } = Guid.Empty;
     public AssetType AssetType { get; set; } = null!;
     public string? ReadableReferenceName { get; set; }
@@ -40,7 +40,10 @@ public class AssetModel<T> : AssetModelBase where T : new() {
             return field;
 
         }
-        set => DataJson = JsonSerializer.Serialize(value);
+        set {
+            field = value;
+            DataJson = JsonSerializer.Serialize(value);
+        }
     }
 }
 
