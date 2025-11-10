@@ -6,9 +6,6 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="CodeOfChaos.CliArgsParser" />
       <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
         <PrivateAssets>all</PrivateAssets>
@@ -20,6 +17,7 @@
       </PackageReference>
       <PackageReference Include="FastEndpoints" />
       <PackageReference Include="InfiniLore.InfiniBlazor" />
+      <PackageReference Include="Microsoft.CodeAnalysis" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
     </ItemGroup>
