@@ -1,11 +1,19 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FastEndpoints;
 using InfiniLore.Core;
+using InfiniLore.InfiniBlazor.Config;
+using InfiniLore.InfiniFrame;
 using InfiniLore.InfiniFrame.Blazor;
+using InfiniLore.InfiniFrame.Server;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Reflection;
 
 namespace InfiniLore.Application.Desktop;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -17,7 +25,8 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         // Builder
         // -------------------------------------------------------------------------------------------------------------
-        var appBuilder = InfiniFrameBlazorAppBuilder.CreateDefault(args);
+        var infiniFrameServerBuilder = InfiniFrameServerBuilder.Create("wwwroot", args);
+        WebApplicationBuilder appBuilder = infiniFrameServerBuilder.WebAppBuilder;
         
         appBuilder.Services.AddLogging(config => {
             config.ClearProviders();
@@ -29,14 +38,73 @@ public static class Program {
                 .MinimumLevel.Debug();
         });
         
-        appBuilder.RootComponents.Add<App>("app");
-        appBuilder.Services.AddInfiniBlazor(config => config.Components.SetRenderMode(null!));
+        appBuilder.Services.AddInfiniBlazor(config => {
+            config.Components.SetRenderMode(RenderMode.InteractiveServer);
+        });
+        
+        appBuilder.Services.AddRazorComponents()
+            .AddInteractiveServerComponents();
+
+        // appBuilder.Services.AddFastEndpoints();
 
         // -------------------------------------------------------------------------------------------------------------
         // Application
         // -------------------------------------------------------------------------------------------------------------
-        InfiniFrameBlazorApp app = appBuilder.Build();
+        InfiniFrameServer infiniFrameServer = infiniFrameServerBuilder.Build();
+        WebApplication app = infiniFrameServer.WebApp;
 
-        app.Run();
+        // app.UseFastEndpoints();
+        
+        app.UseHttpsRedirection();
+
+        app.UseAntiforgery();
+
+        // app.MapStaticAssets();
+        app.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode();
+        
+        infiniFrameServer.MapInfiniFrameJsEndpoints();
+        
+        infiniFrameServer.WebApp.MapGet("/_content/InfiniLore.InfiniBlazor/InfiniBlazor.js", requestDelegate: async context => {
+            Assembly assembly = typeof(InfiniBlazorConfig).Assembly;
+            const string resourceName = "InfiniLore.InfiniBlazor.wwwroot.InfiniBlazor.js";
+
+            await using Stream? stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null) {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync("Resource not found");
+                return;
+            }
+
+            context.Response.ContentType = "application/javascript";
+            await stream.CopyToAsync(context.Response.Body);
+        });
+        
+        infiniFrameServer.WebApp.MapGet("/_content/InfiniLore.InfiniBlazor/InfiniBlazor.css", requestDelegate: async context => {
+            Assembly assembly = typeof(InfiniBlazorConfig).Assembly;
+            const string resourceName = "InfiniLore.InfiniBlazor.wwwroot.InfiniBlazor.css";
+
+            await using Stream? stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null) {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync("Resource not found");
+                return;
+            }
+
+            context.Response.ContentType = "text/css";
+            await stream.CopyToAsync(context.Response.Body);
+        });
+        
+        infiniFrameServer.Run();
+
+        IInfiniFrameWindowBuilder windowBuilder = infiniFrameServer.GetAttachedWindowBuilder()
+            .Center()
+            .SetUseOsDefaultSize(true)
+            .SetTitle("InfiniLore Sample");
+
+        IInfiniFrameWindow window = windowBuilder.Build();
+
+        window.WaitForClose();
+        
     }
 }

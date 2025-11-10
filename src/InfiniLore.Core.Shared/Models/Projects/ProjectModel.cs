@@ -1,0 +1,28 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using InfiniLore.Core.Models.BaseModels;
+using InfiniLore.Core.Models.Users;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace InfiniLore.Core.Models.Projects;
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+public class ProjectModel : BaseOwnedModel<UserModel> {
+    public string Name { get; set; } = string.Empty;
+}
+
+public class ProjectModelConfiguration : BaseOwnedModelConfiguration<ProjectModel, UserModel> {
+    public override void Configure(EntityTypeBuilder<ProjectModel> builder) {
+        base.Configure(builder);
+        
+        builder.Property(model => model.Name)
+            .HasMaxLength(256)
+            .IsRequired();
+        
+        builder.HasIndex(model => new {model.OwnerId, model.Name}, "IX_Project_OwnerId_Name")
+            .IsUnique();
+    }
+}

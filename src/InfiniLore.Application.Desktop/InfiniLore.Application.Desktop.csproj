@@ -8,8 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="InfiniLore.InfiniBlazor" />
       <PackageReference Include="InfiniLore.InfiniFrame" />
       <PackageReference Include="InfiniLore.InfiniFrame.Blazor" />
+      <PackageReference Include="InfiniLore.InfiniFrame.Server" />
       <PackageReference Include="Serilog" />
       <PackageReference Include="Serilog.AspNetCore" />
       <PackageReference Include="Serilog.Sinks.Async" />

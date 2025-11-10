@@ -8,10 +8,13 @@
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.1.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.83.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.83.2" />
+    <PackageVersion Include="FastEndpoints" Version="7.1.0" />
     <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.107" />
     <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.5" />
     <PackageVersion Include="InfiniLore.InfiniFrame.Blazor" Version="0.1.0-preview.5" />
+    <PackageVersion Include="InfiniLore.InfiniFrame.Server" Version="0.1.0-preview.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
     <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />

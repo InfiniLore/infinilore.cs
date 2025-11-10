@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FastEndpoints;
 using InfiniLore.Core;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -22,6 +23,8 @@ public static class Program {
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+        
+        // builder.Services.AddFastEndpoints();
 
         // -------------------------------------------------------------------------------------------------------------
         // Application
@@ -37,6 +40,8 @@ public static class Program {
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
+
+        // app.UseFastEndpoints();
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
