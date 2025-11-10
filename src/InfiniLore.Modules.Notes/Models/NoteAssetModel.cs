@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
 using InfiniLore.Core.Models.BaseModels;
 using InfiniLore.Core.Models.Files;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -25,5 +27,13 @@ public class NoteAssetModelConfiguration : BaseAssetModelConfiguration<NoteAsset
         builder.HasOne(model => model.File)
             .WithOne()
             .HasForeignKey<NoteAssetModel>(model => model.FileId);
+    }
+}
+
+[InjectableSingleton<IValidator<NoteAssetModel>>]
+public class NoteAssetModelValidator : BaseAssetModelValidator<NoteAssetModel> {
+    public NoteAssetModelValidator() {
+        RuleFor(model => model.FileId)
+            .NotEmpty();
     }
 }

@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FluentValidation;
 using InfiniLore.Core.Models.Projects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -27,5 +28,18 @@ public class BaseAssetModelConfiguration<TModel> : BaseOwnedModelConfiguration<T
         
         builder.HasIndex(model => new {model.OwnerId, model.Path, model.Name, model.SoftDeletedAt}, "IX_Asset_OwnerId_Path_Name_SoftDeletedAt")
             .IsUnique();
+    }
+}
+
+public abstract class BaseAssetModelValidator<TModel> : BaseOwnedModelValidator<TModel, ProjectModel> 
+    where TModel : BaseAssetModel {
+    protected BaseAssetModelValidator() {
+        RuleFor(model => model.Path)
+            .NotEmpty()
+            .NotNull();
+        
+        RuleFor(model => model.Name)
+            .NotEmpty()
+            .NotNull();
     }
 }

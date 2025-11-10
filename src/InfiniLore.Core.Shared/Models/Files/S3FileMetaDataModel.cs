@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
 using InfiniLore.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,4 +36,24 @@ public class S3FileMetaDataModelConfiguration : BaseModelConfiguration<S3FileMet
             .IsUnique();
     }
     
+}
+
+[InjectableScoped<IValidator<S3FileMetaDataModel>>]
+public class S3FileMetaDataModelValidator : BaseModelValidator<S3FileMetaDataModel> {
+    public S3FileMetaDataModelValidator() {
+        RuleFor(model => model.BucketName)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+
+        RuleFor(model => model.FileName)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+
+        RuleFor(model => model.ContentType)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+    }
 }

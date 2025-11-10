@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
 using InfiniLore.Core.Models.BaseModels;
 using InfiniLore.Core.Models.Users;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -24,5 +26,15 @@ public class ProjectModelConfiguration : BaseOwnedModelConfiguration<ProjectMode
         
         builder.HasIndex(model => new {model.OwnerId, model.Name}, "IX_Project_OwnerId_Name")
             .IsUnique();
+    }
+}
+
+[InjectableScoped<IValidator<ProjectModel>>]
+public class ProjectModelValidator : BaseOwnedModelValidator<ProjectModel, UserModel> {
+    public ProjectModelValidator() {
+        RuleFor(model => model.Name)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
     }
 }

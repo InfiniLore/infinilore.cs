@@ -1,8 +1,11 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
 using InfiniLore.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Data;
 
 namespace InfiniLore.Core.Models.Files;
 
@@ -35,5 +38,32 @@ public class LocalFileMetaDataModelConfiguration : BaseModelConfiguration<LocalF
         
         builder.HasIndex(model => new {model.FolderPath, model.FileName}, "IX_LocalFile_FolderPath_FileName")
             .IsUnique();
+    }
+}
+
+[InjectableScoped<IValidator<LocalFileMetaDataModel>>]
+public class LocalFileMetaDataModelValidator : BaseModelValidator<LocalFileMetaDataModel> {
+    public LocalFileMetaDataModelValidator() {
+        RuleFor(model => model.FolderPath)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+
+        RuleFor(model => model.FileName)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+
+        RuleFor(model => model.ContentType)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256);
+
+        RuleFor(model => model.FileSize)
+            .NotEmpty()
+            .GreaterThan(0);
+
+        RuleFor(model => model.FileHash)
+            .NotEmpty();
     }
 }

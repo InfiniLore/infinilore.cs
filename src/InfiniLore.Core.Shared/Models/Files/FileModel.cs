@@ -1,6 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
 using InfiniLore.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -46,5 +48,18 @@ public class FileModelConfiguration : BaseModelConfiguration<FileModel> {
         builder.HasOne(model => model.LocalFileMetaData)
             .WithOne()
             .HasForeignKey<FileModel>(model => model.LocalFileMetaDataId);
+    }
+}
+
+[InjectableScoped<IValidator<FileModel>>]
+public class FileModelValidator : BaseModelValidator<FileModel> {
+    public FileModelValidator() {
+        RuleFor(model => model.S3FileMetaDataId)
+            .NotEmpty()
+            .NotNull();
+        
+        RuleFor(model => model.LocalFileMetaDataId)
+            .NotEmpty()
+            .NotNull();
     }
 }

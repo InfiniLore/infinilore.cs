@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FluentValidation;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace InfiniLore.Core.Models.BaseModels;
@@ -33,5 +34,14 @@ public abstract class BaseOwnedModelConfiguration<TModel, TOwner> : BaseModelCon
         builder.HasIndex(model => model.OwnerId);
         builder.Property(model => model.OwnerId)
             .IsRequired();   
+    }
+}
+
+public abstract class BaseOwnedModelValidator<TModel, TOwner> : BaseModelValidator<TModel> 
+    where TModel : BaseOwnedModel<TOwner>
+    where TOwner : BaseModel 
+{
+    protected BaseOwnedModelValidator() {
+        RuleFor(model => model.OwnerId).NotEmpty();
     }
 }

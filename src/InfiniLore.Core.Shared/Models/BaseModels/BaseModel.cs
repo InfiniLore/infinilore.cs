@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations;
@@ -40,5 +41,14 @@ public abstract class BaseModelConfiguration<TModel> : IEntityTypeConfiguration<
             .IsRowVersion();
 
         builder.UseTptMappingStrategy();
+    }
+}
+
+public abstract class BaseModelValidator<TModel> : AbstractValidator<TModel> where TModel : BaseModel {
+    protected BaseModelValidator() {
+        RuleFor(model => model.Id).NotEmpty();
+        RuleFor(model => model.CreatedAt).NotEmpty();
+        RuleFor(model => model.ModifiedAt).NotEmpty();
+        RuleFor(model => model.SoftDeletedAt).NotEmpty();
     }
 }

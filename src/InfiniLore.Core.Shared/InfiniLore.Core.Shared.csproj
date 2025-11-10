@@ -5,7 +5,12 @@
     </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
+    <PackageReference Include="FluentValidation" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+      <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
   </ItemGroup>
 </Project>
