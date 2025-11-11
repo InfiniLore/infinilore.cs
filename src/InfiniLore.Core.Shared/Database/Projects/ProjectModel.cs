@@ -5,32 +5,32 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Core.Models;
+namespace InfiniLore.Core.Database;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserModel : BaseModel {
-    public string UserName { get; set; } = string.Empty;
+public class ProjectModel : BaseOwnedModel<UserModel> {
+    public string Name { get; set; } = string.Empty;
 }
 
-public class UserModelConfiguration : BaseModelConfiguration<UserModel> {
-    public override void Configure(EntityTypeBuilder<UserModel> builder) {
+public class ProjectModelConfiguration : BaseOwnedModelConfiguration<ProjectModel, UserModel> {
+    public override void Configure(EntityTypeBuilder<ProjectModel> builder) {
         base.Configure(builder);
         
-        builder.Property(model => model.UserName)
+        builder.Property(model => model.Name)
             .HasMaxLength(256)
             .IsRequired();
         
-        builder.HasAlternateKey(model => model.UserName);
-        builder.HasIndex(model => model.UserName)
+        builder.HasIndex(model => new {model.OwnerId, model.Name}, "IX_Project_OwnerId_Name")
             .IsUnique();
     }
 }
 
-[InjectableScoped<IValidator<UserModel>>]
-public class UserModelValidator : BaseModelValidator<UserModel> {
-    public UserModelValidator() {
-        RuleFor(model => model.UserName)
+[InjectableScoped<IValidator<ProjectModel>>]
+public class ProjectModelValidator : BaseOwnedModelValidator<ProjectModel, UserModel> {
+    public ProjectModelValidator() {
+        RuleFor(model => model.Name)
             .NotEmpty()
             .NotNull()
             .MaximumLength(256);

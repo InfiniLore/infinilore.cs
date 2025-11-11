@@ -1,13 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Messaging;
+using CodeOfChaos.CliArgsParser;
 
-namespace InfiniLore.Core.Modules.Users.Messaging;
+namespace InfiniLore.Core.Modules.Users.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record CreateUserCommand(string Username) : BaseCommand<Guid> {
-    
+public record CreateUserCliParameters : ICliParameters {
+    [CliData("username", "u")]
+    public string Username { get; init; } = string.Empty;
 }

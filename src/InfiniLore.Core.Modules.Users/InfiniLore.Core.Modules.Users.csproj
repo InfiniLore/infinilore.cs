@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-      <Folder Include="Cli\" />
-      <Folder Include="Database\" />
       <Folder Include="Services\" />
     </ItemGroup>
 
@@ -17,6 +15,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="FastEndpoints" />
     </ItemGroup>
 
 </Project>

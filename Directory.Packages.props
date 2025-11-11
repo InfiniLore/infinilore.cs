@@ -12,6 +12,10 @@
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.1.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.83.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.83.2" />
+    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.83.2" />
+    <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.83.2" />
+    <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.83.2" />
+    <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.28.1" />
     <PackageVersion Include="FastEndpoints" Version="7.1.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="7.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.0" />

@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="CodeOfChaos.Ansi" />
+      <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
       <PackageReference Include="Serilog" />
       <PackageReference Include="Serilog.AspNetCore" />

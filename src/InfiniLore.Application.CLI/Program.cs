@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Ansi;
 using CodeOfChaos.CliArgsParser;
+using FastEndpoints;
 using InfiniLore.Core;
 using InfiniLore.Core.Modules.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ public static class Program {
         services.AddSerilog(config => {
             config.WriteTo.Console();
         });
+        services.AddFastEndpoints();
 
         ServiceProvider serviceProvider = services.BuildServiceProvider();
 
@@ -40,7 +42,6 @@ public static class Program {
             await parser.ExecuteAsync(args);
             return;
         }
-
         
         var builder = new AnsiStringBuilder();
         builder.Fore.AppendCyan("> ");

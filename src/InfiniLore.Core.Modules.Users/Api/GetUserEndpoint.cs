@@ -1,18 +1,20 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.CliArgsParser;
+using FastEndpoints;
 
 namespace InfiniLore.Core.Modules.Users.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[CliData("user-create")]
-public partial class CreateUserCliCommand : ICliCommand<CreateUserCliParameters>{
+public class GetUserEndpoint : EndpointWithoutRequest {
+    public override void Configure() {
+        Get("/api/users/{id}");
+        AllowAnonymous();
+    }
 
-    public ValueTask ExecuteAsync(CreateUserCliParameters parameters, CancellationToken ct = new CancellationToken()) {
-        
-        throw new NotImplementedException();
+    public override async Task HandleAsync(CancellationToken ct) {
+        await Send.OkAsync(null, ct);
     }
 }

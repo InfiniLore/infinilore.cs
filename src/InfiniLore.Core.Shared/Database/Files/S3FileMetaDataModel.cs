@@ -5,25 +5,22 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Core.Models;
+namespace InfiniLore.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class LocalFileMetaDataModel : BaseModel {
-    public required string FolderPath { get; set; }
+public class S3FileMetaDataModel : BaseModel {
+    public required string BucketName { get; set; }
     public required string FileName { get; set; }
     public required string ContentType { get; set; }
-    
-    public required long FileSize { get; set; }
-    public required long FileHash { get; set; }
 }
 
-public class LocalFileMetaDataModelConfiguration : BaseModelConfiguration<LocalFileMetaDataModel> {
-    public override void Configure(EntityTypeBuilder<LocalFileMetaDataModel> builder) {
+public class S3FileMetaDataModelConfiguration : BaseModelConfiguration<S3FileMetaDataModel> {
+    public override void Configure(EntityTypeBuilder<S3FileMetaDataModel> builder) {
         base.Configure(builder);
         
-        builder.Property(model => model.FolderPath)
+        builder.Property(model => model.BucketName)
             .HasMaxLength(256)
             .IsRequired();
         
@@ -34,15 +31,16 @@ public class LocalFileMetaDataModelConfiguration : BaseModelConfiguration<LocalF
         builder.Property(model => model.ContentType)
             .HasMaxLength(256);
         
-        builder.HasIndex(model => new {model.FolderPath, model.FileName}, "IX_LocalFile_FolderPath_FileName")
+        builder.HasIndex(model => new {model.BucketName, model.FileName}, "IX_S3File_BucketName_FileName")
             .IsUnique();
     }
+    
 }
 
-[InjectableScoped<IValidator<LocalFileMetaDataModel>>]
-public class LocalFileMetaDataModelValidator : BaseModelValidator<LocalFileMetaDataModel> {
-    public LocalFileMetaDataModelValidator() {
-        RuleFor(model => model.FolderPath)
+[InjectableScoped<IValidator<S3FileMetaDataModel>>]
+public class S3FileMetaDataModelValidator : BaseModelValidator<S3FileMetaDataModel> {
+    public S3FileMetaDataModelValidator() {
+        RuleFor(model => model.BucketName)
             .NotEmpty()
             .NotNull()
             .MaximumLength(256);
@@ -56,12 +54,5 @@ public class LocalFileMetaDataModelValidator : BaseModelValidator<LocalFileMetaD
             .NotEmpty()
             .NotNull()
             .MaximumLength(256);
-
-        RuleFor(model => model.FileSize)
-            .NotEmpty()
-            .GreaterThan(0);
-
-        RuleFor(model => model.FileHash)
-            .NotEmpty();
     }
 }
