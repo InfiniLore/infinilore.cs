@@ -5,10 +5,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Ansi" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+      <PackageReference Include="Serilog" />
+      <PackageReference Include="Serilog.AspNetCore" />
+      <PackageReference Include="Serilog.Sinks.Async" />
+      <PackageReference Include="Serilog.Sinks.Console" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Core.Modules.Users\InfiniLore.Core.Modules.Users.csproj" />
       <ProjectReference Include="..\InfiniLore.Core\InfiniLore.Core.csproj" />
     </ItemGroup>
 

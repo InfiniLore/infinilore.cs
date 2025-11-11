@@ -4,7 +4,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Core.Models.BaseModels;
+namespace InfiniLore.Core.Models;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

@@ -3,11 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Extensions.DependencyInjection;
 using FluentValidation;
-using InfiniLore.Core.Models.BaseModels;
-using InfiniLore.Core.Models.Users;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace InfiniLore.Core.Models.Projects;
+namespace InfiniLore.Core.Models;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

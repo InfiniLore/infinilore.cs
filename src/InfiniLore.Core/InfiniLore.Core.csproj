@@ -26,4 +26,8 @@
       <Folder Include="Services\Cli\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

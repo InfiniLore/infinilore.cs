@@ -50,8 +50,23 @@
       <Configuration Solution="Release|x86" Project="Release|Any CPU" />
     </Project>
   </Folder>
-  <Folder Name="/src/modules/">
-    <Project Path="src\InfiniLore.Modules.Notes\InfiniLore.Modules.Notes.csproj" Type="Classic C#">
+  <Folder Name="/src/modules/" />
+  <Folder Name="/src/modules/Notes/">
+    <Project Path="src\InfiniLore.Core.Modules.Notes\InfiniLore.Core.Modules.Notes.csproj" Type="Classic C#">
+      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
+      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
+      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
+      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/modules/Users/">
+    <Project Path="src\InfiniLore.Core.Modules.Users.Shared\InfiniLore.Core.Modules.Users.Shared.csproj" Type="Classic C#">
+      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
+      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
+      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
+      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
+    </Project>
+    <Project Path="src\InfiniLore.Core.Modules.Users\InfiniLore.Core.Modules.Users.csproj" Type="Classic C#">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
