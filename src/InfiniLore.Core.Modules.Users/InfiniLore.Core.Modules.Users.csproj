@@ -4,6 +4,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
       <ProjectReference Include="..\InfiniLore.Core.Modules.Users.Shared\InfiniLore.Core.Modules.Users.Shared.csproj" />
       <ProjectReference Include="..\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
     </ItemGroup>

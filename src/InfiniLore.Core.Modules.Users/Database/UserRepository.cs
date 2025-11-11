@@ -10,7 +10,7 @@ namespace InfiniLore.Core.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserRepository : BaseModelRepository<UserModel, DbContext> {
+public class UserRepository : BaseModelRepository<UserModel, ContentDb> {
     public async ValueTask<Outcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         DbSet<UserModel> dbSet = GetCachedDbSet<UserModel>();
 
