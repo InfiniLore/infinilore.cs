@@ -6,4 +6,4 @@ namespace InfiniLore.Core.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniLoreCoreModulesUsersAssemblyEntry;
+public abstract class InfiniLoreCoreModulesUsersAssemblyEntry;
