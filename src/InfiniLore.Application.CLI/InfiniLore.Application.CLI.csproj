@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Core.Modules.Users\InfiniLore.Core.Modules.Users.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.Users\InfiniLore.Modules.Users.csproj" />
       <ProjectReference Include="..\InfiniLore.Core\InfiniLore.Core.csproj" />
     </ItemGroup>
 

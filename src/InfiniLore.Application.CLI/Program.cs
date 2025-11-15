@@ -5,7 +5,7 @@ using CodeOfChaos.Ansi;
 using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using InfiniLore.Core;
-using InfiniLore.Core.Modules.Users;
+using InfiniLore.Modules.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;

@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>InfiniLore.Modules.Assets</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InfiniLore.Modules.Projects.Shared\InfiniLore.Modules.Projects.Shared.csproj" />
+      <ProjectReference Include="..\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

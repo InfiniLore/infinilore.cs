@@ -120,8 +120,7 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
     public override void UpdateRange(IEnumerable<object> entities)
         => WrapAsReadonly(() => base.UpdateRange(entities));
 
-    public override ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) 
-        => new ValueTask<EntityEntry<TEntity>>(WrapAsReadonly(() => base.Add(entity)));
+    public override ValueTask<EntityEntry<TEntity>> AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) => new(WrapAsReadonly(() => base.Add(entity)));
 
     public override Task AddRangeAsync(params object[] entities)
         => WrapAsReadonly(() => base.AddRangeAsync(entities));
