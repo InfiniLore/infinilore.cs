@@ -10,6 +10,7 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/.dev-tools/web/">
+    <File Path="package-lock.json" />
     <File Path="package.json" />
     <File Path="tsconfig.json" />
     <File Path="webpack.config.js" />
