@@ -1,2 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\InfiniLore.Core.Modular\InfiniLore.Core.Modular.csproj" />
+    <ProjectReference Include="..\InfiniLore.Modules.Assets.Shared\InfiniLore.Modules.Assets.Shared.csproj" />
+  </ItemGroup>
 </Project>

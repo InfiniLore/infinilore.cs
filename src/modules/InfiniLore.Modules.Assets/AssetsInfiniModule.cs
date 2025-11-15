@@ -1,11 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Modules.Projects;
+using InfiniLore.Core.Modular;
+
+namespace InfiniLore.Modules.Assets;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectsSharedModuleEntry {
-    
+public class AssetsInfiniModule : InfiniModule {
+    protected override void Configure() {
+        Services.RegisterServicesFromInfiniLoreModulesAssets();
+        
+        AddSubModule<AssetsSharedInfiniModule>();
+    }
 }

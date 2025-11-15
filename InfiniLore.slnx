@@ -41,6 +41,7 @@
   <Folder Name="/src/core/">
     <Project Path="src\core\InfiniLore.Core.Messaging\InfiniLore.Core.Messaging.csproj" />
     <File Path="src/core/Directory.Build.props" />
+    <Project Path="src/core/InfiniLore.Core.Modular/InfiniLore.Core.Modular.csproj" />
     <Project Path="src\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />

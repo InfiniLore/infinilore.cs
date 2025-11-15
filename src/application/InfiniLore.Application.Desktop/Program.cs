@@ -2,9 +2,13 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core;
+using InfiniLore.Core.Modular;
 using InfiniLore.InfiniBlazor.Config;
 using InfiniLore.InfiniFrame;
 using InfiniLore.InfiniFrame.Server;
+using InfiniLore.Modules.Assets;
+using InfiniLore.Modules.Projects;
+using InfiniLore.Modules.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +29,14 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         var infiniFrameServerBuilder = InfiniFrameServerBuilder.Create("wwwroot", args);
         WebApplicationBuilder appBuilder = infiniFrameServerBuilder.WebAppBuilder;
+
+        appBuilder.Services.AddInfiniModuleProvider(moduleCollection => {
+                moduleCollection.AddModule<UserInfiniModule>();
+                moduleCollection.AddModule<ProjectsInfiniModule>();
+                moduleCollection.AddModule<AssetsInfiniModule>();
+            },
+            out InfiniModuleProvider moduleProvider
+        );
         
         appBuilder.Services.AddLogging(config => {
             config.ClearProviders();
@@ -42,8 +54,6 @@ public static class Program {
         
         appBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-
-        // appBuilder.Services.AddFastEndpoints();
         
         // -------------------------------------------------------------------------------------------------------------
         // Application
