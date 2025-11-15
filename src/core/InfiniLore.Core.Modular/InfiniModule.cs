@@ -16,7 +16,7 @@ public abstract class InfiniModule {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    internal void Start(IServiceCollection serviceCollection) {
+    internal void Load(IServiceCollection serviceCollection) {
         Services = serviceCollection;
         _assemblies.Add(GetType().Assembly);
         Configure();
@@ -26,6 +26,12 @@ public abstract class InfiniModule {
     
     protected void AddSubModule<TModule>() where TModule : InfiniModule, new() {
         var module = new TModule();
-        module.Start(Services);
+        module.Load(Services);
+
+        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+        foreach (Assembly assembly in module._assemblies) {
+            if (_assemblies.Contains(assembly)) continue;
+            _assemblies.Add(assembly);
+        }
     }
 }

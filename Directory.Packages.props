@@ -15,6 +15,7 @@
     <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.84.6" />
     <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.84.6" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.84.6" />
+    <PackageVersion Include="CodeOfChaos.Testing.TUnit" Version="0.16.2" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork" Version="0.29.0" />
     <PackageVersion Include="CodeOfChaos.Types.UnitOfWork.Contracts" Version="0.29.0" />
     <PackageVersion Include="FastEndpoints" Version="7.1.1" />
@@ -33,5 +34,6 @@
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="TUnit" Version="1.2.0" />
   </ItemGroup>
 </Project>

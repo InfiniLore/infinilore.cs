@@ -32,7 +32,7 @@ public class InfiniModuleCollection {
         ImmutableArray<InfiniModule> modules = _modules.ToImmutableArray();
 
         foreach (InfiniModule module in modules) {
-            module.Start(services);
+            module.Load(services);
         }
         
         ImmutableArray<Assembly> assemblies = _modules
