@@ -7,7 +7,12 @@
   <Folder Name="/.dev-tools/">
     <File Path="Directory.Packages.props" />
     <File Path="global.json" />
+    <File Path="InfiniLore.GithubActions.slnf" />
     <File Path="README.md" />
+  </Folder>
+  <Folder Name="/.dev-tools/github/">
+    <File Path=".github/dependabot.yml" />
+    <File Path=".github/workflows/onPullRequest-TestDotnet.yml" />
   </Folder>
   <Folder Name="/.dev-tools/web/">
     <File Path="package-lock.json" />

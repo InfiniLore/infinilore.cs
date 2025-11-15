@@ -1,0 +1,27 @@
+﻿name: Dotnet Testing
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened, ready_for_review]
+        branches: [ core ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v5
+              with:
+                  dotnet-version: '10.x'
+
+            - name: Restore dependencies
+              run: dotnet restore InfiniLore.GithubActions.slnf
+
+            - name: Build
+              run: dotnet build InfiniLore.GithubActions.slnf --configuration Release --no-restore -p:GeneratePackageOnBuild=false -p:IsPackable=false
+
+            - name: Run tests
+              run: dotnet test --solution InfiniLore.GithubActions.slnf --configuration Release --no-restore --no-build
