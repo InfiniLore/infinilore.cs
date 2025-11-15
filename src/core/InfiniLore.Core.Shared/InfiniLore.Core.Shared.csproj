@@ -9,15 +9,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection" />
-    <PackageReference Include="CodeOfChaos.Extensions.EntityFrameworkCore" />
-    <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" />
-    <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
-    <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />
-    <PackageReference Include="FastEndpoints.Messaging.Core" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
       <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

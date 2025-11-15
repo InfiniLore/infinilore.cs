@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <PackageReference Include="CodeOfChaos.Ansi" />
+      <PackageReference Include="CodeOfChaos.CliArgsParser" />
       <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
       <PackageReference Include="Serilog" />
@@ -15,8 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Modules.Users\InfiniLore.Modules.Users.csproj" />
-      <ProjectReference Include="..\InfiniLore.Core\InfiniLore.Core.csproj" />
+      <ProjectReference Include="..\..\core\InfiniLore.Core\InfiniLore.Core.csproj" />
+      <ProjectReference Include="..\..\modules\InfiniLore.Modules.Users\InfiniLore.Modules.Users.csproj" />
     </ItemGroup>
 
 </Project>

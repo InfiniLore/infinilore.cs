@@ -1,5 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="..\InfiniLore.Modules.Assets.Shared\InfiniLore.Modules.Assets.Shared.csproj" />
-  </ItemGroup>
-</Project>

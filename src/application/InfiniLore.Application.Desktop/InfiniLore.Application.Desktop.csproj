@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InfiniLore.Core\InfiniLore.Core.csproj" />
+      <ProjectReference Include="..\..\core\InfiniLore.Core\InfiniLore.Core.csproj" />
     </ItemGroup>
 
 </Project>
