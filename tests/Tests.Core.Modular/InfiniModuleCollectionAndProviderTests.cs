@@ -10,6 +10,7 @@ namespace Tests.Core.Modular;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class InfiniModuleCollectionAndProviderTests {
+    
     [Test]
     public async Task Build_ShouldLoadAllModulesAndRegisterTheirServices() {
         // Arrange

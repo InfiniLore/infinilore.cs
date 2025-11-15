@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Tests.Core.Modular.Data;
 
 namespace Tests.Core.Modular;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -38,7 +37,7 @@ public class InfiniModuleTests {
             .Contains(descriptor => descriptor.ServiceType == typeof(SomeService1))
             .Contains(descriptor => descriptor.ServiceType == typeof(SomeService2));
     }
-    
+
     [Test]
     public async Task Load_ShouldRegisterAssemblyFromModule() {
         // Arrange
@@ -52,8 +51,8 @@ public class InfiniModuleTests {
         await Assert.That(module.Assemblies)
             .Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1);
     }
-    
-    
+
+
     [Test]
     public async Task Load_ShouldRegisterAssemblyFromModule_nestedModules() {
         // Arrange
