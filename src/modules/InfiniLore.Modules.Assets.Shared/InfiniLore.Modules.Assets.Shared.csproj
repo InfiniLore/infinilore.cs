@@ -5,14 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection"/>
-        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Projects.Shared\InfiniLore.Modules.Projects.Shared.csproj" />
     </ItemGroup>
