@@ -30,16 +30,16 @@ public abstract class BaseModelRepository<TModel, TDbContext> : UnitOfWorkReposi
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public async ValueTask<Outcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .Where(model => model.Id == id);
         
         TModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
-        
-        return result is not null 
-            ? Outcome<TModel>.FromSuccess(result)
-            : Outcome<TModel>.FromError("Model not found");
+
+        return result is not null
+            ? RepoOutcome<TModel>.FromSuccess(result)
+            : RepoOutcome.None;
     }
 }
