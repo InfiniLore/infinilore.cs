@@ -2,7 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Modular;
-using InfiniLore.Modules.Assets.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Modules.Assets;
 

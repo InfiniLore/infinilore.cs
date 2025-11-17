@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using InfiniBlazor.Config;
+using InfiniFrame;
+using InfiniFrame.Server;
 using InfiniLore.Core;
 using InfiniLore.Core.Modular;
-using InfiniLore.InfiniBlazor.Config;
-using InfiniLore.InfiniFrame;
-using InfiniLore.InfiniFrame.Server;
 using InfiniLore.Modules.Assets;
 using InfiniLore.Modules.Projects;
 using InfiniLore.Modules.Users;
