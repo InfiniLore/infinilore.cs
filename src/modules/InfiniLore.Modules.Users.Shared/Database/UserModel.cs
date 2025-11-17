@@ -29,11 +29,12 @@ public class UserModelConfiguration : BaseModelConfiguration<UserModel> {
 }
 
 [InjectableScoped<IValidator<UserModel>>]
-public class UserModelValidator : BaseModelValidator<UserModel> {
+public class UserModelValidator: BaseModelValidator<UserModel> {
     public UserModelValidator() {
         RuleFor(model => model.UserName)
             .NotEmpty()
             .NotNull()
-            .MaximumLength(256);
+            .MaximumLength(256)
+            .Matches("^[a-zA-Z0-9_-]+$");
     }
 }
