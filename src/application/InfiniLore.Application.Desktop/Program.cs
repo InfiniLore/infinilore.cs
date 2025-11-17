@@ -34,8 +34,7 @@ public static class Program {
                 moduleCollection.AddModule<UserInfiniModule>();
                 moduleCollection.AddModule<ProjectsInfiniModule>();
                 moduleCollection.AddModule<AssetsInfiniModule>();
-            },
-            out InfiniModuleProvider moduleProvider
+            }
         );
         
         appBuilder.Services.AddLogging(config => {
