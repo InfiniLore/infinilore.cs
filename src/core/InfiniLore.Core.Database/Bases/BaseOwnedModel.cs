@@ -9,7 +9,7 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseOwnedModel<TOwner> : BaseModel where TOwner : BaseModel {
+public abstract record BaseOwnedModel<TOwner> : BaseModel where TOwner : BaseModel {
     public Guid OwnerId { get; set; } = Guid.Empty;
     public TOwner? Owner {
         get;

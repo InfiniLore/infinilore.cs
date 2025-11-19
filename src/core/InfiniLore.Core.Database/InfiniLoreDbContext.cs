@@ -11,14 +11,14 @@ namespace InfiniLore.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 // Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
-public class ContentDb : DbContext, IReadonlyCapableDbContext {
+public class InfiniLoreDbContext : DbContext, IReadonlyCapableDbContext {
     public bool IsReadonly { get; private set; }
 
     // -----------------------------------------------------------------------------------------------------------------
     // Constructors
     // -----------------------------------------------------------------------------------------------------------------
-    public ContentDb() {}
-    public ContentDb(DbContextOptions<ContentDb> options) : base(options) {}
+    public InfiniLoreDbContext() {}
+    public InfiniLoreDbContext(DbContextOptions<InfiniLoreDbContext> options) : base(options) {}
 
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -36,7 +36,7 @@ public class ContentDb : DbContext, IReadonlyCapableDbContext {
 
     protected override void OnModelCreating(ModelBuilder builder) {
         base.OnModelCreating(builder);
-        ContentDbFactory.ConfigureModel(builder);
+        InfiniLoreDbContextFactory.ConfigureModel(builder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {

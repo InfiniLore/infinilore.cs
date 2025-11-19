@@ -83,6 +83,7 @@
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/Tests.Core.Database/Tests.Core.Database.csproj" />
     <Project Path="tests/Tests.Core.Modular/Tests.Core.Modular.csproj" />
   </Folder>
 </Solution>

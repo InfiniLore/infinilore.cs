@@ -10,7 +10,7 @@ namespace InfiniLore.Modules.Assets.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseAssetModel : BaseOwnedModel<ProjectModel> {
+public abstract record BaseAssetModel : BaseOwnedModel<ProjectModel> {
     public required string Path { get; set; }
     public required string Name { get; set; }
 }

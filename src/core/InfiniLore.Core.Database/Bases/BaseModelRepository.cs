@@ -9,9 +9,9 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseModelRepository<TModel, TDbContext> : UnitOfWorkRepository<TDbContext>
+public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniLoreDbContext>
     where TModel : BaseModel
-    where TDbContext : DbContext {
+{
     protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 

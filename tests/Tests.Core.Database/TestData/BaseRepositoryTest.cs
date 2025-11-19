@@ -2,34 +2,29 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.Types.UnitOfWork;
+using InfiniLore.Core.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
-namespace InfiniLore.Core.Database;
+namespace Tests.Core.Database.TestData;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class ContentDbFactory {
-    private static IEnumerable<Assembly> _assembliesToImport = [];
-
+public abstract class BaseRepositoryTest<TRepository>(InfiniLoreDbContext context, IUnitOfWork unitOfWork) where TRepository : class, IUnitOfWorkRepository {
+    protected InfiniLoreDbContext Context => context;
+    protected IUnitOfWork UnitOfWork => unitOfWork;
+    
+    [Before(Test)]
+    public async Task TestSetup() => await context.Database.EnsureCreatedAsync();
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static void RegisterDatabase(
-        IServiceCollection services, 
-        IEnumerable<Assembly> assembliesToImport,
-        Action<DbContextOptionsBuilder> optionsAction
-    ) {
-        _assembliesToImport = assembliesToImport;
-        
-        services.AddDbContextFactory<ContentDb>(optionsAction.Invoke);
-        services.AddReadonlyUnitOfWork<ContentDb>();
-    }
+    protected async ValueTask<TRepository> GetRepositoryAsync() => await UnitOfWork.GetRepositoryAsync<TRepository>();
     
-    internal static void ConfigureModel(ModelBuilder modelBuilder) {
-        foreach (Assembly assembly in _assembliesToImport) {
-            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-        }
+    protected async Task AddModelToDbAsync<TModel>(TModel model) where TModel : class {
+        DbSet<TModel> dbSet = Context.Set<TModel>();
+        await dbSet.AddAsync(model);
+        await Context.SaveChangesAsync();
     }
 }

@@ -10,8 +10,8 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseModel {
-    public Guid Id { get; } = Guid.CreateVersion7();
+public abstract record BaseModel {
+    public Guid Id { get; init; } = Guid.CreateVersion7();
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
 
@@ -49,6 +49,5 @@ public abstract class BaseModelValidator<TModel> : AbstractValidator<TModel> whe
         RuleFor(model => model.Id).NotEmpty();
         RuleFor(model => model.CreatedAt).NotEmpty();
         RuleFor(model => model.ModifiedAt).NotEmpty();
-        RuleFor(model => model.SoftDeletedAt).NotEmpty();
     }
 }

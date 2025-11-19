@@ -10,7 +10,7 @@ namespace InfiniLore.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UserModel : BaseModel {
+public record UserModel : BaseModel {
     public string UserName { get; set; } = string.Empty;
 }
 

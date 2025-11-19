@@ -11,7 +11,7 @@ namespace InfiniLore.Modules.Projects.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectModel : BaseOwnedModel<UserModel> {
+public record ProjectModel : BaseOwnedModel<UserModel> {
     public string Name { get; set; } = string.Empty;
 }
 
