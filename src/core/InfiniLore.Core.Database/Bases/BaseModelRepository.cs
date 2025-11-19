@@ -27,6 +27,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
+    #region GetByIdAsync
     public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (id == Guid.Empty) return RepoOutcome.None;
         
@@ -41,4 +42,10 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
             ? RepoOutcome<TModel>.FromSuccess(result)
             : RepoOutcome.None;
     }
+    #endregion
+
+    #region AddAsync
+    public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = default)
+        => throw new NotImplementedException();
+    #endregion
 }
