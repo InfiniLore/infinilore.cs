@@ -6,27 +6,25 @@ using InfiniLore.Core.Outcomes;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Core.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseModelRepository<TModel, TDbContext> : UnitOfWorkRepository<TDbContext>
-    where TModel : BaseModel 
-    where TDbContext : DbContext
-{
+    where TModel : BaseModel
+    where TDbContext : DbContext {
     protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
-    
-    protected IQueryable<TModel> GetConfiguredQueryable(IQueryable<TModel> baseQuery, QueryConfig config) {
-        IQueryable<TModel> query = baseQuery
-            .AsNoTracking()
-            .With(AlwaysInclude)
-            .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeOptionalReferences), OptionalInclude)
-            .ConditionalReverse(config.HasFlagFast(QueryConfig.Reversed))
-            .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeDeleted), model => model.IgnoreQueryFilters());
 
-        return query;
-    }
+    protected IQueryable<TModel> GetConfiguredQueryable(IQueryable<TModel> baseQuery, QueryConfig config) => baseQuery
+        .AsNoTracking()
+        .With(AlwaysInclude)
+        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeOptionalReferences), OptionalInclude)
+        .ConditionalReverse(config.HasFlagFast(QueryConfig.Reversed))
+        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeDeleted), query => query.IgnoreQueryFilters())
+        .ConditionalWith(config.HasFlagFast(QueryConfig.SortByCreatedAt | QueryConfig.SortByModifiedAt), query => query.OrderBy(model => model.CreatedAt).ThenBy(model => model.ModifiedAt))
+        .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByCreatedAt), model => model.CreatedAt)
+        .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.ModifiedAt);
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -35,7 +33,7 @@ public abstract class BaseModelRepository<TModel, TDbContext> : UnitOfWorkReposi
 
         IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
             .Where(model => model.Id == id);
-        
+
         TModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
 
         return result is not null
