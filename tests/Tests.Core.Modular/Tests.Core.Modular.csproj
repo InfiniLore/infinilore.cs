@@ -2,4 +2,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\core\InfiniLore.Core.Modular\InfiniLore.Core.Modular.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis" />
+  </ItemGroup>
 </Project>
