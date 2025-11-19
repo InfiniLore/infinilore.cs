@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork" />
-      <PackageReference Include="CodeOfChaos.Types.UnitOfWork.Contracts" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />

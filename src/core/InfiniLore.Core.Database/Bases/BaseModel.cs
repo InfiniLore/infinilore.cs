@@ -17,8 +17,8 @@ public abstract record BaseModel {
 
     public bool IsSoftDeleted => SoftDeletedAt != DateTime.MinValue;
     public DateTime SoftDeletedAt { get; set; } = DateTime.MinValue;
-    
-    [Timestamp] public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+
+    [Timestamp] public byte[]? RowVersion { get; set; } = null;
 }
 
 public abstract class BaseModelConfiguration<TModel> : IEntityTypeConfiguration<TModel> where TModel : BaseModel {
@@ -37,8 +37,11 @@ public abstract class BaseModelConfiguration<TModel> : IEntityTypeConfiguration<
         builder.Property(model => model.SoftDeletedAt)
             .IsRequired();
         
+        builder.HasQueryFilter(model => model.SoftDeletedAt == DateTime.MinValue);
+        
         builder.Property(model => model.RowVersion)
-            .IsRowVersion();
+            .IsRowVersion()
+            .IsConcurrencyToken();
 
         builder.UseTptMappingStrategy();
     }

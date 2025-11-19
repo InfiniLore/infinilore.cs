@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Types.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Immutable;
@@ -25,6 +24,7 @@ public static class InfiniLoreDbContextFactory {
         _assembliesToImport = assembliesToImport;
         
         services.AddDbContextFactory<InfiniLoreDbContext>(optionsAction);
+        
         services.AddUnitOfWork<InfiniLoreDbContext>();
         services.AddReadonlyUnitOfWork<InfiniLoreDbContext>();
         

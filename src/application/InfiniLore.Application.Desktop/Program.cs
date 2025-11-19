@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniBlazor.Config;
 using InfiniFrame;
 using InfiniFrame.Server;
 using InfiniLore.Core;
@@ -12,11 +11,9 @@ using InfiniLore.Modules.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using System.Reflection;
 
 namespace InfiniLore.Application.Desktop;
 // ---------------------------------------------------------------------------------------------------------------------

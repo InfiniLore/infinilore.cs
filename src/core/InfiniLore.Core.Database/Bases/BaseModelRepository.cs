@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Types.UnitOfWork;
 using InfiniLore.Core.Outcomes;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +19,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         .With(AlwaysInclude)
         .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeOptionalReferences), OptionalInclude)
         .ConditionalReverse(config.HasFlagFast(QueryConfig.Reversed))
-        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeDeleted), query => query.IgnoreQueryFilters())
+        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeSoftDeleted), query => query.IgnoreQueryFilters())
         .ConditionalWith(config.HasFlagFast(QueryConfig.SortByCreatedAt | QueryConfig.SortByModifiedAt), query => query.OrderBy(model => model.CreatedAt).ThenBy(model => model.ModifiedAt))
         .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByCreatedAt), model => model.CreatedAt)
         .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.ModifiedAt);

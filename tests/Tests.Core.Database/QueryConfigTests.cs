@@ -11,13 +11,13 @@ namespace Tests.Core.Database;
 public class QueryConfigTests {
     [Test]
     [Arguments(QueryConfig.None, QueryConfig.None, false)] // None is the default value and thus should never match
-    [Arguments(QueryConfig.None, QueryConfig.IncludeDeleted, false)]
+    [Arguments(QueryConfig.None, QueryConfig.IncludeSoftDeleted, false)]
     
     [Arguments(QueryConfig.Reversed, QueryConfig.Reversed, true)]
     [Arguments(QueryConfig.Reversed, QueryConfig.None, false)]
     
-    [Arguments(QueryConfig.IncludeDeleted, QueryConfig.IncludeDeleted, true)]
-    [Arguments(QueryConfig.IncludeDeleted, QueryConfig.None, false)]
+    [Arguments(QueryConfig.IncludeSoftDeleted, QueryConfig.IncludeSoftDeleted, true)]
+    [Arguments(QueryConfig.IncludeSoftDeleted, QueryConfig.None, false)]
     
     [Arguments(QueryConfig.IncludeOptionalReferences, QueryConfig.IncludeOptionalReferences, true)]
     [Arguments(QueryConfig.IncludeOptionalReferences, QueryConfig.None, false)]
