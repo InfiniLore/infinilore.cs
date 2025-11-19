@@ -14,6 +14,7 @@ namespace Tests.Core.Database.Bases;
 [DiDataSource]
 public class BaseModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<InfiniLoreDbContext> unitOfWork) : BaseRepositoryTest<SimpleModelRepository>(context, unitOfWork) {
 
+    #region GetByIdAsync
     [Test]
     public async Task GetByIdAsync_ShouldWork_WhenIdExists() {
         // Arrange
@@ -86,4 +87,18 @@ public class BaseModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<I
         await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
+
+    [Test]
+    public async Task GetByIdAsync_ShouldFail_WhenIdIsEmpty() {
+        // Arrange
+        SimpleModelRepository repository = await GetRepositoryAsync();
+    
+        // Act
+        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(Guid.Empty);
+    
+        // Assert
+        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsFalse();
+        await Assert.That(foundModel).IsNull();
+    }
+    #endregion
 }

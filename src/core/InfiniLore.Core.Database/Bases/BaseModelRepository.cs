@@ -28,6 +28,8 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        if (id == Guid.Empty) return RepoOutcome.None;
+        
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
         IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
