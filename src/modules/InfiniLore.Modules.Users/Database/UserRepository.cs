@@ -11,7 +11,9 @@ namespace InfiniLore.Modules.Users.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class UserRepository : BaseModelRepository<UserModel> {
-    public async ValueTask<Outcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        if (username.IsNullOrWhiteSpace()) return RepoOutcome.NotFound;
+        
         DbSet<UserModel> dbSet = GetCachedDbSet<UserModel>();
 
         // Form Query
@@ -23,7 +25,17 @@ public class UserRepository : BaseModelRepository<UserModel> {
         
         // Format Result
         return result is not null 
-            ? Outcome<UserModel>.FromSuccess(result)
-            : Outcome<UserModel>.FromError("Model not found");
+            ? result
+            : RepoOutcome.NotFound;
+    }
+
+    public async ValueTask<bool> IsUserNameTakenAsync(string username, CancellationToken ct = default) {
+        DbSet<UserModel> dbSet = GetCachedDbSet<UserModel>();
+
+        IQueryable<UserModel> query = GetConfiguredQueryable(dbSet, QueryConfig.None)
+            .Where(model => model.UserName == username);
+        
+        return await query.AnyAsync(cancellationToken: ct);
+        
     }
 }

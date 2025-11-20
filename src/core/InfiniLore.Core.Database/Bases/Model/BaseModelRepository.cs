@@ -29,7 +29,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     // -----------------------------------------------------------------------------------------------------------------
     #region GetByIdAsync
     public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
-        if (id == Guid.Empty) return RepoOutcome.None;
+        if (id == Guid.Empty) return RepoOutcome.Invalid;
         
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
@@ -39,7 +39,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
 
         return result is not null
             ? RepoOutcome<TModel>.FromSuccess(result)
-            : RepoOutcome.None;
+            : RepoOutcome.NotFound;
     }
     #endregion
 

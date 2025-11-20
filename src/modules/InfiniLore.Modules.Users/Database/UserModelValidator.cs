@@ -1,11 +1,21 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Unions;
+using CodeOfChaos.Extensions.DependencyInjection;
+using FluentValidation;
+using InfiniLore.Core.Database;
 
-namespace InfiniLore.Core.Outcomes;
-
+namespace InfiniLore.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public readonly partial record struct ErrorOutcome() : IUnion<Failure, ValidationFailed>;
+[InjectableScoped<IValidator<UserModel>>]
+public class UserModelValidator: BaseModelValidator<UserModel> {
+    public UserModelValidator() {
+        RuleFor(model => model.UserName)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(256)
+            .Matches("^[a-zA-Z0-9_-]+$");
+    }
+}

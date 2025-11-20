@@ -8,6 +8,4 @@ namespace InfiniLore.Modules.Users.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record CreateUserCommand(string Username) : BaseCommand<Guid> {
-    
-}
+public record CreateUserCommand(string Username) : BaseCommand<Guid>;
