@@ -101,5 +101,44 @@ public class BaseModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<I
         await Assert.That(foundModel).IsNull();
     }
     #endregion
+
+    #region AddAsync
+    [Test]
+    public async Task AddAsync_ShouldWork_WhenModelIsValid() {
+        // Arrange
+        var knownId = Guid.NewGuid();
+        var knownModel = new SimpleModel {
+            Id = knownId
+        };
+        SimpleModelRepository repository = await GetRepositoryAsync();
+        
+        // Act
+        RepoOutcome outcome = await repository.AddAsync(knownModel);
+        
+        // Assert
+        await Assert.That(outcome.IsSuccess).IsTrue();
+
+        await UnitOfWork.SaveChangesAsync();
+        var foundModel = await GetModelFromDbAsync<SimpleModel>(knownId);
+        await Assert.That(foundModel).IsEqualTo(knownModel);
+    }
     
+    [Test]
+    public async Task AddAsync_ShouldFail_WhenDuplicateIdIsProvided() {
+        // Arrange
+        var knownId = Guid.NewGuid();
+        var knownModel = new SimpleModel {
+            Id = knownId
+        };
+        
+        await AddModelToDbAsync(knownModel);
+        SimpleModelRepository repository = await GetRepositoryAsync();
+        
+        // Act
+        RepoOutcome outcome = await repository.AddAsync(knownModel);
+        
+        // Assert
+        await Assert.That(outcome.IsAlreadyExists).IsTrue();
+    }
+    #endregion
 }

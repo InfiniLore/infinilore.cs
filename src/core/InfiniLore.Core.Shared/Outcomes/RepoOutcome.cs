@@ -8,20 +8,24 @@ namespace InfiniLore.Core.Outcomes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UnionAliases(nameof(Success), nameof(None))]
+[UnionAliases(nameof(Success), nameof(None), nameof(AlreadyExists))]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial record struct RepoOutcome<TSuccess>() : IUnion<TSuccess, None> {
+public readonly partial record struct RepoOutcome<TSuccess>() : IUnion<TSuccess, None,AlreadyExists> {
     public static implicit operator RepoOutcome<TSuccess>(RepoOutcome outcome) => outcome.Match(
-        noneCase: FromNone
+        successCase: _ => throw new InvalidOperationException("Cannot convert RepoOutcome to RepoOutcome<TSuccess> when Success case is present."),
+        noneCase: FromNone,
+        alreadyexistsCase: FromAlreadyExists
     );
     
     public static implicit operator Task<RepoOutcome<TSuccess>>(RepoOutcome<TSuccess> outcome) => Task.FromResult(outcome);
     public static implicit operator ValueTask<RepoOutcome<TSuccess>>(RepoOutcome<TSuccess> outcome) => ValueTask.FromResult(outcome);
 }
 
-[UnionAliases(nameof(None))]
+[UnionAliases(nameof(Success), nameof(None), nameof(AlreadyExists))]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial record struct RepoOutcome() : IUnion<None>{
+public readonly partial record struct RepoOutcome() : IUnion<Success, None, AlreadyExists>{
     public static RepoOutcome None { get; } = FromNone(new None());
+    public static RepoOutcome AlreadyExists { get; } = FromAlreadyExists(new AlreadyExists());
+    public static RepoOutcome Success { get;} = FromSuccess(new Success());
 }
 

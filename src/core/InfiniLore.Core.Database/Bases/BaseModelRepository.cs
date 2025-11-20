@@ -45,7 +45,16 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     #endregion
 
     #region AddAsync
-    public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = default)
-        => throw new NotImplementedException();
+    public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = default) {
+        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
+
+        bool exists = await dbSet
+            .AsNoTracking()
+            .AnyAsync(m => m.Id == model.Id, cancellationToken: ct);
+        if (exists) return RepoOutcome.AlreadyExists;
+        
+        await dbSet.AddAsync(model, cancellationToken: ct);
+        return RepoOutcome.Success;
+    }
     #endregion
 }

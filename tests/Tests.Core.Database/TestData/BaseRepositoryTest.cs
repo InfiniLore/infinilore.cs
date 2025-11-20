@@ -10,6 +10,8 @@ namespace Tests.Core.Database.TestData;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseRepositoryTest<TRepository>(InfiniLoreDbContext context, IUnitOfWork<InfiniLoreDbContext> unitOfWork) where TRepository : class, IUnitOfWorkRepository {
+    protected IUnitOfWork<InfiniLoreDbContext> UnitOfWork => unitOfWork;
+    
     [Before(Test)]
     public async Task TestSetup() {
         await context.Database.EnsureCreatedAsync();
@@ -24,12 +26,18 @@ public abstract class BaseRepositoryTest<TRepository>(InfiniLoreDbContext contex
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    protected async ValueTask<TRepository> GetRepositoryAsync() => await unitOfWork.GetRepositoryAsync<TRepository>();
+    protected async ValueTask<TRepository> GetRepositoryAsync() 
+        => await unitOfWork.GetRepositoryAsync<TRepository>();
     
     protected async Task AddModelToDbAsync<TModel>(TModel model) where TModel : class {
-        
         DbSet<TModel> dbSet = context.Set<TModel>();
         await dbSet.AddAsync(model);
         await context.SaveChangesAsync();
+    }
+    
+    protected async Task<TModel> GetModelFromDbAsync<TModel>(Guid id) where TModel : class {
+        DbSet<TModel> dbSet = context.Set<TModel>();
+        TModel? model = await dbSet.FindAsync(id);
+        return model ?? throw new Exception($"Model with id {id} not found.");
     }
 }
