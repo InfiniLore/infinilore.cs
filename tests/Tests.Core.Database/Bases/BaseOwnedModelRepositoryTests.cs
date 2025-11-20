@@ -11,7 +11,7 @@ namespace Tests.Core.Database.Bases;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [DiDataSource]
-public class BaseOwnedModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<InfiniLoreDbContext> unitOfWork) : BaseRepositoryTest<SimpleOwnedModelRepository>(context, unitOfWork) {
+public class BaseOwnedModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLoreDb> unitOfWork) : BaseRepositoryTest<SimpleOwnedModelRepository>(context, unitOfWork) {
 
     #region GetByIdAsync
     [Test]

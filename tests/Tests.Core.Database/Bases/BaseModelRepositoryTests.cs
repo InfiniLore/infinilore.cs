@@ -12,7 +12,7 @@ namespace Tests.Core.Database.Bases;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [DiDataSource]
-public class BaseModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<InfiniLoreDbContext> unitOfWork) : BaseRepositoryTest<SimpleModelRepository>(context, unitOfWork) {
+public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLoreDb> unitOfWork) : BaseRepositoryTest<SimpleModelRepository>(context, unitOfWork) {
 
     #region GetByIdAsync
     [Test]

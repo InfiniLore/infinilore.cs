@@ -10,7 +10,7 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public static class InfiniLoreDbContextFactory {
+public static class InfiniLoreDbFactory {
     private static ImmutableArray<Assembly> _assembliesToImport = [];
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -23,10 +23,10 @@ public static class InfiniLoreDbContextFactory {
     ) {
         _assembliesToImport = assembliesToImport;
         
-        services.AddDbContextFactory<InfiniLoreDbContext>(optionsAction);
+        services.AddDbContextFactory<InfiniLoreDb>(optionsAction);
         
-        services.AddUnitOfWork<InfiniLoreDbContext>();
-        services.AddReadonlyUnitOfWork<InfiniLoreDbContext>();
+        services.AddUnitOfWork<InfiniLoreDb>();
+        services.AddReadonlyUnitOfWork<InfiniLoreDb>();
         
         return services;
     }

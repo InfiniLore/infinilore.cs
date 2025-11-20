@@ -9,8 +9,8 @@ namespace Tests.Core.Database.TestData;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseRepositoryTest<TRepository>(InfiniLoreDbContext context, IUnitOfWork<InfiniLoreDbContext> unitOfWork) where TRepository : class, IUnitOfWorkRepository {
-    protected IUnitOfWork<InfiniLoreDbContext> UnitOfWork => unitOfWork;
+public abstract class BaseRepositoryTest<TRepository>(InfiniLoreDb context, IUnitOfWork<InfiniLoreDb> unitOfWork) where TRepository : class, IUnitOfWorkRepository {
+    protected IUnitOfWork<InfiniLoreDb> UnitOfWork => unitOfWork;
     
     [Before(Test)]
     public async Task TestSetup() {

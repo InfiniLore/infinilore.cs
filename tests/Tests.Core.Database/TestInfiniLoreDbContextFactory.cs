@@ -24,13 +24,13 @@ public static class TestInfiniLoreDbContextFactory {
             typeof(SimpleModel).Assembly
         );
 
-    public static InfiniLoreDbContext CreateInfiniLoreDbContext() {
+    public static InfiniLoreDb CreateInfiniLoreDbContext() {
         var services = new ServiceCollection();
 
         services.AddTestDbContext();
 
         ServiceProvider provider = services.BuildServiceProvider();
-        var context = provider.GetRequiredService<InfiniLoreDbContext>();
+        var context = provider.GetRequiredService<InfiniLoreDb>();
 
         context.Database.EnsureCreated();
         return context;
