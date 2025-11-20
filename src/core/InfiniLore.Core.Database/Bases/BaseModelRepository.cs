@@ -45,6 +45,9 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
 
     #region AddAsync
     public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = default) {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (model is null) return RepoOutcome.Invalid;
+        
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
         
         bool exists = await dbSet

@@ -138,7 +138,20 @@ public class BaseModelRepositoryTests(InfiniLoreDbContext context, IUnitOfWork<I
         RepoOutcome outcome = await repository.AddAsync(knownModel);
         
         // Assert
-        await Assert.That(outcome.IsAlreadyExists).IsTrue();
+        await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
+        await Assert.That(errorOutcome.IsAlreadyExists).IsTrue();
+    }
+    [Test]
+    public async Task AddAsync_ShouldFail_WhenNull() {
+        // Arrange
+        SimpleModelRepository repository = await GetRepositoryAsync();
+        
+        // Act
+        RepoOutcome outcome = await repository.AddAsync(null!);
+        
+        // Assert
+        await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
+        await Assert.That(errorOutcome.IsInvalid).IsTrue();
     }
     #endregion
 }

@@ -7,3 +7,4 @@ namespace InfiniLore.Core.Outcomes;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public readonly record struct AlreadyExists;
+public readonly record struct Invalid;
