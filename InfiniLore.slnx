@@ -86,4 +86,7 @@
     <Project Path="tests/Tests.Core.Database/Tests.Core.Database.csproj" />
     <Project Path="tests/Tests.Core.Modular/Tests.Core.Modular.csproj" />
   </Folder>
+  <Folder Name="/tests/modules/">
+    <Project Path="tests/Tests.Modules.Users/Tests.Modules.Users.csproj" />
+  </Folder>
 </Solution>

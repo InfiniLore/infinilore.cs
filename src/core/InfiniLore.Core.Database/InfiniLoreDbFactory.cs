@@ -16,7 +16,7 @@ public static class InfiniLoreDbFactory {
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public static IServiceCollection AddInfiniLoreDbContext(
+    public static IServiceCollection AddInfiniLoreDb(
         this IServiceCollection services, 
         Action<DbContextOptionsBuilder> optionsAction,
         params ImmutableArray<Assembly> assembliesToImport

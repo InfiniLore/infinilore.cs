@@ -9,7 +9,6 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-// Not an IdentityDbContext due to Auth0 handling all the auth & identity stuff
 public class InfiniLoreDb : DbContext, IReadonlyCapableDbContext {
     public bool IsReadonly { get; private set; }
 

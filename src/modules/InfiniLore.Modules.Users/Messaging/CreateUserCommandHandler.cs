@@ -16,7 +16,7 @@ namespace InfiniLore.Modules.Users.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 public class CreateUserCommandHandler(
     IValidator<UserModel> validator,
-    IUnitOfWork<InfiniLoreDb> unitOfWork,
+    IUnitOfWorkFactory<InfiniLoreDb> unitOfWorkFactory,
     ILogger<CreateUserCommandHandler> logger
 ) : BaseCommandHandler<CreateUserCommand, Guid> {
 
@@ -33,6 +33,8 @@ public class CreateUserCommandHandler(
             logger.Warning("Validation failed for user creation: {errors}", validationResult.Errors);
             return Outcome.FromError(new ValidationFailed(validationResult.Errors.Select(e => e.ErrorMessage).ToArray()));
         }
+        
+        await using IUnitOfWork<InfiniLoreDb> unitOfWork = unitOfWorkFactory.Create();
 
         try {
             await unitOfWork.TryCreateTransactionAsync(ct);
@@ -55,6 +57,7 @@ public class CreateUserCommandHandler(
 
             await unitOfWork.TryCommitTransactionAsync(ct);
             await unitOfWork.SaveChangesAsync(ct);
+            
             return Outcome.FromSuccess(userModel.Id);
         }
         catch (Exception exception) {

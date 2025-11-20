@@ -13,7 +13,7 @@ namespace Tests.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class TestInfiniLoreDbContextFactory {
     public static IServiceCollection AddTestDbContext(this IServiceCollection services) =>
-        services.AddInfiniLoreDbContext(
+        services.AddInfiniLoreDb(
             options => {
                 var connection = new SqliteConnection("DataSource=:memory:");
                 connection.Open();
