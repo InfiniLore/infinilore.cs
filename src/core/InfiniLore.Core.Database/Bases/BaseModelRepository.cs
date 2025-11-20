@@ -33,10 +33,9 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
 
-        IQueryable<TModel> query = GetConfiguredQueryable(dbSet, config)
-            .Where(model => model.Id == id);
-
-        TModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
+        TModel? result = await GetConfiguredQueryable(dbSet, config)
+            .Where(model => model.Id == id)
+            .FirstOrDefaultAsync(cancellationToken: ct);
 
         return result is not null
             ? RepoOutcome<TModel>.FromSuccess(result)
