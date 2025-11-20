@@ -26,9 +26,8 @@ public class UserRepository : BaseModelRepository<UserModel> {
         UserModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
         
         // Format Result
-        return result is not null 
-            ? result
-            : RepoOutcome.NotFound;
+        if (result is null) return RepoOutcome.NotFound;
+        return result;
     }
 
     public async ValueTask<bool> IsUserNameTakenAsync(string username, CancellationToken ct = default) {
