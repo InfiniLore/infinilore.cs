@@ -1,13 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Core.Database;
+using FluentValidation;
 
-namespace Tests.Core.Database.TestData;
-
+namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<SimpleOwnedModelRepository>]
-public class SimpleOwnedModelRepository : BaseOwnedRepository<SimpleOwnedModel, SimpleOwnerModel>;
+public abstract class BaseModelValidator<TModel> : AbstractValidator<TModel> where TModel : BaseModel {
+    protected BaseModelValidator() {
+        RuleFor(model => model.Id).NotEmpty();
+        RuleFor(model => model.CreatedAt).NotEmpty();
+        RuleFor(model => model.ModifiedAt).NotEmpty();
+    }
+}

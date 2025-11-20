@@ -1,13 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Core.Database;
-
-namespace Tests.Core.Database.TestData;
+namespace InfiniLore.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<SimpleOwnedModelRepository>]
-public class SimpleOwnedModelRepository : BaseOwnedRepository<SimpleOwnedModel, SimpleOwnerModel>;
+public abstract record BaseOwnedModel<TOwner> : BaseModel where TOwner : BaseModel {
+    public Guid OwnerId { get; set; } = Guid.Empty;
+    public TOwner? Owner {
+        get;
+        set {
+            OwnerId = value?.Id ?? Guid.Empty;
+            field = value;
+        }
+    } = null;
+}

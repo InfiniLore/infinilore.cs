@@ -1,18 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.EntityFrameworkCore;
+using FluentValidation;
 
 namespace InfiniLore.Core.Database;
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BaseOwnerRepository<TModel, TOwner> : BaseModelRepository<TModel> 
+public abstract class BaseOwnedModelValidator<TModel, TOwner> : BaseModelValidator<TModel> 
     where TModel : BaseOwnedModel<TOwner>
-    where TOwner : BaseModel {
-
-    protected override IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => base.OptionalInclude(query)
-        .Include(x => x.Owner)
-    ;
+    where TOwner : BaseModel 
+{
+    protected BaseOwnedModelValidator() {
+        RuleFor(model => model.OwnerId).NotEmpty();
+    }
 }

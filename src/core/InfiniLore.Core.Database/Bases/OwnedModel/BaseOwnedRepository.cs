@@ -1,13 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Extensions.DependencyInjection;
-using InfiniLore.Core.Database;
+using Microsoft.EntityFrameworkCore;
 
-namespace Tests.Core.Database.TestData;
+namespace InfiniLore.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<SimpleOwnedModelRepository>]
-public class SimpleOwnedModelRepository : BaseOwnedRepository<SimpleOwnedModel, SimpleOwnerModel>;
+public class BaseOwnedRepository<TModel, TOwner> : BaseModelRepository<TModel> 
+    where TModel : BaseOwnedModel<TOwner>
+    where TOwner : BaseModel {
+
+    protected override IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => base.OptionalInclude(query)
+        .Include(x => x.Owner)
+    ;
+}
