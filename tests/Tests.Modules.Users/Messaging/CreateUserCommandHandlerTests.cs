@@ -3,7 +3,9 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Outcomes;
+using InfiniLore.Modules.Users.Database;
 using InfiniLore.Modules.Users.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Tests.Modules.Users.Messaging;
@@ -47,11 +49,11 @@ public class CreateUserCommandHandlerTests(IServiceProvider provider, InfiniLore
             .And.IsNotEmptyGuid();
         
         // TODO: implement when we have full database setup
-        // await context.Database.CommitTransactionAsync();
-        // context.ChangeTracker.Clear();  
-        //
-        // DbSet<UserModel> userModels = context.Set<UserModel>();
-        // bool dbCheckResult = await userModels.AnyAsync(u => u.Id == guid && u.UserName == userName);
-        // await Assert.That(dbCheckResult).IsTrue();
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();  
+        
+        DbSet<UserModel> userModels = context.Set<UserModel>();
+        bool dbCheckResult = await userModels.AnyAsync(u => u.Id == guid && u.UserName == userName);
+        await Assert.That(dbCheckResult).IsTrue();
     }
 }

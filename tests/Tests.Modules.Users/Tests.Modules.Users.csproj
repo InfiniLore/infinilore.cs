@@ -3,5 +3,6 @@
     <ProjectReference Include="..\..\src\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
     <ProjectReference Include="..\..\src\modules\InfiniLore.Modules.Users.Shared\InfiniLore.Modules.Users.Shared.csproj" />
     <ProjectReference Include="..\..\src\modules\InfiniLore.Modules.Users\InfiniLore.Modules.Users.csproj" />
+    <ProjectReference Include="..\Tests.Core.Database\Tests.Core.Database.csproj" />
   </ItemGroup>
 </Project>

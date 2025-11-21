@@ -13,7 +13,14 @@ namespace Tests.Modules.Users;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<IServiceScope> {
-
+    public static Lazy<SqliteConnection> Connection { get; } = new(() => {
+        // var connection = new SqliteConnection($"DataSource=test_{Guid.NewGuid()}.db");
+        // if (File.Exists("test.db")) File.Delete("test.db");
+        var connection = new SqliteConnection("DataSource=:memory:");    
+        connection.Open();
+        return connection;
+    }); 
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -34,10 +41,7 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             )
             .AddInfiniLoreDb(
                 options => {
-                    var connection = new SqliteConnection("DataSource=:memory:");
-                    connection.Open();
-
-                    options.UseSqlite(connection);
+                    options.UseSqlite(Connection.Value);
                 },
                 moduleProvider.Assemblies
             )
