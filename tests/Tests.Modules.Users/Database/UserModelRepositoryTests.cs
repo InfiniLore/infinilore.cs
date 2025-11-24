@@ -11,4 +11,10 @@ namespace Tests.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 [InheritsTests]
 [DiDataSource]
-public class UserModelRepositoryTests(IServiceProvider serviceProvider) : BaseModelRepositoryTests<UserRepository, UserModel>(serviceProvider);
+public class UserModelRepositoryTests(IServiceProvider serviceProvider) : BaseModelRepositoryTests<UserRepository, UserModel>(serviceProvider) {
+    [Before(Test)]
+    public async Task TestSetupAsync() => await DbSetupAsync();
+
+    [After(Test)]
+    public async Task TestTeardownAsync() => await DbTeardownAsync();
+}
