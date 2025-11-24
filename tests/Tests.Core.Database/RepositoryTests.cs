@@ -11,7 +11,9 @@ namespace Tests.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvider)
     where TModel : BaseModel, new()
-    where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository {
+    where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository 
+{
+    
     protected IUnitOfWork<InfiniLoreDb> UnitOfWork => serviceProvider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
     protected InfiniLoreDb InfiniLoreDb => serviceProvider.GetRequiredService<InfiniLoreDb>();
 
@@ -35,7 +37,6 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
         catch {
             // ignored
         }
-        
     }
 
     // -----------------------------------------------------------------------------------------------------------------
