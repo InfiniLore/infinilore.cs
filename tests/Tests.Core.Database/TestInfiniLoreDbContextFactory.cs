@@ -5,7 +5,6 @@ using InfiniLore.Core.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Tests.Core.Database.TestData;
 
 namespace Tests.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -20,8 +19,7 @@ public static class TestInfiniLoreDbContextFactory {
                 
                 options.UseSqlite(connection);
             },
-            typeof(TestInfiniLoreDbContextFactory).Assembly,
-            typeof(SimpleModel).Assembly
+            typeof(TestInfiniLoreDbContextFactory).Assembly
         );
 
     public static InfiniLoreDb CreateInfiniLoreDbContext() {

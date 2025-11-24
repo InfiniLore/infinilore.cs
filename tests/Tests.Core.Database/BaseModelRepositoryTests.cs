@@ -4,34 +4,37 @@
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Outcomes;
 using Microsoft.EntityFrameworkCore;
-using Tests.Core.Database.TestData;
 
-namespace Tests.Core.Database.Bases;
+namespace Tests.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[DiDataSource]
-public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLoreDb> unitOfWork) : BaseRepositoryTest<SimpleModelRepository>(context, unitOfWork) {
-
+public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProvider serviceProvider) : RepositoryTests<TRepository, TModel>(serviceProvider)
+    where TModel : BaseModel, new()
+    where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository 
+{
+    // -----------------------------------------------------------------------------------------------------------------
+    // Common Test Methods
+    // -----------------------------------------------------------------------------------------------------------------
     #region GetByIdAsync
     [Test]
     public async Task GetByIdAsync_ShouldWork_WhenIdExists() {
         // Arrange
         var knownId = Guid.NewGuid();
-        var knownModel = new SimpleModel {
+        var knownModel = new TModel {
             Id = knownId
         };
 
         await AddModelToDbAsync(knownModel);
         
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(knownId);
+        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId);
 
         // Assert
-        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsTrue();
+        await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsTrue();
         await Assert.That(foundModel).IsEqualTo(knownModel);
     }
     
@@ -39,32 +42,32 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
     public async Task GetByIdAsync_ShouldWork_WhenIdExistsAndIsSoftDeleted_WithQueryConfig() {
         // Arrange
         var knownId = Guid.NewGuid();
-        var knownModel = new SimpleModel {
+        var knownModel = new TModel {
             Id = knownId
         };
 
         await AddModelToDbAsync(knownModel);
         
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
+        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
 
         // Assert
-        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsTrue();
+        await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsTrue();
         await Assert.That(foundModel).IsEqualTo(knownModel);
     }
 
     [Test]
     public async Task GetByIdAsync_ShouldFail_WhenIdDoesNotExist() {
         // Arrange
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(Guid.NewGuid());
+        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.NewGuid());
         
         // Assert
-        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsFalse();
+        await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
     
@@ -72,32 +75,32 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
     public async Task GetByIdAsync_ShouldFail_WhenIdDoesExistButIsSoftDeleted() {
         // Arrange
         var knownId = Guid.NewGuid();
-        var knownModel = new SimpleModel {
+        var knownModel = new TModel {
             Id = knownId,
             SoftDeletedAt = DateTime.UtcNow
         };
 
         await AddModelToDbAsync(knownModel);
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(knownId);
+        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId);
         
         // Assert
-        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsFalse();
+        await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
 
     [Test]
     public async Task GetByIdAsync_ShouldFail_WhenIdIsEmpty() {
         // Arrange
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
     
         // Act
-        RepoOutcome<SimpleModel> outcome = await repository.GetByIdAsync(Guid.Empty);
+        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.Empty);
     
         // Assert
-        await Assert.That(outcome.TryGetAsSuccess(out SimpleModel? foundModel)).IsFalse();
+        await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
     #endregion
@@ -107,10 +110,10 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
     public async Task AddAsync_ShouldWork_WhenModelIsValid() {
         // Arrange
         var knownId = Guid.NewGuid();
-        var knownModel = new SimpleModel {
+        var knownModel = new TModel {
             Id = knownId
         };
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
         
         // Act
         RepoOutcome outcome = await repository.AddAsync(knownModel);
@@ -119,7 +122,7 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
         await Assert.That(outcome.IsSuccess).IsTrue();
 
         await UnitOfWork.SaveChangesAsync();
-        var foundModel = await GetModelFromDbAsync<SimpleModel>(knownId);
+        var foundModel = await GetModelFromDbAsync(knownId);
         await Assert.That(foundModel).IsEqualTo(knownModel);
     }
     
@@ -127,12 +130,12 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
     public async Task AddAsync_ShouldFail_WhenDuplicateIdIsProvided() {
         // Arrange
         var knownId = Guid.NewGuid();
-        var knownModel = new SimpleModel {
+        var knownModel = new TModel {
             Id = knownId
         };
         
         await AddModelToDbAsync(knownModel);
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
         
         // Act
         RepoOutcome outcome = await repository.AddAsync(knownModel);
@@ -141,10 +144,11 @@ public class BaseModelRepositoryTests(InfiniLoreDb context, IUnitOfWork<InfiniLo
         await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
         await Assert.That(errorOutcome.IsAlreadyExists).IsTrue();
     }
+    
     [Test]
     public async Task AddAsync_ShouldFail_WhenNull() {
         // Arrange
-        SimpleModelRepository repository = await GetRepositoryAsync();
+        TRepository repository = await GetRepositoryAsync();
         
         // Act
         RepoOutcome outcome = await repository.AddAsync(null!);
