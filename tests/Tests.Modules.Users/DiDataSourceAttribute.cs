@@ -31,7 +31,8 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             )
             .AddInfiniLoreDb(
                 options => {
-                    var connection = new SqliteConnection("DataSource=:memory:");
+                    string testDbFile = $"test_{Guid.NewGuid()}.db";
+                    var connection = new SqliteConnection($"DataSource={testDbFile}");
                     connection.Open();
                     options.UseSqlite(connection);
                 },

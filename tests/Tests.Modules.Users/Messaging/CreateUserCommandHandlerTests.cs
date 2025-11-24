@@ -14,7 +14,7 @@ namespace Tests.Modules.Users.Messaging;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [DiDataSource]
-public class CreateUserCommandHandlerTests(IServiceProvider provider, InfiniLoreDb context) {
+public class CreateUserCommandHandlerTests(IServiceProvider provider) {
     private CreateUserCommandHandler GetHandler() => ActivatorUtilities.CreateInstance<CreateUserCommandHandler>(provider);
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -22,6 +22,8 @@ public class CreateUserCommandHandlerTests(IServiceProvider provider, InfiniLore
     // -----------------------------------------------------------------------------------------------------------------
     [Before(Test)]
     public async Task TestSetup() {
+        var contextFactory = provider.GetRequiredService<IDbContextFactory<InfiniLoreDb>>();
+        await using InfiniLoreDb context = await contextFactory.CreateDbContextAsync();
         await context.Database.EnsureCreatedAsync();
     }
     
@@ -48,12 +50,12 @@ public class CreateUserCommandHandlerTests(IServiceProvider provider, InfiniLore
             .IsNotDefault()
             .And.IsNotEmptyGuid();
         
-        // TODO: implement when we have full database setup
-        await context.SaveChangesAsync();
+        var contextFactory = provider.GetRequiredService<IDbContextFactory<InfiniLoreDb>>();
+        await using InfiniLoreDb context = await contextFactory.CreateDbContextAsync();
         context.ChangeTracker.Clear();  
         
-        DbSet<UserModel> userModels = context.Set<UserModel>();
-        bool dbCheckResult = await userModels.AnyAsync(u => u.Id == guid && u.UserName == userName);
-        await Assert.That(dbCheckResult).IsTrue();
+        UserModel? user = await context.Set<UserModel>().FindAsync(guid);
+        await Assert.That(user).IsNotNull();
+        await Assert.That(user!.UserName).IsEqualTo(userName);
     }
 }
