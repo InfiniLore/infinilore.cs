@@ -55,7 +55,8 @@ public class CreateUserCommandHandlerTests(IServiceProvider provider) {
         context.ChangeTracker.Clear();  
         
         UserModel? user = await context.Set<UserModel>().FindAsync(guid);
-        await Assert.That(user).IsNotNull();
-        await Assert.That(user!.UserName).IsEqualTo(userName);
+        await Assert.That(user)
+            .IsNotNull()
+            .And.HasProperty(model => model.UserName).IsEqualTo(userName);
     }
 }
