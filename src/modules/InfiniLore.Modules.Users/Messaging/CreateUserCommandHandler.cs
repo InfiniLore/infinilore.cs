@@ -38,7 +38,7 @@ public class CreateUserCommandHandler(
 
         try {
             await unitOfWork.TryCreateTransactionAsync(ct);
-            var userRepo = unitOfWork.GetRepository<UserRepository>();
+            var userRepo = await unitOfWork.GetRepositoryAsync<UserRepository>(ct);
             
             // Check for duplicate username
             bool isUserNameTaken = await userRepo.IsUserNameTakenAsync(command.Username, ct:ct);
