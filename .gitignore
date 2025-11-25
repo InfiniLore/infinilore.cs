@@ -774,3 +774,4 @@ dist
 
 .temp/
 src/application/InfiniLore.Application.WebServer/InfiniLore.db
+src/application/InfiniLore.Application.Desktop/InfiniLore.db

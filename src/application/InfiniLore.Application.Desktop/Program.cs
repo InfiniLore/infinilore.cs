@@ -9,10 +9,6 @@ using InfiniFrame.Js.MessageHandlers;
 using InfiniFrame.WebServer;
 using InfiniLore.Application.Desktop.Components;
 using InfiniLore.Core;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace InfiniLore.Application.Desktop;
@@ -49,7 +45,10 @@ public static class Program {
         InfiniFrameWindowBuilder windowBuilder = applicationBuilder.Window;
         windowBuilder.Center()
             .SetUseOsDefaultSize(true)
+            .RegisterFullScreenWebMessageHandler()
             .RegisterOpenExternalTargetWebMessageHandler()
+            .RegisterTitleChangedWebMessageHandler()
+            .RegisterWindowManagementWebMessageHandler()
             .SetTitle("InfiniLore Sample");
         
         // -------------------------------------------------------------------------------------------------------------
