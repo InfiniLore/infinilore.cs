@@ -25,7 +25,7 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             .RegisterServicesFromTestsModulesUsers()
             .AddInfiniModuleProvider(
                 moduleCollection => {
-                    moduleCollection.AddModule<UserInfiniModule>();
+                    moduleCollection.AddModule<UsersInfiniModule>();
                 },
                 out InfiniModuleProvider moduleProvider
             )

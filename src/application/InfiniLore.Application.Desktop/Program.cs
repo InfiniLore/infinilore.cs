@@ -29,7 +29,7 @@ public static class Program {
         WebApplicationBuilder appBuilder = infiniFrameServerBuilder.WebAppBuilder;
 
         appBuilder.Services.AddInfiniModuleProvider(moduleCollection => {
-                moduleCollection.AddModule<UserInfiniModule>();
+                moduleCollection.AddModule<UsersInfiniModule>();
                 moduleCollection.AddModule<ProjectsInfiniModule>();
                 moduleCollection.AddModule<AssetsInfiniModule>();
             }
