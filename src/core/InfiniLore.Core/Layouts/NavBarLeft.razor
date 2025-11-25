@@ -2,7 +2,6 @@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @using InfiniLore.Lucide
-@using Microsoft.Extensions.Hosting
 
 @namespace InfiniLore.Core.Layouts
 @* ------------------------------------------------------------------------------------------------------------------ *@
@@ -39,8 +38,4 @@
 
 @code {
     [Parameter] public bool CollapsedState { get; set; }
-
-    [Inject] private IHostEnvironment Environment { get; set; } = null!;
-
-    private bool IsDevelopment => Environment?.IsDevelopment() ?? false;
 }

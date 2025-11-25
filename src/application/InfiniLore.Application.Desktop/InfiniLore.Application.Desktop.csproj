@@ -12,7 +12,6 @@
       <PackageReference Include="FastEndpoints.Swagger" />
       <PackageReference Include="InfiniLore.InfiniBlazor" />
       <PackageReference Include="InfiniLore.InfiniFrame" />
-      <PackageReference Include="InfiniLore.InfiniFrame.Blazor" />
       <PackageReference Include="InfiniLore.InfiniFrame.Server" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
       <PackageReference Include="Serilog" />

@@ -9,6 +9,7 @@ using InfiniLore.Modules.Assets;
 using InfiniLore.Modules.Projects;
 using InfiniLore.Modules.Users;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,10 @@ public static class InfiniLoreBuilder {
         
         services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
         services.SwaggerDocument();
+
+        services.AddInfiniBlazor(config => {
+            config.Components.SetRenderMode(RenderMode.InteractiveServer);
+        });
         
         return services;
     }

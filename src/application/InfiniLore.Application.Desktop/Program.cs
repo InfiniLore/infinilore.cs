@@ -4,11 +4,12 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniFrame;
+using InfiniFrame.Js;
 using InfiniFrame.Js.MessageHandlers;
-using InfiniFrame.Server;
+using InfiniFrame.WebServer;
+using InfiniLore.Application.Desktop.Components;
 using InfiniLore.Core;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,61 +25,55 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         // Builder
         // -------------------------------------------------------------------------------------------------------------
-        var infiniFrameServerBuilder = InfiniFrameServerBuilder.Create("wwwroot", args);
-        WebApplicationBuilder appBuilder = infiniFrameServerBuilder.WebAppBuilder;
+        InfiniFrameWebApplicationBuilder applicationBuilder = InfiniFrameWebApplication.CreateBuilder(args);
+        WebApplicationBuilder webAppBuilder = applicationBuilder.WebApp;
 
-        appBuilder.Services.AddInfiniLoreApplication();
+        webAppBuilder.Services.AddInfiniLoreApplication();
         
-        appBuilder.Services.AddLogging(config => {
+        webAppBuilder.Services.AddLogging(config => {
             config.ClearProviders();
             config.AddSerilog();
         });
         
-        appBuilder.Services.AddSerilog(config => {
-            config.AsAnnaSasDevServerConsole(24).MinimumLevel.Debug();
+        webAppBuilder.Services.AddSerilog(config => {
+            config.AsAnnaSasDevServerConsole(24);
         });
         
-        appBuilder.Services.AddInfiniBlazor(config => {
-            config.Components.SetRenderMode(RenderMode.InteractiveServer);
-        });
-        
-        appBuilder.Services.AddRazorComponents()
+        webAppBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        appBuilder.WebHost.UseStaticWebAssets();
+        webAppBuilder.WebHost.UseStaticWebAssets();
+        
+        webAppBuilder.Services.AddInfiniFrameJs();
+
+        InfiniFrameWindowBuilder windowBuilder = applicationBuilder.Window;
+        windowBuilder.Center()
+            .SetUseOsDefaultSize(true)
+            .RegisterOpenExternalTargetWebMessageHandler()
+            .SetTitle("InfiniLore Sample");
         
         // -------------------------------------------------------------------------------------------------------------
         // Application
         // -------------------------------------------------------------------------------------------------------------
-        InfiniFrameServer infiniFrameServer = infiniFrameServerBuilder.Build();
-        WebApplication app = infiniFrameServer.WebApp;
+        InfiniFrameWebApplication application = applicationBuilder.Build();
+        WebApplication webApp = application.WebApp;
 
-        app.UseFastEndpoints()
+        webApp.UseFastEndpoints()
             .UseSwaggerGen();
-        
-        app.UseHttpsRedirection();
 
-        app.UseAntiforgery();
-
-        app.MapStaticAssets();
-        app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
+        webApp.UseHttpsRedirection();
         
-        app.UseInfiniLoreApplication();
-        
-        infiniFrameServer.MapInfiniFrameJsEndpoints();
-        
-        infiniFrameServer.Run();
+        webApp.UseStaticFiles();
 
-        IInfiniFrameWindowBuilder windowBuilder = infiniFrameServer.GetAttachedWindowBuilder()
-            .Center()
-            .SetUseOsDefaultSize(true)
-            .RegisterOpenExternalTargetWebMessageHandler()
-            .SetTitle("InfiniLore Sample");
+        webApp.UseAntiforgery();
 
-        IInfiniFrameWindow window = windowBuilder.Build();
+        webApp.MapStaticAssets();
+        webApp.MapRazorComponents<App>()
+            .AddInteractiveServerRenderMode()
+            .AddAdditionalAssemblies(typeof(Routes).Assembly);
 
-        window.WaitForClose();
+        webApp.UseInfiniLoreApplication();
         
+        application.Run();
     }
 }

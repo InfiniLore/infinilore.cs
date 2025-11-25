@@ -3,15 +3,8 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using InfiniLore.Application.WebServer.Components;
 using InfiniLore.Core;
-using InfiniLore.Core.Database;
-using InfiniLore.Core.Modular;
-using InfiniLore.Modules.Assets;
-using InfiniLore.Modules.Projects;
-using InfiniLore.Modules.Users;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace InfiniLore.Application.WebServer;
@@ -36,12 +29,10 @@ public static class Program {
             config.AsAnnaSasDevServerConsole(24).MinimumLevel.Debug();
         });
 
-        builder.Services.AddInfiniBlazor(config => {
-            config.Components.SetRenderMode(RenderMode.InteractiveServer);
-        });
-
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+    
+        builder.WebHost.UseStaticWebAssets();
 
         // -------------------------------------------------------------------------------------------------------------
         // Application
@@ -58,12 +49,15 @@ public static class Program {
             .UseSwaggerGen();
 
         app.UseHttpsRedirection();
+        
+        app.UseStaticFiles();
 
         app.UseAntiforgery();
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
-            .AddInteractiveServerRenderMode();
+            .AddInteractiveServerRenderMode()
+            .AddAdditionalAssemblies(typeof(Routes).Assembly);
 
         app.UseInfiniLoreApplication();
 
