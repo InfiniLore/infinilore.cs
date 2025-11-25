@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using InfiniFrame;
 using InfiniFrame.Server;
 using InfiniLore.Core;
@@ -33,7 +34,8 @@ public static class Program {
                 moduleCollection.AddModule<UsersInfiniModule>();
                 moduleCollection.AddModule<ProjectsInfiniModule>();
                 moduleCollection.AddModule<AssetsInfiniModule>();
-            }
+            },
+            out InfiniModuleProvider moduleProvider
         );
         
         appBuilder.Services.AddLogging(config => {
@@ -42,8 +44,7 @@ public static class Program {
         });
         
         appBuilder.Services.AddSerilog(config => {
-            config.WriteTo.Async(static c => c.Console())
-                .MinimumLevel.Debug();
+            config.AsAnnaSasDevServerConsole(24).MinimumLevel.Debug();
         });
         
         appBuilder.Services.AddInfiniBlazor(config => {
@@ -52,7 +53,11 @@ public static class Program {
         
         appBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-
+        
+        appBuilder.Services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
+        
+        appBuilder.Services.SwaggerDocument();
+        
         appBuilder.WebHost.UseStaticWebAssets();
         
         // -------------------------------------------------------------------------------------------------------------
@@ -61,7 +66,8 @@ public static class Program {
         InfiniFrameServer infiniFrameServer = infiniFrameServerBuilder.Build();
         WebApplication app = infiniFrameServer.WebApp;
 
-        // app.UseFastEndpoints();
+        app.UseFastEndpoints()
+            .UseSwaggerGen();
         
         app.UseHttpsRedirection();
 

@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Bogus;
 using InfiniLore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,9 +46,28 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
     protected async ValueTask<TRepository> GetRepositoryAsync()
         => await UnitOfWork.GetRepositoryAsync<TRepository>();
 
+    protected virtual Faker<TModel> ConfigureFaker(Faker<TModel> faker) => faker;
+    
+    protected async Task AddFakeModelsToDbAsync(int count) {
+        if (count < 0) return;
+        
+        var faker = new Faker<TModel>();
+        faker.RuleFor(m => m.Id, f => f.Random.Guid());
+        faker = ConfigureFaker(faker);
+        
+        IEnumerable<TModel>? models = faker.GenerateLazy(count);
+        await AddModelsToDbAsync(models);
+    }
+    
     protected async Task AddModelToDbAsync<T>(T model) where T : class {
         DbSet<T> dbSet = InfiniLoreDb.Set<T>();
         await dbSet.AddAsync(model);
+        await InfiniLoreDb.SaveChangesAsync();
+    }
+    
+    protected async Task AddModelsToDbAsync<T>(IEnumerable<T> models) where T : class {
+        DbSet<T> dbSet = InfiniLoreDb.Set<T>();
+        await dbSet.AddRangeAsync(models);
         await InfiniLoreDb.SaveChangesAsync();
     }
 

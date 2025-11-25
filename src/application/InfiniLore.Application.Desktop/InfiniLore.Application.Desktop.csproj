@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions.Serilog" />
+      <PackageReference Include="FastEndpoints.Swagger" />
       <PackageReference Include="InfiniLore.InfiniBlazor" />
       <PackageReference Include="InfiniLore.InfiniFrame" />
       <PackageReference Include="InfiniLore.InfiniFrame.Blazor" />

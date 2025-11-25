@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Outcomes;
+using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.Core.Database;
@@ -103,6 +104,77 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         await Assert.That(outcome.TryGetAsSuccess(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
+    #endregion
+    
+    #region GetAllAsync
+    [Test]
+    public async Task GetAllAsync_ShouldWork_WhenNoModelsExist() {
+        // Arrange
+        TRepository repository = await GetRepositoryAsync();
+        var pagination = new PaginationData(1);
+        
+        // Act
+        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+        
+        // Assert
+        await Assert.That(outcome.TryGetAsSuccess(out PaginatedData<TModel>? paginatedData)).IsTrue();
+        await Assert.That(paginatedData).IsNotNull()
+            .And.HasProperty(data => data.Items).IsEqualTo(Array.Empty<TModel>())
+            .HasProperty(data => data.TotalCount).IsEqualTo(0)
+            .HasProperty(data => data.TotalPages).IsEqualTo(0)
+            .HasProperty(data => data.CurrentPage).IsEqualTo(1)
+            .HasProperty(data => data.IsEmpty).IsEqualTo(true);
+    }
+
+    [Test]
+    public async Task GetAllAsync_ShouldWork_WhenModelsExist() {
+        // Arrange
+        const int totalCount = 16;
+        await AddFakeModelsToDbAsync(totalCount);
+        TRepository repository = await GetRepositoryAsync();
+        var pagination = new PaginationData(0);
+
+        // Act
+        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+
+        // Assert
+        await Assert.That(outcome.TryGetAsSuccess(out PaginatedData<TModel>? paginatedData)).IsTrue();
+        await Assert.That(paginatedData).IsNotNull()
+            .And.HasProperty(data => data.TotalCount).IsEqualTo(totalCount)
+            .HasProperty(data => data.TotalPages).IsEqualTo(1)
+            .HasProperty(data => data.CurrentPage).IsEqualTo(1)
+            .HasProperty(data => data.IsEmpty).IsEqualTo(false)
+            .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
+        
+        await Assert.That(paginatedData!.Items).IsNotEmpty().HasCount(totalCount);
+    }
+    
+    [Test]
+    [MatrixDataSource]
+    public async Task GetAllAsync_ShouldWork_WhenMultiplePagesExist([MatrixRange<int>(0, 10)] int pageNumber) {
+        // Arrange
+        const int totalCount = 12 * 64;
+        const int pageSize = PaginationData.DefaultPageSize;
+        int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+        await AddFakeModelsToDbAsync(totalCount);
+        TRepository repository = await GetRepositoryAsync();
+        var pagination = new PaginationData(pageNumber);
+
+        // Act
+        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+
+        // Assert
+        await Assert.That(outcome.TryGetAsSuccess(out PaginatedData<TModel>? paginatedData)).IsTrue();
+        await Assert.That(paginatedData).IsNotNull()
+            .And.HasProperty(data => data.TotalCount).IsEqualTo(totalCount)
+            .HasProperty(data => data.TotalPages).IsEqualTo(totalPages)
+            .HasProperty(data => data.CurrentPage).IsEqualTo(pageNumber)
+            .HasProperty(data => data.IsEmpty).IsEqualTo(false)
+            .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
+
+        await Assert.That(paginatedData!.Items).IsNotEmpty().HasCount(pageSize);
+    }
+    
     #endregion
 
     #region AddAsync

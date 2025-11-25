@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Bogus;
 using InfiniLore.Modules.Users.Database;
 using Tests.Core.Database;
 
@@ -17,4 +18,7 @@ public class UserModelRepositoryTests(IServiceProvider serviceProvider) : BaseMo
 
     [After(Test)]
     public async Task TestTeardownAsync() => await DbTeardownAsync();
+
+    protected override Faker<UserModel> ConfigureFaker(Faker<UserModel> faker) => faker
+        .RuleFor(model => model.UserName, (f, model) => f.Internet.UserNameUnicode(model.Id.ToString()));
 }

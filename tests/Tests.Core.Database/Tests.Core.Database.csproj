@@ -4,4 +4,8 @@
       <ProjectReference Include="..\..\src\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Bogus" />
+    </ItemGroup>
+
 </Project>

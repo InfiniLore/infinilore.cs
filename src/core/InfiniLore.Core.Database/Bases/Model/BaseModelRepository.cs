@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Outcomes;
+using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfiniLore.Core.Database;
@@ -22,7 +23,13 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeSoftDeleted), query => query.IgnoreQueryFilters())
         .ConditionalWith(config.HasFlagFast(QueryConfig.SortByCreatedAt | QueryConfig.SortByModifiedAt), query => query.OrderBy(model => model.CreatedAt).ThenBy(model => model.ModifiedAt))
         .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByCreatedAt), model => model.CreatedAt)
-        .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.ModifiedAt);
+        .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.ModifiedAt)
+        .ConditionalOrderBy(!config.HasFlagFast(QueryConfig.SortByCreatedAt) && !config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.Id)
+    ;
+    
+    protected IQueryable<TModel> GetPaginatedQueryable(IQueryable<TModel> baseQuery, PaginationData pagination) => baseQuery
+        .Skip(pagination.SkipAmount)
+        .Take(pagination.PageSize);
     
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
@@ -40,6 +47,33 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         return result is not null
             ? RepoOutcome<TModel>.FromSuccess(result)
             : RepoOutcome.NotFound;
+    }
+    #endregion
+    
+    #region GetAllAsync
+    public async ValueTask<PaginatedRepoOutcome<TModel>> GetAllAsync(PaginationData pagination, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        if (pagination.PageSize <= 0) return PaginatedData<TModel>.Empty;
+        
+        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
+        IQueryable<TModel> baseQuery = GetConfiguredQueryable(dbSet, config);
+        
+        int totalCount = await baseQuery.CountAsync(ct);
+        if (totalCount == 0) return PaginatedData<TModel>.Empty;
+        
+        IQueryable<TModel> paginatedQuery = GetPaginatedQueryable(baseQuery, pagination);
+
+        TModel[] data = await paginatedQuery.ToArrayAsync(cancellationToken: ct);
+        
+        int totalPages = (int)Math.Ceiling((double)totalCount / pagination.PageSize);
+        
+        var paginatedData = new PaginatedData<TModel>(
+            data,
+            totalCount,
+            pagination.PageNumber, 
+            totalPages
+        );
+        
+        return paginatedData;
     }
     #endregion
 
