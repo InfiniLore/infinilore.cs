@@ -25,45 +25,23 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddInfiniModuleProvider(moduleCollection => {
-                                                        moduleCollection.AddModule<UsersInfiniModule>();
-                                                        moduleCollection.AddModule<ProjectsInfiniModule>();
-                                                        moduleCollection.AddModule<AssetsInfiniModule>();
-                                                    },
-                                                    out InfiniModuleProvider moduleProvider
-        );
-        
-        builder.Services.AddInfiniLoreDb(
-            options => {
-                const string dbFile = "InfiniLore.db";
-                var connection = new SqliteConnection($"DataSource={dbFile}");
-                connection.Open();
+        builder.Services.AddInfiniLoreApplication();
 
-                options.UseSqlite(connection);
-            },
-            moduleProvider.Assemblies
-        );
-        
         builder.Services.AddLogging(config => {
             config.ClearProviders();
             config.AddSerilog();
         });
-        
+
         builder.Services.AddSerilog(config => {
             config.AsAnnaSasDevServerConsole(24).MinimumLevel.Debug();
         });
-        
+
         builder.Services.AddInfiniBlazor(config => {
             config.Components.SetRenderMode(RenderMode.InteractiveServer);
         });
-        
+
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-        
-        builder.Services.AddFastEndpoints(
-            options => options.Assemblies = moduleProvider.Assemblies);
-        
-        builder.Services.SwaggerDocument();
 
         // -------------------------------------------------------------------------------------------------------------
         // Application
@@ -78,7 +56,7 @@ public static class Program {
 
         app.UseFastEndpoints()
             .UseSwaggerGen();
-        
+
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
@@ -86,6 +64,8 @@ public static class Program {
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+
+        app.UseInfiniLoreApplication();
 
         app.Run();
     }

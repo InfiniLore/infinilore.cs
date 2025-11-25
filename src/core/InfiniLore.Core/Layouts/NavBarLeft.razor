@@ -25,16 +25,13 @@
         <InfiniNavCollapseButton @bind-State="CollapsedState" Class="h-10"/>
     </div>
     
-    @if (IsDevelopment)
-    {
-        <InfiniSpacerVertical/>
-        <InfiniNavLink
-            Href="/swagger"
-            Text="API Docs"
-            Icon="@LucideNames.ChevronsLeftRightEllipsis"
-            OpenInNewTab
-        />
-    }
+    <InfiniSpacerVertical/>
+    <InfiniNavLink
+        Href="/swagger"
+        Text="API Docs"
+        Icon="@LucideNames.ChevronsLeftRightEllipsis"
+        OpenInNewTab
+    />
 </InfiniNavBar>
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code

@@ -4,18 +4,12 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniFrame;
+using InfiniFrame.Js.MessageHandlers;
 using InfiniFrame.Server;
 using InfiniLore.Core;
-using InfiniLore.Core.Database;
-using InfiniLore.Core.Modular;
-using InfiniLore.Modules.Assets;
-using InfiniLore.Modules.Projects;
-using InfiniLore.Modules.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -33,24 +27,7 @@ public static class Program {
         var infiniFrameServerBuilder = InfiniFrameServerBuilder.Create("wwwroot", args);
         WebApplicationBuilder appBuilder = infiniFrameServerBuilder.WebAppBuilder;
 
-        appBuilder.Services.AddInfiniModuleProvider(moduleCollection => {
-                moduleCollection.AddModule<UsersInfiniModule>();
-                moduleCollection.AddModule<ProjectsInfiniModule>();
-                moduleCollection.AddModule<AssetsInfiniModule>();
-            },
-            out InfiniModuleProvider moduleProvider
-        );
-        
-        appBuilder.Services.AddInfiniLoreDb(
-            options => {
-                const string dbFile = "InfiniLore.db";
-                var connection = new SqliteConnection($"DataSource={dbFile}");
-                connection.Open();
-
-                options.UseSqlite(connection);
-            },
-            moduleProvider.Assemblies
-        );
+        appBuilder.Services.AddInfiniLoreApplication();
         
         appBuilder.Services.AddLogging(config => {
             config.ClearProviders();
@@ -67,11 +44,6 @@ public static class Program {
         
         appBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
-        
-        appBuilder.Services.AddFastEndpoints(
-            options => options.Assemblies = moduleProvider.Assemblies);
-        
-        appBuilder.Services.SwaggerDocument();
         
         appBuilder.WebHost.UseStaticWebAssets();
         
@@ -92,16 +64,16 @@ public static class Program {
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
         
-        infiniFrameServer.MapInfiniFrameJsEndpoints();
+        app.UseInfiniLoreApplication();
         
-        var db = infiniFrameServer.WebApp.Services.GetRequiredService<InfiniLoreDb>();
-        db.Database.EnsureCreated();
+        infiniFrameServer.MapInfiniFrameJsEndpoints();
         
         infiniFrameServer.Run();
 
         IInfiniFrameWindowBuilder windowBuilder = infiniFrameServer.GetAttachedWindowBuilder()
             .Center()
             .SetUseOsDefaultSize(true)
+            .RegisterOpenExternalTargetWebMessageHandler()
             .SetTitle("InfiniLore Sample");
 
         IInfiniFrameWindow window = windowBuilder.Build();
