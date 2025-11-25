@@ -60,11 +60,11 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
         var repo = await uow.GetRepositoryAsync<UserRepository>();
 
-        var knownUser = new UserModel {
+        RepoOutcome repoOutcome = await repo.AddAsync(new UserModel {
             Id = expectedId,
             UserName = KnownUserName
-        };
-        RepoOutcome repoOutcome = await repo.AddAsync(knownUser);
+        });
+        
         await Assert.That(repoOutcome.IsSuccess).IsTrue();
         await uow.SaveChangesAsync();
     
