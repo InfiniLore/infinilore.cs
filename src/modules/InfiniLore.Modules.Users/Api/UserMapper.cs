@@ -2,19 +2,19 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
+using InfiniLore.Modules.Users.Database;
 
 namespace InfiniLore.Modules.Users.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUserEndpoint : EndpointWithoutRequest {
-    public override void Configure() {
-        Get("/api/users/{id}");
-        AllowAnonymous();
-    }
+public class UserMapper : ResponseMapper<UserResponse, UserModel> {
+    public override UserResponse FromEntity(UserModel model) => new() {
+        UserId = model.Id,
+        UserName = model.UserName
+    };
 
-    public override async Task HandleAsync(CancellationToken ct) {
-        await Send.OkAsync(null, ct);
-    }
+    public override Task<UserResponse> FromEntityAsync(UserModel e, CancellationToken ct) 
+        => Task.FromResult(FromEntity(e));
 }
