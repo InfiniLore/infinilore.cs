@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Messaging;
 
-namespace InfiniLore.Modules.Users.Messaging;
+namespace InfiniLore.Modules.Users.Messaging.Events;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

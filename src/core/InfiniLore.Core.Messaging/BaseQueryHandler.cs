@@ -10,13 +10,13 @@ namespace InfiniLore.Core.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseCommandHandler<TCommand, TResult>(IServiceScopeFactory serviceScopeFactory) : ICommandHandler<TCommand, Outcome<TResult>>
-    where TCommand : BaseCommand<TResult> {
-
-    public async Task<Outcome<TResult>> ExecuteAsync(TCommand command, CancellationToken ct) {
+public abstract class BaseQueryHandler<TQuery, TResult>(IServiceScopeFactory serviceScopeFactory) : ICommandHandler<TQuery, Outcome<TResult>>
+    where TQuery : BaseQuery<TResult> {
+    
+    public async Task<Outcome<TResult>> ExecuteAsync(TQuery query, CancellationToken ct) {
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
-        return await ExecuteAsync(scope.ServiceProvider, command, ct);
+        return await ExecuteAsync(scope.ServiceProvider, query, ct);
     }
     
-    protected abstract Task<Outcome<TResult>> ExecuteAsync(IServiceProvider provider, TCommand command, CancellationToken ct);
+    protected abstract Task<Outcome<TResult>> ExecuteAsync(IServiceProvider provider, TQuery query, CancellationToken ct);
 }

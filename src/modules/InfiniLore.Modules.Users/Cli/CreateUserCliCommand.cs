@@ -4,7 +4,7 @@
 using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using InfiniLore.Core.Outcomes;
-using InfiniLore.Modules.Users.Messaging;
+using InfiniLore.Modules.Users.Messaging.Commands;
 using Microsoft.Extensions.Logging;
 
 namespace InfiniLore.Modules.Users.Cli;

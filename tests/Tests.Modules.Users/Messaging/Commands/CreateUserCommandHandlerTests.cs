@@ -4,11 +4,11 @@
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Outcomes;
 using InfiniLore.Modules.Users.Database;
-using InfiniLore.Modules.Users.Messaging;
+using InfiniLore.Modules.Users.Messaging.Commands;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Tests.Modules.Users.Messaging;
+namespace Tests.Modules.Users.Messaging.Commands;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code

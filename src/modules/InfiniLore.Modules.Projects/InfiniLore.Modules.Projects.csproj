@@ -3,4 +3,7 @@
     <ProjectReference Include="..\..\core\InfiniLore.Core.Modular\InfiniLore.Core.Modular.csproj" />
     <ProjectReference Include="..\InfiniLore.Modules.Projects.Shared\InfiniLore.Modules.Projects.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Api\" />
+  </ItemGroup>
 </Project>
