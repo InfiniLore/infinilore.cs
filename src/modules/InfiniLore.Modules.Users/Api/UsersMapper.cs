@@ -19,7 +19,7 @@ public class UsersMapper : ResponseMapper<UsersResponse, PaginatedData<UserModel
         return new UsersResponse {
             Users = data.Items.Select(userMapper.FromEntity).ToArray(),
             TotalCount = data.TotalCount,
-            CurrentPage = data.CurrentPage,
+            CurrentPage = data.CurrentPage
         };
     }
 
