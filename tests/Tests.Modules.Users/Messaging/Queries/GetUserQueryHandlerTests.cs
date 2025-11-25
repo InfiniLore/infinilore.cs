@@ -47,14 +47,14 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
     // -----------------------------------------------------------------------------------------------------------------
     // Tests
     // -----------------------------------------------------------------------------------------------------------------
-    public IEnumerable<Func<(GetUserQuery Query, Guid ExpectedId)>> TestData() {
+    public static IEnumerable<Func<(GetUserQuery Query, Guid ExpectedId)>> TestData() {
         var userId = Guid.NewGuid();
         yield return () => (GetUserQuery.FromUserId(userId), userId);
         yield return () => (GetUserQuery.FromUsername(KnownUserName), Guid.NewGuid());
     }
 
     [Test]
-    [InstanceMethodDataSource(nameof(TestData))]
+    [MethodDataSource(nameof(TestData))]
     public async Task ExecuteAsync_ShouldWork(GetUserQuery query, Guid expectedId) {
         // Arrange
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
