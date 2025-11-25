@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using InfiniLore.Core.Layouts
+<!DOCTYPE html>
 <html lang="en">
 
 <!--suppress HtmlRequiredTitleElement -->
@@ -6,15 +7,21 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
+    <ResourcePreloader/>
     <link rel="stylesheet" href="_content/InfiniLore.InfiniBlazor/InfiniBlazor.css" />
 
+    <ImportMap/>
     <link rel="icon" type="image/png" href="favicon.png"/>
-    
+     
     <HeadOutlet/>
 </head>
 
 <body>
 <Routes/>
+<ReconnectModal/>
+<script src="@Assets["_framework/blazor.web.js"]"></script>
+<script src="@Assets["_framework/blazor.webview.js"]"></script>
+
 <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     window.mermaid = mermaid;
@@ -22,7 +29,7 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 <script src="_content/InfiniLore.InfiniBlazor/InfiniBlazor.js"></script>
-<script src="_framework/blazor.web.js"></script>
+
 </body>
 
 </html>
