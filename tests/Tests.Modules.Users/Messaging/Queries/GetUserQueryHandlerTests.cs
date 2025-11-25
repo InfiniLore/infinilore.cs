@@ -17,7 +17,6 @@ namespace Tests.Modules.Users.Messaging.Queries;
 public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb context) {
     private GetUserQueryHandler GetHandler() => ActivatorUtilities.CreateInstance<GetUserQueryHandler>(provider);
     
-    private readonly Guid KnownId = Guid.NewGuid();
     private const string KnownUserName = "AnnaSasDev";
     
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,35 +47,36 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
     // -----------------------------------------------------------------------------------------------------------------
     // Tests
     // -----------------------------------------------------------------------------------------------------------------
-    public IEnumerable<Func<GetUserQuery>> TestData() {
-        yield return () => GetUserQuery.FromUserId(KnownId);
-        yield return () => GetUserQuery.FromUsername(KnownUserName);
+    public IEnumerable<Func<(GetUserQuery Query, Guid ExpectedId)>> TestData() {
+        var userId = Guid.NewGuid();
+        yield return () => (GetUserQuery.FromUserId(userId), userId);
+        yield return () => (GetUserQuery.FromUsername(KnownUserName), Guid.NewGuid());
     }
-    
+
     [Test]
     [InstanceMethodDataSource(nameof(TestData))]
-    public async Task ExecuteAsync_ShouldWork(GetUserQuery query) {
+    public async Task ExecuteAsync_ShouldWork(GetUserQuery query, Guid expectedId) {
         // Arrange
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
         var repo = await uow.GetRepositoryAsync<UserRepository>();
 
         var knownUser = new UserModel {
-            Id = query.UserId != Guid.Empty ? query.UserId : KnownId,
+            Id = expectedId,
             UserName = KnownUserName
         };
         RepoOutcome repoOutcome = await repo.AddAsync(knownUser);
         await Assert.That(repoOutcome.IsSuccess).IsTrue();
         await uow.SaveChangesAsync();
-        
+    
         GetUserQueryHandler handler = GetHandler();
-        
+    
         // Act
         Outcome<UserModel> result = await handler.ExecuteAsync(query, CancellationToken.None);
 
         // Assert
         await Assert.That(result.TryGetAsSuccess(out UserModel? userModel)).IsTrue();
         await Assert.That(userModel).IsNotNull()
-            .And.HasProperty(model => model.Id).IsEqualTo(KnownId)
+            .And.HasProperty(model => model.Id).IsEqualTo(expectedId)
             .HasProperty(model => model.UserName).IsEqualTo(KnownUserName);
     }
 }
