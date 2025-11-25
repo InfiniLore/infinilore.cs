@@ -1,14 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using System.ComponentModel;
-
 namespace InfiniLore.Modules.Users.Api;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUsersRequest {
-    [QueryParam, BindFrom("page"), DefaultValue(0)] public int PageNumber { get; set; } = 0;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+public class UsersResponse {
+    public UserResponse[] Users { get; set; } = Array.Empty<UserResponse>();
+    public int TotalCount { get; set; }
+    public int CurrentPage { get; set; }
 }

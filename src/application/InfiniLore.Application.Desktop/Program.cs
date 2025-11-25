@@ -6,6 +6,7 @@ using FastEndpoints.Swagger;
 using InfiniFrame;
 using InfiniFrame.Server;
 using InfiniLore.Core;
+using InfiniLore.Core.Database;
 using InfiniLore.Core.Modular;
 using InfiniLore.Modules.Assets;
 using InfiniLore.Modules.Projects;
@@ -13,6 +14,8 @@ using InfiniLore.Modules.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -38,6 +41,17 @@ public static class Program {
             out InfiniModuleProvider moduleProvider
         );
         
+        appBuilder.Services.AddInfiniLoreDb(
+            options => {
+                const string dbFile = "InfiniLore.db";
+                var connection = new SqliteConnection($"DataSource={dbFile}");
+                connection.Open();
+
+                options.UseSqlite(connection);
+            },
+            moduleProvider.Assemblies
+        );
+        
         appBuilder.Services.AddLogging(config => {
             config.ClearProviders();
             config.AddSerilog();
@@ -54,7 +68,8 @@ public static class Program {
         appBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        appBuilder.Services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
+        appBuilder.Services.AddFastEndpoints(
+            options => options.Assemblies = moduleProvider.Assemblies);
         
         appBuilder.Services.SwaggerDocument();
         
@@ -79,35 +94,8 @@ public static class Program {
         
         infiniFrameServer.MapInfiniFrameJsEndpoints();
         
-        // infiniFrameServer.WebApp.MapGet("/_content/InfiniLore.InfiniBlazor/InfiniBlazor.js", requestDelegate: async context => {
-        //     Assembly assembly = typeof(InfiniBlazorConfig).Assembly;
-        //     const string resourceName = "InfiniLore.InfiniBlazor.wwwroot.InfiniBlazor.js";
-        //
-        //     await using Stream? stream = assembly.GetManifestResourceStream(resourceName);
-        //     if (stream == null) {
-        //         context.Response.StatusCode = 404;
-        //         await context.Response.WriteAsync("Resource not found");
-        //         return;
-        //     }
-        //
-        //     context.Response.ContentType = "application/javascript";
-        //     await stream.CopyToAsync(context.Response.Body);
-        // });
-        //
-        // infiniFrameServer.WebApp.MapGet("/_content/InfiniLore.InfiniBlazor/InfiniBlazor.css", requestDelegate: async context => {
-        //     Assembly assembly = typeof(InfiniBlazorConfig).Assembly;
-        //     const string resourceName = "InfiniLore.InfiniBlazor.wwwroot.InfiniBlazor.css";
-        //
-        //     await using Stream? stream = assembly.GetManifestResourceStream(resourceName);
-        //     if (stream == null) {
-        //         context.Response.StatusCode = 404;
-        //         await context.Response.WriteAsync("Resource not found");
-        //         return;
-        //     }
-        //
-        //     context.Response.ContentType = "text/css";
-        //     await stream.CopyToAsync(context.Response.Body);
-        // });
+        var db = infiniFrameServer.WebApp.Services.GetRequiredService<InfiniLoreDb>();
+        db.Database.EnsureCreated();
         
         infiniFrameServer.Run();
 

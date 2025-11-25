@@ -1,14 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using System.ComponentModel;
+using InfiniLore.Core.Messaging;
+using InfiniLore.Modules.Users.Database;
 
-namespace InfiniLore.Modules.Users.Api;
+namespace InfiniLore.Modules.Users.Messaging.Queries;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUsersRequest {
-    [QueryParam, BindFrom("page"), DefaultValue(0)] public int PageNumber { get; set; } = 0;
-}
+public record GetUsersQuery : BasePaginatedQuery<UserModel>;

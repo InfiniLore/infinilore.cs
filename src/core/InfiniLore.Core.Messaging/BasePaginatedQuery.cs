@@ -2,13 +2,15 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
-using System.ComponentModel;
+using InfiniLore.Core.Database;
+using InfiniLore.Core.Outcomes;
+using InfiniLore.Core.Pagination;
 
-namespace InfiniLore.Modules.Users.Api;
-
+namespace InfiniLore.Core.Messaging;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUsersRequest {
-    [QueryParam, BindFrom("page"), DefaultValue(0)] public int PageNumber { get; set; } = 0;
+public abstract record BasePaginatedQuery<TResult> : ICommand<PaginatedOutcome<TResult>> where TResult : class {
+    public QueryConfig Config { get; init; } = QueryConfig.None;
+    public PaginationData Pagination { get; init; } = PaginationData.Default;
 }

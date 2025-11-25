@@ -6,6 +6,7 @@ namespace InfiniLore.Modules.Users.Api;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 public class UserResponse {
     public required Guid UserId { get; set; }
     public required string UserName { get; set; } 

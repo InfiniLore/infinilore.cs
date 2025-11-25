@@ -3,6 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using FastEndpoints;
 using InfiniLore.Core.Outcomes;
+using InfiniLore.Core.Pagination;
 using InfiniLore.Modules.Users.Database;
 using InfiniLore.Modules.Users.Messaging.Queries;
 
@@ -11,15 +12,18 @@ namespace InfiniLore.Modules.Users.Api;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class GetUsersEndpoint : Endpoint<GetUserRequest, UserResponse, UserMapper> {
+public class GetUsersEndpoint : Endpoint<GetUsersRequest, UsersResponse, UsersMapper> {
     public override void Configure() {
-        Get("/api/users/{UserId:guid}");
+        Get("/api/users");
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetUserRequest req, CancellationToken ct) {
+    public override async Task HandleAsync(GetUsersRequest req, CancellationToken ct) {
 
-        Outcome<UserModel> outcome = await GetUserQuery.FromUserId(req.UserId).ExecuteAsync(ct: ct);
+        var query = new GetUsersQuery {
+            Pagination = new PaginationData(req.PageNumber)
+        };
+        PaginatedOutcome<UserModel> outcome = await query.ExecuteAsync(ct: ct);
 
         await outcome.SwitchAsync(
             async model => await Send.OkAsync(await Map.FromEntityAsync(model, ct), ct),

@@ -14,6 +14,7 @@
       <PackageReference Include="InfiniLore.InfiniFrame" />
       <PackageReference Include="InfiniLore.InfiniFrame.Blazor" />
       <PackageReference Include="InfiniLore.InfiniFrame.Server" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
       <PackageReference Include="Serilog" />
       <PackageReference Include="Serilog.AspNetCore" />
       <PackageReference Include="Serilog.Sinks.Async" />
