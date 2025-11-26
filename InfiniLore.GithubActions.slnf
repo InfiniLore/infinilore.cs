@@ -1,19 +1,25 @@
 ﻿{
-  "solution": {
-    "path": "InfiniLore.slnx",
-    "projects": [
-      "src\\core\\InfiniLore.Core.Database\\InfiniLore.Core.Database.csproj",
-      "src\\core\\InfiniLore.Core.Messaging\\InfiniLore.Core.Messaging.csproj",
-      "src\\core\\InfiniLore.Core.Modular\\InfiniLore.Core.Modular.csproj",
-      "src\\core\\InfiniLore.Core.Shared\\InfiniLore.Core.Shared.csproj",
-      "src\\core\\InfiniLore.Core\\InfiniLore.Core.csproj",
-      "src\\modules\\InfiniLore.Modules.Assets.Shared\\InfiniLore.Modules.Assets.Shared.csproj",
-      "src\\modules\\InfiniLore.Modules.Assets\\InfiniLore.Modules.Assets.csproj",
-      "src\\modules\\InfiniLore.Modules.Projects.Shared\\InfiniLore.Modules.Projects.Shared.csproj",
-      "src\\modules\\InfiniLore.Modules.Projects\\InfiniLore.Modules.Projects.csproj",
-      "src\\modules\\InfiniLore.Modules.Users.Shared\\InfiniLore.Modules.Users.Shared.csproj",
-      "src\\modules\\InfiniLore.Modules.Users\\InfiniLore.Modules.Users.csproj",
-      "tests\\Tests.Core.Modular\\Tests.Core.Modular.csproj"
-    ]
-  }
+    "solution": {
+        "path": "InfiniLore.slnx",
+        "projects": [
+            "src\\core\\InfiniLore.Core\\InfiniLore.Core.csproj",
+            "src\\core\\InfiniLore.Core.Database\\InfiniLore.Core.Database.csproj",
+            "src\\core\\InfiniLore.Core.Messaging\\InfiniLore.Core.Messaging.csproj",
+            "src\\core\\InfiniLore.Core.Modular\\InfiniLore.Core.Modular.csproj",
+            "src\\core\\InfiniLore.Core.Shared\\InfiniLore.Core.Shared.csproj",
+            
+            "src\\modules\\InfiniLore.Modules.Assets\\InfiniLore.Modules.Assets.csproj",
+            "src\\modules\\InfiniLore.Modules.Assets.Shared\\InfiniLore.Modules.Assets.Shared.csproj",
+            
+            "src\\modules\\InfiniLore.Modules.Projects\\InfiniLore.Modules.Projects.csproj",
+            "src\\modules\\InfiniLore.Modules.Projects.Shared\\InfiniLore.Modules.Projects.Shared.csproj",
+            
+            "src\\modules\\InfiniLore.Modules.Users\\InfiniLore.Modules.Users.csproj",
+            "src\\modules\\InfiniLore.Modules.Users.Shared\\InfiniLore.Modules.Users.Shared.csproj",
+            
+            "tests\\Tests.Modules.Users\\Tests.Modules.Users.csproj",
+            "tests\\Tests.Core.Database\\Tests.Core.Database.csproj",
+            "tests\\Tests.Core.Modular\\Tests.Core.Modular.csproj"
+        ]
+    }
 }
