@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniLore.Core.Database;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace InfiniLore.Application;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -46,6 +48,17 @@ public static class InfiniLoreBuilder {
         services.AddInfiniBlazor(config => {
             config.Components.SetRenderMode(RenderMode.InteractiveServer);
         });
+
+        services.AddSingleton<ICliParser>(provider => {
+            ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
+                .WithServiceProvider(provider);
+
+            foreach (Assembly assembly in moduleProvider.Assemblies) {
+                cliBuilder.AddFromAssembly(assembly);
+            }
+
+            return cliBuilder.Build();
+        });
         
         return services;
     }
@@ -61,5 +74,19 @@ public static class InfiniLoreBuilder {
         using IServiceScope scope = app.Services.CreateScope();
         using var db = scope.ServiceProvider.GetRequiredService<InfiniLoreDb>();
         db.Database.EnsureCreated();
+    }
+
+    public static ICliParserBuilder GetInfiniLoreCliParserBuilder(this WebApplication app) {
+        var moduleProvider = app.Services.GetService<InfiniModuleProvider>();
+
+        ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
+            .WithServiceProvider(app.Services);
+        
+        IEnumerable<Assembly> assemblies = moduleProvider?.Assemblies ?? Enumerable.Empty<Assembly>();
+        foreach (Assembly assembly in assemblies) {
+            cliBuilder.AddFromAssembly(assembly);
+        }
+        
+        return cliBuilder;
     }
 }

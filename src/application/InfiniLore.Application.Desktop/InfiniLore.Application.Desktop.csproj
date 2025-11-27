@@ -18,6 +18,10 @@
       <PackageReference Include="Serilog.AspNetCore" />
       <PackageReference Include="Serilog.Sinks.Async" />
       <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

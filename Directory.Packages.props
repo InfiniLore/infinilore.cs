@@ -22,8 +22,8 @@
     <PackageVersion Include="FastEndpoints.Swagger" Version="7.1.1" />
     <PackageVersion Include="FluentValidation" Version="12.1.0" />
     <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.112" />
-    <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.11" />
-    <PackageVersion Include="InfiniLore.InfiniFrame.WebServer" Version="0.1.0-preview.11" />
+    <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.13" />
+    <PackageVersion Include="InfiniLore.InfiniFrame.WebServer" Version="0.1.0-preview.13" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.0.0" />
     <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />

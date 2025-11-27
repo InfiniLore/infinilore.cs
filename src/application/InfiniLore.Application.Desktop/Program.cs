@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using InfiniFrame;
@@ -16,6 +17,8 @@ namespace InfiniLore.Application.Desktop;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class Program {
+    public static InfiniFrameWebApplication Application { get; private set; } = null!;
+    
     [STAThread]
     public static void Main(string[] args) {
         // -------------------------------------------------------------------------------------------------------------
@@ -55,6 +58,8 @@ public static class Program {
         // Application
         // -------------------------------------------------------------------------------------------------------------
         InfiniFrameWebApplication application = applicationBuilder.Build();
+        Application = application;
+        
         WebApplication webApp = application.WebApp;
 
         webApp.UseFastEndpoints()
@@ -72,6 +77,19 @@ public static class Program {
             .AddAdditionalAssemblies(typeof(Routes).Assembly);
 
         webApp.UseInfiniLoreApplication();
+
+        if (args.Length != 0) {
+            ICliParserBuilder cliParserBuilder = webApp.GetInfiniLoreCliParserBuilder();
+            cliParserBuilder.AddFromAssembly(typeof(Program).Assembly);
+            ICliParser cliParser = cliParserBuilder.Build();
+            try {
+                Task.Run(async () => await cliParser.ExecuteAsync(args)).Wait();
+            }
+            catch (Exception e) {
+                Log.Error(e, "Failed to parse command line arguments.");
+                Environment.Exit(-1);
+            }
+        }
         
         application.Run();
     }
