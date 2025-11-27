@@ -5,12 +5,14 @@ using InfiniLore.Core.Database;
 using InfiniLore.Core.Outcomes;
 using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tests.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
+[SuppressMessage("Usage", "TUnit0059:Abstract test class with data sources requires [InheritsTests]")]
 public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProvider serviceProvider) : RepositoryTests<TRepository, TModel>(serviceProvider)
     where TModel : BaseModel, new()
     where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository 
@@ -151,6 +153,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
     
     [Test]
     [MatrixDataSource]
+    [SuppressMessage("Usage", "TUnit0300:Generic type or method may not be AOT-compatible")]
     public async Task GetAllAsync_ShouldWork_WhenMultiplePagesExist([MatrixRange<int>(0, 10)] int pageNumber) {
         // Arrange
         const int totalCount = 12 * 64;

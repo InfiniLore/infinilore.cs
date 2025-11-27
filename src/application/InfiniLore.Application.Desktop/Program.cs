@@ -45,6 +45,8 @@ public static class Program {
         
         webAppBuilder.Services.AddInfiniFrameJs();
 
+        webAppBuilder.Services.RegisterServicesFromInfiniLoreApplicationDesktop();
+
         InfiniFrameWindowBuilder windowBuilder = applicationBuilder.Window;
         windowBuilder.Center()
             .SetUseOsDefaultSize(true)

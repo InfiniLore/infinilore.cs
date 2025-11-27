@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using CodeOfChaos.Ansi;
 using CodeOfChaos.CliArgsParser;
 
 namespace InfiniLore.Application.Desktop.Cli.Headless;
@@ -10,7 +9,7 @@ namespace InfiniLore.Application.Desktop.Cli.Headless;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [CliData("headless")]
-public partial class HeadlessCliCommand(ILogger<HeadlessCliCommand> logger, ICliParser parser) : ICliCommand<HeadlessCliParameters> {
+public partial class HeadlessCliCommand(SimpleTerminal simpleTerminal) : ICliCommand<HeadlessCliParameters> {
 
     public async ValueTask ExecuteAsync(HeadlessCliParameters parameters, CancellationToken ct = new()) {
         if (!parameters.Console) {
@@ -18,29 +17,11 @@ public partial class HeadlessCliCommand(ILogger<HeadlessCliCommand> logger, ICli
             return;
         }
         
-        var thread = new Thread(Program.Application.WebApp.Run);
-        thread.Start();
+        Task appTask = Task.Run(() => Program.Application.WebApp.Run(), ct);
+        await Task.Delay(2000, ct);
         
-        var builder = new AnsiStringBuilder();
-        builder.Fore.AppendCyan("> ");
-        string cursor = builder.ToStringAndClear();
-
-        builder.Fore.AppendRedLine("Unknown command.");
-        string unknownCommand = builder.ToStringAndClear();
-
-        while (true) {
-            Console.Write(cursor);
-            if (Console.ReadLine() is not {} input) {
-                Console.WriteLine(unknownCommand);
-                continue;
-            }
-
-            try {
-                await parser.ExecuteAsync(input, ct);
-            }
-            catch (Exception ex) {
-                logger.Warning(ex, "Failed to execute command:  {command}", input);
-            }
-        }
+        await simpleTerminal.RunAsync(ct);
+        
+        await appTask;
     }
 }
