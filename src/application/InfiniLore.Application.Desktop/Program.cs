@@ -35,7 +35,7 @@ public static class Program {
         });
         
         webAppBuilder.Services.AddSerilog(config => {
-            config.AsAnnaSasDevServerConsole(24).MinimumLevel.Debug();
+            config.AsAnnaSasDevServerConsole(24);
         });
         
         webAppBuilder.Services.AddRazorComponents()
