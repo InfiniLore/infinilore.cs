@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-    <PropertyGroup>
-        <RootNamespace>InfiniLore.Core</RootNamespace>
-    </PropertyGroup>
-
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
       <PackageReference Include="CodeOfChaos.CliArgsParser" />

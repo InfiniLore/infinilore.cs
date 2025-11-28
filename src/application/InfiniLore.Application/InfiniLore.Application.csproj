@@ -35,7 +35,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\core\InfiniLore.Core.Modular\InfiniLore.Core.Modular.csproj" />
-      <ProjectReference Include="..\..\core\InfiniLore.Core\InfiniLore.Core.csproj" />
+      <ProjectReference Include="..\..\core\InfiniLore.Core.Components\InfiniLore.Core.Components.csproj" />
       <ProjectReference Include="..\..\modules\InfiniLore.Modules.Assets\InfiniLore.Modules.Assets.csproj" />
       <ProjectReference Include="..\..\modules\InfiniLore.Modules.Projects\InfiniLore.Modules.Projects.csproj" />
       <ProjectReference Include="..\..\modules\InfiniLore.Modules.Users\InfiniLore.Modules.Users.csproj" />

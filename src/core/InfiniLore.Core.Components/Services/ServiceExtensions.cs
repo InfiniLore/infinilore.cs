@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -9,8 +8,11 @@ namespace Microsoft.Extensions.DependencyInjection;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ServiceExtensions {
-    public static IServiceCollection AddInfiniLoreCore(this IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreCore();
-        return services;
+    extension(IServiceCollection services)
+    {
+        public IServiceCollection AddInfiniLoreCoreComponents() {
+            services.RegisterServicesFromInfiniLoreCoreComponents();
+            return services;
+        }
     }
 }

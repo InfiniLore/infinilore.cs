@@ -9,11 +9,9 @@ using InfiniLore.Core.Modular;
 using InfiniLore.Modules.Assets;
 using InfiniLore.Modules.Projects;
 using InfiniLore.Modules.Users;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace InfiniLore.Application;

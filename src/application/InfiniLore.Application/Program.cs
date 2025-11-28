@@ -54,7 +54,7 @@ public static class Program {
             .RegisterOpenExternalTargetWebMessageHandler()
             .RegisterTitleChangedWebMessageHandler()
             .RegisterWindowManagementWebMessageHandler()
-            .SetTitle("InfiniLore Sample");
+            .SetTitle("InfiniLore");
         
         // -------------------------------------------------------------------------------------------------------------
         // Application
