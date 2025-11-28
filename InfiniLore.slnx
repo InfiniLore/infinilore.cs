@@ -26,9 +26,6 @@
   <Folder Name="/src/application/">
     <File Path="src/application/Directory.Build.props" />
     <Project Path="src/application/InfiniLore.Application/InfiniLore.Application.csproj" />
-    <Project Path="src\application\InfiniLore.Application.CLI\InfiniLore.Application.CLI.csproj" />
-    <Project Path="src\application\InfiniLore.Application.Desktop\InfiniLore.Application.Desktop.csproj" />
-    <Project Path="src\application\InfiniLore.Application.WebServer\InfiniLore.Application.WebServer.csproj" />
   </Folder>
   <Folder Name="/src/core/">
     <Project Path="src\core\InfiniLore.Core.Messaging\InfiniLore.Core.Messaging.csproj" />

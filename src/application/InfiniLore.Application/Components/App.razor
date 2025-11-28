@@ -12,13 +12,16 @@
     <ImportMap/>
     <link rel="icon" type="image/png" href="favicon.png"/>
      
-    <HeadOutlet/>
+    <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
-<Routes/>
+<Routes @rendermode="InteractiveServer" />
 <ReconnectModal/>
-<script src="@Assets["_framework/blazor.web.js"]"></script>
+
+<script src="_framework/blazor.web.js"></script>
+<script src="_content/InfiniLore.InfiniFrame.Js/InfiniFrame.js"></script>
+<script src="_content/InfiniLore.InfiniBlazor/InfiniBlazor.js"></script>
 
 <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -26,7 +29,6 @@
     window.mermaid.initialize({ startOnLoad: false });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="_content/InfiniLore.InfiniBlazor/InfiniBlazor.js"></script>
 
 </body>
 

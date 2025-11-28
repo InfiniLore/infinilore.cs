@@ -8,11 +8,11 @@ using InfiniFrame;
 using InfiniFrame.Js;
 using InfiniFrame.Js.MessageHandlers;
 using InfiniFrame.WebServer;
-using InfiniLore.Application.Desktop.Components;
+using InfiniLore.Application.Components;
 using InfiniLore.Core;
 using Serilog;
 
-namespace InfiniLore.Application.Desktop;
+namespace InfiniLore.Application;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public static class Program {
         
         webAppBuilder.Services.AddInfiniFrameJs();
 
-        webAppBuilder.Services.RegisterServicesFromInfiniLoreApplicationDesktop();
+        webAppBuilder.Services.RegisterServicesFromInfiniLoreApplication();
 
         InfiniFrameWindowBuilder windowBuilder = applicationBuilder.Window;
         windowBuilder.Center()

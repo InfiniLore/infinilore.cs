@@ -5,7 +5,7 @@ using CodeOfChaos.Ansi;
 using CodeOfChaos.CliArgsParser;
 using CodeOfChaos.Extensions.DependencyInjection;
 
-namespace InfiniLore.Application.Desktop.Cli.Headless;
+namespace InfiniLore.Application.Cli.Headless;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

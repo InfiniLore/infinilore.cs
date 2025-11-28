@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using CodeOfChaos.CliArgsParser;
 
-namespace InfiniLore.Application.Desktop.Cli.Headless;
+namespace InfiniLore.Application.Cli.Headless;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
@@ -11,4 +11,7 @@ namespace InfiniLore.Application.Desktop.Cli.Headless;
 public class HeadlessCliParameters : ICliParameters {
     [CliData("console", "c")]
     public bool Console { get; init; }
+    
+    [CliData("server", "s")]
+    public bool Server { get; init; }
 }
