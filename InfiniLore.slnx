@@ -57,6 +57,7 @@
     <Project Path="src/modules/InfiniLore.Modules.Projects/InfiniLore.Modules.Projects.csproj" />
   </Folder>
   <Folder Name="/src/modules/Users/">
+    <Project Path="src/modules/InfiniLore.Modules.Users.Components/InfiniLore.Modules.Users.Components.csproj" />
     <Project Path="src/modules/InfiniLore.Modules.Users.Shared/InfiniLore.Modules.Users.Shared.csproj" />
     <Project Path="src/modules/InfiniLore.Modules.Users/InfiniLore.Modules.Users.csproj" />
   </Folder>
