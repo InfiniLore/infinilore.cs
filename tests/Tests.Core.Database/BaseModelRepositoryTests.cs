@@ -148,7 +148,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
             .HasProperty(data => data.IsEmpty).IsEqualTo(false)
             .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
         
-        await Assert.That(paginatedData!.Items).IsNotEmpty().HasCount(totalCount);
+        await Assert.That(paginatedData!.Items).IsNotEmpty().Count().IsEqualTo(totalCount);
     }
     
     [Test]
@@ -175,7 +175,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
             .HasProperty(data => data.IsEmpty).IsEqualTo(false)
             .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
 
-        await Assert.That(paginatedData!.Items).IsNotEmpty().HasCount(pageSize);
+        await Assert.That(paginatedData!.Items).IsNotEmpty().Count().IsEqualTo(pageSize);
     }
     
     #endregion

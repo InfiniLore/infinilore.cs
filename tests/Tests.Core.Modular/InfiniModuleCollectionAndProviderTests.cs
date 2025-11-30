@@ -10,7 +10,7 @@ namespace Tests.Core.Modular;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class InfiniModuleCollectionAndProviderTests {
-    
+
     [Test]
     public async Task Build_ShouldLoadAllModulesAndRegisterTheirServices() {
         // Arrange
@@ -41,9 +41,10 @@ public class InfiniModuleCollectionAndProviderTests {
 
         // Assert
         await Assert.That(moduleProvider.Modules)
-            .HasCount(2)
-            .Contains(module => module is TestInfiniModule1)
-            .Contains(module => module is TestInfiniModule2);
+                .Contains(module => module is TestInfiniModule1)
+                .Contains(module => module is TestInfiniModule2)
+                .Count().IsEqualTo(2)
+            ;
     }
 
     [Test]
@@ -58,9 +59,8 @@ public class InfiniModuleCollectionAndProviderTests {
         InfiniModuleProvider moduleProvider = collection.Build(services);
 
         // Assert
-        await Assert.That(moduleProvider.Assemblies)
-            .HasCount(1)
-            .Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Assemblies from all modules should be aggregated and distinct.");
+        await Assert.That(moduleProvider.Assemblies).Count().IsEqualTo(1);
+        await Assert.That(moduleProvider.Assemblies).Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Assemblies from all modules should be aggregated and distinct.");
     }
 
     [Test]
@@ -74,9 +74,9 @@ public class InfiniModuleCollectionAndProviderTests {
 
         // Assert
         await Assert.That(moduleProvider.Modules)
-            .HasCount(0);
+            .Count().IsEqualTo(0);
 
         await Assert.That(moduleProvider.Assemblies)
-            .HasCount(0);
+            .Count().IsEqualTo(0);
     }
 }

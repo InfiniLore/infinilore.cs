@@ -48,8 +48,7 @@ public class InfiniModuleTests {
         module.Load(serviceCollection);
 
         // Assert
-        await Assert.That(module.Assemblies)
-            .Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1);
+        await Assert.That(module.Assemblies).Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1);
     }
 
 
@@ -63,8 +62,7 @@ public class InfiniModuleTests {
         module.Load(serviceCollection);
 
         // Assert
-        await Assert.That(module.Assemblies)
-            .HasCount(1)
-            .Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Should contain assembly from modules and submodules distinctly");
+        await Assert.That(module.Assemblies).Count().IsEqualTo(1);
+        await Assert.That(module.Assemblies).Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Should contain assembly from modules and submodules distinctly");
     }
 }
