@@ -6,6 +6,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
       <ProjectReference Include="..\..\core\InfiniLore.Core.Messaging\InfiniLore.Core.Messaging.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.Users.Components\InfiniLore.Modules.Users.Components.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Users.Shared\InfiniLore.Modules.Users.Shared.csproj" />
       <ProjectReference Include="..\..\core\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
     </ItemGroup>

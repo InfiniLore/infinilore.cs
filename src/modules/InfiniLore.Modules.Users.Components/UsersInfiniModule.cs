@@ -2,20 +2,16 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Modular;
-using InfiniLore.Modules.Users.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Modules.Users;
+namespace InfiniLore.Modules.Users.Components;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class UsersInfiniModule : InfiniModule {
+public class UsersComponentsInfiniModule : InfiniModule {
 
     protected override void Configure() {
-        Services.RegisterServicesFromInfiniLoreModulesUsers();
-        
-        AddSubModule<UsersSharedInfiniModule>();
-        AddSubModule<UsersComponentsInfiniModule>();
+        Services.RegisterServicesFromInfiniLoreModulesUsersComponents();
     }
 }

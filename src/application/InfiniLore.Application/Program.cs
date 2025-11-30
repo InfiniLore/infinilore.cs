@@ -8,7 +8,7 @@ using InfiniFrame.Js;
 using InfiniFrame.Js.MessageHandlers;
 using InfiniFrame.WebServer;
 using InfiniLore.Application.Components;
-using InfiniLore.Core;
+using InfiniLore.Core.Modular;
 using Serilog;
 
 namespace InfiniLore.Application;
@@ -59,23 +59,26 @@ public static class Program {
         // Application
         // -------------------------------------------------------------------------------------------------------------
         InfiniFrameWebApplication application = applicationBuilder.Build();
+        application.UseAutoServerClose();
+        
         Application = application;
         
         WebApplication webApp = application.WebApp;
 
+        webApp.UseRouting();
+        
         webApp.UseFastEndpoints()
             .UseSwaggerGen();
 
         webApp.UseHttpsRedirection();
         
-        webApp.UseStaticFiles();
+        webApp.MapStaticAssets();
 
         webApp.UseAntiforgery();
 
-        webApp.MapStaticAssets();
         webApp.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
-            .AddAdditionalAssemblies(typeof(Routes).Assembly);
+            .AddInfiniLoreModuleAssemblies(webApp);
 
         webApp.UseInfiniLoreApplication();
 
