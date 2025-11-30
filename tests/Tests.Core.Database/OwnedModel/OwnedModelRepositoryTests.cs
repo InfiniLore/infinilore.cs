@@ -9,9 +9,9 @@ namespace Tests.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseOwnedModelRepositoryTests<TRepository, TModel, TOwner>(IServiceProvider serviceProvider) : RepositoryTests<TRepository, TModel>(serviceProvider)
+public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(IServiceProvider serviceProvider) : RepositoryTests<TRepository, TModel>(serviceProvider)
     where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository
-    where TModel : BaseOwnedModel<TOwner>, new()
+    where TModel : OwnedModel<TOwner>, new()
     where TOwner : BaseModel, new() {
     
     // -----------------------------------------------------------------------------------------------------------------

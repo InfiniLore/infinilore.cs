@@ -11,8 +11,12 @@ namespace InfiniLore.Modules.Users.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<UserRepository>]
-public class UserRepository : BaseModelRepository<UserModel> {
+[InjectableScoped<IUserModelRepository>, InjectableScoped<UserModelRepository>]
+public class UserModelRepository : BaseModelRepository<UserModel>, IUserModelRepository {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoOutcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoOutcome.NotFound;
         

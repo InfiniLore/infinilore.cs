@@ -22,7 +22,7 @@ public class GetUserQueryHandler(IServiceScopeFactory serviceScopeFactory) : Bas
         await using IReadonlyUnitOfWork<InfiniLoreDb> uow = readonlyUnitOfWorkFactory.Create();
 
         try {
-            var repo = await uow.GetRepositoryAsync<UserRepository>(ct);
+            var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
 
             if (query.UserId != Guid.Empty) {
                 RepoOutcome<UserModel> outcome = await repo.GetByIdAsync(query.UserId, ct: ct);

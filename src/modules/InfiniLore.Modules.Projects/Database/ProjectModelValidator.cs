@@ -11,7 +11,7 @@ namespace InfiniLore.Modules.Projects.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 [InjectableScoped<IValidator<ProjectModel>>]
-public class ProjectModelValidator : BaseOwnedModelValidator<ProjectModel, UserModel> {
+public class ProjectModelValidator : OwnedModelValidator<ProjectModel, UserModel> {
     public ProjectModelValidator() {
         RuleFor(model => model.Name)
             .NotEmpty()

@@ -23,7 +23,7 @@ public class GetUsersQueryHandler(IServiceScopeFactory serviceScopeFactory) : Ba
         await using IReadonlyUnitOfWork<InfiniLoreDb> uow = readonlyUnitOfWorkFactory.Create();
 
         try {
-            var repo = await uow.GetRepositoryAsync<UserRepository>(ct);
+            var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
 
             PaginatedRepoOutcome<UserModel> outcome = await repo.GetAllAsync(query.Pagination, query.Config, ct);
 

@@ -40,7 +40,7 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
 
         try {
             await unitOfWork.TryCreateTransactionAsync(ct);
-            var userRepo = await unitOfWork.GetRepositoryAsync<UserRepository>(ct);
+            var userRepo = await unitOfWork.GetRepositoryAsync<UserModelRepository>(ct);
             
             // Check for duplicate username
             bool isUserNameTaken = await userRepo.IsUserNameTakenAsync(command.Username, ct:ct);

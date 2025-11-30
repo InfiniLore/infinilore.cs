@@ -10,12 +10,12 @@ namespace InfiniLore.Modules.Assets.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record BaseAssetModel : BaseOwnedModel<ProjectModel> {
+public abstract record BaseAssetModel : OwnedModel<ProjectModel> {
     public required string Path { get; set; }
     public required string Name { get; set; }
 }
 
-public class BaseAssetModelConfiguration<TModel> : BaseOwnedModelConfiguration<TModel, ProjectModel>
+public class BaseAssetModelConfiguration<TModel> : OwnedModelConfiguration<TModel, ProjectModel>
     where TModel : BaseAssetModel {
     public override void Configure(EntityTypeBuilder<TModel> builder) {
         base.Configure(builder);
@@ -33,7 +33,7 @@ public class BaseAssetModelConfiguration<TModel> : BaseOwnedModelConfiguration<T
     }
 }
 
-public abstract class BaseAssetModelValidator<TModel> : BaseOwnedModelValidator<TModel, ProjectModel>
+public abstract class BaseAssetModelValidator<TModel> : OwnedModelValidator<TModel, ProjectModel>
     where TModel : BaseAssetModel {
     protected BaseAssetModelValidator() {
         RuleFor(model => model.Path)

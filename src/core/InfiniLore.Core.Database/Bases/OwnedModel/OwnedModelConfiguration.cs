@@ -7,8 +7,8 @@ namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract class BaseOwnedModelConfiguration<TModel, TOwner> : BaseModelConfiguration<TModel> 
-    where TModel: BaseOwnedModel<TOwner>
+public abstract class OwnedModelConfiguration<TModel, TOwner> : BaseModelConfiguration<TModel> 
+    where TModel: OwnedModel<TOwner>
     where TOwner : BaseModel {
     
     public override void Configure(EntityTypeBuilder<TModel> builder) {

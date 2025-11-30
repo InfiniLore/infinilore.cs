@@ -1,13 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Database;
-using InfiniLore.Modules.Users.Database;
+namespace InfiniLore.Core.Database;
 
-namespace InfiniLore.Modules.Projects.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record ProjectModel : OwnedModel<UserModel> {
-    public string Name { get; set; } = string.Empty;
+public interface IOwnedModelRepository<TModel> : IBaseModelRepository<TModel> 
+    where TModel : class
+{
+    
 }

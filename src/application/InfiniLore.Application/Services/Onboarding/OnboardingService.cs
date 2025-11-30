@@ -44,7 +44,7 @@ public class OnboardingService(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonly
 
     private async Task<bool> IsOnboardingRequiredAsync(CancellationToken ct = default) {
         await using IReadonlyUnitOfWork<InfiniLoreDb> uow = readonlyUnitOfWorkFactory.Create();
-        var repo = await uow.GetRepositoryAsync<UserRepository>(ct);
+        var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
         bool any = await repo.AnyAsync(ct: ct);
         return !any;
     }

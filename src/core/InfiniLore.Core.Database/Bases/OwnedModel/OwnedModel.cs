@@ -1,18 +1,18 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using Microsoft.EntityFrameworkCore;
-
 namespace InfiniLore.Core.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class BaseOwnedRepository<TModel, TOwner> : BaseModelRepository<TModel> 
-    where TModel : BaseOwnedModel<TOwner>
-    where TOwner : BaseModel {
-
-    protected override IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => base.OptionalInclude(query)
-        .Include(x => x.Owner)
-    ;
+public abstract record OwnedModel<TOwner> : BaseModel where TOwner : BaseModel {
+    public Guid OwnerId { get; set; } = Guid.Empty;
+    public TOwner? Owner {
+        get;
+        set {
+            OwnerId = value?.Id ?? Guid.Empty;
+            field = value;
+        }
+    } = null;
 }

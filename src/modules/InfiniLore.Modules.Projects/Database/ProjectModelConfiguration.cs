@@ -9,7 +9,7 @@ namespace InfiniLore.Modules.Projects.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectModelConfiguration : BaseOwnedModelConfiguration<ProjectModel, UserModel> {
+public class ProjectModelConfiguration : OwnedModelConfiguration<ProjectModel, UserModel> {
     public override void Configure(EntityTypeBuilder<ProjectModel> builder) {
         base.Configure(builder);
         

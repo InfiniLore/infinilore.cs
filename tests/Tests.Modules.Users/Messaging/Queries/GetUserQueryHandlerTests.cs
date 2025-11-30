@@ -58,7 +58,7 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
     public async Task ExecuteAsync_ShouldWork(GetUserQuery query, Guid expectedId) {
         // Arrange
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
-        var repo = await uow.GetRepositoryAsync<UserRepository>();
+        var repo = await uow.GetRepositoryAsync<UserModelRepository>();
 
         RepoOutcome repoOutcome = await repo.AddAsync(new UserModel {
             Id = expectedId,

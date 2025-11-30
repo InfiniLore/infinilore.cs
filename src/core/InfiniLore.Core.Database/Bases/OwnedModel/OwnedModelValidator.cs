@@ -1,13 +1,17 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Database;
-using InfiniLore.Modules.Users.Database;
+using FluentValidation;
 
-namespace InfiniLore.Modules.Projects.Database;
+namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record ProjectModel : OwnedModel<UserModel> {
-    public string Name { get; set; } = string.Empty;
+public abstract class OwnedModelValidator<TModel, TOwner> : BaseModelValidator<TModel> 
+    where TModel : OwnedModel<TOwner>
+    where TOwner : BaseModel 
+{
+    protected OwnedModelValidator() {
+        RuleFor(model => model.OwnerId).NotEmpty();
+    }
 }

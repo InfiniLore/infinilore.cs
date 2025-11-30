@@ -1,18 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-namespace InfiniLore.Core.Database;
+using InfiniLore.Core.Database;
+using InfiniLore.Core.Outcomes;
+
+namespace InfiniLore.Modules.Users.Database;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record BaseOwnedModel<TOwner> : BaseModel where TOwner : BaseModel {
-    public Guid OwnerId { get; set; } = Guid.Empty;
-    public TOwner? Owner {
-        get;
-        set {
-            OwnerId = value?.Id ?? Guid.Empty;
-            field = value;
-        }
-    } = null;
+public interface IUserModelRepository : IBaseModelRepository<UserModel> {
+    ValueTask<RepoOutcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default);
+    ValueTask<bool> IsUserNameTakenAsync(string username, CancellationToken ct = default);
 }
