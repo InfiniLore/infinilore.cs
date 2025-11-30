@@ -233,4 +233,57 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         await Assert.That(errorOutcome.IsInvalid).IsTrue();
     }
     #endregion
+
+    #region AnyAsync
+    [Test]
+    public async Task AnyAsync_ShouldBeFalse_WhenNoModelsExist() {
+        // Arrange
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool any = await repository.AnyAsync();
+
+        // Assert
+        await Assert.That(any).IsFalse();
+    }
+
+    [Test]
+    public async Task AnyAsync_ShouldBeTrue_WhenModelsExist() {
+        // Arrange
+        await AddFakeModelsToDbAsync(3);
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool any = await repository.AnyAsync();
+
+        // Assert
+        await Assert.That(any).IsTrue();
+    }
+
+    [Test]
+    public async Task AnyAsync_ShouldBeFalse_WhenOnlySoftDeletedModelsExist() {
+        // Arrange
+        await AddFakeSoftDeletedModelToDbAsync(3);
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool any = await repository.AnyAsync();
+
+        // Assert
+        await Assert.That(any).IsFalse();
+    }
+
+    [Test]
+    public async Task AnyAsync_ShouldBeTrue_WhenOnlySoftDeletedModelsExist_WithQueryConfig() {
+        // Arrange
+        await AddFakeSoftDeletedModelToDbAsync(3);
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool any = await repository.AnyAsync(QueryConfig.IncludeSoftDeleted);
+
+        // Assert
+        await Assert.That(any).IsTrue();
+    }
+    #endregion
 }

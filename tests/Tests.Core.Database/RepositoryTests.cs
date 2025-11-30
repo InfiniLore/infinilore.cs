@@ -58,6 +58,18 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
         IEnumerable<TModel>? models = faker.GenerateLazy(count);
         await AddModelsToDbAsync(models);
     }
+
+    protected async Task AddFakeSoftDeletedModelToDbAsync(int count) {
+        if (count < 0) return;
+        
+        var faker = new Faker<TModel>();
+        faker.RuleFor(m => m.Id, f => f.Random.Guid());
+        faker.RuleFor(m => m.SoftDeletedAt, f => f.Date.Past());
+        faker = ConfigureFaker(faker);
+        
+        IEnumerable<TModel>? models = faker.GenerateLazy(count);
+        await AddModelsToDbAsync(models);
+    }
     
     protected async Task AddModelToDbAsync<T>(T model) where T : class {
         DbSet<T> dbSet = InfiniLoreDb.Set<T>();
