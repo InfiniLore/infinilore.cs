@@ -16,10 +16,8 @@ public class UserRepository : BaseModelRepository<UserModel> {
     public async ValueTask<RepoOutcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (username.IsNullOrWhiteSpace()) return RepoOutcome.NotFound;
         
-        DbSet<UserModel> dbSet = GetCachedDbSet<UserModel>();
-
         // Form Query
-        IQueryable<UserModel> query = GetConfiguredQueryable(dbSet, config)
+        IQueryable<UserModel> query = GetConfiguredQueryable(config)
             .Where(model => model.UserName == username);
         
         // Execute Query
@@ -31,9 +29,7 @@ public class UserRepository : BaseModelRepository<UserModel> {
     }
 
     public async ValueTask<bool> IsUserNameTakenAsync(string username, CancellationToken ct = default) {
-        DbSet<UserModel> dbSet = GetCachedDbSet<UserModel>();
-
-        IQueryable<UserModel> query = GetConfiguredQueryable(dbSet, QueryConfig.None)
+        IQueryable<UserModel> query = GetConfiguredQueryable(QueryConfig.None)
             .Where(model => model.UserName == username);
         
         return await query.AnyAsync(cancellationToken: ct);

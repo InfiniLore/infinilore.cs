@@ -15,6 +15,9 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     protected virtual IQueryable<TModel> OptionalInclude(IQueryable<TModel> query) => query;
     protected virtual IQueryable<TModel> AlwaysInclude(IQueryable<TModel> query) => query;
 
+    protected IQueryable<TModel> GetConfiguredQueryable(QueryConfig config) 
+        => GetConfiguredQueryable( GetCachedDbSet<TModel>(), config);
+    
     protected IQueryable<TModel> GetConfiguredQueryable(IQueryable<TModel> baseQuery, QueryConfig config) => baseQuery
         .AsNoTracking()
         .With(AlwaysInclude)
@@ -27,6 +30,10 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         .ConditionalOrderBy(!config.HasFlagFast(QueryConfig.SortByCreatedAt) && !config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.Id)
     ;
     
+    
+    protected IQueryable<TModel> GetPaginatedQueryable(PaginationData pagination) 
+        => GetPaginatedQueryable(GetCachedDbSet<TModel>(), pagination);
+    
     protected IQueryable<TModel> GetPaginatedQueryable(IQueryable<TModel> baseQuery, PaginationData pagination) => baseQuery
         .Skip(pagination.SkipAmount)
         .Take(pagination.PageSize);
@@ -38,9 +45,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (id == Guid.Empty) return RepoOutcome.Invalid;
         
-        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
-
-        TModel? result = await GetConfiguredQueryable(dbSet, config)
+        TModel? result = await GetConfiguredQueryable(config)
             .Where(model => model.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
@@ -54,8 +59,7 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     public async ValueTask<PaginatedRepoOutcome<TModel>> GetAllAsync(PaginationData pagination, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (pagination.PageSize <= 0) return PaginatedData<TModel>.Empty;
         
-        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
-        IQueryable<TModel> baseQuery = GetConfiguredQueryable(dbSet, config);
+        IQueryable<TModel> baseQuery = GetConfiguredQueryable(config);
         
         int totalCount = await baseQuery.CountAsync(ct);
         if (totalCount == 0) return PaginatedData<TModel>.Empty;
@@ -91,6 +95,14 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
         
         await dbSet.AddAsync(model, cancellationToken: ct);
         return RepoOutcome.Success;
+    }
+    #endregion
+
+    #region AnyAsync
+    public async ValueTask<bool> AnyAsync(QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        IQueryable<TModel> query = GetConfiguredQueryable(config);
+        
+        return await query.AnyAsync(cancellationToken: ct);
     }
     #endregion
 }

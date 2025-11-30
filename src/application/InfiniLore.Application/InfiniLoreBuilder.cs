@@ -4,6 +4,7 @@
 using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using InfiniLore.Application.Services.Onboarding;
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Modular;
 using InfiniLore.Modules.Assets;
@@ -39,7 +40,7 @@ public static class InfiniLoreBuilder {
             },
             moduleProvider.Assemblies
         );
-        
+
         services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
         services.SwaggerDocument();
 
@@ -57,17 +58,21 @@ public static class InfiniLoreBuilder {
 
             return cliBuilder.Build();
         });
-        
+
+        // Onboarding service
+        services.AddScoped<OnboardingService>();
+
         return services;
     }
 
     public static WebApplication UseInfiniLoreApplication(this WebApplication app) {
-        
         EnsureDatabaseCreated(app);
+
+        app.Use(OnboardingService.Middleware);
 
         return app;
     }
-    
+
     private static void EnsureDatabaseCreated(WebApplication app) {
         using IServiceScope scope = app.Services.CreateScope();
         using var db = scope.ServiceProvider.GetRequiredService<InfiniLoreDb>();
@@ -79,12 +84,12 @@ public static class InfiniLoreBuilder {
 
         ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
             .WithServiceProvider(app.Services);
-        
+
         IEnumerable<Assembly> assemblies = moduleProvider?.Assemblies ?? Enumerable.Empty<Assembly>();
         foreach (Assembly assembly in assemblies) {
             cliBuilder.AddFromAssembly(assembly);
         }
-        
+
         return cliBuilder;
     }
 }
