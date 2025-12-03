@@ -11,7 +11,7 @@ namespace InfiniLore.Core.Messaging;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public abstract class BaseQueryHandler<TQuery, TResult>(IServiceScopeFactory serviceScopeFactory) : ICommandHandler<TQuery, Outcome<TResult>>
-    where TQuery : BaseQuery<TResult>? {
+    where TQuery : BaseQuery<TResult> {
     
     public async Task<Outcome<TResult>> ExecuteAsync(TQuery query, CancellationToken ct) {
         await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
