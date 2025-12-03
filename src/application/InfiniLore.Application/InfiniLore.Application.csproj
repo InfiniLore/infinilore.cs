@@ -13,7 +13,6 @@
       <PackageReference Include="InfiniLore.InfiniBlazor" />
       <PackageReference Include="InfiniLore.InfiniFrame" />
       <PackageReference Include="InfiniLore.InfiniFrame.WebServer" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
       <PackageReference Include="Serilog" />
       <PackageReference Include="Serilog.AspNetCore" />

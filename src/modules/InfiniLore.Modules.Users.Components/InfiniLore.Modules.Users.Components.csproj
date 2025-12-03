@@ -14,7 +14,6 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
         <PackageReference Include="CodeOfChaos.CliArgsParser" />
         <PackageReference Include="CodeOfChaos.CliArgsParser.Contracts" />
         <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
