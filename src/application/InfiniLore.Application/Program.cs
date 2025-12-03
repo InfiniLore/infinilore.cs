@@ -40,11 +40,11 @@ public static class Program {
         webAppBuilder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
         
-        webAppBuilder.WebHost.UseStaticWebAssets();
-        
         webAppBuilder.Services.AddInfiniFrameJs();
 
         webAppBuilder.Services.RegisterServicesFromInfiniLoreApplication();
+        
+        webAppBuilder.WebHost.UseStaticWebAssets();
 
         InfiniFrameWindowBuilder windowBuilder = applicationBuilder.Window;
         windowBuilder.Center()
@@ -60,27 +60,28 @@ public static class Program {
         // -------------------------------------------------------------------------------------------------------------
         InfiniFrameWebApplication application = applicationBuilder.Build();
         application.UseAutoServerClose();
-        
+
         Application = application;
-        
+
         WebApplication webApp = application.WebApp;
 
+        webApp.UseHttpsRedirection();
+
         webApp.UseRouting();
-        
+
+        webApp.UseAntiforgery();
+
         webApp.UseFastEndpoints()
             .UseSwaggerGen();
 
-        webApp.UseHttpsRedirection();
-        
         webApp.MapStaticAssets();
-
-        webApp.UseAntiforgery();
+        webApp.UseStaticFiles();
 
         webApp.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInfiniLoreModuleAssemblies(webApp);
-
-        webApp.UseInfiniLoreApplication();
+        
+        // webApp.UseInfiniLoreApplication();
 
         if (args.Length != 0) {
             var cli = new InfiniLoreCli(webApp);

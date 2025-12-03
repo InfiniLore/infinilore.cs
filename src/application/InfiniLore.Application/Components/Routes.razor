@@ -1,17 +1,20 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Core.Modular
+@using InfiniLore.Core.Pages
+
 @namespace InfiniLore.Core
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
+@inject InfiniModuleProvider ModuleProvider
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<Router AppAssembly="@InfiniLoreCoreAssemblyEntry.Assembly">
+<Router AppAssembly="@InfiniLoreCoreAssemblyEntry.Assembly" NotFoundPage="@typeof(Home)" AdditionalAssemblies="@ModuleProvider.Assemblies">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)"/>
+        <RouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)"/>
     </Found>
 </Router>
 @* ------------------------------------------------------------------------------------------------------------------ *@

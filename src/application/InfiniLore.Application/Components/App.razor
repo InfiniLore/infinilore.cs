@@ -17,18 +17,18 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
-    <ResourcePreloader/>
+    @* <ResourcePreloader/> *@
     <link rel="stylesheet" href="_content/InfiniLore.InfiniBlazor/InfiniBlazor.css" />
 
     <ImportMap/>
     <link rel="icon" type="image/png" href="favicon.png"/>
      
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <HeadOutlet/>
 </head>
 
 <body>
-<Routes @rendermode="InteractiveServer" />
-<ReconnectModal/>
+<Routes/>
+@* <ReconnectModal/> *@
 
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/InfiniLore.InfiniFrame.Js/InfiniFrame.js"></script>

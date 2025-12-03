@@ -25,7 +25,8 @@ public class OnboardingService(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonly
             || path.StartsWithSegments("/assets")
             || path.StartsWithSegments("/swagger")
             || path.StartsWithSegments("/swagger.json")
-            || path.StartsWithSegments("/api");
+            || path.StartsWithSegments("/api")
+            || path.StartsWithSegments("/_blazor");
 
         if (isSignup || isFramework) {
             await next();
