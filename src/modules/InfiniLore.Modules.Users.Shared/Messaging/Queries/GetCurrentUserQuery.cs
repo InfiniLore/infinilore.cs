@@ -1,18 +1,12 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using InfiniLore.Core.Database;
-using InfiniLore.Core.Outcomes;
+using InfiniLore.Core.Messaging;
+using InfiniLore.Modules.Users.Database;
 
-namespace InfiniLore.Core.Messaging;
+namespace InfiniLore.Modules.Users.Messaging.Queries;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record BaseQuery<TResult> : ICommand<Outcome<TResult>> {
-    public QueryConfig Config { get; init; } = QueryConfig.None;
-}
-
-public abstract record BaseQuery : ICommand<Outcome> {
-    public QueryConfig Config { get; init; } = QueryConfig.None;
-}
+public record GetCurrentUserQuery() : BaseQuery<UserModel>;

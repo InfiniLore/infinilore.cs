@@ -1,18 +1,16 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using FastEndpoints;
-using InfiniLore.Core.Database;
-using InfiniLore.Core.Outcomes;
+using InfiniLore.Modules.Users.Database;
 
-namespace InfiniLore.Core.Messaging;
+namespace InfiniLore.Modules.Users;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public abstract record BaseQuery<TResult> : ICommand<Outcome<TResult>> {
-    public QueryConfig Config { get; init; } = QueryConfig.None;
-}
-
-public abstract record BaseQuery : ICommand<Outcome> {
-    public QueryConfig Config { get; init; } = QueryConfig.None;
+public interface IUserService {
+    Task<UserModel?> GetCurrentUserAsync(CancellationToken ct = default);
+    Task<bool> HasAnyUserAsync(CancellationToken ct = default);
+    Task<UserModel?> GetOrCreateDefaultUserAsync(CancellationToken ct = default);
+    Task SignInUserAsync(UserModel user, CancellationToken ct = default);
 }

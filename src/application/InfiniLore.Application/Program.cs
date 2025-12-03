@@ -9,6 +9,7 @@ using InfiniFrame.Js.MessageHandlers;
 using InfiniFrame.WebServer;
 using InfiniLore.Application.Components;
 using InfiniLore.Core.Modular;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Serilog;
 
 namespace InfiniLore.Application;
@@ -41,6 +42,20 @@ public static class Program {
             .AddInteractiveServerComponents();
         
         webAppBuilder.Services.AddInfiniFrameJs();
+        
+        webAppBuilder.Services.AddHttpContextAccessor();
+        
+        webAppBuilder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options => {
+                options.LoginPath = "/signup";
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = true;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
+        
+        webAppBuilder.Services.AddAuthorization();
 
         webAppBuilder.Services.RegisterServicesFromInfiniLoreApplication();
         
@@ -68,6 +83,9 @@ public static class Program {
         webApp.UseHttpsRedirection();
 
         webApp.UseRouting();
+        
+        webApp.UseAuthentication();
+        webApp.UseAuthorization();
 
         webApp.UseAntiforgery();
 
@@ -81,7 +99,7 @@ public static class Program {
             .AddInteractiveServerRenderMode()
             .AddInfiniLoreModuleAssemblies(webApp);
         
-        // webApp.UseInfiniLoreApplication();
+        webApp.UseInfiniLoreApplication();
 
         if (args.Length != 0) {
             var cli = new InfiniLoreCli(webApp);

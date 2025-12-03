@@ -1,38 +1,48 @@
 ﻿@* ------------------------------------------------------------------------------------------------------------------ *@
 @* Imports
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@using InfiniLore.Core.Modular
-@using InfiniLore.Core.Pages
+@using FastEndpoints
+@using InfiniLore.Core.Outcomes
+@using InfiniLore.Modules.Users.Database
+@using InfiniLore.Modules.Users.Messaging.Queries
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 
-@namespace InfiniLore.Core
+@namespace InfiniLore.Core.Pages
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
-@inject InfiniModuleProvider ModuleProvider
+@page "/UserLockedPage"
+@rendermode InfiniRenderModeProvider.InfiniRenderMode
+@attribute [Authorize]
+
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Html
 @* ------------------------------------------------------------------------------------------------------------------ *@
-<CascadingAuthenticationState>
-    <Router AppAssembly="@InfiniLoreCoreAssemblyEntry.Assembly" NotFoundPage="@typeof(Home)"
-            AdditionalAssemblies="@ModuleProvider.Assemblies">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    @if (context.User.Identity?.IsAuthenticated != true) {
-                        <p>Redirecting to signup...</p>
-                    }
-                    else {
-                        <p>You are not authorized to access this page.</p>
-                    }
-                </NotAuthorized>
-            </AuthorizeRouteView>
-        </Found>
-    </Router>
-</CascadingAuthenticationState>
+<InfiniPage Title="Locked">
+    <InfiniSection>
+        
+        <p>Your account @_userName has been locked.</p>
+        
+    </InfiniSection>
+</InfiniPage>
+
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @* Code
 @* ------------------------------------------------------------------------------------------------------------------ *@
-
 @code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+    
+    private string _userName = string.Empty;
+    
+    protected override async Task OnInitializedAsync() {
+        Outcome<UserModel> outcome = await new GetCurrentUserQuery().ExecuteAsync(CancellationToken.None);
+
+        if (!outcome.TryGetAsSuccess(out UserModel? result)) {
+            _userName = "Unknown";
+            return;
+        }
+        
+        _userName = result.UserName;
+    }
 }

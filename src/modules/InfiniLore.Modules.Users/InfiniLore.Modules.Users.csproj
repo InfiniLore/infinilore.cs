@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
@@ -19,5 +16,6 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="FastEndpoints" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" />
     </ItemGroup>
 </Project>
