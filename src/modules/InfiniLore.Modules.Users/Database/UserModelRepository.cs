@@ -18,7 +18,7 @@ public class UserModelRepository : BaseModelRepository<UserModel>, IUserModelRep
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     public async ValueTask<RepoOutcome<UserModel>> GetByUserNameAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
-        if (username.IsNullOrWhiteSpace()) return RepoOutcome.NotFound;
+        if (username.IsNullOrWhiteSpace()) return RepoErrorOutcome.NotFound;
         
         // Form Query
         IQueryable<UserModel> query = GetConfiguredQueryable(config)
@@ -28,7 +28,7 @@ public class UserModelRepository : BaseModelRepository<UserModel>, IUserModelRep
         UserModel? result = await query.FirstOrDefaultAsync(cancellationToken: ct);
         
         // Format Result
-        if (result is null) return RepoOutcome.NotFound;
+        if (result is null) return RepoErrorOutcome.NotFound;
         return result;
     }
 

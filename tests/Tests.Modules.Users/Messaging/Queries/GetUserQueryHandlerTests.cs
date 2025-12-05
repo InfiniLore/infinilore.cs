@@ -60,12 +60,12 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
         var repo = await uow.GetRepositoryAsync<UserModelRepository>();
 
-        RepoOutcome repoOutcome = await repo.AddAsync(new UserModel {
+        RepoOutcome<Guid> repoOutcome = await repo.AddAsync(new UserModel {
             Id = expectedId,
             UserName = KnownUserName
         });
         
-        await Assert.That(repoOutcome.IsSuccess).IsTrue();
+        await Assert.That(repoOutcome.IsData).IsTrue();
         await uow.SaveChangesAsync();
     
         GetUserQueryHandler handler = GetHandler();
@@ -74,7 +74,7 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
         Outcome<UserModel> result = await handler.ExecuteAsync(query, CancellationToken.None);
 
         // Assert
-        await Assert.That(result.TryGetAsSuccess(out UserModel? userModel)).IsTrue();
+        await Assert.That(result.TryGetAsData(out UserModel? userModel)).IsTrue();
         await Assert.That(userModel).IsNotNull()
             .And.HasProperty(model => model.Id).IsEqualTo(expectedId)
             .HasProperty(model => model.UserName).IsEqualTo(KnownUserName);

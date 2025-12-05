@@ -28,7 +28,7 @@ public class GetUsersQueryHandler(IServiceScopeFactory serviceScopeFactory) : Ba
             PaginatedRepoOutcome<UserModel> outcome = await repo.GetAllAsync(query.Pagination, query.Config, ct);
 
             // ReSharper disable once InvertIf
-            if (!outcome.TryGetAsSuccess(out PaginatedData<UserModel>? data)) {
+            if (!outcome.TryGetAsData(out PaginatedData<UserModel>? data)) {
                 logger.Warning("Failed to get users: {error}", outcome.AsError);
                 return PaginatedOutcome.Failure;
             }

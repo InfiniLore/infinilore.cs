@@ -9,4 +9,4 @@ namespace InfiniLore.Modules.Users.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record GetCurrentUserQuery() : BaseQuery<UserModel>;
+public record GetCurrentUserQuery : BaseQuery<UserModel>;

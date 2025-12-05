@@ -8,24 +8,9 @@ namespace InfiniLore.Core.Outcomes;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[UnionAliases(nameof(Success), nameof(None), "Error")]
+[UnionAliases("Data", "Error")]
 [UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial record struct RepoOutcome<TSuccess>() : IUnion<TSuccess, None, RepoErrorOutcome> {
-    public static implicit operator RepoOutcome<TSuccess>(RepoOutcome outcome) => outcome.Match(
-        successCase: _ => throw new InvalidOperationException("Cannot convert RepoOutcome to RepoOutcome<TSuccess> when Success case is present."),
-        errorCase: FromError
-    );
-    
-    public static implicit operator Task<RepoOutcome<TSuccess>>(RepoOutcome<TSuccess> outcome) => Task.FromResult(outcome);
-    public static implicit operator ValueTask<RepoOutcome<TSuccess>>(RepoOutcome<TSuccess> outcome) => ValueTask.FromResult(outcome);
-}
-
-[UnionAliases(nameof(Success), "Error")]
-[UnionExtra(UnionExtra.GenerateFrom | UnionExtra.GenerateAsValue)]
-public readonly partial record struct RepoOutcome() : IUnion<Success, RepoErrorOutcome>{
-    public static RepoOutcome Success { get;} = FromSuccess(new Success());
-    
-    public static RepoOutcome AlreadyExists { get; } = FromError(new AlreadyExists());
-    public static RepoOutcome Invalid { get;} = FromError(new Invalid());
-    public static RepoOutcome NotFound { get;} = FromError(new NotFound());
+public readonly partial record struct RepoOutcome<TData>() : IUnion<TData, RepoErrorOutcome> {
+    public static implicit operator Task<RepoOutcome<TData>>(RepoOutcome<TData> outcome) => Task.FromResult(outcome);
+    public static implicit operator ValueTask<RepoOutcome<TData>>(RepoOutcome<TData> outcome) => ValueTask.FromResult(outcome);
 }

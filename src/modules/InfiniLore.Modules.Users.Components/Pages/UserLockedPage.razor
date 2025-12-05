@@ -38,7 +38,7 @@
     protected override async Task OnInitializedAsync() {
         Outcome<UserModel> outcome = await new GetCurrentUserQuery().ExecuteAsync(CancellationToken.None);
 
-        if (!outcome.TryGetAsSuccess(out UserModel? result)) {
+        if (!outcome.TryGetAsData(out UserModel? result)) {
             _userName = "Unknown";
             return;
         }

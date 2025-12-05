@@ -12,7 +12,3 @@ namespace InfiniLore.Core.Messaging;
 public abstract record BaseQuery<TResult> : ICommand<Outcome<TResult>> {
     public QueryConfig Config { get; init; } = QueryConfig.None;
 }
-
-public abstract record BaseQuery : ICommand<Outcome> {
-    public QueryConfig Config { get; init; } = QueryConfig.None;
-}

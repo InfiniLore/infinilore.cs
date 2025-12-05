@@ -28,18 +28,18 @@ public class GetCurrentUserQueryHandler(IServiceScopeFactory serviceScopeFactory
 
         // No HTTP context available (shouldn't happen in normal scenarios)
         if (httpContext == null) {
-            return Outcome.Failure;
+            return Outcome<UserModel>.Failure;
         }
 
         // User is not authenticated
         if (httpContext.User.Identity?.IsAuthenticated != true) {
-            return Outcome.Failure;
+            return Outcome<UserModel>.Failure;
         }
 
         // Extract user ID from claims
         Claim? userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
         if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId)) {
-            return Outcome.Failure;
+            return Outcome<UserModel>.Failure;
         }
 
         // Get the user from the database
@@ -47,8 +47,8 @@ public class GetCurrentUserQueryHandler(IServiceScopeFactory serviceScopeFactory
         var repository = uow.GetRepository<UserModelRepository>();
         RepoOutcome<UserModel> outcome = await repository.GetByIdAsync(userId, ct:ct);
 
-        if (!outcome.TryGetAsSuccess(out UserModel? user)) {
-            return Outcome.Failure;
+        if (!outcome.TryGetAsData(out UserModel? user)) {
+            return Outcome<UserModel>.Failure;
         }
 
         return user;

@@ -45,7 +45,7 @@ public class CreateUserCommandHandlerTests(IServiceProvider provider) {
         Outcome<Guid> result = await handler.ExecuteAsync(command, CancellationToken.None);
 
         // Assert
-        await Assert.That(result.TryGetAsSuccess(out Guid guid)).IsTrue();
+        await Assert.That(result.TryGetAsData(out Guid guid)).IsTrue();
         await Assert.That(guid)
             .IsNotDefault()
             .And.IsNotEmptyGuid();

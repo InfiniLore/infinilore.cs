@@ -4,6 +4,7 @@
 using InfiniLore.Core.Outcomes;
 using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -43,15 +44,15 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     // -----------------------------------------------------------------------------------------------------------------
     #region GetByIdAsync
     public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
-        if (id == Guid.Empty) return RepoOutcome.Invalid;
+        if (id == Guid.Empty) return RepoErrorOutcome.Invalid;
         
         TModel? result = await GetConfiguredQueryable(config)
             .Where(model => model.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
         return result is not null
-            ? RepoOutcome<TModel>.FromSuccess(result)
-            : RepoOutcome.NotFound;
+            ? RepoOutcome<TModel>.FromData(result)
+            : RepoErrorOutcome.NotFound;
     }
     #endregion
     
@@ -82,19 +83,20 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     #endregion
 
     #region AddAsync
-    public async ValueTask<RepoOutcome> AddAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<RepoOutcome<Guid>> AddAsync(TModel model, CancellationToken ct = default) {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (model is null) return RepoOutcome.Invalid;
+        if (model is null) return RepoErrorOutcome.Invalid;
         
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
         
         bool exists = await dbSet
             .AsNoTracking()
             .AnyAsync(m => m.Id == model.Id, cancellationToken: ct);
-        if (exists) return RepoOutcome.AlreadyExists;
+        if (exists) return RepoErrorOutcome.AlreadyExists;
         
-        await dbSet.AddAsync(model, cancellationToken: ct);
-        return RepoOutcome.Success;
+        EntityEntry<TModel> entityEntry = await dbSet.AddAsync(model, cancellationToken: ct);
+        
+        return entityEntry.Entity.Id;
     }
     #endregion
 

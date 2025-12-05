@@ -75,7 +75,7 @@ public class OnboardingService(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonly
         var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
 
         var outcome = await repo.GetAllAsync(PaginationData.Default, ct:ct);
-        if (!outcome.TryGetAsSuccess(out PaginatedData<UserModel>? users)) {
+        if (!outcome.TryGetAsData(out PaginatedData<UserModel>? users)) {
             return false;
         }
 

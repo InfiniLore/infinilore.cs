@@ -28,9 +28,9 @@ public class GetUserQueryHandler(IServiceScopeFactory serviceScopeFactory) : Bas
                 RepoOutcome<UserModel> outcome = await repo.GetByIdAsync(query.UserId, ct: ct);
 
                 // ReSharper disable once InvertIf
-                if (!outcome.TryGetAsSuccess(out UserModel? userModel)) {
+                if (!outcome.TryGetAsData(out UserModel? userModel)) {
                     logger.Warning("Failed to get user by id: {error}", outcome.AsError);
-                    return Outcome.Failure;
+                    return ErrorOutcome.Failure;
                 }
                 return userModel;
             }
@@ -39,19 +39,19 @@ public class GetUserQueryHandler(IServiceScopeFactory serviceScopeFactory) : Bas
                 RepoOutcome<UserModel> outcome = await repo.GetByUserNameAsync(query.Username, ct: ct);
 
                 // ReSharper disable once InvertIf
-                if (!outcome.TryGetAsSuccess(out UserModel? userModel)) {
+                if (!outcome.TryGetAsData(out UserModel? userModel)) {
                     logger.Warning("Failed to get user by username: {error}", outcome.AsError);
-                    return Outcome.Failure;
+                    return ErrorOutcome.Failure;
                 }
                 return userModel;
             }
 
             logger.Warning("No user id or username provided.");
-            return Outcome.Failure;
+            return ErrorOutcome.Failure;
         }
         catch (Exception ex) {
             logger.Error(ex, "Failed to execute GetUserQuery");
-            return Outcome.Failure;
+            return ErrorOutcome.Failure;
         }
     }
 }

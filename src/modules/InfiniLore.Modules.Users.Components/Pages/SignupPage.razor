@@ -63,7 +63,7 @@
             var command = new CreateUserCommand(Username);
             Outcome<Guid> outcome = await command.ExecuteAsync(cts.Token);
 
-            if (!outcome.TryGetAsSuccess(out Guid userId)) {
+            if (!outcome.TryGetAsData(out Guid userId)) {
                 Logger.LogWarning("Failed to create user with username: {Username}", Username);
                 await ShowErrorToast("User could not be created", $"The username '{Username}' is invalid or already taken.");
                 return;

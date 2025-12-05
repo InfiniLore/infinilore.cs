@@ -33,7 +33,7 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
         ValidationResult? validationResult = await validator.ValidateAsync(userModel, ct);
         if (!validationResult.IsValid) {
             logger.Warning("Validation failed for user creation: {errors}", validationResult.Errors);
-            return Outcome.FromError(new ValidationFailed(validationResult.Errors.Select(e => e.ErrorMessage).ToArray()));
+            return ErrorOutcome.FromValidationFailed(new ValidationFailed(validationResult.Errors.Select(e => e.ErrorMessage).ToArray()));
         }
         
         await using IUnitOfWork<InfiniLoreDb> unitOfWork = unitOfWorkFactory.Create();
@@ -47,14 +47,14 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
             if (isUserNameTaken) {
                 await unitOfWork.TryRollbackTransactionAsync(ct);
                 logger.Warning("Another user with username {username} already exists", command.Username);
-                return Outcome.Failure;
+                return ErrorOutcome.Failure;
             }
 
-            RepoOutcome outcome = await userRepo.AddAsync(userModel, ct);
+            RepoOutcome<Guid> outcome = await userRepo.AddAsync(userModel, ct);
             if (outcome.IsError) {
                 await unitOfWork.TryRollbackTransactionAsync(ct);
                 logger.Warning("Failed to create user: {error}", outcome.AsError);
-                return Outcome.Failure;
+                return ErrorOutcome.Failure;
             }
 
             await unitOfWork.TryCommitTransactionAsync(ct);
@@ -63,7 +63,7 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
         catch (Exception exception) {
             await unitOfWork.TryRollbackTransactionAsync(ct);
             logger.Error(exception, "Failed to create user.");
-            return Outcome.Failure;
+            return ErrorOutcome.Failure;
         }
 
         try {
@@ -74,6 +74,6 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
             logger.Warning(e, "Failed to publish UserCreatedEvent.");
         }
         
-        return Outcome.FromSuccess(userModel.Id);
+        return userModel.Id;
     }
 }

@@ -8,4 +8,4 @@ namespace InfiniLore.Modules.Users.Messaging.Queries;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public record HasAnyUsersQuery : BaseQuery;
+public record HasAnyUsersQuery : BaseQuery<bool>;
