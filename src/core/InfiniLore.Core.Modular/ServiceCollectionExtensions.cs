@@ -15,7 +15,9 @@ public static class ServiceCollectionExtensions {
             config(collection);
             
             services.AddSingleton(collection);
-            services.AddSingleton<IInfiniModuleProvider>(static provider => provider.GetRequiredService<InfiniModuleCollection>().Build());
+           
+            services.AddSingleton<InfiniModuleProvider>(static provider => provider.GetRequiredService<InfiniModuleCollection>().Build());
+            services.AddSingleton<IInfiniModuleProvider>(static provider => provider.GetRequiredService<InfiniModuleProvider>());
             return services;
         }
 

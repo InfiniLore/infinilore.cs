@@ -10,14 +10,14 @@ namespace InfiniLore.Core.Modular;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public static class WebApplicationExtensions {
-    extension(WebApplication webApplication) {
+    extension(WebApplication app) {
         public WebApplication UseInfiniLoreModules() {
-            var services = webApplication.Services;
-            var provider = services.GetRequiredService<IInfiniModuleProvider>();
+            var services = app.Services;
+            var provider = services.GetRequiredService<InfiniModuleProvider>();
             
-            provider.StartModuleLoad();
+            provider.StartupModules(app);
             
-            return webApplication;
+            return app;
         }
     }
 }

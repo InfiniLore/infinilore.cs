@@ -5,15 +5,16 @@ using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Pagination;
 using InfiniLore.Modules.Users.Database;
-using InfiniLore.Modules.Users.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Application.Services.Onboarding;
+namespace InfiniLore.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<OnboardingService>]
-public class OnboardingService(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonlyUnitOfWorkFactory) {
+[InjectableScoped<UserOnboarding>]
+public class UserOnboarding(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonlyUnitOfWorkFactory) {
     public static async Task Middleware(HttpContext context, Func<Task> next) {
         PathString path = context.Request.Path;
 
@@ -35,18 +36,19 @@ public class OnboardingService(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonly
             return;
         }
 
-        // Check if user is already authenticated
-        if (context.User.Identity?.IsAuthenticated == true) {
-            await next();
+        await using AsyncServiceScope scope = context.RequestServices.CreateAsyncScope();
+        var onboarding = scope.ServiceProvider.GetRequiredService<UserOnboarding>();
+        
+        // Check if we need onboarding (no users exist)
+        bool needsOnboarding = await onboarding.IsOnboardingRequiredAsync(context.RequestAborted);
+        if (needsOnboarding) {
+            context.Response.Redirect("/signup");
             return;
         }
 
-        await using AsyncServiceScope scope = context.RequestServices.CreateAsyncScope();
-        var onboarding = scope.ServiceProvider.GetRequiredService<OnboardingService>();
-
-        // Check if we need onboarding (no users exist)
-        if (await onboarding.IsOnboardingRequiredAsync(context.RequestAborted)) {
-            context.Response.Redirect("/signup");
+        // Check if user is already authenticated
+        if (context.User.Identity?.IsAuthenticated == true) {
+            await next();
             return;
         }
 

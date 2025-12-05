@@ -1,6 +1,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Builder;
 using System.Collections.Immutable;
 using System.Reflection;
 
@@ -15,9 +16,9 @@ public class InfiniModuleProvider(IEnumerable<InfiniModule> modules) : IInfiniMo
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    public void StartModuleLoad() {
+    public void StartupModules(WebApplication app) {
         foreach (FrozenInfiniModule infiniModule in Modules) {
-            infiniModule.UnderlyingModule.StartModuleLoad();
+            infiniModule.Startup(app);
         }
     }
     

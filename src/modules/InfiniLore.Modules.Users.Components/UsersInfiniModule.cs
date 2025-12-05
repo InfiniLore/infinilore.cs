@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Modular;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Modules.Users.Components;
@@ -11,7 +12,11 @@ namespace InfiniLore.Modules.Users.Components;
 // ---------------------------------------------------------------------------------------------------------------------
 public class UsersComponentsInfiniModule : InfiniModule {
 
-    protected override void OnModuleRegister(IServiceCollection services) {
+    protected override void OnConfiguring(IServiceCollection services) {
         services.RegisterServicesFromInfiniLoreModulesUsersComponents();
+    }
+    
+    protected override void OnStartup(WebApplication app) {
+        
     }
 }

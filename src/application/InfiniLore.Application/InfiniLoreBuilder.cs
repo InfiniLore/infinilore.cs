@@ -4,7 +4,6 @@
 using CodeOfChaos.CliArgsParser;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using InfiniLore.Application.Services.Onboarding;
 using InfiniLore.Core.Database;
 using InfiniLore.Core.Modular;
 using InfiniLore.Modules.Assets;
@@ -60,15 +59,13 @@ public static class InfiniLoreBuilder {
         });
 
         // Onboarding service
-        services.AddScoped<OnboardingService>();
+        services.AddScoped<UserOnboarding>();
 
         return services;
     }
 
     public static WebApplication UseInfiniLoreApplication(this WebApplication app) {
         EnsureDatabaseCreated(app);
-
-        app.Use(OnboardingService.Middleware);
 
         app.UseInfiniLoreModules();
 

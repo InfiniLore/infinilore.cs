@@ -1,6 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Builder;
 using System.Collections.Frozen;
 using System.Reflection;
 
@@ -23,4 +24,7 @@ public class FrozenInfiniModule(InfiniModule module) {
         
         return frozen;
     }
+    
+    public void Startup(WebApplication app) 
+        => module.Startup(app);
 }

@@ -9,6 +9,5 @@ namespace InfiniLore.Core.Modular;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IInfiniModuleProvider {
-    void StartModuleLoad();
     IEnumerable<Assembly> GetRegisteredAssemblies();
 }

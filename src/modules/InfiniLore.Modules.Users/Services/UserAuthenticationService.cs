@@ -1,16 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Security.Claims;
 using CodeOfChaos.Extensions.DependencyInjection;
 using InfiniLore.Modules.Users.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
-
-namespace InfiniLore.Modules.Users.Services;
-
+namespace InfiniLore.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------

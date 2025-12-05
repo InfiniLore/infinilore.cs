@@ -2,6 +2,7 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Modular;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InfiniLore.Modules.Projects;
@@ -11,9 +12,13 @@ namespace InfiniLore.Modules.Projects;
 // ---------------------------------------------------------------------------------------------------------------------
 public class ProjectsInfiniModule : InfiniModule {
 
-    protected override void OnModuleRegister(IServiceCollection services) {
+    protected override void OnConfiguring(IServiceCollection services) {
         services.RegisterServicesFromInfiniLoreModulesProjects();
         
         AddSubModule<ProjectsSharedInfiniModule>();
+    }
+    
+    protected override void OnStartup(WebApplication app) {
+        
     }
 }

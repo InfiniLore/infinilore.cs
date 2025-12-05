@@ -20,7 +20,7 @@ public class InfiniModuleCollection(IServiceCollection services) {
     // -----------------------------------------------------------------------------------------------------------------
     public InfiniModuleCollection AddModule<TModule>() where TModule : InfiniModule, new() {
         var module = new TModule();
-        module.StartModuleRegister(services);
+        module.Configure(services);
         
         _modules.Add(module);
         
