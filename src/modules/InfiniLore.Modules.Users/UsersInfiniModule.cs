@@ -12,8 +12,8 @@ namespace InfiniLore.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 public class UsersInfiniModule : InfiniModule {
 
-    protected override void Configure() {
-        Services.RegisterServicesFromInfiniLoreModulesUsers();
+    protected override void OnModuleRegister(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreModulesUsers();
         
         AddSubModule<UsersSharedInfiniModule>();
         AddSubModule<UsersComponentsInfiniModule>();

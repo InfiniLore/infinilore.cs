@@ -26,10 +26,10 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
             .AddLogging()
             .RegisterServicesFromTestsModulesUsers()
             .AddInfiniModuleProvider(
-                moduleCollection => {
-                    moduleCollection.AddModule<UsersInfiniModule>();
+                collection => {
+                    collection.AddModule<UsersInfiniModule>();
                 },
-                out InfiniModuleProvider moduleProvider
+                out InfiniModuleCollection moduleCollection
             )
             .AddInfiniLoreDb(
                 options => {
@@ -38,7 +38,7 @@ public class DiDataSourceAttribute : DependencyInjectionDataSourceAttribute<ISer
                     connection.Open();
                     options.UseSqlite(connection);
                 },
-                moduleProvider.Assemblies
+                moduleCollection.Assemblies
             );
 
         collection.AddFastEndpoints();

@@ -4,14 +4,14 @@
 using InfiniLore.Core.Modular;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Modules.Projects;
+namespace InfiniLore.Modules.Users;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectsSharedInfiniModule : InfiniModule{
+public class UsersSharedInfiniModule : InfiniModule {
 
     protected override void OnModuleRegister(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModulesProjectsShared();
+        services.RegisterServicesFromInfiniLoreModulesUsersShared();
     }
 }

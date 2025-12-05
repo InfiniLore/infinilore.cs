@@ -10,8 +10,8 @@ namespace Tests.Core.Modular.Data;
 // ---------------------------------------------------------------------------------------------------------------------
 public class TestInfiniModule1 : InfiniModule {
 
-    protected override void Configure() {
-        Services.AddSingleton<SomeService1>();
+    protected override void OnModuleRegister(IServiceCollection services) {
+        services.AddSingleton<SomeService1>();
 
         AddSubModule<TestInfiniModule2>();
     }
@@ -19,8 +19,8 @@ public class TestInfiniModule1 : InfiniModule {
 
 public class TestInfiniModule2 : InfiniModule {
 
-    protected override void Configure() {
-        Services.AddSingleton<SomeService2>();
+    protected override void OnModuleRegister(IServiceCollection services) {
+        services.AddSingleton<SomeService2>();
     }
 }
 

@@ -10,8 +10,8 @@ namespace InfiniLore.Modules.Assets;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public class AssetsInfiniModule : InfiniModule {
-    protected override void Configure() {
-        Services.RegisterServicesFromInfiniLoreModulesAssets();
+    protected override void OnModuleRegister(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreModulesAssets();
         
         AddSubModule<AssetsSharedInfiniModule>();
     }

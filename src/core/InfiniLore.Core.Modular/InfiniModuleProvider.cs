@@ -9,7 +9,23 @@ namespace InfiniLore.Core.Modular;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class InfiniModuleProvider(ImmutableArray<InfiniModule> modules, ImmutableArray<Assembly> assemblies) {
-    public ImmutableArray<InfiniModule> Modules => modules;
-    public ImmutableArray<Assembly> Assemblies => assemblies;
+public class InfiniModuleProvider(IEnumerable<InfiniModule> modules) : IInfiniModuleProvider {
+    public ImmutableArray<FrozenInfiniModule> Modules { get; } =  modules.Select(FrozenInfiniModule.FromModule).ToImmutableArray();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    public void StartModuleLoad() {
+        foreach (FrozenInfiniModule infiniModule in Modules) {
+            infiniModule.UnderlyingModule.StartModuleLoad();
+        }
+    }
+    
+    public IEnumerable<Assembly> GetRegisteredAssemblies() {
+        IEnumerable<Assembly> assemblies = Modules
+            .SelectMany(m => m.Assemblies)
+            .Distinct();
+        
+        return assemblies;
+    }
 }

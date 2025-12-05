@@ -13,8 +13,8 @@ namespace InfiniLore.Core.Modular;
 public static class RazorComponentsEndpointConventionBuilderExtensions {
     extension(RazorComponentsEndpointConventionBuilder builder) {
         public RazorComponentsEndpointConventionBuilder AddInfiniLoreModuleAssemblies(WebApplication app) {
-            var provider = app.Services.GetRequiredService<InfiniModuleProvider>();
-            Assembly[] assemblies = provider.Assemblies.ToArray();
+            var provider = app.Services.GetRequiredService<IInfiniModuleProvider>();
+            Assembly[] assemblies = provider.GetRegisteredAssemblies().ToArray();
             
             builder.AddAdditionalAssemblies(assemblies);
             return builder;

@@ -22,12 +22,12 @@ namespace InfiniLore.Application;
 public static class InfiniLoreBuilder {
     public static IServiceCollection AddInfiniLoreApplication(this IServiceCollection services) {
         services.AddInfiniModuleProvider(
-            moduleCollection => {
-                moduleCollection.AddModule<UsersInfiniModule>();
-                moduleCollection.AddModule<ProjectsInfiniModule>();
-                moduleCollection.AddModule<AssetsInfiniModule>();
+            collection => {
+                collection.AddModule<UsersInfiniModule>();
+                collection.AddModule<ProjectsInfiniModule>();
+                collection.AddModule<AssetsInfiniModule>();
             },
-            out InfiniModuleProvider moduleProvider
+            out InfiniModuleCollection moduleCollection
         );
 
         services.AddInfiniLoreDb(
@@ -38,10 +38,10 @@ public static class InfiniLoreBuilder {
 
                 options.UseSqlite(connection);
             },
-            moduleProvider.Assemblies
+            moduleCollection.Assemblies
         );
 
-        services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
+        services.AddFastEndpoints(options => options.Assemblies = moduleCollection.Assemblies);
         services.SwaggerDocument();
 
         services.AddInfiniBlazor(config => {
@@ -52,7 +52,7 @@ public static class InfiniLoreBuilder {
             ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
                 .WithServiceProvider(provider);
 
-            foreach (Assembly assembly in moduleProvider.Assemblies) {
+            foreach (Assembly assembly in moduleCollection.Assemblies) {
                 cliBuilder.AddFromAssembly(assembly);
             }
 
@@ -70,6 +70,8 @@ public static class InfiniLoreBuilder {
 
         app.Use(OnboardingService.Middleware);
 
+        app.UseInfiniLoreModules();
+
         return app;
     }
 
@@ -80,12 +82,12 @@ public static class InfiniLoreBuilder {
     }
 
     public static ICliParserBuilder GetInfiniLoreCliParserBuilder(this WebApplication app) {
-        var moduleProvider = app.Services.GetService<InfiniModuleProvider>();
+        var moduleCollection = app.Services.GetService<InfiniModuleProvider>();
 
         ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
             .WithServiceProvider(app.Services);
 
-        IEnumerable<Assembly> assemblies = moduleProvider?.Assemblies ?? Enumerable.Empty<Assembly>();
+        IEnumerable<Assembly> assemblies = moduleCollection?.GetRegisteredAssemblies() ?? Enumerable.Empty<Assembly>();
         foreach (Assembly assembly in assemblies) {
             cliBuilder.AddFromAssembly(assembly);
         }

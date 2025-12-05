@@ -11,27 +11,47 @@ namespace InfiniLore.Core.Modular;
 public abstract class InfiniModule {
     private readonly List<Assembly> _assemblies = [];
     public IEnumerable<Assembly> Assemblies => _assemblies.AsReadOnly();
-    protected IServiceCollection Services { get; private set; } = null!;
-
+    
+    private readonly List<InfiniModule> _subModules = [];
+    
     // -----------------------------------------------------------------------------------------------------------------
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
-    internal void Load(IServiceCollection serviceCollection) {
-        Services = serviceCollection;
+    internal void StartModuleRegister(IServiceCollection services) {
         _assemblies.Add(GetType().Assembly);
-        Configure();
+        OnModuleRegister(services);
+        
+        foreach (InfiniModule subModule in _subModules) {
+            subModule.StartModuleRegister(services);
+            
+            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+            foreach (Assembly assembly in subModule._assemblies) {
+                if (_assemblies.Contains(assembly)) continue;
+                _assemblies.Add(assembly);
+            }
+        }
+    }
+    
+    internal void StartModuleLoad() {
+        OnModuleLoad();
     }
 
-    protected abstract void Configure();
+    /// <summary>
+    /// Called when the module is loaded.
+    /// This is during the service registration phase.
+    /// </summary>
+    /// <param name="services"></param>
+    protected abstract void OnModuleRegister(IServiceCollection services);
+    
+    /// <summary>
+    /// Called when the module is loaded up fully.
+    /// This is during the stage where the application is fully bootstrapped.
+    /// </summary>
+    protected virtual void OnModuleLoad() {
+        
+    }
     
     protected void AddSubModule<TModule>() where TModule : InfiniModule, new() {
-        var module = new TModule();
-        module.Load(Services);
-
-        // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-        foreach (Assembly assembly in module._assemblies) {
-            if (_assemblies.Contains(assembly)) continue;
-            _assemblies.Add(assembly);
-        }
+        _subModules.Add(new TModule());
     }
 }

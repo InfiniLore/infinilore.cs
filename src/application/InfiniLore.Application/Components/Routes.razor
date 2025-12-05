@@ -15,7 +15,7 @@
 @* ------------------------------------------------------------------------------------------------------------------ *@
 <CascadingAuthenticationState>
     <Router AppAssembly="@InfiniLoreCoreAssemblyEntry.Assembly" NotFoundPage="@typeof(Home)"
-            AdditionalAssemblies="@ModuleProvider.Assemblies">
+            AdditionalAssemblies="@ModuleProvider.GetRegisteredAssemblies()">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>

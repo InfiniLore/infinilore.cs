@@ -10,13 +10,12 @@ namespace InfiniLore.Core.Modular;
 // ---------------------------------------------------------------------------------------------------------------------
 public static class ServiceCollectionExtensions {
     extension(IServiceCollection services) {
-        public IServiceCollection AddInfiniModuleProvider(Action<InfiniModuleCollection> config, out InfiniModuleProvider moduleProvider) {
-            var collection = InfiniModuleCollection.Create();
+        public IServiceCollection AddInfiniModuleProvider(Action<InfiniModuleCollection> config, out InfiniModuleCollection collection) {
+            collection = new InfiniModuleCollection(services);
             config(collection);
             
-            moduleProvider = collection.Build(services);
-            
-            services.AddSingleton(moduleProvider);
+            services.AddSingleton(collection);
+            services.AddSingleton<IInfiniModuleProvider>(static provider => provider.GetRequiredService<InfiniModuleCollection>().Build());
             return services;
         }
 

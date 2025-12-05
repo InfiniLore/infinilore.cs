@@ -11,8 +11,8 @@ namespace InfiniLore.Modules.Projects;
 // ---------------------------------------------------------------------------------------------------------------------
 public class ProjectsInfiniModule : InfiniModule {
 
-    protected override void Configure() {
-        Services.RegisterServicesFromInfiniLoreModulesProjects();
+    protected override void OnModuleRegister(IServiceCollection services) {
+        services.RegisterServicesFromInfiniLoreModulesProjects();
         
         AddSubModule<ProjectsSharedInfiniModule>();
     }

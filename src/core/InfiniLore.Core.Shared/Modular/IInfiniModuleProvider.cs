@@ -1,17 +1,14 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Modular;
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
-namespace InfiniLore.Modules.Projects;
+namespace InfiniLore.Core.Modular;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectsSharedInfiniModule : InfiniModule{
-
-    protected override void OnModuleRegister(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModulesProjectsShared();
-    }
+public interface IInfiniModuleProvider {
+    void StartModuleLoad();
+    IEnumerable<Assembly> GetRegisteredAssemblies();
 }
