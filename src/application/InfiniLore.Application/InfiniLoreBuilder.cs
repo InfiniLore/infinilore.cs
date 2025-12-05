@@ -1,0 +1,95 @@
+﻿// ---------------------------------------------------------------------------------------------------------------------
+// Imports
+// ---------------------------------------------------------------------------------------------------------------------
+using CodeOfChaos.CliArgsParser;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using InfiniLore.Application.Services.Onboarding;
+using InfiniLore.Core.Database;
+using InfiniLore.Core.Modular;
+using InfiniLore.Modules.Assets;
+using InfiniLore.Modules.Projects;
+using InfiniLore.Modules.Users;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+
+namespace InfiniLore.Application;
+// ---------------------------------------------------------------------------------------------------------------------
+// Code
+// ---------------------------------------------------------------------------------------------------------------------
+public static class InfiniLoreBuilder {
+    public static IServiceCollection AddInfiniLoreApplication(this IServiceCollection services) {
+        services.AddInfiniModuleProvider(
+            moduleCollection => {
+                moduleCollection.AddModule<UsersInfiniModule>();
+                moduleCollection.AddModule<ProjectsInfiniModule>();
+                moduleCollection.AddModule<AssetsInfiniModule>();
+            },
+            out InfiniModuleProvider moduleProvider
+        );
+
+        services.AddInfiniLoreDb(
+            options => {
+                const string dbFile = "InfiniLore.db";
+                var connection = new SqliteConnection($"DataSource={dbFile}");
+                connection.Open();
+
+                options.UseSqlite(connection);
+            },
+            moduleProvider.Assemblies
+        );
+
+        services.AddFastEndpoints(options => options.Assemblies = moduleProvider.Assemblies);
+        services.SwaggerDocument();
+
+        services.AddInfiniBlazor(config => {
+            config.Components.SetRenderMode(RenderMode.InteractiveServer);
+        });
+
+        services.AddSingleton<ICliParser>(provider => {
+            ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
+                .WithServiceProvider(provider);
+
+            foreach (Assembly assembly in moduleProvider.Assemblies) {
+                cliBuilder.AddFromAssembly(assembly);
+            }
+
+            return cliBuilder.Build();
+        });
+
+        // Onboarding service
+        services.AddScoped<OnboardingService>();
+
+        return services;
+    }
+
+    public static WebApplication UseInfiniLoreApplication(this WebApplication app) {
+        EnsureDatabaseCreated(app);
+
+        app.Use(OnboardingService.Middleware);
+
+        return app;
+    }
+
+    private static void EnsureDatabaseCreated(WebApplication app) {
+        using IServiceScope scope = app.Services.CreateScope();
+        using var db = scope.ServiceProvider.GetRequiredService<InfiniLoreDb>();
+        db.Database.EnsureCreated();
+    }
+
+    public static ICliParserBuilder GetInfiniLoreCliParserBuilder(this WebApplication app) {
+        var moduleProvider = app.Services.GetService<InfiniModuleProvider>();
+
+        ICliParserBuilder cliBuilder = CliParser.CreateBuilder()
+            .WithServiceProvider(app.Services);
+
+        IEnumerable<Assembly> assemblies = moduleProvider?.Assemblies ?? Enumerable.Empty<Assembly>();
+        foreach (Assembly assembly in assemblies) {
+            cliBuilder.AddFromAssembly(assembly);
+        }
+
+        return cliBuilder;
+    }
+}

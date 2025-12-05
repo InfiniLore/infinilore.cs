@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <RootNamespace>InfiniLore.Core</RootNamespace>
+    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CodeOfChaos.Unions" />
+    <PackageReference Include="CodeOfChaos.Unions.Generators">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

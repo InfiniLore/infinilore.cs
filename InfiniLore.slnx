@@ -6,34 +6,67 @@
   </Configurations>
   <Folder Name="/.dev-tools/">
     <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="InfiniLore.GithubActions.slnf" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/.dev-tools/github/">
+    <File Path=".github/dependabot.yml" />
+    <File Path=".github/workflows/onPullRequest-TestDotnet.yml" />
+  </Folder>
   <Folder Name="/.dev-tools/web/">
+    <File Path="package-lock.json" />
     <File Path="package.json" />
     <File Path="tsconfig.json" />
     <File Path="webpack.config.js" />
   </Folder>
-  <Folder Name="/src/" />
-  <Folder Name="/src/applications/">
-    <Project Path="src\InfiniLore.Application.Desktop\InfiniLore.Application.Desktop.csproj" Type="Classic C#">
+  <Folder Name="/src/">
+    <File Path="src\Directory.Build.props" />
+  </Folder>
+  <Folder Name="/src/application/">
+    <File Path="src/application/Directory.Build.props" />
+    <Project Path="src/application/InfiniLore.Application/InfiniLore.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/core/">
+    <Project Path="src\core\InfiniLore.Core.Messaging\InfiniLore.Core.Messaging.csproj" />
+    <File Path="src/core/Directory.Build.props" />
+    <Project Path="src/core/InfiniLore.Core.Components/InfiniLore.Core.Components.csproj" />
+    <Project Path="src/core/InfiniLore.Core.Modular/InfiniLore.Core.Modular.csproj" />
+    <Project Path="src\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
       <Configuration Solution="Release|x86" Project="Release|Any CPU" />
     </Project>
-    <Project Path="src\InfiniLore.Application.WebServer\InfiniLore.Application.WebServer.csproj" Type="Classic C#">
+    <Project Path="src\core\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj">
       <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
       <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
       <Configuration Solution="Release|x64" Project="Release|Any CPU" />
       <Configuration Solution="Release|x86" Project="Release|Any CPU" />
     </Project>
   </Folder>
-  <Folder Name="/src/core/">
-    <Project Path="src\InfiniLore.Core\InfiniLore.Core.csproj" Type="Classic C#">
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
+  <Folder Name="/src/modules/">
+    <File Path="src/modules/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/src/modules/Assets/">
+    <Project Path="src/modules/InfiniLore.Modules.Assets.Shared/InfiniLore.Modules.Assets.Shared.csproj" />
+    <Project Path="src/modules/InfiniLore.Modules.Assets/InfiniLore.Modules.Assets.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/Projects/">
+    <Project Path="src/modules/InfiniLore.Modules.Projects.Shared/InfiniLore.Modules.Projects.Shared.csproj" />
+    <Project Path="src/modules/InfiniLore.Modules.Projects/InfiniLore.Modules.Projects.csproj" />
+  </Folder>
+  <Folder Name="/src/modules/Users/">
+    <Project Path="src/modules/InfiniLore.Modules.Users.Components/InfiniLore.Modules.Users.Components.csproj" />
+    <Project Path="src/modules/InfiniLore.Modules.Users.Shared/InfiniLore.Modules.Users.Shared.csproj" />
+    <Project Path="src/modules/InfiniLore.Modules.Users/InfiniLore.Modules.Users.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/Tests.Core.Database/Tests.Core.Database.csproj" />
+    <Project Path="tests/Tests.Core.Modular/Tests.Core.Modular.csproj" />
+  </Folder>
+  <Folder Name="/tests/modules/">
+    <Project Path="tests/Tests.Modules.Users/Tests.Modules.Users.csproj" />
   </Folder>
 </Solution>

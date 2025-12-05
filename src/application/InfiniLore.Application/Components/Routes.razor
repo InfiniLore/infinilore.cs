@@ -1,0 +1,38 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using InfiniLore.Core.Modular
+@using InfiniLore.Core.Pages
+@using Microsoft.AspNetCore.Components.Authorization
+
+@namespace InfiniLore.Core
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@inject InfiniModuleProvider ModuleProvider
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<CascadingAuthenticationState>
+    <Router AppAssembly="@InfiniLoreCoreAssemblyEntry.Assembly" NotFoundPage="@typeof(Home)"
+            AdditionalAssemblies="@ModuleProvider.Assemblies">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true) {
+                        <p>Redirecting to signup...</p>
+                    }
+                    else {
+                        <p>You are not authorized to access this page.</p>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+}

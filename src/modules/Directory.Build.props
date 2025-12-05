@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project>
+    <Import Project="..\Directory.Build.props" />
+    
+    <ItemGroup>
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection"/>
+        <PackageReference Include="CodeOfChaos.Extensions.DependencyInjection.Generators">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>

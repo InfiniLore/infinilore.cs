@@ -1,0 +1,94 @@
+﻿@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Imports
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@using FastEndpoints
+@using InfiniBlazor.Toasting
+@using InfiniLore.Core.Outcomes
+@using InfiniLore.Modules.Users.Messaging.Commands
+@using Microsoft.Extensions.Logging
+
+@namespace InfiniLore.Core.Pages
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Descriptors
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@page "/signup"
+@rendermode InfiniRenderModeProvider.InfiniRenderMode
+
+@inject ILogger<SignupPage> Logger
+@inject IToastingProvider ToastingProvider
+@inject NavigationManager NavigationManager
+
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Html
+@* ------------------------------------------------------------------------------------------------------------------ *@
+<InfiniPage Title="signup" Class="justify-center items-center">
+    <InfiniSection Class="flex flex-col gap-y-4">
+        <InfiniHeading1>User Signup</InfiniHeading1>
+
+        <InfiniTextInput
+            Label="Username"
+            @bind-Value="@Username"
+            Placeholder="Enter your username"
+        />
+
+        <InfiniButton OnClick="@OnSubmit" IsDisabled="@_isSubmitting">
+            @(_isSubmitting ? "Creating account..." : "Submit")
+        </InfiniButton>
+
+    </InfiniSection>
+</InfiniPage>
+@* ------------------------------------------------------------------------------------------------------------------ *@
+@* Code
+@* ------------------------------------------------------------------------------------------------------------------ *@
+
+@code {
+    private string Username { get; set; } = "";
+    private bool _isSubmitting;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Methods
+    // -----------------------------------------------------------------------------------------------------------------
+    private async Task OnSubmit() {
+        if (string.IsNullOrWhiteSpace(Username)) {
+            await ShowErrorToast("Please enter a username", "Username cannot be empty.");
+            return;
+        }
+
+        _isSubmitting = true;
+        StateHasChanged();
+
+        try {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+            var command = new CreateUserCommand(Username);
+            Outcome<Guid> outcome = await command.ExecuteAsync(cts.Token);
+
+            if (!outcome.TryGetAsData(out Guid userId)) {
+                Logger.LogWarning("Failed to create user with username: {Username}", Username);
+                await ShowErrorToast("User could not be created", $"The username '{Username}' is invalid or already taken.");
+                return;
+            }
+
+            Logger.LogInformation("Successfully created user {UserId} with username: {Username}", userId, Username);
+            NavigationManager.NavigateTo("/");
+        }
+        catch (OperationCanceledException ex) {
+            Logger.LogWarning(ex, "User creation timed out for username: {Username}", Username);
+            await ShowErrorToast("Request timed out", "The operation took too long. Please try again.");
+        }
+        catch (Exception ex) {
+            Logger.LogError(ex, "Unexpected error creating user with username: {Username}", Username);
+            await ShowErrorToast("An error occurred", "Something went wrong. Please try again later.");
+        }
+        finally {
+            _isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ShowErrorToast(string title, string message) {
+        Logger.Information("Showing Error message");
+        var toastData = new ToastingData(title, message);
+        await ToastingProvider.PublishToastAsync(toastData, ToastAppearance.Error);
+    }
+}

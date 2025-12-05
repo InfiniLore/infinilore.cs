@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\core\InfiniLore.Core.Database\InfiniLore.Core.Database.csproj" />
+      <ProjectReference Include="..\..\core\InfiniLore.Core.Messaging\InfiniLore.Core.Messaging.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.Users.Components\InfiniLore.Modules.Users.Components.csproj" />
+      <ProjectReference Include="..\InfiniLore.Modules.Users.Shared\InfiniLore.Modules.Users.Shared.csproj" />
+      <ProjectReference Include="..\..\core\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CodeOfChaos.CliArgsParser" />
+      <PackageReference Include="CodeOfChaos.CliArgsParser.Contracts" />
+      <PackageReference Include="CodeOfChaos.CliArgsParser.Generators">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="FastEndpoints" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" />
+    </ItemGroup>
+</Project>
