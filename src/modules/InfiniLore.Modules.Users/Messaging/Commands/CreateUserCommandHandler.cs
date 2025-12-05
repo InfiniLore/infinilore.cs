@@ -50,10 +50,10 @@ public class CreateUserCommandHandler(IServiceScopeFactory serviceScopeFactory) 
                 return ErrorOutcome.Failure;
             }
 
-            RepoOutcome<Guid> outcome = await userRepo.AddAsync(userModel, ct);
-            if (outcome.IsError) {
+            Guid addedId = await userRepo.AddAsync(userModel, ct);
+            if (addedId.Equals(Guid.Empty)) {
                 await unitOfWork.TryRollbackTransactionAsync(ct);
-                logger.Warning("Failed to create user: {error}", outcome.AsError);
+                logger.Warning("Failed to create user");
                 return ErrorOutcome.Failure;
             }
 

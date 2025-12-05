@@ -1,7 +1,6 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Outcomes;
 using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -43,21 +42,19 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     // Methods
     // -----------------------------------------------------------------------------------------------------------------
     #region GetByIdAsync
-    public async ValueTask<RepoOutcome<TModel>> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
-        if (id == Guid.Empty) return RepoErrorOutcome.Invalid;
+    public async ValueTask<TModel?> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        if (id == Guid.Empty) return null;
         
         TModel? result = await GetConfiguredQueryable(config)
             .Where(model => model.Id == id)
             .FirstOrDefaultAsync(cancellationToken: ct);
 
-        return result is not null
-            ? RepoOutcome<TModel>.FromData(result)
-            : RepoErrorOutcome.NotFound;
+        return result;
     }
     #endregion
     
     #region GetAllAsync
-    public async ValueTask<PaginatedRepoOutcome<TModel>> GetAllAsync(PaginationData pagination, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+    public async ValueTask<PaginatedData<TModel>> GetAllAsync(PaginationData pagination, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
         if (pagination.PageSize <= 0) return PaginatedData<TModel>.Empty;
         
         IQueryable<TModel> baseQuery = GetConfiguredQueryable(config);
@@ -83,16 +80,16 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     #endregion
 
     #region AddAsync
-    public async ValueTask<RepoOutcome<Guid>> AddAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<Guid> AddAsync(TModel model, CancellationToken ct = default) {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (model is null) return RepoErrorOutcome.Invalid;
+        if (model is null) return Guid.Empty;
         
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
         
         bool exists = await dbSet
             .AsNoTracking()
             .AnyAsync(m => m.Id == model.Id, cancellationToken: ct);
-        if (exists) return RepoErrorOutcome.AlreadyExists;
+        if (exists) return Guid.Empty;
         
         EntityEntry<TModel> entityEntry = await dbSet.AddAsync(model, cancellationToken: ct);
         

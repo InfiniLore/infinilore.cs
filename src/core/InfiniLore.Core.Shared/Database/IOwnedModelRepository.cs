@@ -7,7 +7,4 @@ namespace InfiniLore.Core.Database;
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
 public interface IOwnedModelRepository<TModel> : IBaseModelRepository<TModel> 
-    where TModel : class
-{
-    
-}
+    where TModel : class;

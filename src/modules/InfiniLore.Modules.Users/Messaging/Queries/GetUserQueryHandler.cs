@@ -25,22 +25,22 @@ public class GetUserQueryHandler(IServiceScopeFactory serviceScopeFactory) : Bas
             var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
 
             if (query.UserId != Guid.Empty) {
-                RepoOutcome<UserModel> outcome = await repo.GetByIdAsync(query.UserId, ct: ct);
+                UserModel? userModel = await repo.GetByIdAsync(query.UserId, ct: ct);
 
                 // ReSharper disable once InvertIf
-                if (!outcome.TryGetAsData(out UserModel? userModel)) {
-                    logger.Warning("Failed to get user by id: {error}", outcome.AsError);
+                if (userModel is null) {
+                    logger.Warning("Failed to get user by id {id}", query.UserId);
                     return ErrorOutcome.Failure;
                 }
                 return userModel;
             }
 
             if (query.Username.IsNotNullOrWhiteSpace()) {
-                RepoOutcome<UserModel> outcome = await repo.GetByUserNameAsync(query.Username, ct: ct);
+                UserModel? userModel = await repo.GetByUserNameAsync(query.Username, ct: ct);
 
                 // ReSharper disable once InvertIf
-                if (!outcome.TryGetAsData(out UserModel? userModel)) {
-                    logger.Warning("Failed to get user by username: {error}", outcome.AsError);
+                if (userModel is null) {
+                    logger.Warning("Failed to get user by username {username}", query.Username);
                     return ErrorOutcome.Failure;
                 }
                 return userModel;

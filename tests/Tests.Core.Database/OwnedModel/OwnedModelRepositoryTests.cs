@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Database;
-using InfiniLore.Core.Outcomes;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tests.Core.Database;
@@ -39,11 +38,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(ownedId);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsTrue();
-
         await Assert.That(foundModel).IsNotNull()// The ownedModel has tt
             .And.HasProperty(model => model.OwnerId).IsEqualTo(ownerId)
             .HasProperty(model => model.Id).IsEqualTo(ownedId)
@@ -74,10 +71,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeOptionalReferences);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeOptionalReferences);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsTrue();
         await Assert.That(foundModel).IsEqualTo(ownedModel);
     }
 
@@ -103,11 +99,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeSoftDeleted);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsTrue();
-
         await Assert.That(foundModel).IsNotNull()
             .And.HasProperty(model => model.OwnerId).IsEqualTo(ownerId)
             .HasProperty(model => model.Id).IsEqualTo(ownedId)
@@ -123,10 +117,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.NewGuid());
+        TModel? foundModel = await repository.GetByIdAsync(Guid.NewGuid());
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
 
@@ -151,10 +144,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(ownedId);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
 
@@ -164,10 +156,9 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.Empty);
+        TModel? foundModel = await repository.GetByIdAsync(Guid.Empty);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
     #endregion
@@ -192,13 +183,15 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<Guid> outcome = await repository.AddAsync(ownedModel);
+        Guid foundId = await repository.AddAsync(ownedModel);
 
         // Assert
-        await Assert.That(outcome.IsData).IsTrue();
-
+        await Assert.That(foundId)
+            .IsNotEmptyGuid()
+            .And.IsEqualTo(ownedId);
+        
         await UnitOfWork.SaveChangesAsync();
-        var foundModel = await GetModelFromDbAsync(ownedId);
+        TModel foundModel = await GetModelFromDbAsync(ownedId);
 
         await Assert.That(foundModel).IsNotNull()
             .And.HasProperty(model => model.OwnerId).IsEqualTo(ownerId)
@@ -229,24 +222,10 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<Guid> outcome = await repository.AddAsync(ownedModel);
+        Guid foundId = await repository.AddAsync(ownedModel);
 
         // Assert
-        await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
-        await Assert.That(errorOutcome.IsAlreadyExists).IsTrue();
+        await Assert.That(foundId).IsEmptyGuid();
     }
-
-    // [Test]
-    // public async Task AddAsync_ShouldFail_WhenNull() {
-    //     // Arrange
-    //     TRepository repository = await GetRepositoryAsync();
-    //
-    //     // Act
-    //     RepoOutcome outcome = await repository.AddAsync(null!);
-    //
-    //     // Assert
-    //     await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
-    //     await Assert.That(errorOutcome.IsInvalid).IsTrue();
-    // }
     #endregion
 }

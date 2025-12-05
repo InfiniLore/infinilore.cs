@@ -2,7 +2,6 @@
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Database;
-using InfiniLore.Core.Outcomes;
 using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
@@ -34,11 +33,12 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId);
+        TModel? foundModel = await repository.GetByIdAsync(knownId);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsTrue();
-        await Assert.That(foundModel).IsEqualTo(knownModel);
+        await Assert.That(foundModel)
+            .IsNotNull()
+            .And.IsEqualTo(knownModel);
     }
     
     [Test]
@@ -54,11 +54,12 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsTrue();
-        await Assert.That(foundModel).IsEqualTo(knownModel);
+        await Assert.That(foundModel)
+            .IsNotNull()
+            .And.IsEqualTo(knownModel);
     }
 
     [Test]
@@ -67,10 +68,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.NewGuid());
+        TModel? foundModel = await repository.GetByIdAsync(Guid.NewGuid());
         
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
     
@@ -87,10 +87,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(knownId);
+        TModel? foundModel = await repository.GetByIdAsync(knownId);
         
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
 
@@ -100,10 +99,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
     
         // Act
-        RepoOutcome<TModel> outcome = await repository.GetByIdAsync(Guid.Empty);
+        TModel? foundModel = await repository.GetByIdAsync(Guid.Empty);
     
         // Assert
-        await Assert.That(outcome.TryGetAsData(out TModel? foundModel)).IsFalse();
         await Assert.That(foundModel).IsNull();
     }
     #endregion
@@ -116,10 +114,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         var pagination = new PaginationData(1);
         
         // Act
-        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+        PaginatedData<TModel> paginatedData = await repository.GetAllAsync(pagination);
         
         // Assert
-        await Assert.That(outcome.TryGetAsData(out PaginatedData<TModel>? paginatedData)).IsTrue();
         await Assert.That(paginatedData).IsNotNull()
             .And.HasProperty(data => data.Items).IsEqualTo(Array.Empty<TModel>())
             .HasProperty(data => data.TotalCount).IsEqualTo(0)
@@ -137,10 +134,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         var pagination = new PaginationData(0);
 
         // Act
-        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+        PaginatedData<TModel> paginatedData = await repository.GetAllAsync(pagination);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out PaginatedData<TModel>? paginatedData)).IsTrue();
         await Assert.That(paginatedData).IsNotNull()
             .And.HasProperty(data => data.TotalCount).IsEqualTo(totalCount)
             .HasProperty(data => data.TotalPages).IsEqualTo(1)
@@ -148,7 +144,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
             .HasProperty(data => data.IsEmpty).IsEqualTo(false)
             .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
         
-        await Assert.That(paginatedData!.Items).IsNotEmpty().Count().IsEqualTo(totalCount);
+        await Assert.That(paginatedData.Items).IsNotEmpty().Count().IsEqualTo(totalCount);
     }
     
     [Test]
@@ -164,10 +160,9 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         var pagination = new PaginationData(pageNumber);
 
         // Act
-        PaginatedRepoOutcome<TModel> outcome = await repository.GetAllAsync(pagination);
+        PaginatedData<TModel> paginatedData = await repository.GetAllAsync(pagination);
 
         // Assert
-        await Assert.That(outcome.TryGetAsData(out PaginatedData<TModel>? paginatedData)).IsTrue();
         await Assert.That(paginatedData).IsNotNull()
             .And.HasProperty(data => data.TotalCount).IsEqualTo(totalCount)
             .HasProperty(data => data.TotalPages).IsEqualTo(totalPages)
@@ -175,7 +170,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
             .HasProperty(data => data.IsEmpty).IsEqualTo(false)
             .HasProperty(data => data.IsNotEmpty).IsEqualTo(true);
 
-        await Assert.That(paginatedData!.Items).IsNotEmpty().Count().IsEqualTo(pageSize);
+        await Assert.That(paginatedData.Items).IsNotEmpty().Count().IsEqualTo(pageSize);
     }
     
     #endregion
@@ -191,13 +186,15 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<Guid> outcome = await repository.AddAsync(knownModel);
+        Guid foundId = await repository.AddAsync(knownModel);
         
         // Assert
-        await Assert.That(outcome.IsData).IsTrue();
-
+        await Assert.That(foundId)
+            .IsNotEmptyGuid()
+            .And.IsEqualTo(knownId);
+        
         await UnitOfWork.SaveChangesAsync();
-        var foundModel = await GetModelFromDbAsync(knownId);
+        TModel foundModel = await GetModelFromDbAsync(knownId);
         await Assert.That(foundModel).IsEqualTo(knownModel);
     }
     
@@ -213,11 +210,12 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<Guid> outcome = await repository.AddAsync(knownModel);
+        Guid foundId = await repository.AddAsync(knownModel);
         
         // Assert
-        await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
-        await Assert.That(errorOutcome.IsAlreadyExists).IsTrue();
+        await Assert.That(foundId)
+            .IsEmptyGuid()
+            .And.IsNotEqualTo(knownId);
     }
     
     [Test]
@@ -226,11 +224,11 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        RepoOutcome<Guid> outcome = await repository.AddAsync(null!);
+        Guid foundId = await repository.AddAsync(null!);
         
         // Assert
-        await Assert.That(outcome.TryGetAsError(out RepoErrorOutcome errorOutcome)).IsTrue();
-        await Assert.That(errorOutcome.IsInvalid).IsTrue();
+        await Assert.That(foundId)
+            .IsEmptyGuid();
     }
     #endregion
 

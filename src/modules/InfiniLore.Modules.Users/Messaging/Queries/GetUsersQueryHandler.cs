@@ -25,20 +25,14 @@ public class GetUsersQueryHandler(IServiceScopeFactory serviceScopeFactory) : Ba
         try {
             var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
 
-            PaginatedRepoOutcome<UserModel> outcome = await repo.GetAllAsync(query.Pagination, query.Config, ct);
-
-            // ReSharper disable once InvertIf
-            if (!outcome.TryGetAsData(out PaginatedData<UserModel>? data)) {
-                logger.Warning("Failed to get users: {error}", outcome.AsError);
-                return PaginatedOutcome.Failure;
-            }
+            PaginatedData<UserModel> data = await repo.GetAllAsync(query.Pagination, query.Config, ct);
             
             return data;
 
         }
         catch (Exception ex) {
             logger.Error(ex, "Failed to execute GetUsersQuery");
-            return PaginatedOutcome.Failure;
+            return ErrorOutcome.Failure;
         }
     }
 }

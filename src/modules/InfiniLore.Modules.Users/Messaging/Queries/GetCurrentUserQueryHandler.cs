@@ -45,12 +45,8 @@ public class GetCurrentUserQueryHandler(IServiceScopeFactory serviceScopeFactory
         // Get the user from the database
         var uow = provider.GetRequiredService<IReadonlyUnitOfWork<InfiniLoreDb>>();
         var repository = uow.GetRepository<UserModelRepository>();
-        RepoOutcome<UserModel> outcome = await repository.GetByIdAsync(userId, ct:ct);
+        UserModel? user = await repository.GetByIdAsync(userId, ct: ct);
 
-        if (!outcome.TryGetAsData(out UserModel? user)) {
-            return Outcome<UserModel>.Failure;
-        }
-
-        return user;
+        return user ?? Outcome<UserModel>.Failure;
     }
 }
