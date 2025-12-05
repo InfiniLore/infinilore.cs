@@ -3,6 +3,7 @@
         "path": "InfiniLore.slnx",
         "projects": [
             "src\\core\\InfiniLore.Core\\InfiniLore.Core.csproj",
+            "src\\core\\InfiniLore.Core.Components\\InfiniLore.Core.Components.csproj",
             "src\\core\\InfiniLore.Core.Database\\InfiniLore.Core.Database.csproj",
             "src\\core\\InfiniLore.Core.Messaging\\InfiniLore.Core.Messaging.csproj",
             "src\\core\\InfiniLore.Core.Modular\\InfiniLore.Core.Modular.csproj",
@@ -15,6 +16,7 @@
             "src\\modules\\InfiniLore.Modules.Projects.Shared\\InfiniLore.Modules.Projects.Shared.csproj",
             
             "src\\modules\\InfiniLore.Modules.Users\\InfiniLore.Modules.Users.csproj",
+            "src\\modules\\InfiniLore.Modules.Users.Components\\InfiniLore.Modules.Users.Components.csproj",
             "src\\modules\\InfiniLore.Modules.Users.Shared\\InfiniLore.Modules.Users.Shared.csproj",
             
             "tests\\Tests.Modules.Users\\Tests.Modules.Users.csproj",
