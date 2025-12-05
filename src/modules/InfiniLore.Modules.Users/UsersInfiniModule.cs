@@ -21,6 +21,6 @@ public class UsersInfiniModule : InfiniModule {
     }
 
     protected override void OnStartup(WebApplication app) {
-        app.Use(UserOnboarding.Middleware);
+        app.Use(UserAuthMiddleware.Use);
     }
 }
