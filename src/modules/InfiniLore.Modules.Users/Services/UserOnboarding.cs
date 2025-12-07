@@ -34,7 +34,7 @@ public class UserOnboarding(IReadonlyUnitOfWorkFactory<InfiniLoreDb> readonlyUni
         await using IReadonlyUnitOfWork<InfiniLoreDb> uow = readonlyUnitOfWorkFactory.Create();
         var repo = await uow.GetRepositoryAsync<UserModelRepository>(ct);
         
-        UserModel? knownUser = await repo.GetByIdAsync(knownId, ct:ct); 
+        UserModel? knownUser = await repo.GetByIdAsync(knownId, ct: ct); 
         return knownUser is not null;
 
     }

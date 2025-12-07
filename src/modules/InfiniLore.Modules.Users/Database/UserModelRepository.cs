@@ -30,11 +30,12 @@ public class UserModelRepository : BaseModelRepository<UserModel>, IUserModelRep
         return result;
     }
 
-    public async ValueTask<bool> IsUserNameTakenAsync(string username, CancellationToken ct = default) {
-        IQueryable<UserModel> query = GetConfiguredQueryable(QueryConfig.None)
+    public async ValueTask<bool> IsUserNameTakenAsync(string username, QueryConfig config = QueryConfig.None, CancellationToken ct = default) {
+        if (username.IsNullOrWhiteSpace()) return false;
+        
+        IQueryable<UserModel> query = GetConfiguredQueryable(config)
             .Where(model => model.UserName == username);
         
         return await query.AnyAsync(cancellationToken: ct);
-        
     }
 }
