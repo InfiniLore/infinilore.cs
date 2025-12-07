@@ -19,6 +19,6 @@ public class UserModelRepositoryTests(IServiceProvider serviceProvider) : BaseMo
     [After(Test)]
     public async Task TestTeardownAsync() => await DbTeardownAsync();
 
-    protected override Faker<UserModel> ConfigureFaker(Faker<UserModel> faker) => faker
+    protected override Faker<UserModel> GetConfiguredFaker() => base.GetConfiguredFaker()
         .RuleFor(model => model.UserName, (f, model) => f.Internet.UserNameUnicode(model.Id.ToString()));
 }

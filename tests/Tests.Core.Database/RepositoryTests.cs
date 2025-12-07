@@ -12,9 +12,8 @@ namespace Tests.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
 public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvider)
     where TModel : BaseModel, new()
-    where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository 
-{
-    
+    where TRepository : BaseModelRepository<TModel>, IUnitOfWorkRepository {
+
     protected IUnitOfWork<InfiniLoreDb> UnitOfWork => serviceProvider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
     private InfiniLoreDb InfiniLoreDb => serviceProvider.GetRequiredService<InfiniLoreDb>();
 
@@ -22,30 +21,23 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
     // Test Config
     // -----------------------------------------------------------------------------------------------------------------
     /// <summary>
-    /// Prepares the database for testing by ensuring it is created and attempting to start a transaction.
+    /// Prepares the database for testing by ensuring it is created.
+    /// Note: Do not start an explicit transaction here because repositories/unit of work
+    /// manage their own transactions and SQLite does not support nested transactions.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation.</returns>
     protected async Task DbSetupAsync() {
         await InfiniLoreDb.Database.EnsureCreatedAsync();
-        try {
-            await InfiniLoreDb.Database.BeginTransactionAsync();
-        }
-        catch {
-            // ignored
-        }
     }
 
     /// <summary>
-    /// Tears down the database state asynchronously by attempting to roll back any active transactions.
+    /// Tears down the database state asynchronously.
+    /// No explicit transaction rollback is performed here to avoid conflicts with
+    /// the Unit of Work transaction management.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation.</returns>
     protected async Task DbTeardownAsync() {
-        try {
-            await InfiniLoreDb.Database.RollbackTransactionAsync();
-        }
-        catch {
-            // ignored
-        }
+        await Task.CompletedTask;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -59,14 +51,18 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
     protected async ValueTask<TRepository> GetRepositoryAsync()
         => await UnitOfWork.GetRepositoryAsync<TRepository>();
 
+    protected TModel GetFakeModel() {
+        Faker<TModel> faker = GetConfiguredFaker();
+        return faker.Generate();
+    }
+
     /// <summary>
     /// Configures a provided instance of the Faker class with additional rules for generating TModel instances.
     /// </summary>
-    /// <param name="faker">An instance of the Faker class for TModel, which can be used to configure custom rules for data generation.</param>
     /// <returns>A configured Faker instance with updated rules for generating TModel instances.</returns>
-    protected virtual Faker<TModel> ConfigureFaker(Faker<TModel> faker)
-        => faker;
-    
+    protected virtual Faker<TModel> GetConfiguredFaker() => new Faker<TModel>()
+        .RuleFor(m => m.Id, f => f.Random.Guid());
+
     /// <summary>
     /// Adds fake models to the database for testing purposes.
     /// </summary>
@@ -74,11 +70,11 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
     /// <exception cref="ArgumentOutOfRangeException">Thrown when count is less than 1.</exception>
     protected async Task AddFakeModelsToDbAsync(int count) {
         ArgumentOutOfRangeException.ThrowIfLessThan(count, 1);
-        
+
         var faker = new Faker<TModel>();
         faker.RuleFor(m => m.Id, f => f.Random.Guid());
-        faker = ConfigureFaker(faker);
-        
+        faker = GetConfiguredFaker();
+
         IEnumerable<TModel>? models = faker.GenerateLazy(count);
         await AddModelsToDbAsync(models);
     }
@@ -90,12 +86,11 @@ public class RepositoryTests<TRepository, TModel>(IServiceProvider serviceProvid
     /// <exception cref="ArgumentOutOfRangeException">Thrown when count is less than 1.</exception>
     protected async Task AddFakeSoftDeletedModelToDbAsync(int count) {
         ArgumentOutOfRangeException.ThrowIfLessThan(count, 1);
-        
-        var faker = new Faker<TModel>();
+
+        Faker<TModel> faker = GetConfiguredFaker();
         faker.RuleFor(m => m.Id, f => f.Random.Guid());
         faker.RuleFor(m => m.SoftDeletedAt, f => f.Date.Past());
-        faker = ConfigureFaker(faker);
-        
+
         IEnumerable<TModel>? models = faker.GenerateLazy(count);
         await AddModelsToDbAsync(models);
     }

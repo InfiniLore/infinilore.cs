@@ -3,7 +3,6 @@
 // ---------------------------------------------------------------------------------------------------------------------
 using InfiniLore.Core.Pagination;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace InfiniLore.Core.Database;
 // ---------------------------------------------------------------------------------------------------------------------
@@ -80,20 +79,32 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     #endregion
 
     #region AddAsync
-    public async ValueTask<Guid> AddAsync(TModel model, CancellationToken ct = default) {
+    public async ValueTask<bool> AddAsync(TModel model, CancellationToken ct = default) {
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (model is null) return Guid.Empty;
+        if (model is null) return false;
         
         DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
         
         bool exists = await dbSet
             .AsNoTracking()
             .AnyAsync(m => m.Id == model.Id, cancellationToken: ct);
-        if (exists) return Guid.Empty;
+        if (exists) return false;
         
-        EntityEntry<TModel> entityEntry = await dbSet.AddAsync(model, cancellationToken: ct);
+        await dbSet.AddAsync(model, cancellationToken: ct);
+        return true;
+    }
+
+    public async ValueTask<bool> AddRangeAsync(IEnumerable<TModel> models, CancellationToken ct = default) {
+        DbSet<TModel> dbSet = GetCachedDbSet<TModel>();
+
+        TModel[] baseModels = models as TModel[] ?? models.ToArray();
         
-        return entityEntry.Entity.Id;
+        IEnumerable<Guid> ids = baseModels.Select(model => model.Id);
+        IQueryable<TModel> idQueryable = dbSet.AsNoTracking().Where(model => ids.Contains(model.Id));
+        if (await idQueryable.AnyAsync(cancellationToken: ct)) return false;
+        
+        await dbSet.AddRangeAsync(baseModels, cancellationToken: ct);
+        return true;
     }
     #endregion
 

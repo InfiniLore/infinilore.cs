@@ -11,6 +11,6 @@ namespace InfiniLore.Core.Database;
 public interface IBaseModelRepository<TModel> where TModel : class {
     ValueTask<TModel?> GetByIdAsync(Guid id, QueryConfig config = QueryConfig.None, CancellationToken ct = default);
     ValueTask<PaginatedData<TModel>> GetAllAsync(PaginationData pagination, QueryConfig config = QueryConfig.None, CancellationToken ct = default);
-    ValueTask<Guid> AddAsync(TModel model, CancellationToken ct = default);
+    ValueTask<bool> AddAsync(TModel model, CancellationToken ct = default);
     ValueTask<bool> AnyAsync(QueryConfig config = QueryConfig.None, CancellationToken ct = default);
 }
