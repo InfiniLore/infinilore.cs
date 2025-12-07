@@ -21,7 +21,7 @@ public static class InfiniLoreDbFactory {
         Action<DbContextOptionsBuilder> optionsAction,
         params IEnumerable<Assembly> assembliesToImport
     ) {
-        _assembliesToImport = assembliesToImport.ToImmutableArray();
+        _assembliesToImport = [..assembliesToImport];
         
         services.AddDbContextFactory<InfiniLoreDb>(optionsAction);
         
