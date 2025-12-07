@@ -71,7 +71,7 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeOptionalReferences);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.WithOptionalInclude);
 
         // Assert
         await Assert.That(foundModel).IsEqualTo(ownedModel);
@@ -99,7 +99,7 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(foundModel).IsNotNull()

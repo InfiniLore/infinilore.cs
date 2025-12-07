@@ -54,7 +54,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(knownId, QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(foundModel)
@@ -278,7 +278,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        bool any = await repository.AnyAsync(QueryConfig.IncludeSoftDeleted);
+        bool any = await repository.AnyAsync(QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(any).IsTrue();

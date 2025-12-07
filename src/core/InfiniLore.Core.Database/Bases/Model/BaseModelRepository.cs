@@ -21,9 +21,9 @@ public abstract class BaseModelRepository<TModel> : UnitOfWorkRepository<InfiniL
     protected IQueryable<TModel> GetConfiguredQueryable(IQueryable<TModel> baseQuery, QueryConfig config) => baseQuery
         .AsNoTracking()
         .With(AlwaysInclude)
-        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeOptionalReferences), OptionalInclude)
+        .ConditionalWith(config.HasFlagFast(QueryConfig.WithOptionalInclude), OptionalInclude)
         .ConditionalReverse(config.HasFlagFast(QueryConfig.Reversed))
-        .ConditionalWith(config.HasFlagFast(QueryConfig.IncludeSoftDeleted), query => query.IgnoreQueryFilters())
+        .ConditionalWith(config.HasFlagFast(QueryConfig.WithSoftDeleted), query => query.IgnoreQueryFilters())
         .ConditionalWith(config.HasFlagFast(QueryConfig.SortByCreatedAt | QueryConfig.SortByModifiedAt), query => query.OrderBy(model => model.CreatedAt).ThenBy(model => model.ModifiedAt))
         .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByCreatedAt), model => model.CreatedAt)
         .ConditionalOrderBy(config.HasFlagFast(QueryConfig.SortByModifiedAt), model => model.ModifiedAt)
