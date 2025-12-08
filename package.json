@@ -18,6 +18,6 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.13"
+    "@tailwindcss/cli": "^4.1.17"
   }
 }
