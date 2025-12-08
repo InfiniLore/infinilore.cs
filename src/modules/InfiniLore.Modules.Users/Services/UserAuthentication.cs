@@ -1,22 +1,29 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using System.Security.Claims;
 using CodeOfChaos.Extensions.DependencyInjection;
+using InfiniLore.Core.Database;
 using InfiniLore.Modules.Users.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
-
-namespace InfiniLore.Modules.Users.Services;
-
+namespace InfiniLore.Modules.Users;
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-[InjectableScoped<UserAuthentication>]
-public class UserAuthentication(IHttpContextAccessor httpContextAccessor) {
-    public async Task<bool> SignInAsync(UserModel user) {
+[InjectableScoped<IUserAuthentication>]
+public class UserAuthentication(IHttpContextAccessor httpContextAccessor, IReadonlyUnitOfWorkFactory<InfiniLoreDb> uowFactory) : IUserAuthentication {
+    public async Task<bool> SignInAsync(Guid userId) {
+        await using  IReadonlyUnitOfWork<InfiniLoreDb> uow = uowFactory.Create();
+        var repo = await uow.GetRepositoryAsync<UserModelRepository>();
+        UserModel? user = await repo.GetByIdAsync(userId);
+        if (user == null) {
+            return false;
+        }
+        
         var httpContext = httpContextAccessor.HttpContext;
         if (httpContext == null) {
             return false;

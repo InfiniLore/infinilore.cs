@@ -12,7 +12,7 @@
 @* Descriptors
 @* ------------------------------------------------------------------------------------------------------------------ *@
 @page "/signup"
-@rendermode InfiniRenderModeProvider.InfiniRenderMode
+@rendermode RenderMode.InteractiveServer
 
 @inject ILogger<SignupPage> Logger
 @inject IToastingProvider ToastingProvider
@@ -70,7 +70,8 @@
             }
 
             Logger.LogInformation("Successfully created user {UserId} with username: {Username}", userId, Username);
-            NavigationManager.NavigateTo("/");
+
+            NavigationManager.NavigateTo("/", true);
         }
         catch (OperationCanceledException ex) {
             Logger.LogWarning(ex, "User creation timed out for username: {Username}", Username);

@@ -17,7 +17,7 @@ public class InfiniModuleTests {
         var module = new TestInfiniModule2();
 
         // Act
-        module.Load(serviceCollection);
+        module.Configure(serviceCollection);
 
         // Assert
         await Assert.That(serviceCollection).Contains(descriptor => descriptor.ServiceType == typeof(SomeService2));
@@ -30,7 +30,7 @@ public class InfiniModuleTests {
         var module = new TestInfiniModule1();
 
         // Act
-        module.Load(serviceCollection);
+        module.Configure(serviceCollection);
 
         // Assert
         await Assert.That(serviceCollection)
@@ -45,7 +45,7 @@ public class InfiniModuleTests {
         var module = new TestInfiniModule2();
 
         // Act
-        module.Load(serviceCollection);
+        module.Configure(serviceCollection);
 
         // Assert
         await Assert.That(module.Assemblies).Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1);
@@ -59,7 +59,7 @@ public class InfiniModuleTests {
         var module = new TestInfiniModule1();
 
         // Act
-        module.Load(serviceCollection);
+        module.Configure(serviceCollection);
 
         // Assert
         await Assert.That(module.Assemblies).Count().IsEqualTo(1);

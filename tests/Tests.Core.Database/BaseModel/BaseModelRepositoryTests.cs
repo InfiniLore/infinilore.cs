@@ -54,7 +54,7 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(knownId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(knownId, QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(foundModel)
@@ -186,12 +186,10 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        Guid foundId = await repository.AddAsync(knownModel);
+        bool result = await repository.AddAsync(knownModel);
         
         // Assert
-        await Assert.That(foundId)
-            .IsNotEmptyGuid()
-            .And.IsEqualTo(knownId);
+        await Assert.That(result).IsTrue();
         
         await UnitOfWork.SaveChangesAsync();
         TModel foundModel = await GetModelFromDbAsync(knownId);
@@ -210,12 +208,10 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        Guid foundId = await repository.AddAsync(knownModel);
+        bool result = await repository.AddAsync(knownModel);
         
         // Assert
-        await Assert.That(foundId)
-            .IsEmptyGuid()
-            .And.IsNotEqualTo(knownId);
+        await Assert.That(result).IsFalse();
     }
     
     [Test]
@@ -224,11 +220,10 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
         
         // Act
-        Guid foundId = await repository.AddAsync(null!);
+        bool result = await repository.AddAsync(null!);
         
         // Assert
-        await Assert.That(foundId)
-            .IsEmptyGuid();
+        await Assert.That(result).IsFalse();
     }
     #endregion
 
@@ -278,10 +273,67 @@ public abstract class BaseModelRepositoryTests<TRepository, TModel>(IServiceProv
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        bool any = await repository.AnyAsync(QueryConfig.IncludeSoftDeleted);
+        bool any = await repository.AnyAsync(QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(any).IsTrue();
+    }
+    #endregion
+
+    #region AddRangeAsync
+    [Test]
+    public async Task AddRangeAsync_ShouldWork_WhenModelsAreValid() {
+        // Arrange
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        TModel model1 = GetFakeModel() with { Id = id1 };
+        TModel model2 = GetFakeModel() with { Id = id2 };
+
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool result = await repository.AddRangeAsync([model1, model2]);
+
+        // Assert
+        await Assert.That(result).IsTrue();
+
+        await UnitOfWork.SaveChangesAsync();
+        TModel found1 = await GetModelFromDbAsync(id1);
+        TModel found2 = await GetModelFromDbAsync(id2);
+        await Assert.That(found1).IsEqualTo(model1);
+        await Assert.That(found2).IsEqualTo(model2);
+    }
+
+    [Test]
+    public async Task AddRangeAsync_ShouldFail_WhenAnyDuplicateIdProvided() {
+        // Arrange
+        TModel existingModel = GetFakeModel();
+        Guid existingId = existingModel.Id;
+        await AddModelToDbAsync(existingModel);
+
+        TModel newModel = GetFakeModel() with {
+            Id = existingId
+        };
+
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool result = await repository.AddRangeAsync([existingModel, newModel]);
+
+        // Assert
+        await Assert.That(result).IsFalse();
+    }
+
+    [Test]
+    public async Task AddRangeAsync_ShouldWork_WhenEmptyCollection() {
+        // Arrange
+        TRepository repository = await GetRepositoryAsync();
+
+        // Act
+        bool result = await repository.AddRangeAsync([]);
+
+        // Assert
+        await Assert.That(result).IsTrue();
     }
     #endregion
 }

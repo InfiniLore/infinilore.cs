@@ -1,24 +1,23 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------------
 // Imports
 // ---------------------------------------------------------------------------------------------------------------------
-using InfiniLore.Core.Modular;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InfiniLore.Modules.Projects;
+namespace InfiniLore.Core.Modular;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Code
 // ---------------------------------------------------------------------------------------------------------------------
-public class ProjectsInfiniModule : InfiniModule {
-
-    protected override void OnConfiguring(IServiceCollection services) {
-        services.RegisterServicesFromInfiniLoreModulesProjects();
-        
-        AddSubModule<ProjectsSharedInfiniModule>();
-    }
-    
-    protected override void OnStartup(WebApplication app) {
-        
+public static class WebApplicationExtensions {
+    extension(WebApplication app) {
+        public WebApplication UseInfiniLoreModules() {
+            var services = app.Services;
+            var provider = services.GetRequiredService<InfiniModuleProvider>();
+            
+            provider.StartupModules(app);
+            
+            return app;
+        }
     }
 }

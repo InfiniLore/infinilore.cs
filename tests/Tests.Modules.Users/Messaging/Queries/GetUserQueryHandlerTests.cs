@@ -25,23 +25,11 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
     [Before(Test)]
     public async Task TestSetup() {
         await context.Database.EnsureCreatedAsync();
-
-        try {
-            await context.Database.BeginTransactionAsync();
-        }
-        catch {
-            // ignored
-        }
     }
 
     [After(Test)]
     public async Task TestTeardown() {
-        try {
-            await context.Database.RollbackTransactionAsync();
-        }
-        catch {
-            // ignored
-        }
+        await Task.CompletedTask;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -60,21 +48,21 @@ public class GetUserQueryHandlerTests(IServiceProvider provider, InfiniLoreDb co
         var uow = provider.GetRequiredService<IUnitOfWork<InfiniLoreDb>>();
         var repo = await uow.GetRepositoryAsync<UserModelRepository>();
 
-        Guid registeredId = await repo.AddAsync(new UserModel {
+        bool result = await repo.AddAsync(new UserModel {
             Id = expectedId,
             UserName = KnownUserName
         });
         
-        await Assert.That(registeredId).IsNotEmptyGuid();
+        await Assert.That(result).IsTrue();
         await uow.SaveChangesAsync();
     
         GetUserQueryHandler handler = GetHandler();
     
         // Act
-        Outcome<UserModel> result = await handler.ExecuteAsync(query, CancellationToken.None);
+        Outcome<UserModel> outcome = await handler.ExecuteAsync(query, CancellationToken.None);
 
         // Assert
-        await Assert.That(result.TryGetAsData(out UserModel? userModel)).IsTrue();
+        await Assert.That(outcome.TryGetAsData(out UserModel? userModel)).IsTrue();
         await Assert.That(userModel).IsNotNull()
             .And.HasProperty(model => model.Id).IsEqualTo(expectedId)
             .HasProperty(model => model.UserName).IsEqualTo(KnownUserName);

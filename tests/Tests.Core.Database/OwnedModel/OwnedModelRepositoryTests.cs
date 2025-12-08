@@ -71,7 +71,7 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeOptionalReferences);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.WithOptionalInclude);
 
         // Assert
         await Assert.That(foundModel).IsEqualTo(ownedModel);
@@ -99,7 +99,7 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.IncludeSoftDeleted);
+        TModel? foundModel = await repository.GetByIdAsync(ownedId, QueryConfig.WithSoftDeleted);
 
         // Assert
         await Assert.That(foundModel).IsNotNull()
@@ -183,12 +183,10 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        Guid foundId = await repository.AddAsync(ownedModel);
+        bool result = await repository.AddAsync(ownedModel);
 
         // Assert
-        await Assert.That(foundId)
-            .IsNotEmptyGuid()
-            .And.IsEqualTo(ownedId);
+        await Assert.That(result).IsTrue();
         
         await UnitOfWork.SaveChangesAsync();
         TModel foundModel = await GetModelFromDbAsync(ownedId);
@@ -222,10 +220,10 @@ public abstract class OwnedModelRepositoryTests<TRepository, TModel, TOwner>(ISe
         TRepository repository = await GetRepositoryAsync();
 
         // Act
-        Guid foundId = await repository.AddAsync(ownedModel);
+        bool result = await repository.AddAsync(ownedModel);
 
         // Assert
-        await Assert.That(foundId).IsEmptyGuid();
+        await Assert.That(result).IsTrue();
     }
     #endregion
 }
