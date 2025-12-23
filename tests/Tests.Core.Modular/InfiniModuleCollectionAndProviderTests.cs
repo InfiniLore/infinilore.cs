@@ -63,7 +63,7 @@ public class InfiniModuleCollectionAndProviderTests {
         Assembly[] assemblies = moduleProvider.GetRegisteredAssemblies().ToArray();
         
         await Assert.That(assemblies).Count().IsEqualTo(1);
-        await Assert.That(assemblies).Count(assembly => assembly.Equals(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Assemblies from all modules should be aggregated and distinct.");
+        await Assert.That(assemblies).Count(assembly => assembly.IsEqualTo(typeof(TestInfiniModule1).Assembly)).IsEqualTo(1).Because("Assemblies from all modules should be aggregated and distinct.");
     }
 
     [Test]
