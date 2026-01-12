@@ -1,4 +1,4 @@
-﻿name: Dotnet Testing
+name: Dotnet Testing
 
 on:
     pull_request:
@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Setup .NET
               uses: actions/setup-dotnet@v5
