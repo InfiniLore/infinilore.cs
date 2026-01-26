@@ -29,7 +29,7 @@
 
 
     <ItemGroup>
-      <PackageReference Include="InfiniLore.InfiniBlazor" VersionOverride="0.1.0-preview.116" />
+      <PackageReference Include="InfiniLore.InfiniBlazor" />
       <ProjectReference Include="..\..\core\InfiniLore.Core.Components\InfiniLore.Core.Components.csproj" />
       <ProjectReference Include="..\..\core\InfiniLore.Core.Modular\InfiniLore.Core.Modular.csproj" />
       <ProjectReference Include="..\InfiniLore.Modules.Users.Shared\InfiniLore.Modules.Users.Shared.csproj" />
