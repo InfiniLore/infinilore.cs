@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FastEndpoints.Messaging.Core" VersionOverride="7.2.0" />
+      <PackageReference Include="FastEndpoints.Messaging.Core" />
       <ProjectReference Include="..\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
     </ItemGroup>
 
