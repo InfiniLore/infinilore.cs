@@ -22,7 +22,7 @@
     <PackageVersion Include="FastEndpoints.Swagger" Version="7.2.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.118" />
-    <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.23" />
+    <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.25" />
     <PackageVersion Include="InfiniLore.InfiniFrame.WebServer" Version="0.1.0-preview.23" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.9" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
