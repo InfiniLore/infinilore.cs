@@ -38,6 +38,6 @@
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageVersion Include="TUnit" Version="1.16.4" />
+    <PackageVersion Include="TUnit" Version="1.17.7" />
   </ItemGroup>
 </Project>
