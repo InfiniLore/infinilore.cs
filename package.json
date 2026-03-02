@@ -11,7 +11,7 @@
   "description": "",
   "devDependencies": {
     "@toolwind/anchors": "^1.0.10",
-    "tailwindcss": "^4.2.0",
+    "tailwindcss": "^4.2.1",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
     "webpack": "^5.105.2",
