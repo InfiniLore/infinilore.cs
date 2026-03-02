@@ -19,7 +19,7 @@
     <PackageVersion Include="CodeOfChaos.Unions.Generators" Version="6.4.0" />
     <PackageVersion Include="FastEndpoints" Version="7.2.0" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="7.2.0" />
-    <PackageVersion Include="FastEndpoints.Swagger" Version="7.2.0" />
+    <PackageVersion Include="FastEndpoints.Swagger" Version="8.0.1" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="InfiniLore.InfiniBlazor" Version="0.1.0-preview.120" />
     <PackageVersion Include="InfiniLore.InfiniFrame" Version="0.1.0-preview.25" />
