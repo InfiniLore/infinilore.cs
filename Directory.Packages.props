@@ -16,7 +16,7 @@
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.87.2" />
     <PackageVersion Include="CodeOfChaos.Testing.TUnit" Version="0.17.0" />
     <PackageVersion Include="CodeOfChaos.Unions" Version="6.5.0" />
-    <PackageVersion Include="CodeOfChaos.Unions.Generators" Version="6.4.0" />
+    <PackageVersion Include="CodeOfChaos.Unions.Generators" Version="6.5.0" />
     <PackageVersion Include="FastEndpoints" Version="8.0.1" />
     <PackageVersion Include="FastEndpoints.Messaging.Core" Version="8.0.1" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="8.0.1" />
@@ -38,6 +38,6 @@
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageVersion Include="TUnit" Version="1.18.0" />
+    <PackageVersion Include="TUnit" Version="1.19.16" />
   </ItemGroup>
 </Project>
