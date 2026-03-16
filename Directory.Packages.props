@@ -11,7 +11,7 @@
     <PackageVersion Include="CodeOfChaos.CliArgsParser.Generators" Version="5.1.3" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection" Version="0.87.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.DependencyInjection.Generators" Version="0.87.2" />
-    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.87.2" />
+    <PackageVersion Include="CodeOfChaos.Extensions.EntityFrameworkCore" Version="0.89.0" />
     <PackageVersion Include="CodeOfChaos.Extensions.MicrosoftLogging" Version="0.87.2" />
     <PackageVersion Include="CodeOfChaos.Extensions.Serilog" Version="0.87.2" />
     <PackageVersion Include="CodeOfChaos.Testing.TUnit" Version="0.17.0" />
@@ -28,7 +28,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.0.0" />
     <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3" />
