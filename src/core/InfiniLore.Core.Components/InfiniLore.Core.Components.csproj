@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CodeOfChaos.Extensions.MicrosoftLogging" VersionOverride="0.90.0" />
       <PackageReference Include="FastEndpoints.Messaging.Core" />
       <ProjectReference Include="..\InfiniLore.Core.Shared\InfiniLore.Core.Shared.csproj" />
     </ItemGroup>
